@@ -2,13 +2,22 @@
 
 package alt
 
-import "syscall"
-
-var (
-	h, err  = syscall.LoadLibrary("go-module.dll")
-	proc, _ = syscall.GetProcAddress(h, "Resource_Init")
+import (
+	"fmt"
+	"syscall"
 )
 
-func GetLibrary() (syscall.Handle, error) {
-	return h, err
+var dll = syscall.NewLazyDLL("go-module.dll")
+
+func GetLibrary() *syscall.LazyDLL {
+	return dll
+}
+
+func GetFunc(name string, a ...uintptr) {
+	proc := dll.NewProc(name)
+	_, _, err := proc.Call(a...)
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
