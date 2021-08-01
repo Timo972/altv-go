@@ -17,7 +17,7 @@ func GetFunc(name string, a ...uintptr) {
 	proc := dll.NewProc(name)
 	_, _, err := proc.Call(a...)
 
-	if err != nil {
-		fmt.Println(err.Error())
+	if err == nil {
+		fmt.Println(err)
 	}
 }
