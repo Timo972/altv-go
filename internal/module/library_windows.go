@@ -1,6 +1,5 @@
 // +build windows
-
-package alt
+package module
 
 import (
 	"fmt"

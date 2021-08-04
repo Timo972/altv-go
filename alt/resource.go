@@ -1,6 +1,8 @@
 package alt
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func TestResource() {
 	fmt.Println("Test Resource")
