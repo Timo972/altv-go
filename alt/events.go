@@ -1,13 +1,10 @@
 package alt
 
-import (
-	alt "github.com/shockdev04/altv-go-pkg/alt/objects"
-)
-
-type PlayerConnectListener = func(p *alt.Player)
+type PlayerConnectListener = func(p *Player)
+type PlayerDisconnectListener = func(p *Player)
 
 type eventManager struct {
-
+	PlayerConnectEvents []PlayerConnectListener
 }
 
 type Listener interface {
@@ -17,5 +14,6 @@ type Listener interface {
 var On = &eventManager{}
 
 func (e eventManager) PlayerConnect(listener PlayerConnectListener) {
-
+	On.PlayerConnectEvents = append(On.PlayerConnectEvents, listener)
 }
+

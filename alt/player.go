@@ -5,9 +5,9 @@ import (
 )
 
 type Player struct {
-	Ptr unsafe.Pointer
+	Ptr		unsafe.Pointer
 }
 
 func (p Player) Name() string {
-	return "Name"
+	return ""
 }
