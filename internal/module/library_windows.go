@@ -9,11 +9,13 @@ import (
 
 var dll = syscall.NewLazyDLL("go-module.dll")
 
-func GetFunc(name string, a ...uintptr) {
+func GetFunc(name string, a ...uintptr) (uintptr, uintptr) {
 	proc := dll.NewProc(name)
-	_, _, err := proc.Call(a...)
+	r1, r2, err := proc.Call(a...)
 
 	if err == nil {
 		fmt.Println(err)
 	}
+
+	return r1, r2
 }

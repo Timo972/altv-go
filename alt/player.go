@@ -1,6 +1,10 @@
 package alt
 
+// #include <stdlib.h>
+import "C"
 import (
+	"github.com/shockdev04/altv-go-pkg/internal/module"
+	"golang.org/x/sys/windows"
 	"unsafe"
 )
 
@@ -13,5 +17,6 @@ func NewPlayer(p unsafe.Pointer) *Player {
 }
 
 func (p Player) Name() string {
-	return ""
+	res, _ := module.GetFunc("Player_GetName")
+	return windows.BytePtrToString((*byte)(unsafe.Pointer(res)))
 }

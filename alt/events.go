@@ -1,6 +1,7 @@
 package alt
 
 import (
+	"C"
 	"github.com/shockdev04/altv-go-pkg/internal/module"
 	"unsafe"
 )
@@ -13,7 +14,7 @@ type eventManager struct {
 	playerConnectEvents []playerConnectListener
 }
 
-type Listener interface {
+type listener interface {
 	PlayerConnect(listener playerConnectListener)
 }
 
