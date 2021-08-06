@@ -9,6 +9,8 @@ import (
 )
 
 type Player struct {
+	BaseObject
+	WorldObject
 	Ptr		unsafe.Pointer
 }
 
