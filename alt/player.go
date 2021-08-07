@@ -19,7 +19,7 @@ func NewPlayer(p unsafe.Pointer) *Player {
 }
 
 func (p Player) Name() string {
-	res, _ := module.GetFunc("Player_GetName", uintptr(p.Ptr))
+	res, _ := module.Call("Player_GetName", uintptr(p.Ptr))
 	name := windows.BytePtrToString((*byte)(unsafe.Pointer(res)))
 
 	return name

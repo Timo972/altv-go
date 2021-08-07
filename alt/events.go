@@ -2,7 +2,6 @@ package alt
 
 import (
 	"C"
-	"github.com/shockdev04/altv-go-pkg/internal/module"
 	"unsafe"
 )
 
@@ -60,7 +59,7 @@ var On = &eventManager{}
 
 func (e eventManager) PlayerConnect(listener playerConnectListener) {
 	On.playerConnectEvents = append(On.playerConnectEvents, listener)
-	module.RegisterAltEvent(Resource.Name, playerConnect)
+	//module.RegisterAltEvent(Resource.Name, playerConnect)
 }
 
 //export altPlayerConnectEvent
