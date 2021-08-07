@@ -11,6 +11,6 @@ import "unsafe"
 func LogInfo(msg string) {
 	cstr := C.CString(msg)
 	defer C.free(unsafe.Pointer(cstr))
-	//module.Call("Core_LogInfo", uintptr(unsafe.Pointer(cstr)))
+
 	C.log_info(cstr)
 }

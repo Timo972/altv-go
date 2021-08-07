@@ -1,9 +1,8 @@
 package alt
 
-import (
-	"C"
-	"unsafe"
-)
+// #include "Module.h"
+import "C"
+import "unsafe"
 
 type eventType = uint16
 type playerConnectListener = func(p *Player)
@@ -57,9 +56,16 @@ const (
 
 var On = &eventManager{}
 
+func registerOnEvent(resource string, event uint16) {
+	cresource := C.CString(resource)
+	defer C.free(unsafe.Pointer(cresource))
+
+	C.register_alt_event(cresource, C.ushort(event))
+}
+
 func (e eventManager) PlayerConnect(listener playerConnectListener) {
 	On.playerConnectEvents = append(On.playerConnectEvents, listener)
-	//module.RegisterAltEvent(Resource.Name, playerConnect)
+	registerOnEvent(Resource.Name, playerConnect)
 }
 
 //export altPlayerConnectEvent

@@ -37,5 +37,5 @@ go build -o my-resource.dll -buildmode=c-shared
 #### Linux
 ```
 export CGO_LDFLAGS="-g -02 -ldl"
-go -o my-resource.dll -buildmode c-shared
+go -o my-resource.so -buildmode=c-shared
 ```

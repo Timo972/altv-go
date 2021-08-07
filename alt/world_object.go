@@ -1,6 +1,8 @@
 package alt
 
-type WorldObject struct { }
+type WorldObject struct {
+	BaseObject
+}
 
 type World interface {
 	GetPosition()

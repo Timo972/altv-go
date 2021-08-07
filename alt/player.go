@@ -6,8 +6,7 @@ import "C"
 import "unsafe"
 
 type Player struct {
-	BaseObject
-	WorldObject
+	Entity
 	Ptr unsafe.Pointer
 }
 
