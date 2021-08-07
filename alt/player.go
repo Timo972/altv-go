@@ -1,6 +1,5 @@
 package alt
 
-// #cgo LDFLAGS: -ldl
 // #include <stdlib.h>
 // #include "Module.h"
 import "C"
