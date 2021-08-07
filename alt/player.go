@@ -1,26 +1,22 @@
 package alt
 
 // #include <stdlib.h>
+// #include "Module.h"
 import "C"
-import (
-	"github.com/shockdev04/altv-go-pkg/internal/module"
-	"golang.org/x/sys/windows"
-	"unsafe"
-)
+import "unsafe"
 
 type Player struct {
 	BaseObject
 	WorldObject
-	Ptr		unsafe.Pointer
+	Ptr unsafe.Pointer
 }
 
 func NewPlayer(p unsafe.Pointer) *Player {
-	return &Player{ Ptr: p }
+	return &Player{Ptr: p}
 }
 
 func (p Player) Name() string {
-	res, _ := module.Call("Player_GetName", uintptr(p.Ptr))
-	name := windows.BytePtrToString((*byte)(unsafe.Pointer(res)))
+	str := C.player_get_name(p.Ptr)
 
-	return name
+	return C.GoString(str)
 }

@@ -25,3 +25,9 @@ void log_info(const char *message)
     capi_log_info call = GET_FUNC(module, "Core_LogInfo", capi_log_info);
     call(message);
 }
+
+const char *player_get_name(void *p)
+{
+    capi_player_get_name call = GET_FUNC(module, "Player_GetName", capi_player_get_name);
+    return call(p);
+}
