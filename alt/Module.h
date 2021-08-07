@@ -16,7 +16,7 @@ typedef HINSTANCE Module;
 #define LOAD_LIB(name) dlopen(name, RTLD_NOW);
 #define GET_FUNC(module, name, type) (type) dlsym(module, name);
 
-typdef void Module;
+typdef void *Module;
 #endif
 
 typedef void (*capi_log_info)(const char *message);
