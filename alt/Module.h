@@ -10,6 +10,7 @@
 
 typedef HINSTANCE Module;
 #else
+#include <stddef.h>
 #include <dlfcn.h>
 
 #define SEPARATOR "/"
