@@ -2,7 +2,9 @@ package alt
 
 // #include "Module.h"
 import "C"
-import "unsafe"
+import (
+	"unsafe"
+)
 
 type BaseObjectType = uint8
 
@@ -33,41 +35,36 @@ type Base interface {
 }
 
 func (b BaseObject) GetType() BaseObjectType {
-	panic("implement me")
+	return BaseObjectType(C.base_object_get_type(b.Ptr))
 }
 
 func (b BaseObject) HasMetaData(key string) bool {
-	cstr := C.CString(key)
-	defer C.free(unsafe.Pointer(cstr))
+	cKey := C.CString(key)
+	defer C.free(unsafe.Pointer(cKey))
 
-	return int(C.base_object_has_meta_data(b.Ptr, cstr)) == 1
+	return int(C.base_object_has_meta_data(b.Ptr, cKey)) == 1
 }
 
 func (b BaseObject) GetMetaData(key string) interface{} {
-	cstr := C.CString(key)
-	defer C.free(unsafe.Pointer(cstr))
+	cKey := C.CString(key)
+	defer C.free(unsafe.Pointer(cKey))
+	data := C.base_object_get_meta_data(b.Ptr, cKey)
+	mValue := &MValue{Ptr: data.Ptr, Type: uint8(data.Type), Value: nil}
 
-	data := C.base_object_get_meta_data(b.Ptr, cstr)
-
-	// Get actual data from capi
-	// Return value
-	return nil
+	return mValue.GetValue()
 }
 
 func (b BaseObject) SetMetaData(key string, value interface{}) {
-	// Put logic inside another func, call capi func based on type
-	// Call capi func and convert value to actual mvalue
+	mValue := CreateMValue(value)
+	cKey := C.CString(key)
+	defer C.free(unsafe.Pointer(cKey))
 
-	switch valueType := value.(type) {
-	case int, int16, int32, int64, int8:
-		valueType = 0
-		break
-	}
+	C.base_object_set_meta_data(b.Ptr, cKey, mValue.Ptr)
 }
 
 func (b BaseObject) DeleteMetaData(key string) {
-	cstr := C.CString(key)
-	defer C.free(unsafe.Pointer(cstr))
+	cKey := C.CString(key)
+	defer C.free(unsafe.Pointer(cKey))
 
-	C.base_object_delete_meta_data(b.Ptr, cstr)
+	C.base_object_delete_meta_data(b.Ptr, cKey)
 }

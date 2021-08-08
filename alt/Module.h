@@ -26,26 +26,61 @@ typedef struct metaData
     unsigned int Type;
 } MetaData;
 
-typedef void (*capi_log_info)(const char *message);
+typedef void (*capi_log)(const char *message);
+
 typedef void (*capi_register_alt_event)(const char *resourceName, unsigned short eventType);
 typedef const char *(*capi_player_get_name)(void *p);
 
+typedef unsigned char (*capi_base_object_get_type)(void *base);
 typedef int (*capi_base_object_has_meta_data)(void *base, const char *key);
 typedef MetaData (*capi_base_object_get_meta_data)(void *base, const char *key);
 typedef void (*capi_base_object_set_meta_data)(void *base, const char *key, void *val);
 typedef void (*capi_base_object_delete_meta_data)(void *base, const char *key);
 
+typedef void *(*capi_core_create_mvalue_bool)(int val);
+typedef void *(*capi_core_create_mvalue_int)(long long val);
+typedef void *(*capi_core_create_mvalue_uint)(unsigned long long val);
+typedef void *(*capi_core_create_mvalue_double)(double val);
+typedef void *(*capi_core_create_mvalue_string)(const char *val);
+
+typedef int (*capi_core_get_mvalue_bool)(void *val);
+typedef long long (*capi_core_get_mvalue_int)(void *val);
+typedef unsigned long long (*capi_core_get_mvalue_uint)(void *val);
+typedef double (*capi_core_get_mvalue_double)(void *val);
+typedef const char *(*capi_core_get_mvalue_string)(void *val);
+
 int load_module(const char *path);
 
+// Core
 void register_alt_event(const char *resourceName, unsigned short eventType);
 
-void log_info(const char *message);
+void core_log_info(const char *message);
+void core_log_debug(const char *message);
+void core_log_warning(const char *message);
+void core_log_error(const char *message);
+void core_log_colored(const char *message);
 
+// Player
 const char *player_get_name(void *p);
 
+// Base Object
+unsigned char base_object_get_type(void *base);
 int base_object_has_meta_data(void *base, const char *key);
 MetaData base_object_get_meta_data(void *base, const char *key);
 void base_object_set_meta_data(void *base, const char *key, void *val);
 void base_object_delete_meta_data(void *base, const char *key);
+
+// MValue
+void *core_create_mvalue_bool(int value);
+void *core_create_mvalue_int(long long val);
+void *core_create_mvalue_uint(unsigned long long val);
+void *core_create_mvalue_double(double val);
+void *core_create_mvalue_string(const char *val);
+
+int core_get_mvalue_bool(void *val);
+long long core_get_mvalue_int(void *val);
+unsigned long long core_get_mvalue_uint(void *val);
+double core_get_mvalue_double(void *val);
+const char *core_get_mvalue_string(void *val);
 
 #endif
