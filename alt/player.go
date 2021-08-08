@@ -7,11 +7,13 @@ import "unsafe"
 
 type Player struct {
 	Entity
-	Ptr unsafe.Pointer
 }
 
 func NewPlayer(p unsafe.Pointer) *Player {
-	return &Player{Ptr: p}
+	player := &Player{}
+	player.Ptr = p
+
+	return player
 }
 
 func (p Player) Name() string {

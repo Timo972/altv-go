@@ -17,13 +17,13 @@ import "github.com/shockdev04/altv-go-pkg/alt"
 
 func main() { }
 
-//export OnStart
-func OnStart() {
+//export onStart
+func onStart() {
 	alt.LogInfo("Resource Started")
 }
 
-//export OnStop
-func OnStop() {
+//export onStop
+func onStop() {
 	alt.LogInfo("Resource Stopped")
 }
 ```
@@ -37,5 +37,5 @@ go build -o my-resource.dll -buildmode=c-shared
 #### Linux
 ```
 export CGO_LDFLAGS="-g -02 -ldl"
-go -o my-resource.so -buildmode=c-shared
+go build -o my-resource.so -buildmode=c-shared
 ```
