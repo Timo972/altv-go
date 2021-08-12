@@ -53,13 +53,12 @@ func (b BaseObject) GetMetaData(key string) interface{} {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
-	var data *MetaData
+	var mValue *MValue
 
 	if b.Type == PlayerObject {
-		data = &MetaData{Ptr: C.player_get_meta_data(b.Ptr, cKey).Ptr}
+		meta := C.player_get_meta_data(b.Ptr, cKey)
+		mValue = &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
 	}
-
-	mValue := &MValue{Ptr: data.Ptr, Type: b.Type, Value: nil}
 
 	return mValue.GetValue()
 }
