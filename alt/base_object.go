@@ -27,10 +27,6 @@ type BaseObject struct {
 	Type BaseObjectType
 }
 
-type MetaData struct {
-	Ptr unsafe.Pointer
-}
-
 type Base interface {
 	HasMetaData(key string) bool
 	GetMetaData(key string) interface{}
@@ -43,7 +39,7 @@ func (b BaseObject) HasMetaData(key string) bool {
 	defer C.free(unsafe.Pointer(cKey))
 
 	if b.Type == PlayerObject {
-		return int(C.player_has_meta_data(b.Ptr, cKey)) != 1
+		return int(C.player_has_meta_data(b.Ptr, cKey)) == 1
 	}
 
 	return false
