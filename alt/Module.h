@@ -69,8 +69,6 @@ MetaData player_get_meta_data(void *base, const char *key);
 void player_set_meta_data(void *base, const char *key, void *val);
 void player_delete_meta_data(void *base, const char *key);
 
-// Base Object
-
 // MValue
 void *core_create_mvalue_bool(int value);
 void *core_create_mvalue_int(long long val);

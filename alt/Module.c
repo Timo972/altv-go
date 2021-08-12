@@ -83,7 +83,7 @@ void player_set_meta_data(void *base, const char *key, void *val)
 
 void player_delete_meta_data(void *base, const char *key)
 {
-    g_call_player_delete_meta_data;
+    g_call_player_delete_meta_data(base, key);
 }
 
 void *core_create_mvalue_bool(int val)

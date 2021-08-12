@@ -11,7 +11,7 @@ import (
 type MValueType = uint8
 
 const (
-	MValueNone MValueType = iota
+	MValueNone MValueType = iota + 229
 	MValueBool
 	MValueInt
 	MValueUInt
