@@ -15,13 +15,13 @@ type WorldObject struct {
 }
 
 type World interface {
-	GetPosition() *Position
+	Position() *Position
 	SetPosition()
-	GetDimension() int32
+	Dimension() int32
 	SetDimension()
 }
 
-func (w WorldObject) GetPosition() *Position {
+func (w WorldObject) Position() *Position {
 	var pos *Position
 
 	if w.Type == PlayerObject {
@@ -38,7 +38,7 @@ func (w WorldObject) SetPosition(pos Position) {
 	}
 }
 
-func (w WorldObject) GetDimension() int32 {
+func (w WorldObject) Dimension() int32 {
 	var dimension int32
 
 	if w.Type == PlayerObject {
