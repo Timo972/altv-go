@@ -34,7 +34,7 @@ int load_module(const char *path)
     g_call_player_set_dimension = GET_FUNC(module, "Player_SetDimension", capi_player_set_dimension);
     g_call_player_spawn = GET_FUNC(module, "Player_Spawn", capi_player_spawn);
     g_call_player_set_model = GET_FUNC(module, "Player_SetModel", capi_player_set_model);
-    g_call_core_create_vehicle = GET_FUNC(module, "Core_CreateVehicle", capi_player_set_model);
+    g_call_core_create_vehicle = GET_FUNC(module, "Core_CreateVehicle", capi_core_create_vehicle);
 
     return 1;
 }

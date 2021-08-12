@@ -21,12 +21,12 @@ type World interface {
 	SetDimension()
 }
 
-func (w WorldObject) Position() *Position {
-	var pos *Position
+func (w WorldObject) Position() Position {
+	var pos Position
 
 	if w.Type == PlayerObject {
 		cPos := C.player_get_position(w.Ptr)
-		pos = &Position{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
+		pos = Position{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
 	}
 
 	return pos
