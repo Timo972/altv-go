@@ -13,6 +13,8 @@ capi_player_set_dimension g_call_player_set_dimension;
 capi_player_spawn g_call_player_spawn;
 capi_player_set_model g_call_player_set_model;
 
+capi_core_create_vehicle g_call_core_create_vehicle;
+
 int load_module(const char *path)
 {
     module = LOAD_LIB(path);
@@ -32,6 +34,7 @@ int load_module(const char *path)
     g_call_player_set_dimension = GET_FUNC(module, "Player_SetDimension", capi_player_set_dimension);
     g_call_player_spawn = GET_FUNC(module, "Player_Spawn", capi_player_spawn);
     g_call_player_set_model = GET_FUNC(module, "Player_SetModel", capi_player_set_model);
+    g_call_core_create_vehicle = GET_FUNC(module, "Core_CreateVehicle", capi_player_set_model);
 
     return 1;
 }
@@ -186,4 +189,10 @@ const char *core_get_mvalue_string(void *val)
 {
     capi_core_get_mvalue_string call = GET_FUNC(module, "Core_GetMValueString", capi_core_get_mvalue_string);
     return call(val);
+}
+
+void *core_create_vehicle(unsigned long model, float posX, float posY, float posZ,
+                          float rotX, float rotY, float rotZ)
+{
+    g_call_core_create_vehicle(model, posX, posY, posZ, rotX, rotY, rotZ);
 }

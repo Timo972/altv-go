@@ -64,6 +64,9 @@ typedef unsigned long long (*capi_core_get_mvalue_uint)(void *val);
 typedef double (*capi_core_get_mvalue_double)(void *val);
 typedef const char *(*capi_core_get_mvalue_string)(void *val);
 
+typedef void *(*capi_core_create_vehicle)(unsigned long model, float posX, float posY, float posZ,
+                                          float rotX, float rotY, float rotZ);
+
 int load_module(const char *path);
 
 // Core
@@ -100,5 +103,8 @@ long long core_get_mvalue_int(void *val);
 unsigned long long core_get_mvalue_uint(void *val);
 double core_get_mvalue_double(void *val);
 const char *core_get_mvalue_string(void *val);
+
+void *core_create_vehicle(unsigned long model, float posX, float posY, float posZ,
+                          float rotX, float rotY, float rotZ);
 
 #endif

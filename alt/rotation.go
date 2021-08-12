@@ -1,10 +1,7 @@
 package alt
 
-type Position struct {
+type Rotation struct {
 	X float32
 	Y float32
 	Z float32
 }
-
-
-
