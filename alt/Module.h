@@ -29,13 +29,15 @@ typedef struct metaData
 typedef void (*capi_log)(const char *message);
 
 typedef void (*capi_register_alt_event)(const char *resourceName, unsigned short eventType);
+
 typedef const char *(*capi_player_get_name)(void *p);
+typedef int (*capi_player_has_meta_data)(void *base, const char *key);
+typedef MetaData (*capi_player_get_meta_data)(void *base, const char *key);
+typedef void (*capi_player_meta_data)(void *base, const char *key, void *val);
+typedef void (*capi_player_delete_meta_data)(void *base, const char *key);
+typedef void (*capi_player_set_meta_data)(void *base, const char *key, void *val);
 
 typedef unsigned char (*capi_base_object_get_type)(void *base);
-typedef int (*capi_base_object_has_meta_data)(void *base, const char *key);
-typedef MetaData (*capi_base_object_get_meta_data)(void *base, const char *key);
-typedef void (*capi_base_object_set_meta_data)(void *base, const char *key, void *val);
-typedef void (*capi_base_object_delete_meta_data)(void *base, const char *key);
 
 typedef void *(*capi_core_create_mvalue_bool)(int val);
 typedef void *(*capi_core_create_mvalue_int)(long long val);
@@ -62,13 +64,12 @@ void core_log_colored(const char *message);
 
 // Player
 const char *player_get_name(void *p);
+int player_has_meta_data(void *base, const char *key);
+MetaData player_get_meta_data(void *base, const char *key);
+void player_set_meta_data(void *base, const char *key, void *val);
+void player_delete_meta_data(void *base, const char *key);
 
 // Base Object
-unsigned char base_object_get_type(void *base);
-int base_object_has_meta_data(void *base, const char *key);
-MetaData base_object_get_meta_data(void *base, const char *key);
-void base_object_set_meta_data(void *base, const char *key, void *val);
-void base_object_delete_meta_data(void *base, const char *key);
 
 // MValue
 void *core_create_mvalue_bool(int value);

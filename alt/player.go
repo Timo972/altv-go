@@ -12,6 +12,7 @@ type Player struct {
 func NewPlayer(p unsafe.Pointer) *Player {
 	player := &Player{}
 	player.Ptr = p
+	player.Type = PlayerObject
 
 	return player
 }

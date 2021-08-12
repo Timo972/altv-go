@@ -1,9 +1,10 @@
 package alt
 
+// #include <stdlib.h>
 // #include "Module.h"
 import "C"
 import (
-	"fmt"
+	"log"
 	"unsafe"
 )
 
@@ -13,14 +14,19 @@ type resource struct {
 	Path string
 }
 
-var Resource resource
-
-func TestResource() {
-	fmt.Println("Test Resource")
-}
+var Resource *resource
 
 //export initGoResource
 func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char) {
-	Resource = resource{Ptr: ptr, Name: C.GoString(name), Path: C.GoString(path)}
-	C.load_module(path)
+	Resource = &resource{Ptr: ptr, Name: C.GoString(name), Path: C.GoString(path)}
+
+	cstr := C.CString("go-module")
+	defer C.free(unsafe.Pointer(cstr))
+
+	log.SetFlags(log.Ltime)
+
+	moduleLoaded := int(C.load_module(cstr))
+	if moduleLoaded == 0 {
+		log.Fatal("Couldn't locate go-module library.")
+	}
 }

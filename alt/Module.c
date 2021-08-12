@@ -2,6 +2,11 @@
 
 Module module;
 
+capi_player_has_meta_data g_call_player_has_meta_data;
+capi_player_get_meta_data g_call_player_get_meta_data;
+capi_player_set_meta_data g_call_player_set_meta_data;
+capi_player_delete_meta_data g_call_player_delete_meta_data;
+
 int load_module(const char *path)
 {
     module = LOAD_LIB(path);
@@ -10,6 +15,11 @@ int load_module(const char *path)
     {
         return 0;
     }
+
+    g_call_player_has_meta_data = GET_FUNC(module, "Player_HasMetaData", capi_player_has_meta_data);
+    g_call_player_get_meta_data = GET_FUNC(module, "Player_GetMetaData", capi_player_get_meta_data);
+    g_call_player_set_meta_data = GET_FUNC(module, "Player_SetMetaData", capi_player_set_meta_data);
+    g_call_player_delete_meta_data = GET_FUNC(module, "Player_DeleteMetaData", capi_player_delete_meta_data);
 
     return 1;
 }
@@ -56,34 +66,24 @@ const char *player_get_name(void *p)
     return call(p);
 }
 
-unsigned char base_object_get_type(void *base)
+int player_has_meta_data(void *base, const char *key)
 {
-    capi_base_object_get_type call = GET_FUNC(module, "BaseObject_GetType", capi_base_object_get_type);
-    return call(base);
+    return g_call_player_has_meta_data(base, key);
 }
 
-int base_object_has_meta_data(void *base, const char *key)
+MetaData player_get_meta_data(void *base, const char *key)
 {
-    capi_base_object_has_meta_data call = GET_FUNC(module, "BaseObject_HasMetaData", capi_base_object_has_meta_data);
-    return call(base, key);
+    return g_call_player_get_meta_data(base, key);
 }
 
-MetaData base_object_get_meta_data(void *base, const char *key)
+void player_set_meta_data(void *base, const char *key, void *val)
 {
-    capi_base_object_get_meta_data call = GET_FUNC(module, "BaseObject_GetMetaData", capi_base_object_get_meta_data);
-    return call(base, key);
+    g_call_player_set_meta_data(base, key, val);
 }
 
-void base_object_set_meta_data(void *base, const char *key, void *val)
+void player_delete_meta_data(void *base, const char *key)
 {
-    capi_base_object_set_meta_data call = GET_FUNC(module, "BaseObject_SetMetaData", capi_base_object_set_meta_data);
-    return call(base, key, val);
-}
-
-void base_object_delete_meta_data(void *base, const char *key)
-{
-    capi_base_object_delete_meta_data call = GET_FUNC(module, "BaseObject_DeleteMetaData", capi_base_object_delete_meta_data);
-    call(base, key);
+    g_call_player_delete_meta_data;
 }
 
 void *core_create_mvalue_bool(int val)
