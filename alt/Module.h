@@ -26,6 +26,13 @@ typedef struct metaData
     unsigned int Type;
 } MetaData;
 
+typedef struct pos
+{
+    float x;
+    float y;
+    float z;
+} Position;
+
 typedef void (*capi_log)(const char *message);
 
 typedef void (*capi_register_alt_event)(const char *resourceName, unsigned short eventType);
@@ -36,6 +43,12 @@ typedef MetaData (*capi_player_get_meta_data)(void *base, const char *key);
 typedef void (*capi_player_meta_data)(void *base, const char *key, void *val);
 typedef void (*capi_player_delete_meta_data)(void *base, const char *key);
 typedef void (*capi_player_set_meta_data)(void *base, const char *key, void *val);
+typedef Position (*capi_player_get_position)(void *player);
+typedef void (*capi_player_set_position)(void *player, float x, float y, float z);
+typedef long (*capi_player_get_dimension)(void *player);
+typedef void (*capi_player_set_dimension)(void *player, long dimension);
+typedef void (*capi_player_spawn)(void *player, float x, float y, float z, unsigned long delay);
+typedef void (*capi_player_set_model)(void *player, unsigned long model);
 
 typedef unsigned char (*capi_base_object_get_type)(void *base);
 
@@ -68,6 +81,12 @@ int player_has_meta_data(void *base, const char *key);
 MetaData player_get_meta_data(void *base, const char *key);
 void player_set_meta_data(void *base, const char *key, void *val);
 void player_delete_meta_data(void *base, const char *key);
+Position player_get_position(void *player);
+void player_set_position(void *player, float x, float y, float z);
+long player_get_dimension(void *player);
+void player_set_dimension(void *player, long);
+void player_spawn(void *player, float x, float y, float z, unsigned long delay);
+void player_set_model(void *player, unsigned long model);
 
 // MValue
 void *core_create_mvalue_bool(int value);

@@ -6,6 +6,12 @@ capi_player_has_meta_data g_call_player_has_meta_data;
 capi_player_get_meta_data g_call_player_get_meta_data;
 capi_player_set_meta_data g_call_player_set_meta_data;
 capi_player_delete_meta_data g_call_player_delete_meta_data;
+capi_player_get_position g_call_player_get_position;
+capi_player_set_position g_call_player_set_position;
+capi_player_get_dimension g_call_player_get_dimension;
+capi_player_set_dimension g_call_player_set_dimension;
+capi_player_spawn g_call_player_spawn;
+capi_player_set_model g_call_player_set_model;
 
 int load_module(const char *path)
 {
@@ -20,6 +26,12 @@ int load_module(const char *path)
     g_call_player_get_meta_data = GET_FUNC(module, "Player_GetMetaData", capi_player_get_meta_data);
     g_call_player_set_meta_data = GET_FUNC(module, "Player_SetMetaData", capi_player_set_meta_data);
     g_call_player_delete_meta_data = GET_FUNC(module, "Player_DeleteMetaData", capi_player_delete_meta_data);
+    g_call_player_get_position = GET_FUNC(module, "Player_GetPosition", capi_player_get_position);
+    g_call_player_set_position = GET_FUNC(module, "Player_SetPosition", capi_player_set_position);
+    g_call_player_get_dimension = GET_FUNC(module, "Player_GetDimension", capi_player_get_dimension);
+    g_call_player_set_dimension = GET_FUNC(module, "Player_SetDimension", capi_player_set_dimension);
+    g_call_player_spawn = GET_FUNC(module, "Player_Spawn", capi_player_spawn);
+    g_call_player_set_model = GET_FUNC(module, "Player_SetModel", capi_player_set_model);
 
     return 1;
 }
@@ -84,6 +96,36 @@ void player_set_meta_data(void *base, const char *key, void *val)
 void player_delete_meta_data(void *base, const char *key)
 {
     g_call_player_delete_meta_data(base, key);
+}
+
+Position player_get_position(void *player)
+{
+    return g_call_player_get_position(player);
+}
+
+void player_set_position(void *player, float x, float y, float z)
+{
+    g_call_player_set_position(player, x, y, z);
+}
+
+long player_get_dimension(void *player)
+{
+    return g_call_player_get_dimension(player);
+}
+
+void player_set_dimension(void *player, long dimension)
+{
+    g_call_player_set_dimension(player, dimension);
+}
+
+void player_spawn(void *player, float x, float y, float z, unsigned long delay)
+{
+    g_call_player_spawn(player, x, y, z, delay);
+}
+
+void player_set_model(void *player, unsigned long model)
+{
+    g_call_player_set_model(player, model);
 }
 
 void *core_create_mvalue_bool(int val)

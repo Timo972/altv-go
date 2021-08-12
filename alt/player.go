@@ -7,6 +7,7 @@ import "unsafe"
 
 type Player struct {
 	Entity
+	model uint32
 }
 
 func NewPlayer(p unsafe.Pointer) *Player {
@@ -18,7 +19,17 @@ func NewPlayer(p unsafe.Pointer) *Player {
 }
 
 func (p Player) Name() string {
-	str := C.player_get_name(p.Ptr)
+	return C.GoString(C.player_get_name(p.Ptr))
+}
 
-	return C.GoString(str)
+func (p Player) Model() uint32 {
+	return p.model
+}
+
+func (p Player) SetModel(model uint32) {
+	C.player_set_model(p.Ptr, C.ulong(model))
+}
+
+func (p Player) Spawn(pos Position, delayMs uint32) {
+	C.player_spawn(p.Ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z), C.ulong(delayMs))
 }
