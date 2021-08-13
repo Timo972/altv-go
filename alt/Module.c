@@ -50,8 +50,8 @@ capi_player_get_entity_aim_offset g_call_player_get_entity_aim_offset;
 capi_player_is_flashlight_active g_call_player_is_flashlight_active;
 capi_player_is_connected g_call_player_is_connected;
 capi_player_get_ping g_call_player_get_ping;
-capi_player_get_i_p g_call_player_get_i_p;
-capi_player_get_social_i_d g_call_player_get_social_i_d;
+capi_player_get_ip g_call_player_get_ip;
+capi_player_get_social_i_d g_call_player_get_social_id;
 capi_player_get_hwid_hash g_call_player_get_hwid_hash;
 capi_player_get_hwid_ex_hash g_call_player_get_hwid_ex_hash;
 capi_player_get_auth_token g_call_player_get_auth_token;
@@ -80,7 +80,7 @@ capi_player_detach g_call_player_detach;
 capi_player_attach_to_entity g_call_player_attach_to_entity;
 capi_player_set_visible g_call_player_set_visible;
 capi_player_get_visible g_call_player_get_visible;
-capi_player_get_i_d g_call_player_get_i_d;
+capi_player_get_id g_call_player_get_id;
 capi_player_get_network_owner g_call_player_get_network_owner;
 capi_player_set_network_owner g_call_player_set_network_owner;
 
@@ -145,8 +145,8 @@ int load_module(const char *path)
     g_call_player_is_flashlight_active = GET_FUNC(module, "Player_IsFlashlightActive", capi_player_is_flashlight_active);
     g_call_player_is_connected = GET_FUNC(module, "Player_IsConnected", capi_player_is_connected);
     g_call_player_get_ping = GET_FUNC(module, "Player_GetPing", capi_player_get_ping);
-    g_call_player_get_i_p = GET_FUNC(module, "Player_GetIP", capi_player_get_i_p);
-    g_call_player_get_social_i_d = GET_FUNC(module, "Player_GetSocialID", capi_player_get_social_i_d);
+    g_call_player_get_ip = GET_FUNC(module, "Player_GetIP", capi_player_get_ip);
+    g_call_player_get_social_id = GET_FUNC(module, "Player_GetSocialID", capi_player_get_social_id);
     g_call_player_get_hwid_hash = GET_FUNC(module, "Player_GetHwidHash", capi_player_get_hwid_hash);
     g_call_player_get_hwid_ex_hash = GET_FUNC(module, "Player_GetHwidExHash", capi_player_get_hwid_ex_hash);
     g_call_player_get_auth_token = GET_FUNC(module, "Player_GetAuthToken", capi_player_get_auth_token);
@@ -175,7 +175,7 @@ int load_module(const char *path)
     g_call_player_attach_to_entity = GET_FUNC(module, "Player_AttachToEntity", capi_player_attach_to_entity);
     g_call_player_set_visible = GET_FUNC(module, "Player_SetVisible", capi_player_set_visible);
     g_call_player_get_visible = GET_FUNC(module, "Player_GetVisible", capi_player_get_visible);
-    g_call_player_get_i_d = GET_FUNC(module, "Player_GetID", capi_player_get_i_d);
+    g_call_player_get_id = GET_FUNC(module, "Player_GetID", capi_player_get_id);
     g_call_player_get_network_owner = GET_FUNC(module, "Player_GetNetworkOwner", capi_player_get_network_owner);
     g_call_player_set_network_owner = GET_FUNC(module, "Player_SetNetworkOwner", capi_player_set_network_owner);
 
@@ -459,14 +459,14 @@ unsigned long player_get_ping(void *p)
     return g_call_player_get_ping(p);
 }
 
-const char* player_get_i_p(void *p)
+const char* player_get_ip(void *p)
 {
-    return g_call_player_get_i_p(p);
+    return g_call_player_get_ip(p);
 }
 
-unsigned long long player_get_social_i_d(void *p)
+unsigned long long player_get_social_id(void *p)
 {
-    return g_call_player_get_social_i_d(p);
+    return g_call_player_get_social_id(p);
 }
 
 unsigned long long player_get_hwid_hash(void *p)
@@ -609,9 +609,9 @@ bool player_get_visible(void *p)
     return g_call_player_get_visible(p);
 }
 
-unsigned long player_get_i_d(void *p)
+unsigned long player_get_id(void *p)
 {
-    return g_call_player_get_i_d(p);
+    return g_call_player_get_id(p);
 }
 
 void * player_get_network_owner(void *p)
