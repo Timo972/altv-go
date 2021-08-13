@@ -643,7 +643,7 @@ void player_set_health(void *p, unsigned int health)
     return g_call_player_set_health(p, health);
 }
 
-bool player_has_weapon_component(void *p, unsigned long weapon, unsigned long component)
+int player_has_weapon_component(void *p, unsigned long weapon, unsigned long component)
 {
     return g_call_player_has_weapon_component(p, weapon, component);
 }
@@ -663,32 +663,32 @@ unsigned long player_get_current_weapon(void *p)
     return g_call_player_get_current_weapon(p);
 }
 
-bool player_is_dead(void *p)
+int player_is_dead(void *p)
 {
     return g_call_player_is_dead(p);
 }
 
-bool player_is_jumping(void *p)
+int player_is_jumping(void *p)
 {
     return g_call_player_is_jumping(p);
 }
 
-bool player_is_in_ragdoll(void *p)
+int player_is_in_ragdoll(void *p)
 {
     return g_call_player_is_in_ragdoll(p);
 }
 
-bool player_is_aiming(void *p)
+int player_is_aiming(void *p)
 {
     return g_call_player_is_aiming(p);
 }
 
-bool player_is_shooting(void *p)
+int player_is_shooting(void *p)
 {
     return g_call_player_is_shooting(p);
 }
 
-bool player_is_reloading(void *p)
+int player_is_reloading(void *p)
 {
     return g_call_player_is_reloading(p);
 }
@@ -718,7 +718,7 @@ Rotation player_get_head_rotation(void *p)
     return g_call_player_get_head_rotation(p);
 }
 
-bool player_is_in_vehicle(void *p)
+int player_is_in_vehicle(void *p)
 {
     return g_call_player_is_in_vehicle(p);
 }
@@ -743,12 +743,12 @@ Position player_get_entity_aim_offset(void *p)
     return g_call_player_get_entity_aim_offset(p);
 }
 
-bool player_is_flashlight_active(void *p)
+int player_is_flashlight_active(void *p)
 {
     return g_call_player_is_flashlight_active(p);
 }
 
-bool player_is_connected(void *p)
+int player_is_connected(void *p)
 {
     return g_call_player_is_connected(p);
 }
@@ -818,7 +818,7 @@ void player_set_max_health(void *p, unsigned int health)
     return g_call_player_set_max_health(p, health);
 }
 
-void player_give_weapon(void *p, unsigned long weapon, long ammo, bool selectWeapon)
+void player_give_weapon(void *p, unsigned long weapon, long ammo, int selectWeapon)
 {
     return g_call_player_give_weapon(p, weapon, ammo, selectWeapon);
 }
@@ -873,7 +873,7 @@ void player_clear_props(void *p, unsigned int component)
     return g_call_player_clear_props(p, component);
 }
 
-bool player_is_entity_in_streaming_range(void *p, void *entity)
+int player_is_entity_in_streaming_range(void *p, void *entity)
 {
     return g_call_player_is_entity_in_streaming_range(p, entity);
 }
@@ -893,17 +893,17 @@ void player_detach(void *p)
     return g_call_player_detach(p);
 }
 
-void player_attach_to_entity(void *p, void *e, int otherBoneIndex, int myBoneIndex, Position position, Rotation rotation, bool collision, bool noFixedRotation)
+void player_attach_to_entity(void *p, void *e, int otherBoneIndex, int myBoneIndex, Position position, Rotation rotation, int collision, int noFixedRotation)
 {
     return g_call_player_attach_to_entity(p, e, otherBoneIndex, myBoneIndex, position, rotation, collision, noFixedRotation);
 }
 
-void player_set_visible(void *p, bool toggle)
+void player_set_visible(void *p, int toggle)
 {
     return g_call_player_set_visible(p, toggle);
 }
 
-bool player_get_visible(void *p)
+int player_get_visible(void *p)
 {
     return g_call_player_get_visible(p);
 }
@@ -918,7 +918,7 @@ void * player_get_network_owner(void *p)
     return g_call_player_get_network_owner(p);
 }
 
-void player_set_network_owner(void *p, void *owner, bool disableMigration)
+void player_set_network_owner(void *p, void *owner, int disableMigration)
 {
     return g_call_player_set_network_owner(p, owner, disableMigration);
 }
@@ -1029,17 +1029,17 @@ void vehicle_detach(void *v)
     return g_call_vehicle_detach(v);
 }
 
-void vehicle_attach_to_entity(void *v, void *e, int otherBoneIndex, int myBoneIndex, Position position, Rotation rotation, bool collision, bool noFixedRotation)
+void vehicle_attach_to_entity(void *v, void *e, int otherBoneIndex, int myBoneIndex, Position position, Rotation rotation, int collision, int noFixedRotation)
 {
     return g_call_vehicle_attach_to_entity(v, e, otherBoneIndex, myBoneIndex, position, rotation, collision, noFixedRotation);
 }
 
-void vehicle_set_visible(void *v, bool toggle)
+void vehicle_set_visible(void *v, int toggle)
 {
     return g_call_vehicle_set_visible(v, toggle);
 }
 
-bool vehicle_get_visible(void *v)
+int vehicle_get_visible(void *v)
 {
     return g_call_vehicle_get_visible(v);
 }
@@ -1049,7 +1049,7 @@ void * vehicle_get_network_owner(void *v)
     return g_call_vehicle_get_network_owner(v);
 }
 
-void vehicle_set_network_owner(void *v, void *owner, bool disableMigration)
+void vehicle_set_network_owner(void *v, void *owner, int disableMigration)
 {
     return g_call_vehicle_set_network_owner(v, owner, disableMigration);
 }
@@ -1059,7 +1059,7 @@ void * vehicle_get_driver(void *v)
     return g_call_vehicle_get_driver(v);
 }
 
-bool vehicle_is_destroyed(void *v)
+int vehicle_is_destroyed(void *v)
 {
     return g_call_vehicle_is_destroyed(v);
 }
@@ -1084,7 +1084,7 @@ unsigned long vehicle_get_mod_kit(void *v)
     return g_call_vehicle_get_mod_kit(v);
 }
 
-bool vehicle_is_primary_color_r_g_b(void *v)
+int vehicle_is_primary_color_r_g_b(void *v)
 {
     return g_call_vehicle_is_primary_color_r_g_b(v);
 }
@@ -1099,7 +1099,7 @@ RGBA vehicle_get_primary_color_r_g_b(void *v)
     return g_call_vehicle_get_primary_color_r_g_b(v);
 }
 
-bool vehicle_is_secondary_color_r_g_b(void *v)
+int vehicle_is_secondary_color_r_g_b(void *v)
 {
     return g_call_vehicle_is_secondary_color_r_g_b(v);
 }
@@ -1134,7 +1134,7 @@ unsigned long vehicle_get_dashboard_color(void *v)
     return g_call_vehicle_get_dashboard_color(v);
 }
 
-bool vehicle_is_tire_smoke_color_custom(void *v)
+int vehicle_is_tire_smoke_color_custom(void *v)
 {
     return g_call_vehicle_is_tire_smoke_color_custom(v);
 }
@@ -1159,7 +1159,7 @@ unsigned long vehicle_get_rear_wheel_variation(void *v)
     return g_call_vehicle_get_rear_wheel_variation(v);
 }
 
-bool vehicle_get_custom_tires(void *v)
+int vehicle_get_custom_tires(void *v)
 {
     return g_call_vehicle_get_custom_tires(v);
 }
@@ -1189,17 +1189,17 @@ unsigned long vehicle_get_dirt_level(void *v)
     return g_call_vehicle_get_dirt_level(v);
 }
 
-bool vehicle_is_extra_on(void *v, unsigned int extraID)
+int vehicle_is_extra_on(void *v, unsigned int extraID)
 {
     return g_call_vehicle_is_extra_on(v, extraID);
 }
 
-bool vehicle_is_neon_active(void *v)
+int vehicle_is_neon_active(void *v)
 {
     return g_call_vehicle_is_neon_active(v);
 }
 
-void vehicle_get_neon_active(void *v, bool *left, bool *right, bool *front, bool *back)
+void vehicle_get_neon_active(void *v, int *left, int *right, int *front, int *back)
 {
     return g_call_vehicle_get_neon_active(v, left, right, front, back);
 }
@@ -1219,12 +1219,12 @@ unsigned long vehicle_get_roof_livery(void *v)
     return g_call_vehicle_get_roof_livery(v);
 }
 
-bool vehicle_is_engine_on(void *v)
+int vehicle_is_engine_on(void *v)
 {
     return g_call_vehicle_is_engine_on(v);
 }
 
-bool vehicle_is_handbrake_active(void *v)
+int vehicle_is_handbrake_active(void *v)
 {
     return g_call_vehicle_is_handbrake_active(v);
 }
@@ -1239,7 +1239,7 @@ unsigned long vehicle_get_radio_station_index(void *v)
     return g_call_vehicle_get_radio_station_index(v);
 }
 
-bool vehicle_is_siren_active(void *v)
+int vehicle_is_siren_active(void *v)
 {
     return g_call_vehicle_is_siren_active(v);
 }
@@ -1254,17 +1254,17 @@ unsigned long vehicle_get_door_state(void *v, unsigned int doorId)
     return g_call_vehicle_get_door_state(v, doorId);
 }
 
-bool vehicle_is_window_opened(void *v, unsigned int windowId)
+int vehicle_is_window_opened(void *v, unsigned int windowId)
 {
     return g_call_vehicle_is_window_opened(v, windowId);
 }
 
-bool vehicle_is_daylight_on(void *v)
+int vehicle_is_daylight_on(void *v)
 {
     return g_call_vehicle_is_daylight_on(v);
 }
 
-bool vehicle_is_nightlight_on(void *v)
+int vehicle_is_nightlight_on(void *v)
 {
     return g_call_vehicle_is_nightlight_on(v);
 }
@@ -1274,7 +1274,7 @@ unsigned long vehicle_get_roof_state(void *v)
     return g_call_vehicle_get_roof_state(v);
 }
 
-bool vehicle_is_flamethrower_active(void *v)
+int vehicle_is_flamethrower_active(void *v)
 {
     return g_call_vehicle_is_flamethrower_active(v);
 }
@@ -1299,22 +1299,22 @@ unsigned long vehicle_get_wheels_count(void *v)
     return g_call_vehicle_get_wheels_count(v);
 }
 
-bool vehicle_is_wheel_burst(void *v, unsigned int wheelId)
+int vehicle_is_wheel_burst(void *v, unsigned int wheelId)
 {
     return g_call_vehicle_is_wheel_burst(v, wheelId);
 }
 
-bool vehicle_does_wheel_has_tire(void *v, unsigned int wheelId)
+int vehicle_does_wheel_has_tire(void *v, unsigned int wheelId)
 {
     return g_call_vehicle_does_wheel_has_tire(v, wheelId);
 }
 
-bool vehicle_is_wheel_detached(void *v, unsigned int wheelId)
+int vehicle_is_wheel_detached(void *v, unsigned int wheelId)
 {
     return g_call_vehicle_is_wheel_detached(v, wheelId);
 }
 
-bool vehicle_is_wheel_on_fire(void *v, unsigned int wheelId)
+int vehicle_is_wheel_on_fire(void *v, unsigned int wheelId)
 {
     return g_call_vehicle_is_wheel_on_fire(v, wheelId);
 }
@@ -1349,22 +1349,22 @@ unsigned long vehicle_get_part_bullet_holes(void *v, unsigned int partId)
     return g_call_vehicle_get_part_bullet_holes(v, partId);
 }
 
-bool vehicle_is_light_damaged(void *v, unsigned int lightId)
+int vehicle_is_light_damaged(void *v, unsigned int lightId)
 {
     return g_call_vehicle_is_light_damaged(v, lightId);
 }
 
-bool vehicle_is_window_damaged(void *v, unsigned int windowId)
+int vehicle_is_window_damaged(void *v, unsigned int windowId)
 {
     return g_call_vehicle_is_window_damaged(v, windowId);
 }
 
-bool vehicle_is_special_light_damaged(void *v, unsigned int specialLightId)
+int vehicle_is_special_light_damaged(void *v, unsigned int specialLightId)
 {
     return g_call_vehicle_is_special_light_damaged(v, specialLightId);
 }
 
-bool vehicle_has_armored_windows(void *v)
+int vehicle_has_armored_windows(void *v)
 {
     return g_call_vehicle_has_armored_windows(v);
 }
@@ -1384,12 +1384,12 @@ unsigned long vehicle_get_bumper_damage_level(void *v, unsigned int bumperId)
     return g_call_vehicle_get_bumper_damage_level(v, bumperId);
 }
 
-bool vehicle_is_manual_engine_control(void *v)
+int vehicle_is_manual_engine_control(void *v)
 {
     return g_call_vehicle_is_manual_engine_control(v);
 }
 
-void vehicle_toggle_extra(void *v, unsigned int extraID, bool state)
+void vehicle_toggle_extra(void *v, unsigned int extraID, int state)
 {
     return g_call_vehicle_toggle_extra(v, extraID, state);
 }
@@ -1399,12 +1399,12 @@ void vehicle_set_fixed(void *v)
     return g_call_vehicle_set_fixed(v);
 }
 
-bool vehicle_set_mod(void *v, unsigned int category, unsigned int id)
+int vehicle_set_mod(void *v, unsigned int category, unsigned int id)
 {
     return g_call_vehicle_set_mod(v, category, id);
 }
 
-bool vehicle_set_mod_kit(void *v, unsigned int id)
+int vehicle_set_mod_kit(void *v, unsigned int id)
 {
     return g_call_vehicle_set_mod_kit(v, id);
 }
@@ -1464,7 +1464,7 @@ void vehicle_set_rear_wheels(void *v, unsigned int variation)
     return g_call_vehicle_set_rear_wheels(v, variation);
 }
 
-void vehicle_set_custom_tires(void *v, bool state)
+void vehicle_set_custom_tires(void *v, int state)
 {
     return g_call_vehicle_set_custom_tires(v, state);
 }
@@ -1494,7 +1494,7 @@ void vehicle_set_dirt_level(void *v, unsigned int level)
     return g_call_vehicle_set_dirt_level(v, level);
 }
 
-void vehicle_set_neon_active(void *v, bool left, bool right, bool front, bool back)
+void vehicle_set_neon_active(void *v, int left, int right, int front, int back)
 {
     return g_call_vehicle_set_neon_active(v, left, right, front, back);
 }
@@ -1514,7 +1514,7 @@ void vehicle_set_roof_livery(void *v, unsigned int roofLivery)
     return g_call_vehicle_set_roof_livery(v, roofLivery);
 }
 
-void vehicle_set_engine_on(void *v, bool state)
+void vehicle_set_engine_on(void *v, int state)
 {
     return g_call_vehicle_set_engine_on(v, state);
 }
@@ -1529,7 +1529,7 @@ void vehicle_set_radio_station_index(void *v, unsigned int stationIndex)
     return g_call_vehicle_set_radio_station_index(v, stationIndex);
 }
 
-void vehicle_set_siren_active(void *v, bool state)
+void vehicle_set_siren_active(void *v, int state)
 {
     return g_call_vehicle_set_siren_active(v, state);
 }
@@ -1544,7 +1544,7 @@ void vehicle_set_door_state(void *v, unsigned int doorId, unsigned int state)
     return g_call_vehicle_set_door_state(v, doorId, state);
 }
 
-void vehicle_set_window_opened(void *v, unsigned int windowId, bool state)
+void vehicle_set_window_opened(void *v, unsigned int windowId, int state)
 {
     return g_call_vehicle_set_window_opened(v, windowId, state);
 }
@@ -1569,22 +1569,22 @@ void vehicle_set_petrol_tank_health(void *v, unsigned long health)
     return g_call_vehicle_set_petrol_tank_health(v, health);
 }
 
-void vehicle_set_wheel_burst(void *v, unsigned int wheelId, bool state)
+void vehicle_set_wheel_burst(void *v, unsigned int wheelId, int state)
 {
     return g_call_vehicle_set_wheel_burst(v, wheelId, state);
 }
 
-void vehicle_set_wheel_has_tire(void *v, unsigned int wheelId, bool state)
+void vehicle_set_wheel_has_tire(void *v, unsigned int wheelId, int state)
 {
     return g_call_vehicle_set_wheel_has_tire(v, wheelId, state);
 }
 
-void vehicle_set_wheel_detached(void *v, unsigned int wheelId, bool state)
+void vehicle_set_wheel_detached(void *v, unsigned int wheelId, int state)
 {
     return g_call_vehicle_set_wheel_detached(v, wheelId, state);
 }
 
-void vehicle_set_wheel_on_fire(void *v, unsigned int wheelId, bool state)
+void vehicle_set_wheel_on_fire(void *v, unsigned int wheelId, int state)
 {
     return g_call_vehicle_set_wheel_on_fire(v, wheelId, state);
 }
@@ -1619,17 +1619,17 @@ void vehicle_set_part_bullet_holes(void *v, unsigned int partId, unsigned int sh
     return g_call_vehicle_set_part_bullet_holes(v, partId, shootsCount);
 }
 
-void vehicle_set_light_damaged(void *v, unsigned int lightId, bool isDamaged)
+void vehicle_set_light_damaged(void *v, unsigned int lightId, int isDamaged)
 {
     return g_call_vehicle_set_light_damaged(v, lightId, isDamaged);
 }
 
-void vehicle_set_window_damaged(void *v, unsigned int windowId, bool isDamaged)
+void vehicle_set_window_damaged(void *v, unsigned int windowId, int isDamaged)
 {
     return g_call_vehicle_set_window_damaged(v, windowId, isDamaged);
 }
 
-void vehicle_set_special_light_damaged(void *v, unsigned int specialLightId, bool isDamaged)
+void vehicle_set_special_light_damaged(void *v, unsigned int specialLightId, int isDamaged)
 {
     return g_call_vehicle_set_special_light_damaged(v, specialLightId, isDamaged);
 }
@@ -1649,7 +1649,7 @@ void vehicle_set_bumper_damage_level(void *v, unsigned int bumperId, unsigned in
     return g_call_vehicle_set_bumper_damage_level(v, bumperId, damageLevel);
 }
 
-void vehicle_set_manual_engine_control(void *v, bool state)
+void vehicle_set_manual_engine_control(void *v, int state)
 {
     return g_call_vehicle_set_manual_engine_control(v, state);
 }
