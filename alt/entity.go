@@ -3,7 +3,11 @@ package alt
 // #include <stdlib.h>
 // #include "Module.h"
 import "C"
-import "unsafe"
+import (
+    "unsafe"
+
+    "github.com/shockdev04/altv-go-pkg/internal/module"
+)
 
 type Entity struct {
 	WorldObject
@@ -23,11 +27,11 @@ func (e Entity) AttachToEntity(entity Entity, otherBoneIndex int16, myBoneIndex 
 }
 
 func (e Entity) SetVisible(toggle bool) {
-	C.player_set_visible(e.Ptr, C.int(toggle))
+	   C.player_set_visible(e.Ptr, C.int(module.Bool2int(toggle)))
 }
 
 func (e Entity) IsVisible() bool {
-	return bool(C.player_get_visible(e.Ptr))
+	return int(C.player_get_visible(e.Ptr)) == 1
 }
 
 func (e Entity) GetID() uint16 {
@@ -41,7 +45,7 @@ func (e Entity) GetNetworkOwner() *Player {
 }
 
 func (e Entity) SetNetworkOwner(owner *Player, disableMigration bool) {
-	C.player_set_network_owner(e.Ptr, owner.Ptr, C.int(disableMigration))
+	C.player_set_network_owner(e.Ptr, owner.Ptr, C.int(module.Bool2int(disableMigration)))
 }
 
 func (e Entity) GetRotation() Rotation {
