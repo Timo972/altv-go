@@ -61,7 +61,6 @@ typedef void (*capi_player_spawn)(void *p, float x, float y, float z, unsigned l
 typedef void (*capi_player_despawn)(void *p);
 typedef void (*capi_player_set_model)(void *p, unsigned long model);
 typedef unsigned long (*capi_player_get_model)(void *p);
-<<<<<<< Updated upstream
 typedef unsigned int (*capi_player_get_health)(void *p);
 typedef void (*capi_player_set_health)(void *p, unsigned int health);
 typedef bool (*capi_player_has_weapon_component)(void *p, unsigned long weapon, unsigned long component);
@@ -76,32 +75,16 @@ typedef bool (*capi_player_is_shooting)(void *p);
 typedef bool (*capi_player_is_reloading)(void *p);
 typedef unsigned int (*capi_player_get_armour)(void *p);
 typedef void (*capi_player_set_armour)(void *p, unsigned int armour);
-=======
-typedef unsigned long (*capi_player_get_health)(void *p);
-typedef void (*capi_player_set_health)(void *p, unsigned long health);
-typedef int (*capi_player_has_weapon_component)(void *p, unsigned long weapon, unsigned long component);
-typedef unsigned long (*capi_player_get_weapon_tint_index)(void *p, unsigned long weapon);
-typedef unsigned long (*capi_player_get_current_weapon_tint_index)(void *p);
-typedef unsigned long (*capi_player_get_current_weapon)(void *p);
-typedef int (*capi_player_is_dead)(void *p);
-typedef int (*capi_player_is_jumping)(void *p);
-typedef int (*capi_player_is_in_ragdoll)(void *p);
-typedef int (*capi_player_is_aiming)(void *p);
-typedef int (*capi_player_is_shooting)(void *p);
-typedef int (*capi_player_is_reloading)(void *p);
-typedef unsigned long (*capi_player_get_armour)(void *p);
-typedef void (*capi_player_set_armour)(void *p, unsigned long armour);
->>>>>>> Stashed changes
 typedef float (*capi_player_get_move_speed)(void *p);
 typedef Position (*capi_player_get_aim_pos)(void *p);
 typedef Rotation (*capi_player_get_head_rotation)(void *p);
-typedef int (*capi_player_is_in_vehicle)(void *p);
+typedef bool (*capi_player_is_in_vehicle)(void *p);
 typedef void * (*capi_player_get_vehicle)(void *p);
 typedef unsigned int (*capi_player_get_seat)(void *p);
 typedef void * (*capi_player_get_entity_aiming_at)(void *p);
 typedef Position (*capi_player_get_entity_aim_offset)(void *p);
-typedef int (*capi_player_is_flashlight_active)(void *p);
-typedef int (*capi_player_is_connected)(void *p);
+typedef bool (*capi_player_is_flashlight_active)(void *p);
+typedef bool (*capi_player_is_connected)(void *p);
 typedef unsigned long (*capi_player_get_ping)(void *p);
 typedef const char* (*capi_player_get_ip)(void *p);
 typedef unsigned long long (*capi_player_get_social_id)(void *p);
@@ -114,19 +97,13 @@ typedef void (*capi_player_set_weapon_tint_index)(void *p, unsigned long weapon,
 typedef void (*capi_player_add_weapon_component)(void *p, unsigned long weapon, unsigned long component);
 typedef void (*capi_player_remove_weapon_component)(void *p, unsigned long weapon, unsigned long component);
 typedef void (*capi_player_clear_blood_damage)(void *p);
-<<<<<<< Updated upstream
 typedef void (*capi_player_set_max_health)(void *p, unsigned int health);
 typedef void (*capi_player_give_weapon)(void *p, unsigned long weapon, long ammo, bool selectWeapon);
-=======
-typedef void (*capi_player_set_max_health)(void *p, unsigned long health);
-typedef void (*capi_player_give_weapon)(void *p, unsigned long weapon, unsigned long ammo, int selectWeapon);
->>>>>>> Stashed changes
 typedef void (*capi_player_remove_weapon)(void *p, unsigned long weapon);
 typedef void (*capi_player_remove_all_weapons)(void *p);
 typedef void (*capi_player_set_date_time)(void *p, int day, int month, int year, int hour, int minute, int second);
 typedef void (*capi_player_set_weather)(void *p, unsigned long weather);
 typedef void (*capi_player_kick)(void *p, const char* reason);
-<<<<<<< Updated upstream
 typedef void (*capi_player_set_clothes)(void *p, unsigned int component, unsigned int drawable, unsigned int texture, unsigned int palette);
 typedef void (*capi_player_set_dlc_clothes)(void *p, unsigned int component, unsigned int drawable, unsigned int texture, unsigned int palette, unsigned long dlc);
 typedef void (*capi_player_set_props)(void *p, unsigned int component, unsigned int drawable, unsigned int texture);
@@ -140,23 +117,8 @@ typedef void (*capi_player_attach_to_entity)(void *p, void *e, int otherBoneInde
 typedef void (*capi_player_set_visible)(void *p, bool toggle);
 typedef bool (*capi_player_get_visible)(void *p);
 typedef unsigned long (*capi_player_get_id)(void *p);
-=======
-typedef void (*capi_player_set_clothes)(void *p, unsigned long component, unsigned long drawable, unsigned long texture, unsigned long palette);
-typedef void (*capi_player_set_dlc_clothes)(void *p, unsigned long component, unsigned long drawable, unsigned long texture, unsigned long palette, unsigned long dlc);
-typedef void (*capi_player_set_props)(void *p, unsigned long component, unsigned long drawable, unsigned long texture);
-typedef void (*capi_player_set_dlc_props)(void *p, unsigned long component, unsigned long drawable, unsigned long texture, unsigned long dlc);
-typedef void (*capi_player_clear_props)(void *p, unsigned long component);
-typedef int (*capi_player_is_entity_in_streaming_range)(void *p, void *entity);
-typedef unsigned long (*capi_player_get_max_health)(void *p);
-typedef unsigned long (*capi_player_get_max_armour)(void *p);
-typedef void (*capi_player_detach)(void *p);
-typedef void (*capi_player_attach_to_entity)(void *p, void *e, unsigned long otherBoneIndex, unsigned long myBoneIndex, Position position, Rotation rotation, int collision, int noFixedRotation);
-typedef void (*capi_player_set_visible)(void *p, int toggle);
-typedef int (*capi_player_get_visible)(void *p);
-typedef unsigned long (*capi_player_get_i_d)(void *p);
->>>>>>> Stashed changes
 typedef void * (*capi_player_get_network_owner)(void *p);
-typedef void (*capi_player_set_network_owner)(void *p, void *owner, int disableMigration);
+typedef void (*capi_player_set_network_owner)(void *p, void *owner, bool disableMigration);
 
 // Vehicle
 typedef int (*capi_vehicle_has_meta_data)(void* base, const char *key);
@@ -360,7 +322,6 @@ void player_spawn(void *p, float x, float y, float z, unsigned long delay);
 void player_despawn(void *p);
 void player_set_model(void *p, unsigned long model);
 unsigned long player_get_model(void *p);
-<<<<<<< Updated upstream
 unsigned int player_get_health(void *p);
 void player_set_health(void *p, unsigned int health);
 bool player_has_weapon_component(void *p, unsigned long weapon, unsigned long component);
@@ -375,32 +336,16 @@ bool player_is_shooting(void *p);
 bool player_is_reloading(void *p);
 unsigned int player_get_armour(void *p);
 void player_set_armour(void *p, unsigned int armour);
-=======
-unsigned long player_get_health(void *p);
-void player_set_health(void *p, unsigned long health);
-int player_has_weapon_component(void *p, unsigned long weapon, unsigned long component);
-unsigned long player_get_weapon_tint_index(void *p, unsigned long weapon);
-unsigned long player_get_current_weapon_tint_index(void *p);
-unsigned long player_get_current_weapon(void *p);
-int player_is_dead(void *p);
-int player_is_jumping(void *p);
-int player_is_in_ragdoll(void *p);
-int player_is_aiming(void *p);
-int player_is_shooting(void *p);
-int player_is_reloading(void *p);
-unsigned long player_get_armour(void *p);
-void player_set_armour(void *p, unsigned long armour);
->>>>>>> Stashed changes
 float player_get_move_speed(void *p);
 Position player_get_aim_pos(void *p);
 Rotation player_get_head_rotation(void *p);
-int player_is_in_vehicle(void *p);
+bool player_is_in_vehicle(void *p);
 void * player_get_vehicle(void *p);
 unsigned int player_get_seat(void *p);
 void * player_get_entity_aiming_at(void *p);
 Position player_get_entity_aim_offset(void *p);
-int player_is_flashlight_active(void *p);
-int player_is_connected(void *p);
+bool player_is_flashlight_active(void *p);
+bool player_is_connected(void *p);
 unsigned long player_get_ping(void *p);
 const char* player_get_ip(void *p);
 unsigned long long player_get_social_id(void *p);
@@ -413,19 +358,13 @@ void player_set_weapon_tint_index(void *p, unsigned long weapon, unsigned int ti
 void player_add_weapon_component(void *p, unsigned long weapon, unsigned long component);
 void player_remove_weapon_component(void *p, unsigned long weapon, unsigned long component);
 void player_clear_blood_damage(void *p);
-<<<<<<< Updated upstream
 void player_set_max_health(void *p, unsigned int health);
 void player_give_weapon(void *p, unsigned long weapon, long ammo, bool selectWeapon);
-=======
-void player_set_max_health(void *p, unsigned long health);
-void player_give_weapon(void *p, unsigned long weapon, unsigned long ammo, int selectWeapon);
->>>>>>> Stashed changes
 void player_remove_weapon(void *p, unsigned long weapon);
 void player_remove_all_weapons(void *p);
 void player_set_date_time(void *p, int day, int month, int year, int hour, int minute, int second);
 void player_set_weather(void *p, unsigned long weather);
 void player_kick(void *p, const char* reason);
-<<<<<<< Updated upstream
 void player_set_clothes(void *p, unsigned int component, unsigned int drawable, unsigned int texture, unsigned int palette);
 void player_set_dlc_clothes(void *p, unsigned int component, unsigned int drawable, unsigned int texture, unsigned int palette, unsigned long dlc);
 void player_set_props(void *p, unsigned int component, unsigned int drawable, unsigned int texture);
@@ -439,23 +378,8 @@ void player_attach_to_entity(void *p, void *e, int otherBoneIndex, int myBoneInd
 void player_set_visible(void *p, bool toggle);
 bool player_get_visible(void *p);
 unsigned long player_get_id(void *p);
-=======
-void player_set_clothes(void *p, unsigned long component, unsigned long drawable, unsigned long texture, unsigned long palette);
-void player_set_dlc_clothes(void *p, unsigned long component, unsigned long drawable, unsigned long texture, unsigned long palette, unsigned long dlc);
-void player_set_props(void *p, unsigned long component, unsigned long drawable, unsigned long texture);
-void player_set_dlc_props(void *p, unsigned long component, unsigned long drawable, unsigned long texture, unsigned long dlc);
-void player_clear_props(void *p, unsigned long component);
-int player_is_entity_in_streaming_range(void *p, void *entity);
-unsigned long player_get_max_health(void *p);
-unsigned long player_get_max_armour(void *p);
-void player_detach(void *p);
-void player_attach_to_entity(void *p, void *e, unsigned long otherBoneIndex, unsigned long myBoneIndex, Position position, Rotation rotation, int collision, int noFixedRotation);
-void player_set_visible(void *p, int toggle);
-int player_get_visible(void *p);
-unsigned long player_get_i_d(void *p);
->>>>>>> Stashed changes
 void * player_get_network_owner(void *p);
-void player_set_network_owner(void *p, void *owner, int disableMigration);
+void player_set_network_owner(void *p, void *owner, bool disableMigration);
 
 // Vehicle
 int vehicle_has_meta_data(void* base, const char *key);
