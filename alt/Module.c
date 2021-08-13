@@ -1,19 +1,12 @@
 #include "Module.h"
 
 Module module;
-
+// Player
+capi_player_get_name g_call_player_get_name;
 capi_player_has_meta_data g_call_player_has_meta_data;
 capi_player_get_meta_data g_call_player_get_meta_data;
 capi_player_set_meta_data g_call_player_set_meta_data;
 capi_player_delete_meta_data g_call_player_delete_meta_data;
-capi_player_get_position g_call_player_get_position;
-capi_player_set_position g_call_player_set_position;
-capi_player_get_dimension g_call_player_get_dimension;
-capi_player_set_dimension g_call_player_set_dimension;
-capi_player_spawn g_call_player_spawn;
-capi_player_set_model g_call_player_set_model;
-
-capi_player_get_name g_call_player_get_name;
 capi_player_has_synced_meta_data g_call_player_has_synced_meta_data;
 capi_player_get_synced_meta_data g_call_player_get_synced_meta_data;
 capi_player_set_synced_meta_data g_call_player_set_synced_meta_data;
@@ -22,9 +15,15 @@ capi_player_has_stream_synced_meta_data g_call_player_has_stream_synced_meta_dat
 capi_player_get_stream_synced_meta_data g_call_player_get_stream_synced_meta_data;
 capi_player_set_stream_synced_meta_data g_call_player_set_stream_synced_meta_data;
 capi_player_delete_stream_synced_meta_data g_call_player_delete_stream_synced_meta_data;
+capi_player_get_position g_call_player_get_position;
+capi_player_set_position g_call_player_set_position;
 capi_player_get_rotation g_call_player_get_rotation;
 capi_player_set_rotation g_call_player_set_rotation;
+capi_player_get_dimension g_call_player_get_dimension;
+capi_player_set_dimension g_call_player_set_dimension;
+capi_player_spawn g_call_player_spawn;
 capi_player_despawn g_call_player_despawn;
+capi_player_set_model g_call_player_set_model;
 capi_player_get_model g_call_player_get_model;
 capi_player_get_health g_call_player_get_health;
 capi_player_set_health g_call_player_set_health;
@@ -85,6 +84,7 @@ capi_player_get_i_d g_call_player_get_i_d;
 capi_player_get_network_owner g_call_player_get_network_owner;
 capi_player_set_network_owner g_call_player_set_network_owner;
 
+// Vehicle
 capi_core_create_vehicle g_call_core_create_vehicle;
 
 int load_module(const char *path)
@@ -96,18 +96,7 @@ int load_module(const char *path)
         return 0;
     }
 
-    g_call_player_has_meta_data = GET_FUNC(module, "Player_HasMetaData", capi_player_has_meta_data);
-    g_call_player_get_meta_data = GET_FUNC(module, "Player_GetMetaData", capi_player_get_meta_data);
-    g_call_player_set_meta_data = GET_FUNC(module, "Player_SetMetaData", capi_player_set_meta_data);
-    g_call_player_delete_meta_data = GET_FUNC(module, "Player_DeleteMetaData", capi_player_delete_meta_data);
-    g_call_player_get_position = GET_FUNC(module, "Player_GetPosition", capi_player_get_position);
-    g_call_player_set_position = GET_FUNC(module, "Player_SetPosition", capi_player_set_position);
-    g_call_player_get_dimension = GET_FUNC(module, "Player_GetDimension", capi_player_get_dimension);
-    g_call_player_set_dimension = GET_FUNC(module, "Player_SetDimension", capi_player_set_dimension);
-    g_call_player_spawn = GET_FUNC(module, "Player_Spawn", capi_player_spawn);
-    g_call_player_set_model = GET_FUNC(module, "Player_SetModel", capi_player_set_model);
-    g_call_core_create_vehicle = GET_FUNC(module, "Core_CreateVehicle", capi_core_create_vehicle);
-
+    // Player
     g_call_player_get_name = GET_FUNC(module, "Player_GetName", capi_player_get_name);
     g_call_player_has_meta_data = GET_FUNC(module, "Player_HasMetaData", capi_player_has_meta_data);
     g_call_player_get_meta_data = GET_FUNC(module, "Player_GetMetaData", capi_player_get_meta_data);
@@ -192,7 +181,7 @@ int load_module(const char *path)
 
     return 1;
 }
-
+// Core
 void register_alt_event(const char *resourceName, unsigned short eventType)
 {
     capi_register_alt_event call = GET_FUNC(module, "RegisterAltEvent", capi_register_alt_event);
@@ -229,29 +218,30 @@ void core_log_colored(const char *message)
     call(message);
 }
 
-const char *player_get_name(void *p)
+// Player
+const char * player_get_name(void *p)
 {
     return g_call_player_get_name(p);
 }
 
-int player_has_meta_data(void *base, const char *key)
+int player_has_meta_data(void* base, const char *key)
 {
     return g_call_player_has_meta_data(base, key);
 }
 
-MetaData player_get_meta_data(void *base, const char *key)
+MetaData player_get_meta_data(void* base, const char *key)
 {
     return g_call_player_get_meta_data(base, key);
 }
 
 void player_set_meta_data(void *base, const char *key, void *val)
 {
-    g_call_player_set_meta_data(base, key, val);
+    return g_call_player_set_meta_data(base, key, val);
 }
 
 void player_delete_meta_data(void *base, const char *key)
 {
-    g_call_player_delete_meta_data(base, key);
+    return g_call_player_delete_meta_data(base, key);
 }
 
 int player_has_synced_meta_data(void* base, const char *key)
@@ -294,14 +284,14 @@ void player_delete_stream_synced_meta_data(void *base, const char *key)
     return g_call_player_delete_stream_synced_meta_data(base, key);
 }
 
-Position player_get_position(void *player)
+Position player_get_position(void *p)
 {
-    return g_call_player_get_position(player);
+    return g_call_player_get_position(p);
 }
 
-void player_set_position(void *player, float x, float y, float z)
+void player_set_position(void* p, float x, float y, float z)
 {
-    g_call_player_set_position(player, x, y, z);
+    return g_call_player_set_position(p, x, y, z);
 }
 
 Rotation player_get_rotation(void *p)
@@ -314,19 +304,19 @@ void player_set_rotation(void *p, float roll, float pitch, float yaw)
     return g_call_player_set_rotation(p, roll, pitch, yaw);
 }
 
-long player_get_dimension(void *player)
+long player_get_dimension(void* p)
 {
-    return g_call_player_get_dimension(player);
+    return g_call_player_get_dimension(p);
 }
 
-void player_set_dimension(void *player, long dimension)
+void player_set_dimension(void* p, long dimension)
 {
-    g_call_player_set_dimension(player, dimension);
+    return g_call_player_set_dimension(p, dimension);
 }
 
-void player_spawn(void *player, float x, float y, float z, unsigned long delay)
+void player_spawn(void *p, float x, float y, float z, unsigned long delay)
 {
-    g_call_player_spawn(player, x, y, z, delay);
+    return g_call_player_spawn(p, x, y, z, delay);
 }
 
 void player_despawn(void *p)
@@ -334,17 +324,22 @@ void player_despawn(void *p)
     return g_call_player_despawn(p);
 }
 
+void player_set_model(void *p, unsigned long model)
+{
+    return g_call_player_set_model(p, model);
+}
+
 unsigned long player_get_model(void *p)
 {
     return g_call_player_get_model(p);
 }
 
-unsigned long player_get_health(void *p)
+unsigned int player_get_health(void *p)
 {
     return g_call_player_get_health(p);
 }
 
-void player_set_health(void *p, unsigned long health)
+void player_set_health(void *p, unsigned int health)
 {
     return g_call_player_set_health(p, health);
 }
@@ -354,12 +349,12 @@ bool player_has_weapon_component(void *p, unsigned long weapon, unsigned long co
     return g_call_player_has_weapon_component(p, weapon, component);
 }
 
-unsigned long player_get_weapon_tint_index(void *p, unsigned long weapon)
+unsigned int player_get_weapon_tint_index(void *p, unsigned long weapon)
 {
     return g_call_player_get_weapon_tint_index(p, weapon);
 }
 
-unsigned long player_get_current_weapon_tint_index(void *p)
+unsigned int player_get_current_weapon_tint_index(void *p)
 {
     return g_call_player_get_current_weapon_tint_index(p);
 }
@@ -399,12 +394,12 @@ bool player_is_reloading(void *p)
     return g_call_player_is_reloading(p);
 }
 
-unsigned long player_get_armour(void *p)
+unsigned int player_get_armour(void *p)
 {
     return g_call_player_get_armour(p);
 }
 
-void player_set_armour(void *p, unsigned long armour)
+void player_set_armour(void *p, unsigned int armour)
 {
     return g_call_player_set_armour(p, armour);
 }
@@ -434,7 +429,7 @@ void * player_get_vehicle(void *p)
     return g_call_player_get_vehicle(p);
 }
 
-unsigned long player_get_seat(void *p)
+unsigned int player_get_seat(void *p)
 {
     return g_call_player_get_seat(p);
 }
@@ -489,7 +484,7 @@ const char* player_get_auth_token(void *p)
     return g_call_player_get_auth_token(p);
 }
 
-void player_set_max_armour(void *p, unsigned long armour)
+void player_set_max_armour(void *p, unsigned int armour)
 {
     return g_call_player_set_max_armour(p, armour);
 }
@@ -499,7 +494,7 @@ void player_set_current_weapon(void *p, unsigned long weapon)
     return g_call_player_set_current_weapon(p, weapon);
 }
 
-void player_set_weapon_tint_index(void *p, unsigned long weapon, unsigned long tintIndex)
+void player_set_weapon_tint_index(void *p, unsigned long weapon, unsigned int tintIndex)
 {
     return g_call_player_set_weapon_tint_index(p, weapon, tintIndex);
 }
@@ -519,12 +514,12 @@ void player_clear_blood_damage(void *p)
     return g_call_player_clear_blood_damage(p);
 }
 
-void player_set_max_health(void *p, unsigned long health)
+void player_set_max_health(void *p, unsigned int health)
 {
     return g_call_player_set_max_health(p, health);
 }
 
-void player_give_weapon(void *p, unsigned long weapon, unsigned long ammo, bool selectWeapon)
+void player_give_weapon(void *p, unsigned long weapon, long ammo, bool selectWeapon)
 {
     return g_call_player_give_weapon(p, weapon, ammo, selectWeapon);
 }
@@ -554,27 +549,27 @@ void player_kick(void *p, const char* reason)
     return g_call_player_kick(p, reason);
 }
 
-void player_set_clothes(void *p, unsigned long component, unsigned long drawable, unsigned long texture, unsigned long palette)
+void player_set_clothes(void *p, unsigned int component, unsigned int drawable, unsigned int texture, unsigned int palette)
 {
     return g_call_player_set_clothes(p, component, drawable, texture, palette);
 }
 
-void player_set_dlc_clothes(void *p, unsigned long component, unsigned long drawable, unsigned long texture, unsigned long palette, unsigned long dlc)
+void player_set_dlc_clothes(void *p, unsigned int component, unsigned int drawable, unsigned int texture, unsigned int palette, unsigned long dlc)
 {
     return g_call_player_set_dlc_clothes(p, component, drawable, texture, palette, dlc);
 }
 
-void player_set_props(void *p, unsigned long component, unsigned long drawable, unsigned long texture)
+void player_set_props(void *p, unsigned int component, unsigned int drawable, unsigned int texture)
 {
     return g_call_player_set_props(p, component, drawable, texture);
 }
 
-void player_set_dlc_props(void *p, unsigned long component, unsigned long drawable, unsigned long texture, unsigned long dlc)
+void player_set_dlc_props(void *p, unsigned int component, unsigned int drawable, unsigned int texture, unsigned long dlc)
 {
     return g_call_player_set_dlc_props(p, component, drawable, texture, dlc);
 }
 
-void player_clear_props(void *p, unsigned long component)
+void player_clear_props(void *p, unsigned int component)
 {
     return g_call_player_clear_props(p, component);
 }
@@ -584,12 +579,12 @@ bool player_is_entity_in_streaming_range(void *p, void *entity)
     return g_call_player_is_entity_in_streaming_range(p, entity);
 }
 
-unsigned long player_get_max_health(void *p)
+unsigned int player_get_max_health(void *p)
 {
     return g_call_player_get_max_health(p);
 }
 
-unsigned long player_get_max_armour(void *p)
+unsigned int player_get_max_armour(void *p)
 {
     return g_call_player_get_max_armour(p);
 }
@@ -599,7 +594,7 @@ void player_detach(void *p)
     return g_call_player_detach(p);
 }
 
-void player_attach_to_entity(void *p, void *e, unsigned long otherBoneIndex, unsigned long myBoneIndex, Position position, Rotation rotation, bool collision, bool noFixedRotation)
+void player_attach_to_entity(void *p, void *e, int otherBoneIndex, int myBoneIndex, Position position, Rotation rotation, bool collision, bool noFixedRotation)
 {
     return g_call_player_attach_to_entity(p, e, otherBoneIndex, myBoneIndex, position, rotation, collision, noFixedRotation);
 }
@@ -629,13 +624,7 @@ void player_set_network_owner(void *p, void *owner, bool disableMigration)
     return g_call_player_set_network_owner(p, owner, disableMigration);
 }
 
-void player_set_model(void *player, unsigned long model)
-{
-    g_call_player_set_model(player, model);
-}
-
-
-
+// Core
 void *core_create_mvalue_bool(int val)
 {
     capi_core_create_mvalue_bool call = GET_FUNC(module, "Core_CreateMValueBool", capi_core_create_mvalue_bool);
