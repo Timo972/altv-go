@@ -1,4 +1,7 @@
 package alt
+
+// #include <stdlib.h>
+// #include "Module.h"
 import "C"
 import "unsafe"
 
@@ -20,7 +23,7 @@ func (e Entity) AttachToEntity(entity Entity, otherBoneIndex int16, myBoneIndex 
 }
 
 func (e Entity) SetVisible(toggle bool) {
-	C.player_set_visible(e.Ptr, C.bool(toggle))
+	C.player_set_visible(e.Ptr, C.int(toggle))
 }
 
 func (e Entity) IsVisible() bool {
