@@ -216,6 +216,26 @@ func (p Player) Kick(reason string) {
 	C.player_kick(p.Ptr, cStr)
 }
 
+func (p Player) GetClothes(component uint8) Cloth {
+	cCloth := C.player_get_clothes(p.Ptr, C.uint(component))
+	return Cloth{DrawableId: uint16(cCloth.drawableId), TextureId: uint8(cCloth.textureId), PaletteId: uint8(cCloth.paletteId)}
+}
+
+func (p Player) GetDlcClothes(component uint8) DlcCloth {
+	cCloth := C.player_get_clothes(p.Ptr, C.uint(component))
+	return DlcCloth{DrawableId: uint16(cCloth.drawableId), TextureId: uint8(cCloth.textureId), PaletteId: uint8(cCloth.paletteId), Dlc: uint32(cCloth.dlc)}
+}
+
+func (p Player) GetProps(component uint8) Prop {
+	cCloth := C.player_get_clothes(p.Ptr, C.uint(component))
+	return Prop{DrawableId: uint16(cCloth.drawableId), TextureId: uint8(cCloth.textureId)}
+}
+
+func (p Player) GetDlcProps(component uint8) DlcProp {
+	cCloth := C.player_get_clothes(p.Ptr, C.uint(component))
+	return DlcProp{DrawableId: uint16(cCloth.drawableId), TextureId: uint8(cCloth.textureId), Dlc: uint32(cCloth.dlc)}
+}
+
 func (p Player) SetClothes(component uint8, drawable uint16, texture uint8, palette uint8) {
 	C.player_set_clothes(p.Ptr, C.uint(component), C.uint(drawable), C.uint(texture), C.uint(palette))
 }
