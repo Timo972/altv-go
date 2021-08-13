@@ -41,7 +41,7 @@ func (e Entity) GetNetworkOwner() *Player {
 }
 
 func (e Entity) SetNetworkOwner(owner *Player, disableMigration bool) {
-	C.player_set_network_owner(e.Ptr, owner.Ptr, C.bool(disableMigration))
+	C.player_set_network_owner(e.Ptr, owner.Ptr, C.int(disableMigration))
 }
 
 func (e Entity) GetRotation() Rotation {

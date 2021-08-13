@@ -191,7 +191,7 @@ func (p Player) SetMaxHealth(maxHealth float32) {
 }
 
 func (p Player) GiveWeapon(weapon uint32, ammo int64, selectWeapon bool) {
-	C.player_give_weapon(p.Ptr, C.ulong(weapon), C.long(ammo), C.bool(selectWeapon))
+	C.player_give_weapon(p.Ptr, C.ulong(weapon), C.long(ammo), C.int(selectWeapon))
 }
 
 func (p Player) RemoveWeapon(weapon uint32) {
