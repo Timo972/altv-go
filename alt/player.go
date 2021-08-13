@@ -28,6 +28,7 @@ func (p Player) Model() uint32 {
 
 func (p Player) SetModel(model uint32) {
 	C.player_set_model(p.Ptr, C.ulong(model))
+	p.model = model
 }
 
 func (p Player) Spawn(pos Position, delayMs uint32) {
