@@ -643,7 +643,7 @@ void player_set_health(void *p, unsigned int health)
     return g_call_player_set_health(p, health);
 }
 
-bool player_has_weapon_component(void *p, unsigned long weapon, unsigned long component)
+int player_has_weapon_component(void *p, unsigned long weapon, unsigned long component)
 {
     return g_call_player_has_weapon_component(p, weapon, component);
 }
@@ -663,32 +663,32 @@ unsigned long player_get_current_weapon(void *p)
     return g_call_player_get_current_weapon(p);
 }
 
-bool player_is_dead(void *p)
+int player_is_dead(void *p)
 {
     return g_call_player_is_dead(p);
 }
 
-bool player_is_jumping(void *p)
+int player_is_jumping(void *p)
 {
     return g_call_player_is_jumping(p);
 }
 
-bool player_is_in_ragdoll(void *p)
+int player_is_in_ragdoll(void *p)
 {
     return g_call_player_is_in_ragdoll(p);
 }
 
-bool player_is_aiming(void *p)
+int player_is_aiming(void *p)
 {
     return g_call_player_is_aiming(p);
 }
 
-bool player_is_shooting(void *p)
+int player_is_shooting(void *p)
 {
     return g_call_player_is_shooting(p);
 }
 
-bool player_is_reloading(void *p)
+int player_is_reloading(void *p)
 {
     return g_call_player_is_reloading(p);
 }
@@ -718,7 +718,7 @@ Rotation player_get_head_rotation(void *p)
     return g_call_player_get_head_rotation(p);
 }
 
-bool player_is_in_vehicle(void *p)
+int player_is_in_vehicle(void *p)
 {
     return g_call_player_is_in_vehicle(p);
 }
@@ -743,12 +743,12 @@ Position player_get_entity_aim_offset(void *p)
     return g_call_player_get_entity_aim_offset(p);
 }
 
-bool player_is_flashlight_active(void *p)
+int player_is_flashlight_active(void *p)
 {
     return g_call_player_is_flashlight_active(p);
 }
 
-bool player_is_connected(void *p)
+int player_is_connected(void *p)
 {
     return g_call_player_is_connected(p);
 }
@@ -818,7 +818,11 @@ void player_set_max_health(void *p, unsigned int health)
     return g_call_player_set_max_health(p, health);
 }
 
+<<<<<<< Updated upstream
 void player_give_weapon(void *p, unsigned long weapon, long ammo, bool selectWeapon)
+=======
+void player_give_weapon(void *p, unsigned long weapon, unsigned long ammo, int selectWeapon)
+>>>>>>> Stashed changes
 {
     return g_call_player_give_weapon(p, weapon, ammo, selectWeapon);
 }
@@ -873,7 +877,7 @@ void player_clear_props(void *p, unsigned int component)
     return g_call_player_clear_props(p, component);
 }
 
-bool player_is_entity_in_streaming_range(void *p, void *entity)
+int player_is_entity_in_streaming_range(void *p, void *entity)
 {
     return g_call_player_is_entity_in_streaming_range(p, entity);
 }
@@ -893,17 +897,21 @@ void player_detach(void *p)
     return g_call_player_detach(p);
 }
 
+<<<<<<< Updated upstream
 void player_attach_to_entity(void *p, void *e, int otherBoneIndex, int myBoneIndex, Position position, Rotation rotation, bool collision, bool noFixedRotation)
+=======
+void player_attach_to_entity(void *p, void *e, unsigned long otherBoneIndex, unsigned long myBoneIndex, Position position, Rotation rotation, int collision, int noFixedRotation)
+>>>>>>> Stashed changes
 {
     return g_call_player_attach_to_entity(p, e, otherBoneIndex, myBoneIndex, position, rotation, collision, noFixedRotation);
 }
 
-void player_set_visible(void *p, bool toggle)
+void player_set_visible(void *p, int toggle)
 {
     return g_call_player_set_visible(p, toggle);
 }
 
-bool player_get_visible(void *p)
+int player_get_visible(void *p)
 {
     return g_call_player_get_visible(p);
 }
@@ -918,7 +926,7 @@ void * player_get_network_owner(void *p)
     return g_call_player_get_network_owner(p);
 }
 
-void player_set_network_owner(void *p, void *owner, bool disableMigration)
+void player_set_network_owner(void *p, void *owner, int disableMigration)
 {
     return g_call_player_set_network_owner(p, owner, disableMigration);
 }
