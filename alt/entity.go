@@ -40,3 +40,13 @@ func (e Entity) GetNetworkOwner() *Player {
 func (e Entity) SetNetworkOwner(owner *Player, disableMigration bool) {
 	C.player_set_network_owner(e.Ptr, owner.Ptr, C.bool(disableMigration))
 }
+
+func (e Entity) GetRotation() Rotation {
+	cRot := C.player_get_entity_aim_offset(e.Ptr)
+	return Rotation{X: float32(cRot.x), Y: float32(cRot.y), Z: float32(cRot.z)}
+}
+
+func (e Entity) SetRotation(rotation Rotation) {
+	C.player_set_rotation(e.Ptr, C.float(rotation.X), C.float(rotation.Y), C.float(rotation.Z))
+}
+

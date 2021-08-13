@@ -23,3 +23,9 @@ func CreateVehicle(model uint32, pos Position, rot Rotation) *Vehicle {
 
 	return NewVehicle(vehicle)
 }
+
+func (v Vehicle) GetDriver() *Player {
+	cPtr := C.vehicle_get_driver(v.Ptr)
+	player := NewPlayer(unsafe.Pointer(cPtr))
+	return player
+}
