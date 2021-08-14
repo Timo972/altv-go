@@ -2,7 +2,11 @@ package alt
 
 // #include "Module.h"
 import "C"
-import "unsafe"
+import (
+	"unsafe"
+
+	"github.com/shockdev04/altv-go-pkg/internal/module"
+)
 
 type eventType = uint16
 type playerConnectListener = func(p *Player)
@@ -86,11 +90,12 @@ func altPlayerConnectEvent(player unsafe.Pointer) {
 }
 
 //export altConsoleCommandEvent
-func altConsoleCommandEvent(name *C.char, args unsafe.Pointer) {
-	for _, event := range On.consoleCommandEvents {
+func altConsoleCommandEvent(cName *C.char, cArray **C.char, cSize C.ulonglong ) {
+	name := C.GoString(cName)
 
-		print(name)
-		print(args)
-		event(C.GoString(name), *goArgs)
+	args := module.MakeStringArray(cSize, cArray)
+
+	for _, event := range On.consoleCommandEvents {
+		event(name, args)
 	}
 }
