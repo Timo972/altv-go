@@ -51,6 +51,19 @@ func (p Player) HasWeaponComponent(weapon uint32, component uint32) bool {
 	return int(C.player_has_weapon_component(p.Ptr, C.ulong(weapon), C.ulong(component))) == 1
 }
 
+func (p Player) CurrentWeaponComponents() []uint32 {
+    cArr := C.player_get_current_weapon_components(p.Ptr)
+	println(cArr)
+    size := int(cArr.size)
+    ptr := cArr.ref
+	cInts := (*[1 << 28]C.uint)(unsafe.Pointer(ptr))[:size:size]
+	ints := make([]uint32, size)
+	for i, cInt := range cInts {
+		ints[i] = uint32(cInt)
+	}
+	return ints
+}
+
 func (p Player) WeaponTintIndex(weapon uint32) uint32 {
 	return uint32(C.player_get_weapon_tint_index(p.Ptr, C.ulong(weapon)))
 }
