@@ -28,6 +28,7 @@ capi_player_get_model g_call_player_get_model;
 capi_player_get_health g_call_player_get_health;
 capi_player_set_health g_call_player_set_health;
 capi_player_has_weapon_component g_call_player_has_weapon_component;
+capi_player_get_current_weapon_components g_call_player_get_current_weapon_components;
 capi_player_get_weapon_tint_index g_call_player_get_weapon_tint_index;
 capi_player_get_current_weapon_tint_index g_call_player_get_current_weapon_tint_index;
 capi_player_get_current_weapon g_call_player_get_current_weapon;
@@ -276,6 +277,7 @@ int load_module(const char *path)
     g_call_player_get_health = GET_FUNC(module, "Player_GetHealth", capi_player_get_health);
     g_call_player_set_health = GET_FUNC(module, "Player_SetHealth", capi_player_set_health);
     g_call_player_has_weapon_component = GET_FUNC(module, "Player_HasWeaponComponent", capi_player_has_weapon_component);
+    g_call_player_get_current_weapon_components = GET_FUNC(module, "Player_GetCurrentWeaponComponents", capi_player_get_current_weapon_components);
     g_call_player_get_weapon_tint_index = GET_FUNC(module, "Player_GetWeaponTintIndex", capi_player_get_weapon_tint_index);
     g_call_player_get_current_weapon_tint_index = GET_FUNC(module, "Player_GetCurrentWeaponTintIndex", capi_player_get_current_weapon_tint_index);
     g_call_player_get_current_weapon = GET_FUNC(module, "Player_GetCurrentWeapon", capi_player_get_current_weapon);
@@ -654,6 +656,11 @@ void player_set_health(void *p, unsigned int health)
 int player_has_weapon_component(void *p, unsigned long weapon, unsigned long component)
 {
     return g_call_player_has_weapon_component(p, weapon, component);
+}
+
+Array player_get_current_weapon_components(void *p)
+{
+    return g_call_player_get_current_weapon_components(p);
 }
 
 unsigned int player_get_weapon_tint_index(void *p, unsigned long weapon)
