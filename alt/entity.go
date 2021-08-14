@@ -13,6 +13,14 @@ type Entity struct {
 	WorldObject
 }
 
+func NewEntity(e unsafe.Pointer) *Entity {
+	entity := &Entity{}
+	entity.Ptr = e
+	//entity.Type = PlayerObject
+
+	return entity
+}
+
 func (e Entity) Model() uint32 {
 	return uint32(C.player_get_model(e.Ptr))
 }
