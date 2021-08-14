@@ -11,7 +11,6 @@ import (
 
 type Player struct {
 	Entity
-	model uint32
 }
 
 func NewPlayer(p unsafe.Pointer) *Player {
@@ -26,13 +25,8 @@ func (p Player) Name() string {
 	return C.GoString(C.player_get_name(p.Ptr))
 }
 
-func (p Player) Model() uint32 {
-	return p.model
-}
-
 func (p Player) SetModel(model uint32) {
 	C.player_set_model(p.Ptr, C.ulong(model))
-	p.model = model
 }
 
 func (p Player) Spawn(pos Position, delayMs uint32) {
@@ -123,7 +117,7 @@ func (p Player) Seat() uint8 {
 	return uint8(C.player_get_seat(p.Ptr))
 }
 
-// TODO make proper entity struct
+// EntityAimingAt TODO: make proper entity struct
 func (p Player) EntityAimingAt() *Entity {
 	//cPtr := C.player_get_entity_aiming_at(p.Ptr)
 	//entity := &Entity{Ptr:cPtr}
