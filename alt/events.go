@@ -7,13 +7,16 @@ import "unsafe"
 type eventType = uint16
 type playerConnectListener = func(p *Player)
 type playerDisconnectListener = func(p *Player)
+type consoleCommandListener = func(command string, args []string)
 
 type eventManager struct {
-	playerConnectEvents []playerConnectListener
+	playerConnectEvents  []playerConnectListener
+	consoleCommandEvents []consoleCommandListener
 }
 
 type listener interface {
 	PlayerConnect(listener playerConnectListener)
+	ConsoleCommand(listener consoleCommandListener)
 }
 
 const (
@@ -68,11 +71,26 @@ func (e eventManager) PlayerConnect(listener playerConnectListener) {
 	registerOnEvent(Resource.Name, playerConnect)
 }
 
+func (e eventManager) ConsoleCommand(listener consoleCommandListener) {
+	On.consoleCommandEvents = append(On.consoleCommandEvents, listener)
+	registerOnEvent(Resource.Name, consoleCommandEvent)
+}
+
 //export altPlayerConnectEvent
 func altPlayerConnectEvent(player unsafe.Pointer) {
 	for _, event := range On.playerConnectEvents {
 		player := NewPlayer(player)
 
 		event(player)
+	}
+}
+
+//export altConsoleCommandEvent
+func altConsoleCommandEvent(name *C.char, args unsafe.Pointer) {
+	for _, event := range On.consoleCommandEvents {
+
+		print(name)
+		print(args)
+		event(C.GoString(name), *goArgs)
 	}
 }
