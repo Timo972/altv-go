@@ -1,12 +1,19 @@
 package alt
+
+// #include <stdlib.h>
+// #include "Module.h"
 import "C"
-import "unsafe"
+import (
+    "unsafe"
+
+    "github.com/shockdev04/altv-go-pkg/internal/module"
+)
 
 type Entity struct {
 	WorldObject
 }
 
-func (e Entity) GetModel() uint32 {
+func (e Entity) Model() uint32 {
 	return uint32(C.player_get_model(e.Ptr))
 }
 
@@ -20,28 +27,28 @@ func (e Entity) AttachToEntity(entity Entity, otherBoneIndex int16, myBoneIndex 
 }
 
 func (e Entity) SetVisible(toggle bool) {
-	C.player_set_visible(e.Ptr, C.bool(toggle))
+	   C.player_set_visible(e.Ptr, C.int(module.Bool2int(toggle)))
 }
 
-func (e Entity) IsVisible() bool {
-	return bool(C.player_get_visible(e.Ptr))
+func (e Entity) Visible() bool {
+	return int(C.player_get_visible(e.Ptr)) == 1
 }
 
-func (e Entity) GetID() uint16 {
+func (e Entity) ID() uint16 {
 	return uint16(C.player_get_id(e.Ptr))
 }
 
-func (e Entity) GetNetworkOwner() *Player {
+func (e Entity) NetworkOwner() *Player {
 	cPtr := C.player_get_network_owner(e.Ptr)
 	owner := NewPlayer(unsafe.Pointer(cPtr))
 	return owner
 }
 
 func (e Entity) SetNetworkOwner(owner *Player, disableMigration bool) {
-	C.player_set_network_owner(e.Ptr, owner.Ptr, C.bool(disableMigration))
+	C.player_set_network_owner(e.Ptr, owner.Ptr, C.int(module.Bool2int(disableMigration)))
 }
 
-func (e Entity) GetRotation() Rotation {
+func (e Entity) Rotation() Rotation {
 	cRot := C.player_get_entity_aim_offset(e.Ptr)
 	return Rotation{X: float32(cRot.x), Y: float32(cRot.y), Z: float32(cRot.z)}
 }

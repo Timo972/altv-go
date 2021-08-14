@@ -68,6 +68,10 @@ capi_player_remove_all_weapons g_call_player_remove_all_weapons;
 capi_player_set_date_time g_call_player_set_date_time;
 capi_player_set_weather g_call_player_set_weather;
 capi_player_kick g_call_player_kick;
+capi_player_get_clothes g_call_player_get_clothes;
+capi_player_get_dlc_clothes g_call_player_get_dlc_clothes;
+capi_player_get_props g_call_player_get_props;
+capi_player_get_dlc_props g_call_player_get_dlc_props;
 capi_player_set_clothes g_call_player_set_clothes;
 capi_player_set_dlc_clothes g_call_player_set_dlc_clothes;
 capi_player_set_props g_call_player_set_props;
@@ -312,6 +316,10 @@ int load_module(const char *path)
     g_call_player_set_date_time = GET_FUNC(module, "Player_SetDateTime", capi_player_set_date_time);
     g_call_player_set_weather = GET_FUNC(module, "Player_SetWeather", capi_player_set_weather);
     g_call_player_kick = GET_FUNC(module, "Player_Kick", capi_player_kick);
+    g_call_player_get_clothes = GET_FUNC(module, "Player_GetClothes", capi_player_get_clothes);
+    g_call_player_get_dlc_clothes = GET_FUNC(module, "Player_GetDlcClothes", capi_player_get_dlc_clothes);
+    g_call_player_get_props = GET_FUNC(module, "Player_GetProps", capi_player_get_props);
+    g_call_player_get_dlc_props = GET_FUNC(module, "Player_GetDlcProps", capi_player_get_dlc_props);
     g_call_player_set_clothes = GET_FUNC(module, "Player_SetClothes", capi_player_set_clothes);
     g_call_player_set_dlc_clothes = GET_FUNC(module, "Player_SetDlcClothes", capi_player_set_dlc_clothes);
     g_call_player_set_props = GET_FUNC(module, "Player_SetProps", capi_player_set_props);
@@ -846,6 +854,26 @@ void player_set_weather(void *p, unsigned long weather)
 void player_kick(void *p, const char* reason)
 {
     return g_call_player_kick(p, reason);
+}
+
+Cloth player_get_clothes(void *p, unsigned int component)
+{
+    return g_call_player_get_clothes(p, component);
+}
+
+DlcCloth player_get_dlc_clothes(void *p, unsigned int component)
+{
+    return g_call_player_get_dlc_clothes(p, component);
+}
+
+Prop player_get_props(void *p, unsigned int component)
+{
+    return g_call_player_get_props(p, component);
+}
+
+DlcProp player_get_dlc_props(void *p, unsigned int component)
+{
+    return g_call_player_get_dlc_props(p, component);
 }
 
 void player_set_clothes(void *p, unsigned int component, unsigned int drawable, unsigned int texture, unsigned int palette)

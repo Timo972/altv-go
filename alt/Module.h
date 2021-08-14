@@ -46,6 +46,30 @@ typedef struct rgba {
     unsigned long a;
 } RGBA;
 
+typedef struct cloth {
+    unsigned int drawableId;
+    unsigned int textureId;
+    unsigned int paletteId;
+} Cloth;
+
+typedef struct dlcCloth {
+    unsigned long dlc;
+    unsigned int drawableId;
+    unsigned int textureId;
+    unsigned int paletteId;
+} DlcCloth;
+
+typedef struct prop {
+    unsigned int drawableId;
+    unsigned int textureId;
+} Prop;
+
+typedef struct dlcProp {
+    unsigned long dlc;
+    unsigned int drawableId;
+    unsigned int textureId;
+} DlcProp;
+
 typedef void (*capi_log)(const char *message);
 
 typedef void (*capi_register_alt_event)(const char *resourceName, unsigned short eventType);
@@ -117,6 +141,10 @@ typedef void (*capi_player_remove_all_weapons)(void *p);
 typedef void (*capi_player_set_date_time)(void *p, int day, int month, int year, int hour, int minute, int second);
 typedef void (*capi_player_set_weather)(void *p, unsigned long weather);
 typedef void (*capi_player_kick)(void *p, const char* reason);
+typedef Cloth (*capi_player_get_clothes)(void *p, unsigned int component);
+typedef DlcCloth (*capi_player_get_dlc_clothes)(void *p, unsigned int component);
+typedef Prop (*capi_player_get_props)(void *p, unsigned int component);
+typedef DlcProp (*capi_player_get_dlc_props)(void *p, unsigned int component);
 typedef void (*capi_player_set_clothes)(void *p, unsigned int component, unsigned int drawable, unsigned int texture, unsigned int palette);
 typedef void (*capi_player_set_dlc_clothes)(void *p, unsigned int component, unsigned int drawable, unsigned int texture, unsigned int palette, unsigned long dlc);
 typedef void (*capi_player_set_props)(void *p, unsigned int component, unsigned int drawable, unsigned int texture);
@@ -378,6 +406,10 @@ void player_remove_all_weapons(void *p);
 void player_set_date_time(void *p, int day, int month, int year, int hour, int minute, int second);
 void player_set_weather(void *p, unsigned long weather);
 void player_kick(void *p, const char* reason);
+Cloth player_get_clothes(void *p, unsigned int component);
+DlcCloth player_get_dlc_clothes(void *p, unsigned int component);
+Prop player_get_props(void *p, unsigned int component);
+DlcProp player_get_dlc_props(void *p, unsigned int component);
 void player_set_clothes(void *p, unsigned int component, unsigned int drawable, unsigned int texture, unsigned int palette);
 void player_set_dlc_clothes(void *p, unsigned int component, unsigned int drawable, unsigned int texture, unsigned int palette, unsigned long dlc);
 void player_set_props(void *p, unsigned int component, unsigned int drawable, unsigned int texture);
