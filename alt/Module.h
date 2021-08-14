@@ -72,7 +72,7 @@ typedef struct dlcProp {
 
 typedef struct array {
     unsigned long long size;
-    const unsigned int* array;
+    void* array;
 } Array;
 
 typedef void (*capi_log)(const char *message);

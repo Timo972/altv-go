@@ -59,8 +59,8 @@ func (p Player) CurrentWeaponComponents() []uint32 {
     	return []uint32{}
 	}
 
-    var cArr *C.uint = cArrStruct.array
-	cIntArray := (*[1 << 28]C.uint)(unsafe.Pointer(cArr))[:size:size]
+    var cArr unsafe.Pointer = cArrStruct.array
+	cIntArray := (*[1 << 28]C.uint)(cArr)[:size:size]
 	comps := make([]uint32, size)
 	for i, cInt := range cIntArray {
 		comps[i] = uint32(cInt)
