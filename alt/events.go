@@ -90,12 +90,19 @@ func altPlayerConnectEvent(player unsafe.Pointer) {
 }
 
 //export altConsoleCommandEvent
-func altConsoleCommandEvent(cName *C.char, cArray **C.char, cSize C.ulonglong ) {
+func altConsoleCommandEvent(cName *C.char, cArray **C.char, cSize C.ulonglong) {
 	name := C.GoString(cName)
 
-	args := module.MakeStringArray(cSize, cArray)
+	size := int(cSize)
+	cStrings := (*[1 << 28]*C.char)(unsafe.Pointer(cArray))[:size:size]
+
+	array := make([]string, size)
+
+	for i, cString := range cStrings {
+		array[i] = C.GoString(cString)
+	}
 
 	for _, event := range On.consoleCommandEvents {
-		event(name, args)
+		event(name, array)
 	}
 }
