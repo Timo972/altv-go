@@ -38,7 +38,7 @@ func (p Player) Spawn(pos Position, delayMs uint32) {
 	C.player_spawn(p.Ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z), C.ulong(delayMs))
 }
 
-func (p Player) GetHealth() float32 {
+func (p Player) Health() float32 {
 	return float32(C.player_get_health(p.Ptr))
 }
 
@@ -50,15 +50,15 @@ func (p Player) HasWeaponComponent(weapon uint32, component uint32) bool {
 	return int(C.player_has_weapon_component(p.Ptr, C.ulong(weapon), C.ulong(component))) == 1
 }
 
-func (p Player) GetWeaponTintIndex(weapon uint32) uint32 {
+func (p Player) WeaponTintIndex(weapon uint32) uint32 {
 	return uint32(C.player_get_weapon_tint_index(p.Ptr, C.ulong(weapon)))
 }
 
-func (p Player) GetCurrentWeaponTintIndex() uint32 {
+func (p Player) CurrentWeaponTintIndex() uint32 {
 	return uint32(C.player_get_current_weapon_tint_index(p.Ptr))
 }
 
-func (p Player) GetCurrentWeapon() uint32 {
+func (p Player) CurrentWeapon() uint32 {
 	return uint32(C.player_get_current_weapon(p.Ptr))
 }
 
@@ -86,7 +86,7 @@ func (p Player) IsReloading() bool {
 	return int(C.player_is_reloading(p.Ptr)) == 1
 }
 
-func (p Player) GetArmour() uint16 {
+func (p Player) Armour() uint16 {
 	return uint16(C.player_get_armour(p.Ptr))
 }
 
@@ -94,16 +94,16 @@ func (p Player) SetArmour(armour uint16) {
 	C.player_set_armour(p.Ptr, C.uint(armour))
 }
 
-func (p Player) GetMoveSpeed() float32 {
+func (p Player) MoveSpeed() float32 {
 	return float32(C.player_get_move_speed(p.Ptr))
 }
 
-func (p Player) GetAimPos() Position {
+func (p Player) AimPos() Position {
 	cPos := C.player_get_aim_pos(p.Ptr)
 	return Position{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
 }
 
-func (p Player) GetHeadRotation() Rotation {
+func (p Player) HeadRotation() Rotation {
 	cRot := C.player_get_head_rotation(p.Ptr)
 	return Rotation{X: float32(cRot.roll), Y: float32(cRot.pitch), Z: float32(cRot.yaw)}
 }
@@ -112,24 +112,24 @@ func (p Player) IsInVehicle() bool {
 	return int(C.player_is_in_vehicle(p.Ptr)) == 1
 }
 
-func (p Player) GetVehicle() *Vehicle {
+func (p Player) Vehicle() *Vehicle {
 	cPtr := C.player_get_vehicle(p.Ptr)
 	veh := NewVehicle(unsafe.Pointer(cPtr))
 	return veh
 }
 
-func (p Player) GetSeat() uint8 {
+func (p Player) Seat() uint8 {
 	return uint8(C.player_get_seat(p.Ptr))
 }
 
 // TODO make proper entity struct
-func (p Player) GetEntityAimingAt() *Entity {
+func (p Player) EntityAimingAt() *Entity {
 	//cPtr := C.player_get_entity_aiming_at(p.Ptr)
 	//entity := &Entity{Ptr:cPtr}
 	return nil
 }
 
-func (p Player) GetEntityAimOffset() Position {
+func (p Player) EntityAimOffset() Position {
 	cPos := C.player_get_entity_aim_offset(p.Ptr)
 	return Position{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
 }
@@ -142,27 +142,27 @@ func (p Player) IsConnected() bool {
 	return int(C.player_is_connected(p.Ptr)) == 1
 }
 
-func (p Player) GetPing() uint32 {
+func (p Player) Ping() uint32 {
 	return uint32(C.player_get_ping(p.Ptr))
 }
 
-func (p Player) GetIP() string {
+func (p Player) IP() string {
 	return C.GoString(C.player_get_ip(p.Ptr))
 }
 
-func (p Player) GetSocialID() uint64 {
+func (p Player) SocialID() uint64 {
 	return uint64(C.player_get_social_id(p.Ptr))
 }
 
-func (p Player) GetHwidHash() uint64 {
+func (p Player) HwidHash() uint64 {
 	return uint64(C.player_get_hwid_hash(p.Ptr))
 }
 
-func (p Player) GetHwidExHash() uint64 {
+func (p Player) HwidExHash() uint64 {
 	return uint64(C.player_get_hwid_ex_hash(p.Ptr))
 }
 
-func (p Player) GetAuthToken() string {
+func (p Player) AuthToken() string {
 	return C.GoString(C.player_get_auth_token(p.Ptr))
 }
 
@@ -220,22 +220,22 @@ func (p Player) Kick(reason string) {
 	C.player_kick(p.Ptr, cStr)
 }
 
-func (p Player) GetClothes(component uint8) Cloth {
+func (p Player) Clothes(component uint8) Cloth {
 	cCloth := C.player_get_clothes(p.Ptr, C.uint(component))
 	return Cloth{DrawableId: uint16(cCloth.drawableId), TextureId: uint8(cCloth.textureId), PaletteId: uint8(cCloth.paletteId)}
 }
 
-func (p Player) GetDlcClothes(component uint8) DlcCloth {
+func (p Player) DlcClothes(component uint8) DlcCloth {
 	cCloth := C.player_get_dlc_clothes(p.Ptr, C.uint(component))
 	return DlcCloth{DrawableId: uint16(cCloth.drawableId), TextureId: uint8(cCloth.textureId), PaletteId: uint8(cCloth.paletteId), Dlc: uint32(cCloth.dlc)}
 }
 
-func (p Player) GetProps(component uint8) Prop {
+func (p Player) Props(component uint8) Prop {
 	cCloth := C.player_get_props(p.Ptr, C.uint(component))
 	return Prop{DrawableId: uint16(cCloth.drawableId), TextureId: uint8(cCloth.textureId)}
 }
 
-func (p Player) GetDlcProps(component uint8) DlcProp {
+func (p Player) DlcProps(component uint8) DlcProp {
 	cCloth := C.player_get_dlc_props(p.Ptr, C.uint(component))
 	return DlcProp{DrawableId: uint16(cCloth.drawableId), TextureId: uint8(cCloth.textureId), Dlc: uint32(cCloth.dlc)}
 }
@@ -264,10 +264,10 @@ func (p Player) IsEntityInStreamingRange(entity Entity) bool {
 	return int(C.player_is_entity_in_streaming_range(p.Ptr, entity.Ptr)) == 1
 }
 
-func (p Player) GetMaxHealth() uint16 {
+func (p Player) MaxHealth() uint16 {
 	return uint16(C.player_get_max_health(p.Ptr))
 }
 
-func (p Player) GetMaxArmour() uint16 {
+func (p Player) MaxArmour() uint16 {
 	return uint16(C.player_get_max_armour(p.Ptr))
 }
