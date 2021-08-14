@@ -30,11 +30,11 @@ func (e Entity) SetVisible(toggle bool) {
 	   C.player_set_visible(e.Ptr, C.int(module.Bool2int(toggle)))
 }
 
-func (e Entity) IsVisible() bool {
+func (e Entity) Visible() bool {
 	return int(C.player_get_visible(e.Ptr)) == 1
 }
 
-func (e Entity) GetID() uint16 {
+func (e Entity) ID() uint16 {
 	return uint16(C.player_get_id(e.Ptr))
 }
 
