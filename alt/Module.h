@@ -70,6 +70,11 @@ typedef struct dlcProp {
     unsigned int textureId;
 } DlcProp;
 
+typedef struct array {
+    unsigned long long size;
+    void* array;
+} Array;
+
 typedef void (*capi_log)(const char *message);
 
 typedef void (*capi_register_alt_event)(const char *resourceName, unsigned short eventType);
@@ -101,6 +106,7 @@ typedef unsigned long (*capi_player_get_model)(void *p);
 typedef unsigned int (*capi_player_get_health)(void *p);
 typedef void (*capi_player_set_health)(void *p, unsigned int health);
 typedef int (*capi_player_has_weapon_component)(void *p, unsigned long weapon, unsigned long component);
+typedef Array (*capi_player_get_current_weapon_components)(void *p);
 typedef unsigned int (*capi_player_get_weapon_tint_index)(void *p, unsigned long weapon);
 typedef unsigned int (*capi_player_get_current_weapon_tint_index)(void *p);
 typedef unsigned long (*capi_player_get_current_weapon)(void *p);
@@ -366,6 +372,7 @@ unsigned long player_get_model(void *p);
 unsigned int player_get_health(void *p);
 void player_set_health(void *p, unsigned int health);
 int player_has_weapon_component(void *p, unsigned long weapon, unsigned long component);
+Array player_get_current_weapon_components(void *p);
 unsigned int player_get_weapon_tint_index(void *p, unsigned long weapon);
 unsigned int player_get_current_weapon_tint_index(void *p);
 unsigned long player_get_current_weapon(void *p);
