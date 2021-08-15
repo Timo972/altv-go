@@ -29,3 +29,9 @@ func (v Vehicle) GetDriver() *Player {
 	player := NewPlayer(unsafe.Pointer(cPtr))
 	return player
 }
+
+func (v Vehicle) IsDestroyed() bool {
+
+
+	return false
+}

@@ -29,7 +29,7 @@ func (e Entity) Detach() {
 	C.player_detach(e.Ptr)
 }
 
-// TODO make capi accept x, y, z instead of Position and Rotation
+// AttachToEntity TODO: make capi accept x, y, z instead of Position and Rotation
 func (e Entity) AttachToEntity(entity Entity, otherBoneIndex int16, myBoneIndex int16, position Position, rotation Rotation, collision bool, noFixedRotation bool) {
 	//C.player_attach_to_entity(p.Ptr, entity.Ptr, C.int(otherBoneIndex), C.int(myBoneIndex), )
 }
@@ -121,14 +121,14 @@ func (e Entity) GetStreamSyncedMetaData(key string) interface{} {
 	defer C.free(unsafe.Pointer(cKey))
 
 	if e.Type == PlayerObject {
-		meta := C.player.get_stream_synced_meta_data(e.Ptr, cKey)
+		meta := C.player_get_stream_synced_meta_data(e.Ptr, cKey)
 		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
 
 		return mValue.GetValue()
 	}
 
 	if e.Type == VehicleObject {
-		meta := C.vehicle.get_stream_synced_meta_data(e.Ptr, cKey)
+		meta := C.vehicle_get_stream_synced_meta_data(e.Ptr, cKey)
 		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
 
 		return mValue.GetValue()

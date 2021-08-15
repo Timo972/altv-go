@@ -199,6 +199,6 @@ func altExplosionEvent(player unsafe.Pointer, entity unsafe.Pointer, pos C.struc
 	for _, event := range On.explosionEvents {
 		player := NewPlayer(player)
 		entity := NewEntity(entity)
-		event(player, entity, Position{X:pos.x,Y:pos.y,Z:pos.z}, int16(explosionType), uint(explosionFX))
+		event(player, entity, Position{X: float32(pos.x), Y: float32(pos.y), Z: float32(pos.z)}, int16(explosionType), uint(explosionFX))
 	}
 }
