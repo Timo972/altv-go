@@ -371,7 +371,7 @@ void core_log_colored(const char *message);
 unsigned long core_hash(const char *str);
 int core_file_exists(const char *path);
 const char * core_read_file(const char *path);
-void * core_get_entity_by_id(unsigned short id);
+Entity core_get_entity_by_id(unsigned short id);
 int core_has_meta_data(const char *key);
 MetaData core_get_meta_data(const char *key);
 void core_set_meta_data(const char *key, void *val);
