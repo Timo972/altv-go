@@ -581,7 +581,7 @@ const char * core_read_file(const char *path)
     return g_call_core_read_file(path);
 }
 
-void * core_get_entity_by_id(unsigned short id)
+Entity core_get_entity_by_id(unsigned short id)
 {
     return g_call_core_get_entity_by_id(id);
 }
@@ -621,7 +621,7 @@ void core_destroy_base_object(void *h)
     return g_call_core_destroy_base_object(h);
 }
 
-void * core_start_resource(const char *name)
+int core_start_resource(const char *name)
 {
     return g_call_core_start_resource(name);
 }
@@ -631,7 +631,7 @@ void core_stop_resource(const char *name)
     return g_call_core_stop_resource(name);
 }
 
-void * core_restart_resource(const char *name)
+int core_restart_resource(const char *name)
 {
     return g_call_core_restart_resource(name);
 }

@@ -70,6 +70,11 @@ typedef struct dlcProp {
     unsigned int textureId;
 } DlcProp;
 
+typedef struct entity {
+    unsigned char Type;
+    const void *Ptr;
+} Entity;
+
 typedef struct array {
     unsigned long long size;
     void* array;
@@ -337,7 +342,7 @@ typedef void *(*capi_core_create_vehicle)(unsigned long model, float posX, float
 typedef unsigned long (*capi_core_hash)(const char *str);
 typedef int (*capi_core_file_exists)(const char *path);
 typedef const char * (*capi_core_read_file)(const char *path);
-typedef void * (*capi_core_get_entity_by_id)(unsigned short id);
+typedef Entity (*capi_core_get_entity_by_id)(unsigned short id);
 typedef int (*capi_core_has_meta_data)(const char *key);
 typedef MetaData (*capi_core_get_meta_data)(const char *key);
 typedef void (*capi_core_set_meta_data)(const char *key, void *val);
@@ -345,9 +350,9 @@ typedef void (*capi_core_delete_meta_data)(const char *key);
 typedef int (*capi_core_has_synced_meta)(const char *key);
 typedef MetaData (*capi_core_get_synced_meta)(const char *key);
 typedef void (*capi_core_destroy_base_object)(void *h);
-typedef void * (*capi_core_start_resource)(const char *name);
+typedef int (*capi_core_start_resource)(const char *name);
 typedef void (*capi_core_stop_resource)(const char *name);
-typedef void * (*capi_core_restart_resource)(const char *name);
+typedef int (*capi_core_restart_resource)(const char *name);
 typedef void (*capi_core_set_synced_meta_data)(const char *key, void *val);
 typedef void (*capi_core_delete_synced_meta_data)(const char *key);
 typedef Array (*capi_core_get_players_by_name)(const char *name);
@@ -374,9 +379,9 @@ void core_delete_meta_data(const char *key);
 int core_has_synced_meta(const char *key);
 MetaData core_get_synced_meta(const char *key);
 void core_destroy_base_object(void *h);
-void * core_start_resource(const char *name);
+int core_start_resource(const char *name);
 void core_stop_resource(const char *name);
-void * core_restart_resource(const char *name);
+int core_restart_resource(const char *name);
 void core_set_synced_meta_data(const char *key, void *val);
 void core_delete_synced_meta_data(const char *key);
 Array core_get_players_by_name(const char *name);
