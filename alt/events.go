@@ -4,8 +4,6 @@ package alt
 import "C"
 import (
 	"unsafe"
-
-	"github.com/shockdev04/altv-go-pkg/internal/module"
 )
 
 type eventType = uint16
@@ -20,22 +18,23 @@ type playerEnterVehicleListener = func(p *Player, v *Vehicle, seat uint8)
 type playerLeaveVehicleListener = func(p *Player, v *Vehicle, seat uint8)
 type removeEntityListener = func(entity *Entity)
 type resourceStartListener = func(resourceName string)
+
 // TODO bodyPart ENUM
 type weaponDamageListener = func(source *Player, target *Entity, weapon uint32, damage uint8, offset Position, bodyPart int8)
 
 type eventManager struct {
-	playerConnectEvents  []playerConnectListener
-	consoleCommandEvents []consoleCommandListener
-	playerDisconnectEvents []playerDisconnectListener
-	explosionEvents []explosionListener
+	playerConnectEvents           []playerConnectListener
+	consoleCommandEvents          []consoleCommandListener
+	playerDisconnectEvents        []playerDisconnectListener
+	explosionEvents               []explosionListener
 	playerChangeVehicleSeatEvents []playerChangeVehicleSeatListener
-	playerDamageEvents []playerDamageListener
-	playerDeathEvents []playerDeathListener
-	playerEnterVehicleEvents []playerEnterVehicleListener
-	playerLeaveVehicleEvents []playerLeaveVehicleListener
-	removeEntityEvents []removeEntityListener
-	resourceStartEvents []resourceStartListener
-	weaponDamageEvents []weaponDamageListener
+	playerDamageEvents            []playerDamageListener
+	playerDeathEvents             []playerDeathListener
+	playerEnterVehicleEvents      []playerEnterVehicleListener
+	playerLeaveVehicleEvents      []playerLeaveVehicleListener
+	removeEntityEvents            []removeEntityListener
+	resourceStartEvents           []resourceStartListener
+	weaponDamageEvents            []weaponDamageListener
 }
 
 type listener interface {
@@ -201,6 +200,6 @@ func altExplosionEvent(player unsafe.Pointer, entity unsafe.Pointer, pos C.struc
 	for _, event := range On.explosionEvents {
 		player := NewPlayer(player)
 		entity := NewEntity(entity)
-		event(player, entity, Position{X:pos.x,Y:pos.y,Z:pos.z}, int16(explosionType), uint(explosionFX))
+		event(player, entity, Position{X: float32(pos.x), Y: float32(pos.y), Z: float32(pos.z)}, int16(explosionType), uint(explosionFX))
 	}
 }

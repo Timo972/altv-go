@@ -258,7 +258,7 @@ capi_col_shape_get_position g_call_col_shape_get_position;
 capi_col_shape_set_position g_call_col_shape_set_position;
 capi_col_shape_get_dimension g_call_col_shape_get_dimension;
 capi_col_shape_set_dimension g_call_col_shape_set_dimension;
-capi_col_shape_get_col_col_shape_type g_call_col_shape_get_col_col_shape_type;
+capi_col_shape_get_col_shape_type g_call_col_shape_get_col_shape_type;
 capi_col_shape_is_entity_in g_call_col_shape_is_entity_in;
 capi_col_shape_is_point_in g_call_col_shape_is_point_in;
 capi_col_shape_set_players_only g_call_col_shape_set_players_only;
@@ -562,7 +562,7 @@ int load_module(const char *path)
     g_call_col_shape_set_position = GET_FUNC(module, "ColShape_SetPosition", capi_col_shape_set_position);
     g_call_col_shape_get_dimension = GET_FUNC(module, "ColShape_GetDimension", capi_col_shape_get_dimension);
     g_call_col_shape_set_dimension = GET_FUNC(module, "ColShape_SetDimension", capi_col_shape_set_dimension);
-    g_call_col_shape_get_col_col_shape_type = GET_FUNC(module, "ColShape_GetColShapeType", capi_col_shape_get_col_col_shape_type);
+    g_call_col_shape_get_col_shape_type = GET_FUNC(module, "ColShape_GetColShapeType", capi_col_shape_get_col_shape_type);
     g_call_col_shape_is_entity_in = GET_FUNC(module, "ColShape_IsEntityIn", capi_col_shape_is_entity_in);
     g_call_col_shape_is_point_in = GET_FUNC(module, "ColShape_IsPointIn", capi_col_shape_is_point_in);
     g_call_col_shape_set_players_only = GET_FUNC(module, "ColShape_SetPlayersOnly", capi_col_shape_set_players_only);
@@ -1976,9 +1976,9 @@ void col_shape_set_dimension(void* p, long dimension)
     return g_call_col_shape_set_dimension(p, dimension);
 }
 
-int col_shape_get_col_col_shape_type(void *c)
+int col_shape_get_col_shape_type(void *c)
 {
-    return g_call_col_shape_get_col_col_shape_type(c);
+    return g_call_col_shape_get_col_shape_type(c);
 }
 
 int col_shape_is_entity_in(void *c, void *e)
@@ -2123,67 +2123,67 @@ void checkpoint_set_next_position(void *c, float x, float y, float z)
 }
 
 // VoiceChannel
-int Voice channel_get_type(void *c)
+int voice_channel_get_type(void *c)
 {
     return g_call_channel_get_type(c);
 }
 
-int Voice channel_has_meta_data(void* base, const char *key)
+int voice_channel_has_meta_data(void* base, const char *key)
 {
     return g_call_channel_has_meta_data(base, key);
 }
 
-MetaData Voice channel_get_meta_data(void* base, const char *key)
+MetaData voice_channel_get_meta_data(void* base, const char *key)
 {
     return g_call_channel_get_meta_data(base, key);
 }
 
-void Voice channel_set_meta_data(void *base, const char *key, void *val)
+void voice_channel_set_meta_data(void *base, const char *key, void *val)
 {
     return g_call_channel_set_meta_data(base, key, val);
 }
 
-void Voice channel_delete_meta_data(void *base, const char *key)
+void voice_channel_delete_meta_data(void *base, const char *key)
 {
     return g_call_channel_delete_meta_data(base, key);
 }
 
-int Voice channel_is_spatial(void *v)
+int voice_channel_is_spatial(void *v)
 {
     return g_call_channel_is_spatial(v);
 }
 
-float Voice channel_get_max_distance(void *v)
+float voice_channel_get_max_distance(void *v)
 {
     return g_call_channel_get_max_distance(v);
 }
 
-int Voice channel_has_player(void *v, void *p)
+int voice_channel_has_player(void *v, void *p)
 {
     return g_call_channel_has_player(v, p);
 }
 
-void Voice channel_add_player(void *v, void *p)
+void voice_channel_add_player(void *v, void *p)
 {
     return g_call_channel_add_player(v, p);
 }
 
-void Voice channel_remove_player(void *v, void *p)
+void voice_channel_remove_player(void *v, void *p)
 {
     return g_call_channel_remove_player(v, p);
 }
 
-int Voice channel_is_player_muted(void *v, void *p)
+int voice_channel_is_player_muted(void *v, void *p)
 {
     return g_call_channel_is_player_muted(v, p);
 }
 
-void Voice channel_mute_player(void *v, void *p)
+void voice_channel_mute_player(void *v, void *p)
 {
     return g_call_channel_mute_player(v, p);
 }
 
-void Voice channel_unmute_player(void *v, void *p)
+void voice_channel_unmute_player(void *v, void *p)
 {
     return g_call_channel_unmute_player(v, p);
 }

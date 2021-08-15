@@ -4,9 +4,9 @@ package alt
 // #include "Module.h"
 import "C"
 import (
-    "unsafe"
+	"unsafe"
 
-    "github.com/shockdev04/altv-go-pkg/internal/module"
+	"github.com/shockdev04/altv-go-pkg/internal/module"
 )
 
 type Entity struct {
@@ -90,11 +90,11 @@ func (e Entity) SetNetworkOwner(owner *Player, disableMigration bool) {
 func (e Entity) Rotation() Rotation {
 	var cRot C.struct_rot
 	if e.Type == PlayerObject {
-		cRot = C.player_get_entity_aim_offset(e.Ptr)
+		cRot = C.player_get_rotation(e.Ptr)
 	} else if e.Type == VehicleObject {
-		cRot = C.vehicle_get_entity_aim_offset(e.Ptr)
+		cRot = C.vehicle_get_rotation(e.Ptr)
 	}
-	return Rotation{X: float32(cRot.x), Y: float32(cRot.y), Z: float32(cRot.z)}
+	return Rotation{X: float32(cRot.roll), Y: float32(cRot.pitch), Z: float32(cRot.yaw)}
 }
 
 func (e Entity) SetRotation(rotation Rotation) {
@@ -104,4 +104,3 @@ func (e Entity) SetRotation(rotation Rotation) {
 		C.vehicle_set_rotation(e.Ptr, C.float(rotation.X), C.float(rotation.Y), C.float(rotation.Z))
 	}
 }
-

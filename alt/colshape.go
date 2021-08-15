@@ -20,20 +20,20 @@ func NewColShape(c unsafe.Pointer) *ColShape {
 	return colShape
 }
 
-func CreateColShapeCircle(x float32, y float32, radius float32) *ColShape {
-	ptr := C.core_create_col_shape_circle(C.float(x), C.float(y), C.float(radius))
+func CreateColShapeCircle(x float32, y float32, z float32, radius float32) *ColShape {
+	ptr := C.core_create_col_shape_circle(C.float(x), C.float(y), C.float(z), C.float(radius))
 	return NewColShape(ptr)
 }
-func CreateColShapeCuboid(x1 float32, y1 float32, z1 float32, x2 float32, y2 float32, z2 float32) *ColShape {
-	ptr := C.core_create_col_shape_cuboid(C.float(x1), C.float(y1), C.float(z1), C.float(x2), C.float(y2), C.float(z2))
+func CreateColShapeCube(x1 float32, y1 float32, z1 float32, x2 float32, y2 float32, z2 float32) *ColShape {
+	ptr := C.core_create_col_shape_cube(C.float(x1), C.float(y1), C.float(z1), C.float(x2), C.float(y2), C.float(z2))
 	return NewColShape(ptr)
 }
 func CreateColShapeCylinder(x float32, y float32, z float32, radius float32, height float32) *ColShape {
 	ptr := C.core_create_col_shape_cylinder(C.float(x), C.float(y), C.float(z),C.float(radius), C.float(height))
 	return NewColShape(ptr)
 }
-func CreateColShapeRectangle(x1 float32, y1 float32, x2 float32, y2 float32) *ColShape {
-	ptr := C.core_create_col_shape_rectangle(C.float(x1), C.float(y1), C.float(x2), C.float(y2))
+func CreateColShapeRectangle(x1 float32, y1 float32, x2 float32, y2 float32, z float32) *ColShape {
+	ptr := C.core_create_col_shape_rectangle(C.float(x1), C.float(y1), C.float(x2), C.float(y2), C.float(z))
 	return NewColShape(ptr)
 }
 func CreateColShapeSphere(x float32, y float32, z float32, radius float32) *ColShape {
