@@ -248,6 +248,25 @@ capi_vehicle_set_manual_engine_control g_call_vehicle_set_manual_engine_control;
 capi_vehicle_get_attached g_call_vehicle_get_attached;
 capi_vehicle_get_attached_to g_call_vehicle_get_attached_to;
 
+capi_core_hash g_call_core_hash;
+capi_core_file_exists g_call_core_file_exists;
+capi_core_read_file g_call_core_read_file;
+capi_core_get_entity_by_id g_call_core_get_entity_by_id;
+capi_core_has_meta_data g_call_core_has_meta_data;
+capi_core_get_meta_data g_call_core_get_meta_data;
+capi_core_set_meta_data g_call_core_set_meta_data;
+capi_core_delete_meta_data g_call_core_delete_meta_data;
+capi_core_has_synced_meta_data g_call_core_has_synced_meta_data;
+capi_core_get_synced_meta_data g_call_core_get_synced_meta_data;
+capi_core_destroy_base_object g_call_core_destroy_base_object;
+capi_core_start_resource g_call_core_start_resource;
+capi_core_stop_resource g_call_core_stop_resource;
+capi_core_restart_resource g_call_core_restart_resource;
+capi_core_set_synced_meta_data g_call_core_set_synced_meta_data;
+capi_core_delete_synced_meta_data g_call_core_delete_synced_meta_data;
+capi_core_get_players_by_name g_call_core_get_players_by_name;
+capi_core_set_password g_call_core_set_password;
+
 // Colshape
 capi_col_shape_get_type g_call_col_shape_get_type;
 capi_col_shape_has_meta_data g_call_col_shape_has_meta_data;
@@ -552,6 +571,26 @@ int load_module(const char *path)
     g_call_vehicle_get_attached = GET_FUNC(module, "Vehicle_GetAttached", capi_vehicle_get_attached);
     g_call_vehicle_get_attached_to = GET_FUNC(module, "Vehicle_GetAttachedTo", capi_vehicle_get_attached_to);
 
+    // Core
+    g_call_core_hash = GET_FUNC(module, "Core_Hash", capi_core_hash);
+    g_call_core_file_exists = GET_FUNC(module, "Core_FileExists", capi_core_file_exists);
+    g_call_core_read_file = GET_FUNC(module, "Core_ReadFile", capi_core_read_file);
+    g_call_core_get_entity_by_id = GET_FUNC(module, "Core_GetEntityByID", capi_core_get_entity_by_id);
+    g_call_core_has_meta_data = GET_FUNC(module, "Core_HasMetaData", capi_core_has_meta_data);
+    g_call_core_get_meta_data = GET_FUNC(module, "Core_GetMetaData", capi_core_get_meta_data);
+    g_call_core_set_meta_data = GET_FUNC(module, "Core_SetMetaData", capi_core_set_meta_data);
+    g_call_core_delete_meta_data = GET_FUNC(module, "Core_DeleteMetaData", capi_core_delete_meta_data);
+    g_call_core_has_synced_meta_data = GET_FUNC(module, "Core_HasSyncedMetaData", capi_core_has_synced_meta_data);
+    g_call_core_get_synced_meta_data = GET_FUNC(module, "Core_GetSyncedMetaData", capi_core_get_synced_meta_data);
+    g_call_core_destroy_base_object = GET_FUNC(module, "Core_DestroyBaseObject", capi_core_destroy_base_object);
+    g_call_core_start_resource = GET_FUNC(module, "Core_StartResource", capi_core_start_resource);
+    g_call_core_stop_resource = GET_FUNC(module, "Core_StopResource", capi_core_stop_resource);
+    g_call_core_restart_resource = GET_FUNC(module, "Core_RestartResource", capi_core_restart_resource);
+    g_call_core_set_synced_meta_data = GET_FUNC(module, "Core_SetSyncedMetaData", capi_core_set_synced_meta_data);
+    g_call_core_delete_synced_meta_data = GET_FUNC(module, "Core_DeleteSyncedMetaData", capi_core_delete_synced_meta_data);
+    g_call_core_get_players_by_name = GET_FUNC(module, "Core_GetPlayersByName", capi_core_get_players_by_name);
+    g_call_core_set_password = GET_FUNC(module, "Core_SetPassword", capi_core_set_password);
+
     // ColShape
     g_call_col_shape_get_type = GET_FUNC(module, "ColShape_GetType", capi_col_shape_get_type);
     g_call_col_shape_has_meta_data = GET_FUNC(module, "ColShape_HasMetaData", capi_col_shape_has_meta_data);
@@ -654,6 +693,96 @@ void core_log_colored(const char *message)
 {
     capi_log call = GET_FUNC(module, "Core_LogColored", capi_log);
     call(message);
+}
+
+unsigned long core_hash(const char *str)
+{
+    return g_call_core_hash(str);
+}
+
+int core_file_exists(const char *path)
+{
+    return g_call_core_file_exists(path);
+}
+
+const char * core_read_file(const char *path)
+{
+    return g_call_core_read_file(path);
+}
+
+Entity core_get_entity_by_id(unsigned short id)
+{
+    return g_call_core_get_entity_by_id(id);
+}
+
+int core_has_meta_data(const char *key)
+{
+    return g_call_core_has_meta_data(key);
+}
+
+MetaData core_get_meta_data(const char *key)
+{
+    return g_call_core_get_meta_data(key);
+}
+
+void core_set_meta_data(const char *key, void *val)
+{
+    return g_call_core_set_meta_data(key, val);
+}
+
+void core_delete_meta_data(const char *key)
+{
+    return g_call_core_delete_meta_data(key);
+}
+
+int core_has_synced_meta_data(const char *key)
+{
+    return g_call_core_has_synced_meta_data(key);
+}
+
+MetaData core_get_synced_meta_data(const char *key)
+{
+    return g_call_core_get_synced_meta_data(key);
+}
+
+void core_destroy_base_object(void *h)
+{
+    return g_call_core_destroy_base_object(h);
+}
+
+int core_start_resource(const char *name)
+{
+    return g_call_core_start_resource(name);
+}
+
+void core_stop_resource(const char *name)
+{
+    return g_call_core_stop_resource(name);
+}
+
+int core_restart_resource(const char *name)
+{
+    return g_call_core_restart_resource(name);
+}
+
+void core_set_synced_meta_data(const char *key, void *val)
+{
+    return g_call_core_set_synced_meta_data(key, val);
+}
+
+void core_delete_synced_meta_data(const char *key)
+{
+    return g_call_core_delete_synced_meta_data(key);
+}
+
+Array core_get_players_by_name(const char *name)
+{
+    return g_call_core_get_players_by_name(name);
+}
+
+void core_set_password(const char *password)
+{
+    return g_call_core_set_password(password);
 }
 
 void *core_create_col_shape_cylinder(float posX, float posY, float posZ, float radius, float height)
