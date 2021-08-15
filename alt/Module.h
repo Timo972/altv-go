@@ -333,6 +333,27 @@ typedef const char *(*capi_core_get_mvalue_string)(void *val);
 
 typedef void *(*capi_core_create_vehicle)(unsigned long model, float posX, float posY, float posZ,
                                           float rotX, float rotY, float rotZ);
+typedef void *(*capi_core_create_col_shape_cylinder)(float posX, float posY, float posZ, float radius, float height);
+typedef void *(*capi_core_create_col_shape_cube)(float posX1, float posY1, float posZ1, float posX2, float posY2, float posZ2);
+typedef void *(*capi_core_create_col_shape_rectangle)(float x1, float y1, float x2, float y2, float z);
+typedef void *(*capi_core_create_col_shape_circle)(float posX, float posY, float posZ, float radius);
+typedef void *(*capi_core_create_col_shape_sphere)(float posX, float posY, float posZ, float radius);
+
+// Colshape
+typedef int (*capi_col_shape_get_type)(void *c);
+typedef int (*capi_col_shape_has_meta_data)(void* base, const char *key);
+typedef MetaData (*capi_col_shape_get_meta_data)(void* base, const char *key);
+typedef void (*capi_col_shape_set_meta_data)(void *base, const char *key, void *val);
+typedef void (*capi_col_shape_delete_meta_data)(void *base, const char *key);
+typedef Position (*capi_col_shape_get_position)(void *p);
+typedef void (*capi_col_shape_set_position)(void* p, float x, float y, float z);
+typedef long (*capi_col_shape_get_dimension)(void* p);
+typedef void (*capi_col_shape_set_dimension)(void* p, long dimension);
+typedef int (*capi_col_shape_get_col_col_shape_type)(void *c);
+typedef int (*capi_col_shape_is_entity_in)(void *c, void *e);
+typedef int (*capi_col_shape_is_point_in)(void *c, float x, float y, float z);
+typedef void (*capi_col_shape_set_players_only)(void *c, int state);
+typedef int (*capi_col_shape_is_players_only)(void *c);
 
 int load_module(const char *path);
 
@@ -598,5 +619,25 @@ const char *core_get_mvalue_string(void *val);
 
 void *core_create_vehicle(unsigned long model, float posX, float posY, float posZ,
                           float rotX, float rotY, float rotZ);
+void *core_create_col_shape_cylinder(float posX, float posY, float posZ, float radius, float height);
+void *core_create_col_shape_cube(float posX1, float posY1, float posZ1, float posX2, float posY2, float posZ2);
+void *core_create_col_shape_rectangle(float x1, float y1, float x2, float y2, float z);
+void *core_create_col_shape_circle(float posX, float posY, float posZ, float radius);
+void *core_create_col_shape_sphere(float posX, float posY, float posZ, float radius);
 
+// Colshape
+int col_shape_get_type(void *c);
+int col_shape_has_meta_data(void* base, const char *key);
+MetaData col_shape_get_meta_data(void* base, const char *key);
+void col_shape_set_meta_data(void *base, const char *key, void *val);
+void col_shape_delete_meta_data(void *base, const char *key);
+Position col_shape_get_position(void *p);
+void col_shape_set_position(void* p, float x, float y, float z);
+long col_shape_get_dimension(void* p);
+void col_shape_set_dimension(void* p, long dimension);
+int col_shape_get_col_col_shape_type(void *c);
+int col_shape_is_entity_in(void *c, void *e);
+int col_shape_is_point_in(void *c, float x, float y, float z);
+void col_shape_set_players_only(void *c, int state);
+int col_shape_is_players_only(void *c);
 #endif

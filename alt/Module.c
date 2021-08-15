@@ -91,6 +91,11 @@ capi_player_set_network_owner g_call_player_set_network_owner;
 
 // Vehicle
 capi_core_create_vehicle g_call_core_create_vehicle;
+capi_core_create_col_shape_cylinder g_call_core_create_col_shape_cylinder;
+capi_core_create_col_shape_cube g_call_core_create_col_shape_cube;
+capi_core_create_col_shape_rectangle g_call_core_create_col_shape_rectangle;
+capi_core_create_col_shape_circle g_call_core_create_col_shape_circle;
+capi_core_create_col_shape_sphere g_call_core_create_col_shape_sphere;
 
 capi_vehicle_has_meta_data g_call_vehicle_has_meta_data;
 capi_vehicle_get_meta_data g_call_vehicle_get_meta_data;
@@ -240,6 +245,22 @@ capi_vehicle_set_bumper_damage_level g_call_vehicle_set_bumper_damage_level;
 capi_vehicle_set_manual_engine_control g_call_vehicle_set_manual_engine_control;
 capi_vehicle_get_attached g_call_vehicle_get_attached;
 capi_vehicle_get_attached_to g_call_vehicle_get_attached_to;
+
+// Colshape
+capi_col_shape_get_type g_call_col_shape_get_type;
+capi_col_shape_has_meta_data g_call_col_shape_has_meta_data;
+capi_col_shape_get_meta_data g_call_col_shape_get_meta_data;
+capi_col_shape_set_meta_data g_call_col_shape_set_meta_data;
+capi_col_shape_delete_meta_data g_call_col_shape_delete_meta_data;
+capi_col_shape_get_position g_call_col_shape_get_position;
+capi_col_shape_set_position g_call_col_shape_set_position;
+capi_col_shape_get_dimension g_call_col_shape_get_dimension;
+capi_col_shape_set_dimension g_call_col_shape_set_dimension;
+capi_col_shape_get_col_col_shape_type g_call_col_shape_get_col_col_shape_type;
+capi_col_shape_is_entity_in g_call_col_shape_is_entity_in;
+capi_col_shape_is_point_in g_call_col_shape_is_point_in;
+capi_col_shape_set_players_only g_call_col_shape_set_players_only;
+capi_col_shape_is_players_only g_call_col_shape_is_players_only;
 
 int load_module(const char *path)
 {
@@ -488,6 +509,28 @@ int load_module(const char *path)
     g_call_vehicle_get_attached = GET_FUNC(module, "Vehicle_GetAttached", capi_vehicle_get_attached);
     g_call_vehicle_get_attached_to = GET_FUNC(module, "Vehicle_GetAttachedTo", capi_vehicle_get_attached_to);
 
+    // ColShape
+    g_call_col_shape_get_type = GET_FUNC(module, "ColShape_GetType", capi_col_shape_get_type);
+    g_call_col_shape_has_meta_data = GET_FUNC(module, "ColShape_HasMetaData", capi_col_shape_has_meta_data);
+    g_call_col_shape_get_meta_data = GET_FUNC(module, "ColShape_GetMetaData", capi_col_shape_get_meta_data);
+    g_call_col_shape_set_meta_data = GET_FUNC(module, "ColShape_SetMetaData", capi_col_shape_set_meta_data);
+    g_call_col_shape_delete_meta_data = GET_FUNC(module, "ColShape_DeleteMetaData", capi_col_shape_delete_meta_data);
+    g_call_col_shape_get_position = GET_FUNC(module, "ColShape_GetPosition", capi_col_shape_get_position);
+    g_call_col_shape_set_position = GET_FUNC(module, "ColShape_SetPosition", capi_col_shape_set_position);
+    g_call_col_shape_get_dimension = GET_FUNC(module, "ColShape_GetDimension", capi_col_shape_get_dimension);
+    g_call_col_shape_set_dimension = GET_FUNC(module, "ColShape_SetDimension", capi_col_shape_set_dimension);
+    g_call_col_shape_get_col_col_shape_type = GET_FUNC(module, "ColShape_GetColShapeType", capi_col_shape_get_col_col_shape_type);
+    g_call_col_shape_is_entity_in = GET_FUNC(module, "ColShape_IsEntityIn", capi_col_shape_is_entity_in);
+    g_call_col_shape_is_point_in = GET_FUNC(module, "ColShape_IsPointIn", capi_col_shape_is_point_in);
+    g_call_col_shape_set_players_only = GET_FUNC(module, "ColShape_SetPlayersOnly", capi_col_shape_set_players_only);
+    g_call_col_shape_is_players_only = GET_FUNC(module, "ColShape_IsPlayersOnly", capi_col_shape_is_players_only);
+
+    g_call_core_create_col_shape_cylinder = GET_FUNC(module, "Core_CreateColShapeCylinder", capi_core_create_col_shape_cylinder);
+    g_call_core_create_col_shape_cube = GET_FUNC(module, "Core_CreateColShapeCube", capi_core_create_col_shape_cube);
+    g_call_core_create_col_shape_rectangle = GET_FUNC(module, "Core_CreateColShapeRectangle", capi_core_create_col_shape_rectangle);
+    g_call_core_create_col_shape_circle = GET_FUNC(module, "Core_CreateColShapeCircle", capi_core_create_col_shape_circle);
+    g_call_core_create_col_shape_sphere = GET_FUNC(module, "Core_CreateColShapeSphere", capi_core_create_col_shape_sphere);
+
     return 1;
 }
 // Core
@@ -525,6 +568,31 @@ void core_log_colored(const char *message)
 {
     capi_log call = GET_FUNC(module, "Core_LogColored", capi_log);
     call(message);
+}
+
+void *core_create_col_shape_cylinder(float posX, float posY, float posZ, float radius, float height)
+{
+    g_call_core_create_col_shape_cylinder(posX, posY, posZ, radius, height);
+}
+
+void *core_create_col_shape_cube(float posX1, float posY1, float posZ1, float posX2, float posY2, float posZ2)
+{
+    g_call_core_create_col_shape_cube(posX1, posY1, posZ1, posX2, posY2, posZ2);
+}
+
+void *core_create_col_shape_rectangle(float x1, float y1, float x2, float y2, float z)
+{
+    g_call_core_create_col_shape_rectangle(x1, y1, x2, y2, z);
+}
+
+void *core_create_col_shape_circle(float posX, float posY, float posZ, float radius)
+{
+    g_call_core_create_col_shape_circle(posX, posY, posZ, radius);
+}
+
+void *core_create_col_shape_sphere(float posX, float posY, float posZ, float radius)
+{
+    g_call_core_create_col_shape_sphere(posX, posY, posZ, radius);
 }
 
 // Player
@@ -1764,4 +1832,75 @@ void *core_create_vehicle(unsigned long model, float posX, float posY, float pos
                           float rotX, float rotY, float rotZ)
 {
     g_call_core_create_vehicle(model, posX, posY, posZ, rotX, rotY, rotZ);
+}
+
+// ColShape
+int col_shape_get_type(void *c)
+{
+    return g_call_col_shape_get_type(c);
+}
+
+int col_shape_has_meta_data(void* base, const char *key)
+{
+    return g_call_col_shape_has_meta_data(base, key);
+}
+
+MetaData col_shape_get_meta_data(void* base, const char *key)
+{
+    return g_call_col_shape_get_meta_data(base, key);
+}
+
+void col_shape_set_meta_data(void *base, const char *key, void *val)
+{
+    return g_call_col_shape_set_meta_data(base, key, val);
+}
+
+void col_shape_delete_meta_data(void *base, const char *key)
+{
+    return g_call_col_shape_delete_meta_data(base, key);
+}
+
+Position col_shape_get_position(void *p)
+{
+    return g_call_col_shape_get_position(p);
+}
+
+void col_shape_set_position(void* p, float x, float y, float z)
+{
+    return g_call_col_shape_set_position(p, x, y, z);
+}
+
+long col_shape_get_dimension(void* p)
+{
+    return g_call_col_shape_get_dimension(p);
+}
+
+void col_shape_set_dimension(void* p, long dimension)
+{
+    return g_call_col_shape_set_dimension(p, dimension);
+}
+
+int col_shape_get_col_col_shape_type(void *c)
+{
+    return g_call_col_shape_get_col_col_shape_type(c);
+}
+
+int col_shape_is_entity_in(void *c, void *e)
+{
+    return g_call_col_shape_is_entity_in(c, e);
+}
+
+int col_shape_is_point_in(void *c, float x, float y, float z)
+{
+    return g_call_col_shape_is_point_in(c, x, y, z);
+}
+
+void col_shape_set_players_only(void *c, int state)
+{
+    return g_call_col_shape_set_players_only(c, state);
+}
+
+int col_shape_is_players_only(void *c)
+{
+    return g_call_col_shape_is_players_only(c);
 }
