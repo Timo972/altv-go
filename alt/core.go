@@ -5,8 +5,6 @@ package alt
 import "C"
 import (
 	"unsafe"
-
-	"github.com/shockdev04/altv-go-pkg/internal/module"
 )
 
 func Hash(str string) uint32 {
@@ -31,10 +29,12 @@ func FileRead(str string) string {
 func GetEntityByID(id uint16) interface{} {
 	entity := C.core_get_entity_by_id(C.ushort(id))
 
-	if entity.Type == PlayerObject {
+	entityType := BaseObjectType(entity.Type)
+
+	if entityType == PlayerObject {
 		p := NewPlayer(entity.Ptr)
 		return p
-	} else if entity.Type == VehicleObject {
+	} else if entityType == VehicleObject {
 		v := NewVehicle(entity.Ptr)
 		return v
 	}
@@ -126,7 +126,7 @@ func GetPlayersByName(name string) []*Player {
 	arr := C.core_get_players_by_name(cName)
 
 	size := int(arr.size)
-	values := arr.array
+	values := (*[1 << 28]unsafe.Pointer)(arr.array)[:size:size]
 
 	players := make([]*Player, size)
 

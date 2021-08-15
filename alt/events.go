@@ -5,7 +5,7 @@ import "C"
 import (
 	"unsafe"
 
-	"github.com/shockdev04/altv-go-pkg/internal/module"
+	//"github.com/shockdev04/altv-go-pkg/internal/module"
 )
 
 type eventType = uint16
@@ -196,11 +196,11 @@ func altPlayerDisconnectEvent(player unsafe.Pointer, reason *C.char) {
 	}
 }
 
-//export altExplosionEvent
-func altExplosionEvent(player unsafe.Pointer, entity unsafe.Pointer, pos C.struct_pos, explosionType C.short, explosionFX C.uint) {
-	for _, event := range On.explosionEvents {
-		player := NewPlayer(player)
-		entity := NewEntity(entity)
-		event(player, entity, Position{X:pos.x,Y:pos.y,Z:pos.z}, int16(explosionType), uint(explosionFX))
-	}
-}
+////export altExplosionEvent
+//func altExplosionEvent(player unsafe.Pointer, entity unsafe.Pointer, pos C.struct_pos, explosionType C.short, explosionFX C.uint) {
+//	for _, event := range On.explosionEvents {
+//		player := NewPlayer(player)
+//		entity := NewEntity(entity)
+//		event(player, entity, Position{X:pos.x,Y:pos.y,Z:pos.z}, int16(explosionType), uint(explosionFX))
+//	}
+//}
