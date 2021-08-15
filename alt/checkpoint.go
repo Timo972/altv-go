@@ -8,10 +8,10 @@ type Checkpoint struct {
 	ColShape
 }
 
-// Create a checkpoint
+// CreateCheckpoint Create a checkpoint
 // ! This method is unfinished in alt:V use at your own risk !
 func CreateCheckpoint(checkpointType uint8, x float32, y float32, z float32, radius float32, height float32, color RGBA) *Checkpoint {
-	ptr := C.core_create_checkpoint(C.ushort(checkpointType), C.float(x), C.float(y), C.float(z), C.float(radius), C.float(height), C.ushort(color.R), C.ushort(color.G), C.ushort(color.B), C.ushort(color.A))
+	ptr := C.core_create_checkpoint(C.uchar(checkpointType), C.float(x), C.float(y), C.float(z), C.float(radius), C.float(height), C.uchar(color.R), C.uchar(color.G), C.uchar(color.B), C.uchar(color.A))
 	checkpoint := &Checkpoint{}
 	checkpoint.Ptr = ptr
 	checkpoint.Type = CheckpointObject

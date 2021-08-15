@@ -810,7 +810,7 @@ void *core_create_col_shape_sphere(float posX, float posY, float posZ, float rad
     g_call_core_create_col_shape_sphere(posX, posY, posZ, radius);
 }
 
-void *core_create_checkpoint(unsigned short type, float x, float y, float z, float radius, float height, unsigned short r, unsigned short g, unsigned short b, unsigned short a)
+void *core_create_checkpoint(unsigned char type, float x, float y, float z, float radius, float height, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
     g_call_core_create_checkpoint(type, x, y, z, radius, height, r, g, b, a);
 }
