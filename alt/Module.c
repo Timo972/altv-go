@@ -96,6 +96,7 @@ capi_core_create_col_shape_cube g_call_core_create_col_shape_cube;
 capi_core_create_col_shape_rectangle g_call_core_create_col_shape_rectangle;
 capi_core_create_col_shape_circle g_call_core_create_col_shape_circle;
 capi_core_create_col_shape_sphere g_call_core_create_col_shape_sphere;
+capi_core_create_checkpoint g_call_core_create_checkpoint;
 
 capi_vehicle_has_meta_data g_call_vehicle_has_meta_data;
 capi_vehicle_get_meta_data g_call_vehicle_get_meta_data;
@@ -261,6 +262,32 @@ capi_col_shape_is_entity_in g_call_col_shape_is_entity_in;
 capi_col_shape_is_point_in g_call_col_shape_is_point_in;
 capi_col_shape_set_players_only g_call_col_shape_set_players_only;
 capi_col_shape_is_players_only g_call_col_shape_is_players_only;
+
+// Checkpoint
+capi_checkpoint_get_type g_call_checkpoint_get_type;
+capi_checkpoint_has_meta_data g_call_checkpoint_has_meta_data;
+capi_checkpoint_get_meta_data g_call_checkpoint_get_meta_data;
+capi_checkpoint_set_meta_data g_call_checkpoint_set_meta_data;
+capi_checkpoint_delete_meta_data g_call_checkpoint_delete_meta_data;
+capi_checkpoint_get_position g_call_checkpoint_get_position;
+capi_checkpoint_set_position g_call_checkpoint_set_position;
+capi_checkpoint_get_dimension g_call_checkpoint_get_dimension;
+capi_checkpoint_set_dimension g_call_checkpoint_set_dimension;
+capi_checkpoint_get_col_shape_type g_call_checkpoint_get_col_shape_type;
+capi_checkpoint_is_entity_in g_call_checkpoint_is_entity_in;
+capi_checkpoint_is_point_in g_call_checkpoint_is_point_in;
+capi_checkpoint_set_players_only g_call_checkpoint_set_players_only;
+capi_checkpoint_is_players_only g_call_checkpoint_is_players_only;
+capi_checkpoint_get_checkpoint_type g_call_checkpoint_get_checkpoint_type;
+capi_checkpoint_get_height g_call_checkpoint_get_height;
+capi_checkpoint_get_radius g_call_checkpoint_get_radius;
+capi_checkpoint_get_color g_call_checkpoint_get_color;
+capi_checkpoint_get_next_position g_call_checkpoint_get_next_position;
+capi_checkpoint_set_checkpoint_type g_call_checkpoint_set_checkpoint_type;
+capi_checkpoint_set_height g_call_checkpoint_set_height;
+capi_checkpoint_set_radius g_call_checkpoint_set_radius;
+capi_checkpoint_set_color g_call_checkpoint_set_color;
+capi_checkpoint_set_next_position g_call_checkpoint_set_next_position;
 
 int load_module(const char *path)
 {
@@ -530,6 +557,33 @@ int load_module(const char *path)
     g_call_core_create_col_shape_rectangle = GET_FUNC(module, "Core_CreateColShapeRectangle", capi_core_create_col_shape_rectangle);
     g_call_core_create_col_shape_circle = GET_FUNC(module, "Core_CreateColShapeCircle", capi_core_create_col_shape_circle);
     g_call_core_create_col_shape_sphere = GET_FUNC(module, "Core_CreateColShapeSphere", capi_core_create_col_shape_sphere);
+    g_call_core_create_checkpoint = GET_FUNC(module, "Core_CreateCheckpoint", capi_core_create_checkpoint);
+
+    // Checkpoint
+    g_call_checkpoint_get_type = GET_FUNC(module, "Checkpoint_GetType", capi_checkpoint_get_type);
+    g_call_checkpoint_has_meta_data = GET_FUNC(module, "Checkpoint_HasMetaData", capi_checkpoint_has_meta_data);
+    g_call_checkpoint_get_meta_data = GET_FUNC(module, "Checkpoint_GetMetaData", capi_checkpoint_get_meta_data);
+    g_call_checkpoint_set_meta_data = GET_FUNC(module, "Checkpoint_SetMetaData", capi_checkpoint_set_meta_data);
+    g_call_checkpoint_delete_meta_data = GET_FUNC(module, "Checkpoint_DeleteMetaData", capi_checkpoint_delete_meta_data);
+    g_call_checkpoint_get_position = GET_FUNC(module, "Checkpoint_GetPosition", capi_checkpoint_get_position);
+    g_call_checkpoint_set_position = GET_FUNC(module, "Checkpoint_SetPosition", capi_checkpoint_set_position);
+    g_call_checkpoint_get_dimension = GET_FUNC(module, "Checkpoint_GetDimension", capi_checkpoint_get_dimension);
+    g_call_checkpoint_set_dimension = GET_FUNC(module, "Checkpoint_SetDimension", capi_checkpoint_set_dimension);
+    g_call_checkpoint_get_col_shape_type = GET_FUNC(module, "Checkpoint_GetColShapeType", capi_checkpoint_get_col_shape_type);
+    g_call_checkpoint_is_entity_in = GET_FUNC(module, "Checkpoint_IsEntityIn", capi_checkpoint_is_entity_in);
+    g_call_checkpoint_is_point_in = GET_FUNC(module, "Checkpoint_IsPointIn", capi_checkpoint_is_point_in);
+    g_call_checkpoint_set_players_only = GET_FUNC(module, "Checkpoint_SetPlayersOnly", capi_checkpoint_set_players_only);
+    g_call_checkpoint_is_players_only = GET_FUNC(module, "Checkpoint_IsPlayersOnly", capi_checkpoint_is_players_only);
+    g_call_checkpoint_get_checkpoint_type = GET_FUNC(module, "Checkpoint_GetCheckpointType", capi_checkpoint_get_checkpoint_type);
+    g_call_checkpoint_get_height = GET_FUNC(module, "Checkpoint_GetHeight", capi_checkpoint_get_height);
+    g_call_checkpoint_get_radius = GET_FUNC(module, "Checkpoint_GetRadius", capi_checkpoint_get_radius);
+    g_call_checkpoint_get_color = GET_FUNC(module, "Checkpoint_GetColor", capi_checkpoint_get_color);
+    g_call_checkpoint_get_next_position = GET_FUNC(module, "Checkpoint_GetNextPosition", capi_checkpoint_get_next_position);
+    g_call_checkpoint_set_checkpoint_type = GET_FUNC(module, "Checkpoint_SetCheckpointType", capi_checkpoint_set_checkpoint_type);
+    g_call_checkpoint_set_height = GET_FUNC(module, "Checkpoint_SetHeight", capi_checkpoint_set_height);
+    g_call_checkpoint_set_radius = GET_FUNC(module, "Checkpoint_SetRadius", capi_checkpoint_set_radius);
+    g_call_checkpoint_set_color = GET_FUNC(module, "Checkpoint_SetColor", capi_checkpoint_set_color);
+    g_call_checkpoint_set_next_position = GET_FUNC(module, "Checkpoint_SetNextPosition", capi_checkpoint_set_next_position);
 
     return 1;
 }
@@ -593,6 +647,11 @@ void *core_create_col_shape_circle(float posX, float posY, float posZ, float rad
 void *core_create_col_shape_sphere(float posX, float posY, float posZ, float radius)
 {
     g_call_core_create_col_shape_sphere(posX, posY, posZ, radius);
+}
+
+void *core_create_checkpoint(unsigned short type, float x, float y, float z, float radius, float height, unsigned short r, unsigned short g, unsigned short b, unsigned short a)
+{
+    g_call_core_create_checkpoint(type, x, y, z, radius, height, r, g, b, a);
 }
 
 // Player
@@ -1903,4 +1962,125 @@ void col_shape_set_players_only(void *c, int state)
 int col_shape_is_players_only(void *c)
 {
     return g_call_col_shape_is_players_only(c);
+}
+
+// Checkpoint
+int checkpoint_get_type(void *c)
+{
+    return g_call_checkpoint_get_type(c);
+}
+
+int checkpoint_has_meta_data(void* base, const char *key)
+{
+    return g_call_checkpoint_has_meta_data(base, key);
+}
+
+MetaData checkpoint_get_meta_data(void* base, const char *key)
+{
+    return g_call_checkpoint_get_meta_data(base, key);
+}
+
+void checkpoint_set_meta_data(void *base, const char *key, void *val)
+{
+    return g_call_checkpoint_set_meta_data(base, key, val);
+}
+
+void checkpoint_delete_meta_data(void *base, const char *key)
+{
+    return g_call_checkpoint_delete_meta_data(base, key);
+}
+
+Position checkpoint_get_position(void *p)
+{
+    return g_call_checkpoint_get_position(p);
+}
+
+void checkpoint_set_position(void* p, float x, float y, float z)
+{
+    return g_call_checkpoint_set_position(p, x, y, z);
+}
+
+long checkpoint_get_dimension(void* p)
+{
+    return g_call_checkpoint_get_dimension(p);
+}
+
+void checkpoint_set_dimension(void* p, long dimension)
+{
+    return g_call_checkpoint_set_dimension(p, dimension);
+}
+
+int checkpoint_get_col_shape_type(void *c)
+{
+    return g_call_checkpoint_get_col_shape_type(c);
+}
+
+int checkpoint_is_entity_in(void *c, void *e)
+{
+    return g_call_checkpoint_is_entity_in(c, e);
+}
+
+int checkpoint_is_point_in(void *c, float x, float y, float z)
+{
+    return g_call_checkpoint_is_point_in(c, x, y, z);
+}
+
+void checkpoint_set_players_only(void *c, int state)
+{
+    return g_call_checkpoint_set_players_only(c, state);
+}
+
+int checkpoint_is_players_only(void *c)
+{
+    return g_call_checkpoint_is_players_only(c);
+}
+
+unsigned char checkpoint_get_checkpoint_type(void *c)
+{
+    return g_call_checkpoint_get_checkpoint_type(c);
+}
+
+float checkpoint_get_height(void *c)
+{
+    return g_call_checkpoint_get_height(c);
+}
+
+float checkpoint_get_radius(void *c)
+{
+    return g_call_checkpoint_get_radius(c);
+}
+
+RGBA checkpoint_get_color(void *c)
+{
+    return g_call_checkpoint_get_color(c);
+}
+
+Position checkpoint_get_next_position(void *c)
+{
+    return g_call_checkpoint_get_next_position(c);
+}
+
+void checkpoint_set_checkpoint_type(void *c, unsigned char type)
+{
+    return g_call_checkpoint_set_checkpoint_type(c, type);
+}
+
+void checkpoint_set_height(void *c, float height)
+{
+    return g_call_checkpoint_set_height(c, height);
+}
+
+void checkpoint_set_radius(void *c, float radius)
+{
+    return g_call_checkpoint_set_radius(c, radius);
+}
+
+void checkpoint_set_color(void *c, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+    return g_call_checkpoint_set_color(c, r, g, b, a);
+}
+
+void checkpoint_set_next_position(void *c, float x, float y, float z)
+{
+    return g_call_checkpoint_set_next_position(c, x, y, z);
 }
