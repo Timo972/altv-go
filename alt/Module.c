@@ -249,8 +249,8 @@ capi_core_has_meta_data g_call_core_has_meta_data;
 capi_core_get_meta_data g_call_core_get_meta_data;
 capi_core_set_meta_data g_call_core_set_meta_data;
 capi_core_delete_meta_data g_call_core_delete_meta_data;
-capi_core_has_synced_meta g_call_core_has_synced_meta;
-capi_core_get_synced_meta g_call_core_get_synced_meta;
+capi_core_has_synced_meta_data g_call_core_has_synced_meta_data;
+capi_core_get_synced_meta_data g_call_core_get_synced_meta_data;
 capi_core_destroy_base_object g_call_core_destroy_base_object;
 capi_core_start_resource g_call_core_start_resource;
 capi_core_stop_resource g_call_core_stop_resource;
@@ -516,8 +516,8 @@ int load_module(const char *path)
     g_call_core_get_meta_data = GET_FUNC(module, "Core_GetMetaData", capi_core_get_meta_data);
     g_call_core_set_meta_data = GET_FUNC(module, "Core_SetMetaData", capi_core_set_meta_data);
     g_call_core_delete_meta_data = GET_FUNC(module, "Core_DeleteMetaData", capi_core_delete_meta_data);
-    g_call_core_has_synced_meta = GET_FUNC(module, "Core_HasSyncedMeta", capi_core_has_synced_meta);
-    g_call_core_get_synced_meta = GET_FUNC(module, "Core_GetSyncedMeta", capi_core_get_synced_meta);
+    g_call_core_has_synced_meta_data = GET_FUNC(module, "Core_HasSyncedMetaData", capi_core_has_synced_meta_data);
+    g_call_core_get_synced_meta_data = GET_FUNC(module, "Core_GetSyncedMetaData", capi_core_get_synced_meta_data);
     g_call_core_destroy_base_object = GET_FUNC(module, "Core_DestroyBaseObject", capi_core_destroy_base_object);
     g_call_core_start_resource = GET_FUNC(module, "Core_StartResource", capi_core_start_resource);
     g_call_core_stop_resource = GET_FUNC(module, "Core_StopResource", capi_core_stop_resource);
@@ -606,14 +606,14 @@ void core_delete_meta_data(const char *key)
     return g_call_core_delete_meta_data(key);
 }
 
-int core_has_synced_meta(const char *key)
+int core_has_synced_meta_data(const char *key)
 {
-    return g_call_core_has_synced_meta(key);
+    return g_call_core_has_synced_meta_data(key);
 }
 
-MetaData core_get_synced_meta(const char *key)
+MetaData core_get_synced_meta_data(const char *key)
 {
-    return g_call_core_get_synced_meta(key);
+    return g_call_core_get_synced_meta_data(key);
 }
 
 void core_destroy_base_object(void *h)
