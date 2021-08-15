@@ -97,6 +97,7 @@ capi_core_create_col_shape_rectangle g_call_core_create_col_shape_rectangle;
 capi_core_create_col_shape_circle g_call_core_create_col_shape_circle;
 capi_core_create_col_shape_sphere g_call_core_create_col_shape_sphere;
 capi_core_create_checkpoint g_call_core_create_checkpoint;
+capi_core_create_voice_channel g_call_core_create_voice_channel;
 
 capi_vehicle_has_meta_data g_call_vehicle_has_meta_data;
 capi_vehicle_get_meta_data g_call_vehicle_get_meta_data;
@@ -288,6 +289,21 @@ capi_checkpoint_set_height g_call_checkpoint_set_height;
 capi_checkpoint_set_radius g_call_checkpoint_set_radius;
 capi_checkpoint_set_color g_call_checkpoint_set_color;
 capi_checkpoint_set_next_position g_call_checkpoint_set_next_position;
+
+// VoiceChannel
+capi_channel_get_type g_call_channel_get_type;
+capi_channel_has_meta_data g_call_channel_has_meta_data;
+capi_channel_get_meta_data g_call_channel_get_meta_data;
+capi_channel_set_meta_data g_call_channel_set_meta_data;
+capi_channel_delete_meta_data g_call_channel_delete_meta_data;
+capi_channel_is_spatial g_call_channel_is_spatial;
+capi_channel_get_max_distance g_call_channel_get_max_distance;
+capi_channel_has_player g_call_channel_has_player;
+capi_channel_add_player g_call_channel_add_player;
+capi_channel_remove_player g_call_channel_remove_player;
+capi_channel_is_player_muted g_call_channel_is_player_muted;
+capi_channel_mute_player g_call_channel_mute_player;
+capi_channel_unmute_player g_call_channel_unmute_player;
 
 int load_module(const char *path)
 {
@@ -558,6 +574,7 @@ int load_module(const char *path)
     g_call_core_create_col_shape_circle = GET_FUNC(module, "Core_CreateColShapeCircle", capi_core_create_col_shape_circle);
     g_call_core_create_col_shape_sphere = GET_FUNC(module, "Core_CreateColShapeSphere", capi_core_create_col_shape_sphere);
     g_call_core_create_checkpoint = GET_FUNC(module, "Core_CreateCheckpoint", capi_core_create_checkpoint);
+    g_call_core_create_voice_channel = GET_FUNC(module, "Core_CreateVoiceChannel", capi_core_create_voice_channel);
 
     // Checkpoint
     g_call_checkpoint_get_type = GET_FUNC(module, "Checkpoint_GetType", capi_checkpoint_get_type);
@@ -584,6 +601,21 @@ int load_module(const char *path)
     g_call_checkpoint_set_radius = GET_FUNC(module, "Checkpoint_SetRadius", capi_checkpoint_set_radius);
     g_call_checkpoint_set_color = GET_FUNC(module, "Checkpoint_SetColor", capi_checkpoint_set_color);
     g_call_checkpoint_set_next_position = GET_FUNC(module, "Checkpoint_SetNextPosition", capi_checkpoint_set_next_position);
+
+    // VoiceChannel
+    g_call_channel_get_type = GET_FUNC(module, "Channel_GetType", capi_channel_get_type);
+    g_call_channel_has_meta_data = GET_FUNC(module, "Channel_HasMetaData", capi_channel_has_meta_data);
+    g_call_channel_get_meta_data = GET_FUNC(module, "Channel_GetMetaData", capi_channel_get_meta_data);
+    g_call_channel_set_meta_data = GET_FUNC(module, "Channel_SetMetaData", capi_channel_set_meta_data);
+    g_call_channel_delete_meta_data = GET_FUNC(module, "Channel_DeleteMetaData", capi_channel_delete_meta_data);
+    g_call_channel_is_spatial = GET_FUNC(module, "Channel_IsSpatial", capi_channel_is_spatial);
+    g_call_channel_get_max_distance = GET_FUNC(module, "Channel_GetMaxDistance", capi_channel_get_max_distance);
+    g_call_channel_has_player = GET_FUNC(module, "Channel_HasPlayer", capi_channel_has_player);
+    g_call_channel_add_player = GET_FUNC(module, "Channel_AddPlayer", capi_channel_add_player);
+    g_call_channel_remove_player = GET_FUNC(module, "Channel_RemovePlayer", capi_channel_remove_player);
+    g_call_channel_is_player_muted = GET_FUNC(module, "Channel_IsPlayerMuted", capi_channel_is_player_muted);
+    g_call_channel_mute_player = GET_FUNC(module, "Channel_MutePlayer", capi_channel_mute_player);
+    g_call_channel_unmute_player = GET_FUNC(module, "Channel_UnmutePlayer", capi_channel_unmute_player);
 
     return 1;
 }
@@ -652,6 +684,11 @@ void *core_create_col_shape_sphere(float posX, float posY, float posZ, float rad
 void *core_create_checkpoint(unsigned short type, float x, float y, float z, float radius, float height, unsigned short r, unsigned short g, unsigned short b, unsigned short a)
 {
     g_call_core_create_checkpoint(type, x, y, z, radius, height, r, g, b, a);
+}
+
+void *core_create_voice_channel(int spatial, float maxDistance)
+{
+    g_call_core_create_voice_channel(spatial, maxDistance);
 }
 
 // Player
@@ -2083,4 +2120,70 @@ void checkpoint_set_color(void *c, unsigned char r, unsigned char g, unsigned ch
 void checkpoint_set_next_position(void *c, float x, float y, float z)
 {
     return g_call_checkpoint_set_next_position(c, x, y, z);
+}
+
+// VoiceChannel
+int Voice channel_get_type(void *c)
+{
+    return g_call_channel_get_type(c);
+}
+
+int Voice channel_has_meta_data(void* base, const char *key)
+{
+    return g_call_channel_has_meta_data(base, key);
+}
+
+MetaData Voice channel_get_meta_data(void* base, const char *key)
+{
+    return g_call_channel_get_meta_data(base, key);
+}
+
+void Voice channel_set_meta_data(void *base, const char *key, void *val)
+{
+    return g_call_channel_set_meta_data(base, key, val);
+}
+
+void Voice channel_delete_meta_data(void *base, const char *key)
+{
+    return g_call_channel_delete_meta_data(base, key);
+}
+
+int Voice channel_is_spatial(void *v)
+{
+    return g_call_channel_is_spatial(v);
+}
+
+float Voice channel_get_max_distance(void *v)
+{
+    return g_call_channel_get_max_distance(v);
+}
+
+int Voice channel_has_player(void *v, void *p)
+{
+    return g_call_channel_has_player(v, p);
+}
+
+void Voice channel_add_player(void *v, void *p)
+{
+    return g_call_channel_add_player(v, p);
+}
+
+void Voice channel_remove_player(void *v, void *p)
+{
+    return g_call_channel_remove_player(v, p);
+}
+
+int Voice channel_is_player_muted(void *v, void *p)
+{
+    return g_call_channel_is_player_muted(v, p);
+}
+
+void Voice channel_mute_player(void *v, void *p)
+{
+    return g_call_channel_mute_player(v, p);
+}
+
+void Voice channel_unmute_player(void *v, void *p)
+{
+    return g_call_channel_unmute_player(v, p);
 }

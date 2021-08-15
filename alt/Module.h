@@ -339,6 +339,7 @@ typedef void *(*capi_core_create_col_shape_rectangle)(float x1, float y1, float 
 typedef void *(*capi_core_create_col_shape_circle)(float posX, float posY, float posZ, float radius);
 typedef void *(*capi_core_create_col_shape_sphere)(float posX, float posY, float posZ, float radius);
 typedef void *(*capi_core_create_checkpoint)(unsigned short type, float x, float y, float z, float radius, float height, unsigned short r, unsigned short g, unsigned short b, unsigned short a);
+typedef void *(*capi_core_create_voice_channel)(int spatial, float maxDistance);
 
 // Colshape
 typedef int (*capi_col_shape_get_type)(void *c);
@@ -381,6 +382,21 @@ typedef void (*capi_checkpoint_set_height)(void *c, float height);
 typedef void (*capi_checkpoint_set_radius)(void *c, float radius);
 typedef void (*capi_checkpoint_set_color)(void *c, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 typedef void (*capi_checkpoint_set_next_position)(void *c, float x, float y, float z);
+
+// VoiceChannel
+typedef int (*capi_channel_get_type)(void *c);
+typedef int (*capi_channel_has_meta_data)(void* base, const char *key);
+typedef MetaData (*capi_channel_get_meta_data)(void* base, const char *key);
+typedef void (*capi_channel_set_meta_data)(void *base, const char *key, void *val);
+typedef void (*capi_channel_delete_meta_data)(void *base, const char *key);
+typedef int (*capi_channel_is_spatial)(void *v);
+typedef float (*capi_channel_get_max_distance)(void *v);
+typedef int (*capi_channel_has_player)(void *v, void *p);
+typedef void (*capi_channel_add_player)(void *v, void *p);
+typedef void (*capi_channel_remove_player)(void *v, void *p);
+typedef int (*capi_channel_is_player_muted)(void *v, void *p);
+typedef void (*capi_channel_mute_player)(void *v, void *p);
+typedef void (*capi_channel_unmute_player)(void *v, void *p);
 
 int load_module(const char *path);
 
@@ -652,6 +668,7 @@ void *core_create_col_shape_rectangle(float x1, float y1, float x2, float y2, fl
 void *core_create_col_shape_circle(float posX, float posY, float posZ, float radius);
 void *core_create_col_shape_sphere(float posX, float posY, float posZ, float radius);
 void *core_create_checkpoint(unsigned short type, float x, float y, float z, float radius, float height, unsigned short r, unsigned short g, unsigned short b, unsigned short a);
+void *core_create_voice_channel(int spatial, float maxDistance);
 
 // Colshape
 int col_shape_get_type(void *c);
@@ -694,4 +711,20 @@ void checkpoint_set_height(void *c, float height);
 void checkpoint_set_radius(void *c, float radius);
 void checkpoint_set_color(void *c, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 void checkpoint_set_next_position(void *c, float x, float y, float z);
+
+// VoiceChannel
+int voice_channel_get_type(void *c);
+int voice_channel_has_meta_data(void* base, const char *key);
+MetaData voice_channel_get_meta_data(void* base, const char *key);
+void voice_channel_set_meta_data(void *base, const char *key, void *val);
+void voice_channel_delete_meta_data(void *base, const char *key);
+int voice_channel_is_spatial(void *v);
+float voice_channel_get_max_distance(void *v);
+int voice_channel_has_player(void *v, void *p);
+void voice_channel_add_player(void *v, void *p);
+void voice_channel_remove_player(void *v, void *p);
+int voice_channel_is_player_muted(void *v, void *p);
+void voice_channel_mute_player(void *v, void *p);
+void voice_channel_unmute_player(void *v, void *p);
+
 #endif
