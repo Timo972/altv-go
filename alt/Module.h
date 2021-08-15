@@ -40,10 +40,10 @@ typedef struct rot {
 } Rotation;
 
 typedef struct rgba {
-    unsigned long r;
-    unsigned long g;
-    unsigned long b;
-    unsigned long a;
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+    unsigned char a;
 } RGBA;
 
 typedef struct cloth {
@@ -338,7 +338,7 @@ typedef void *(*capi_core_create_col_shape_cube)(float posX1, float posY1, float
 typedef void *(*capi_core_create_col_shape_rectangle)(float x1, float y1, float x2, float y2, float z);
 typedef void *(*capi_core_create_col_shape_circle)(float posX, float posY, float posZ, float radius);
 typedef void *(*capi_core_create_col_shape_sphere)(float posX, float posY, float posZ, float radius);
-typedef void *(*capi_core_create_checkpoint)(unsigned short type, float x, float y, float z, float radius, float height, unsigned short r, unsigned short g, unsigned short b, unsigned short a);
+typedef void *(*capi_core_create_checkpoint)(unsigned char type, float x, float y, float z, float radius, float height, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 typedef void *(*capi_core_create_voice_channel)(int spatial, float maxDistance);
 
 // Colshape
@@ -667,7 +667,7 @@ void *core_create_col_shape_cube(float posX1, float posY1, float posZ1, float po
 void *core_create_col_shape_rectangle(float x1, float y1, float x2, float y2, float z);
 void *core_create_col_shape_circle(float posX, float posY, float posZ, float radius);
 void *core_create_col_shape_sphere(float posX, float posY, float posZ, float radius);
-void *core_create_checkpoint(unsigned short type, float x, float y, float z, float radius, float height, unsigned short r, unsigned short g, unsigned short b, unsigned short a);
+void *core_create_checkpoint(unsigned char type, float x, float y, float z, float radius, float height, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 void *core_create_voice_channel(int spatial, float maxDistance);
 
 // Colshape
