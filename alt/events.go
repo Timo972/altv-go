@@ -4,8 +4,6 @@ package alt
 import "C"
 import (
 	"unsafe"
-
-	"github.com/shockdev04/altv-go-pkg/internal/module"
 )
 
 type eventType = uint16
