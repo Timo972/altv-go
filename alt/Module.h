@@ -334,6 +334,25 @@ typedef const char *(*capi_core_get_mvalue_string)(void *val);
 typedef void *(*capi_core_create_vehicle)(unsigned long model, float posX, float posY, float posZ,
                                           float rotX, float rotY, float rotZ);
 
+typedef unsigned long (*capi_core_hash)(const char *str);
+typedef int (*capi_core_file_exists)(const char *path);
+typedef const char * (*capi_core_read_file)(const char *path);
+typedef void * (*capi_core_get_entity_by_i_d)(unsigned short id);
+typedef int (*capi_core_has_meta_data)(const char *key);
+typedef MetaData (*capi_core_get_meta_data)(const char *key);
+typedef void (*capi_core_set_meta_data)(const char *key, void *val);
+typedef void (*capi_core_delete_meta_data)(const char *key);
+typedef int (*capi_core_has_synced_meta)(const char *key);
+typedef MetaData (*capi_core_get_synced_meta)(const char *key);
+typedef void (*capi_core_destroy_base_object)(void *h);
+typedef void * (*capi_core_start_resource)(const char *name);
+typedef void (*capi_core_stop_resource)(const char *name);
+typedef void * (*capi_core_restart_resource)(const char *name);
+typedef void (*capi_core_set_synced_meta_data)(const char *key, void *val);
+typedef void (*capi_core_delete_synced_meta_data)(const char *key);
+typedef Array (*capi_core_get_players_by_name)(const char *name);
+typedef void (*capi_core_set_password)(const char *password);
+
 int load_module(const char *path);
 
 // Core
@@ -344,6 +363,24 @@ void core_log_debug(const char *message);
 void core_log_warning(const char *message);
 void core_log_error(const char *message);
 void core_log_colored(const char *message);
+unsigned long core_hash(const char *str);
+int core_file_exists(const char *path);
+const char * core_read_file(const char *path);
+void * core_get_entity_by_i_d(unsigned short id);
+int core_has_meta_data(const char *key);
+MetaData core_get_meta_data(const char *key);
+void core_set_meta_data(const char *key, void *val);
+void core_delete_meta_data(const char *key);
+int core_has_synced_meta(const char *key);
+MetaData core_get_synced_meta(const char *key);
+void core_destroy_base_object(void *h);
+void * core_start_resource(const char *name);
+void core_stop_resource(const char *name);
+void * core_restart_resource(const char *name);
+void core_set_synced_meta_data(const char *key, void *val);
+void core_delete_synced_meta_data(const char *key);
+Array core_get_players_by_name(const char *name);
+void core_set_password(const char *password);
 
 // Player
 const char * player_get_name(void *p);
