@@ -13,32 +13,32 @@ type ColShape struct {
 	WorldObject
 }
 
-func newColShape(c unsafe.Pointer) *ColShape {
+func NewColShape(c unsafe.Pointer) *ColShape {
 	colShape := &ColShape{}
 	colShape.Ptr = c
 	colShape.Type = ColshapeObject
 	return colShape
 }
 
-func NewColShapeCircle(x float32, y float32, radius float32) *ColShape {
+func CreateColShapeCircle(x float32, y float32, radius float32) *ColShape {
 	ptr := C.core_create_col_shape_circle(C.float(x), C.float(y), C.float(radius))
-	return newColShape(ptr)
+	return NewColShape(ptr)
 }
-func NewColShapeCuboid(x1 float32, y1 float32, z1 float32, x2 float32, y2 float32, z2 float32) *ColShape {
+func CreateColShapeCuboid(x1 float32, y1 float32, z1 float32, x2 float32, y2 float32, z2 float32) *ColShape {
 	ptr := C.core_create_col_shape_cuboid(C.float(x1), C.float(y1), C.float(z1), C.float(x2), C.float(y2), C.float(z2))
-	return newColShape(ptr)
+	return NewColShape(ptr)
 }
-func NewColShapeCylinder(x float32, y float32, z float32, radius float32, height float32) *ColShape {
+func CreateColShapeCylinder(x float32, y float32, z float32, radius float32, height float32) *ColShape {
 	ptr := C.core_create_col_shape_cylinder(C.float(x), C.float(y), C.float(z),C.float(radius), C.float(height))
-	return newColShape(ptr)
+	return NewColShape(ptr)
 }
-func NewColShapeRectangle(x1 float32, y1 float32, x2 float32, y2 float32) *ColShape {
+func CreateColShapeRectangle(x1 float32, y1 float32, x2 float32, y2 float32) *ColShape {
 	ptr := C.core_create_col_shape_rectangle(C.float(x1), C.float(y1), C.float(x2), C.float(y2))
-	return newColShape(ptr)
+	return NewColShape(ptr)
 }
-func NewColShapeSphere(x float32, y float32, z float32, radius float32) *ColShape {
+func CreateColShapeSphere(x float32, y float32, z float32, radius float32) *ColShape {
 	ptr := C.core_create_col_shape_sphere(C.float(x), C.float(y), C.float(z), C.float(radius))
-	return newColShape(ptr)
+	return NewColShape(ptr)
 }
 
 func (c ColShape) IsPlayersOnly() bool {

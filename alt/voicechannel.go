@@ -4,8 +4,6 @@ package alt
 // #include "Module.h"
 import "C"
 import (
-	"unsafe"
-
 	"github.com/shockdev04/altv-go-pkg/internal/module"
 )
 
@@ -13,7 +11,7 @@ type VoiceChannel struct {
 	BaseObject
 }
 
-func NewVoiceChannel(spatial bool, maxDistance float32) *VoiceChannel{
+func CreateVoiceChannel(spatial bool, maxDistance float32) *VoiceChannel{
 	voiceChannel := &VoiceChannel{}
 	voiceChannel.Ptr = C.core_create_voice_channel(C.int(module.Bool2int(spatial)), C.float(maxDistance))
 	voiceChannel.Type = VoiceChannelObject

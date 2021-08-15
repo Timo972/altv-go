@@ -3,17 +3,12 @@ package alt
 // #include <stdlib.h>
 // #include "Module.h"
 import "C"
-import (
-	"unsafe"
-
-	"github.com/shockdev04/altv-go-pkg/internal/module"
-)
 
 type Checkpoint struct {
 	ColShape
 }
 
-func NewCheckpoint(checkpointType uint8, x float32, y float32, z float32, radius float32, height float32, color RGBA) *Checkpoint {
+func CreateCheckpoint(checkpointType uint8, x float32, y float32, z float32, radius float32, height float32, color RGBA) *Checkpoint {
 	ptr := C.core_create_checkpoint(C.ushort(checkpointType), C.float(x), C.float(y), C.float(z), C.float(radius), C.float(height), C.ushort(color.R), C.ushort(color.G), C.ushort(color.B), C.ushort(color.A))
 	checkpoint := &Checkpoint{}
 	checkpoint.Ptr = ptr
