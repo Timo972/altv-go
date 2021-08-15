@@ -244,7 +244,7 @@ capi_vehicle_get_attached_to g_call_vehicle_get_attached_to;
 capi_core_hash g_call_core_hash;
 capi_core_file_exists g_call_core_file_exists;
 capi_core_read_file g_call_core_read_file;
-capi_core_get_entity_by_i_d g_call_core_get_entity_by_i_d;
+capi_core_get_entity_by_id g_call_core_get_entity_by_id;
 capi_core_has_meta_data g_call_core_has_meta_data;
 capi_core_get_meta_data g_call_core_get_meta_data;
 capi_core_set_meta_data g_call_core_set_meta_data;
@@ -511,7 +511,7 @@ int load_module(const char *path)
     g_call_core_hash = GET_FUNC(module, "Core_Hash", capi_core_hash);
     g_call_core_file_exists = GET_FUNC(module, "Core_FileExists", capi_core_file_exists);
     g_call_core_read_file = GET_FUNC(module, "Core_ReadFile", capi_core_read_file);
-    g_call_core_get_entity_by_i_d = GET_FUNC(module, "Core_GetEntityByID", capi_core_get_entity_by_i_d);
+    g_call_core_get_entity_by_id = GET_FUNC(module, "Core_GetEntityByID", capi_core_get_entity_by_id);
     g_call_core_has_meta_data = GET_FUNC(module, "Core_HasMetaData", capi_core_has_meta_data);
     g_call_core_get_meta_data = GET_FUNC(module, "Core_GetMetaData", capi_core_get_meta_data);
     g_call_core_set_meta_data = GET_FUNC(module, "Core_SetMetaData", capi_core_set_meta_data);
@@ -581,9 +581,9 @@ const char * core_read_file(const char *path)
     return g_call_core_read_file(path);
 }
 
-void * core_get_entity_by_i_d(unsigned short id)
+void * core_get_entity_by_id(unsigned short id)
 {
-    return g_call_core_get_entity_by_i_d(id);
+    return g_call_core_get_entity_by_id(id);
 }
 
 int core_has_meta_data(const char *key)

@@ -337,7 +337,7 @@ typedef void *(*capi_core_create_vehicle)(unsigned long model, float posX, float
 typedef unsigned long (*capi_core_hash)(const char *str);
 typedef int (*capi_core_file_exists)(const char *path);
 typedef const char * (*capi_core_read_file)(const char *path);
-typedef void * (*capi_core_get_entity_by_i_d)(unsigned short id);
+typedef void * (*capi_core_get_entity_by_id)(unsigned short id);
 typedef int (*capi_core_has_meta_data)(const char *key);
 typedef MetaData (*capi_core_get_meta_data)(const char *key);
 typedef void (*capi_core_set_meta_data)(const char *key, void *val);
@@ -366,7 +366,7 @@ void core_log_colored(const char *message);
 unsigned long core_hash(const char *str);
 int core_file_exists(const char *path);
 const char * core_read_file(const char *path);
-void * core_get_entity_by_i_d(unsigned short id);
+void * core_get_entity_by_id(unsigned short id);
 int core_has_meta_data(const char *key);
 MetaData core_get_meta_data(const char *key);
 void core_set_meta_data(const char *key, void *val);
