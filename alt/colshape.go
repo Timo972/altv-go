@@ -42,21 +42,45 @@ func NewColShapeSphere(x float32, y float32, z float32, radius float32) *ColShap
 }
 
 func (c ColShape) IsPlayersOnly() bool {
-	return int(C.col_shape_is_players_only(c.Ptr)) == 1
+	if c.Type == ColshapeObject {
+		return int(C.col_shape_is_players_only(c.Ptr)) == 1
+	} else if c.Type == CheckpointObject {
+		return int(C.checkpoint_is_players_only(c.Ptr)) == 1
+	}
+	return false
 }
 
 func (c ColShape) SetPlayersOnly(state bool) {
-	C.col_shape_set_players_only(c.Ptr, C.int(module.Bool2int(state)))
+	if c.Type == ColshapeObject {
+		C.col_shape_set_players_only(c.Ptr, C.int(module.Bool2int(state)))
+	} else if c.Type == CheckpointObject {
+		C.checkpoint_set_players_only(c.Ptr, C.int(module.Bool2int(state)))
+	}
 }
 
 func (c ColShape) IsPointIn(pos Position) bool {
-	return int(C.col_shape_is_point_in(c.Ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z))) == 1
+	if c.Type == ColshapeObject {
+		return int(C.col_shape_is_point_in(c.Ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z))) == 1
+	} else if c.Type == CheckpointObject {
+		return int(C.checkpoint_is_point_in(c.Ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z))) == 1
+	}
+	return false
 }
 
 func (c ColShape) IsEntityIn(entity *Entity) bool {
-	return int(C.col_shape_is_entity_in(c.Ptr, entity.Ptr)) == 1
+	if c.Type == ColshapeObject {
+		return int(C.col_shape_is_entity_in(c.Ptr, entity.Ptr)) == 1
+	} else if c.Type == CheckpointObject {
+		return int(C.checkpoint_is_entity_in(c.Ptr, entity.Ptr)) == 1
+	}
+	return false
 }
 
 func (c ColShape) ColShapeType() int8 {
-	return int8(C.col_shape_get_col_shape_type(c.Ptr))
+	if c.Type == ColshapeObject {
+		return int8(C.col_shape_get_col_shape_type(c.Ptr))
+	} else if c.Type == CheckpointObject {
+		return int8(C.checkpoint_get_col_shape_type(c.Ptr))
+	}
+	return 0
 }
