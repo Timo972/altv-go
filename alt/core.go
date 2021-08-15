@@ -29,10 +29,6 @@ func FileRead(str string) string {
 func GetEntityByID(id uint16) interface{} {
 	entity := C.core_get_entity_by_id(C.ushort(id))
 
-	if entity.Ptr == nil {
-		return nil
-	}
-
 	entityType := BaseObjectType(entity.Type)
 
 	if entityType == PlayerObject {
