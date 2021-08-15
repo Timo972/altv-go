@@ -18,22 +18,23 @@ type playerEnterVehicleListener = func(p *Player, v *Vehicle, seat uint8)
 type playerLeaveVehicleListener = func(p *Player, v *Vehicle, seat uint8)
 type removeEntityListener = func(entity *Entity)
 type resourceStartListener = func(resourceName string)
+
 // TODO bodyPart ENUM
 type weaponDamageListener = func(source *Player, target *Entity, weapon uint32, damage uint8, offset Position, bodyPart int8)
 
 type eventManager struct {
-	playerConnectEvents  []playerConnectListener
-	consoleCommandEvents []consoleCommandListener
-	playerDisconnectEvents []playerDisconnectListener
-	explosionEvents []explosionListener
+	playerConnectEvents           []playerConnectListener
+	consoleCommandEvents          []consoleCommandListener
+	playerDisconnectEvents        []playerDisconnectListener
+	explosionEvents               []explosionListener
 	playerChangeVehicleSeatEvents []playerChangeVehicleSeatListener
-	playerDamageEvents []playerDamageListener
-	playerDeathEvents []playerDeathListener
-	playerEnterVehicleEvents []playerEnterVehicleListener
-	playerLeaveVehicleEvents []playerLeaveVehicleListener
-	removeEntityEvents []removeEntityListener
-	resourceStartEvents []resourceStartListener
-	weaponDamageEvents []weaponDamageListener
+	playerDamageEvents            []playerDamageListener
+	playerDeathEvents             []playerDeathListener
+	playerEnterVehicleEvents      []playerEnterVehicleListener
+	playerLeaveVehicleEvents      []playerLeaveVehicleListener
+	removeEntityEvents            []removeEntityListener
+	resourceStartEvents           []resourceStartListener
+	weaponDamageEvents            []weaponDamageListener
 }
 
 type listener interface {

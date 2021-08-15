@@ -91,6 +91,13 @@ capi_player_set_network_owner g_call_player_set_network_owner;
 
 // Vehicle
 capi_core_create_vehicle g_call_core_create_vehicle;
+capi_core_create_col_shape_cylinder g_call_core_create_col_shape_cylinder;
+capi_core_create_col_shape_cube g_call_core_create_col_shape_cube;
+capi_core_create_col_shape_rectangle g_call_core_create_col_shape_rectangle;
+capi_core_create_col_shape_circle g_call_core_create_col_shape_circle;
+capi_core_create_col_shape_sphere g_call_core_create_col_shape_sphere;
+capi_core_create_checkpoint g_call_core_create_checkpoint;
+capi_core_create_voice_channel g_call_core_create_voice_channel;
 
 capi_vehicle_has_meta_data g_call_vehicle_has_meta_data;
 capi_vehicle_get_meta_data g_call_vehicle_get_meta_data;
@@ -240,6 +247,63 @@ capi_vehicle_set_bumper_damage_level g_call_vehicle_set_bumper_damage_level;
 capi_vehicle_set_manual_engine_control g_call_vehicle_set_manual_engine_control;
 capi_vehicle_get_attached g_call_vehicle_get_attached;
 capi_vehicle_get_attached_to g_call_vehicle_get_attached_to;
+
+// Colshape
+capi_col_shape_get_type g_call_col_shape_get_type;
+capi_col_shape_has_meta_data g_call_col_shape_has_meta_data;
+capi_col_shape_get_meta_data g_call_col_shape_get_meta_data;
+capi_col_shape_set_meta_data g_call_col_shape_set_meta_data;
+capi_col_shape_delete_meta_data g_call_col_shape_delete_meta_data;
+capi_col_shape_get_position g_call_col_shape_get_position;
+capi_col_shape_set_position g_call_col_shape_set_position;
+capi_col_shape_get_dimension g_call_col_shape_get_dimension;
+capi_col_shape_set_dimension g_call_col_shape_set_dimension;
+capi_col_shape_get_col_shape_type g_call_col_shape_get_col_shape_type;
+capi_col_shape_is_entity_in g_call_col_shape_is_entity_in;
+capi_col_shape_is_point_in g_call_col_shape_is_point_in;
+capi_col_shape_set_players_only g_call_col_shape_set_players_only;
+capi_col_shape_is_players_only g_call_col_shape_is_players_only;
+
+// Checkpoint
+capi_checkpoint_get_type g_call_checkpoint_get_type;
+capi_checkpoint_has_meta_data g_call_checkpoint_has_meta_data;
+capi_checkpoint_get_meta_data g_call_checkpoint_get_meta_data;
+capi_checkpoint_set_meta_data g_call_checkpoint_set_meta_data;
+capi_checkpoint_delete_meta_data g_call_checkpoint_delete_meta_data;
+capi_checkpoint_get_position g_call_checkpoint_get_position;
+capi_checkpoint_set_position g_call_checkpoint_set_position;
+capi_checkpoint_get_dimension g_call_checkpoint_get_dimension;
+capi_checkpoint_set_dimension g_call_checkpoint_set_dimension;
+capi_checkpoint_get_col_shape_type g_call_checkpoint_get_col_shape_type;
+capi_checkpoint_is_entity_in g_call_checkpoint_is_entity_in;
+capi_checkpoint_is_point_in g_call_checkpoint_is_point_in;
+capi_checkpoint_set_players_only g_call_checkpoint_set_players_only;
+capi_checkpoint_is_players_only g_call_checkpoint_is_players_only;
+capi_checkpoint_get_checkpoint_type g_call_checkpoint_get_checkpoint_type;
+capi_checkpoint_get_height g_call_checkpoint_get_height;
+capi_checkpoint_get_radius g_call_checkpoint_get_radius;
+capi_checkpoint_get_color g_call_checkpoint_get_color;
+capi_checkpoint_get_next_position g_call_checkpoint_get_next_position;
+capi_checkpoint_set_checkpoint_type g_call_checkpoint_set_checkpoint_type;
+capi_checkpoint_set_height g_call_checkpoint_set_height;
+capi_checkpoint_set_radius g_call_checkpoint_set_radius;
+capi_checkpoint_set_color g_call_checkpoint_set_color;
+capi_checkpoint_set_next_position g_call_checkpoint_set_next_position;
+
+// VoiceChannel
+capi_channel_get_type g_call_channel_get_type;
+capi_channel_has_meta_data g_call_channel_has_meta_data;
+capi_channel_get_meta_data g_call_channel_get_meta_data;
+capi_channel_set_meta_data g_call_channel_set_meta_data;
+capi_channel_delete_meta_data g_call_channel_delete_meta_data;
+capi_channel_is_spatial g_call_channel_is_spatial;
+capi_channel_get_max_distance g_call_channel_get_max_distance;
+capi_channel_has_player g_call_channel_has_player;
+capi_channel_add_player g_call_channel_add_player;
+capi_channel_remove_player g_call_channel_remove_player;
+capi_channel_is_player_muted g_call_channel_is_player_muted;
+capi_channel_mute_player g_call_channel_mute_player;
+capi_channel_unmute_player g_call_channel_unmute_player;
 
 int load_module(const char *path)
 {
@@ -488,6 +552,71 @@ int load_module(const char *path)
     g_call_vehicle_get_attached = GET_FUNC(module, "Vehicle_GetAttached", capi_vehicle_get_attached);
     g_call_vehicle_get_attached_to = GET_FUNC(module, "Vehicle_GetAttachedTo", capi_vehicle_get_attached_to);
 
+    // ColShape
+    g_call_col_shape_get_type = GET_FUNC(module, "ColShape_GetType", capi_col_shape_get_type);
+    g_call_col_shape_has_meta_data = GET_FUNC(module, "ColShape_HasMetaData", capi_col_shape_has_meta_data);
+    g_call_col_shape_get_meta_data = GET_FUNC(module, "ColShape_GetMetaData", capi_col_shape_get_meta_data);
+    g_call_col_shape_set_meta_data = GET_FUNC(module, "ColShape_SetMetaData", capi_col_shape_set_meta_data);
+    g_call_col_shape_delete_meta_data = GET_FUNC(module, "ColShape_DeleteMetaData", capi_col_shape_delete_meta_data);
+    g_call_col_shape_get_position = GET_FUNC(module, "ColShape_GetPosition", capi_col_shape_get_position);
+    g_call_col_shape_set_position = GET_FUNC(module, "ColShape_SetPosition", capi_col_shape_set_position);
+    g_call_col_shape_get_dimension = GET_FUNC(module, "ColShape_GetDimension", capi_col_shape_get_dimension);
+    g_call_col_shape_set_dimension = GET_FUNC(module, "ColShape_SetDimension", capi_col_shape_set_dimension);
+    g_call_col_shape_get_col_shape_type = GET_FUNC(module, "ColShape_GetColShapeType", capi_col_shape_get_col_shape_type);
+    g_call_col_shape_is_entity_in = GET_FUNC(module, "ColShape_IsEntityIn", capi_col_shape_is_entity_in);
+    g_call_col_shape_is_point_in = GET_FUNC(module, "ColShape_IsPointIn", capi_col_shape_is_point_in);
+    g_call_col_shape_set_players_only = GET_FUNC(module, "ColShape_SetPlayersOnly", capi_col_shape_set_players_only);
+    g_call_col_shape_is_players_only = GET_FUNC(module, "ColShape_IsPlayersOnly", capi_col_shape_is_players_only);
+
+    g_call_core_create_col_shape_cylinder = GET_FUNC(module, "Core_CreateColShapeCylinder", capi_core_create_col_shape_cylinder);
+    g_call_core_create_col_shape_cube = GET_FUNC(module, "Core_CreateColShapeCube", capi_core_create_col_shape_cube);
+    g_call_core_create_col_shape_rectangle = GET_FUNC(module, "Core_CreateColShapeRectangle", capi_core_create_col_shape_rectangle);
+    g_call_core_create_col_shape_circle = GET_FUNC(module, "Core_CreateColShapeCircle", capi_core_create_col_shape_circle);
+    g_call_core_create_col_shape_sphere = GET_FUNC(module, "Core_CreateColShapeSphere", capi_core_create_col_shape_sphere);
+    g_call_core_create_checkpoint = GET_FUNC(module, "Core_CreateCheckpoint", capi_core_create_checkpoint);
+    g_call_core_create_voice_channel = GET_FUNC(module, "Core_CreateVoiceChannel", capi_core_create_voice_channel);
+
+    // Checkpoint
+    g_call_checkpoint_get_type = GET_FUNC(module, "Checkpoint_GetType", capi_checkpoint_get_type);
+    g_call_checkpoint_has_meta_data = GET_FUNC(module, "Checkpoint_HasMetaData", capi_checkpoint_has_meta_data);
+    g_call_checkpoint_get_meta_data = GET_FUNC(module, "Checkpoint_GetMetaData", capi_checkpoint_get_meta_data);
+    g_call_checkpoint_set_meta_data = GET_FUNC(module, "Checkpoint_SetMetaData", capi_checkpoint_set_meta_data);
+    g_call_checkpoint_delete_meta_data = GET_FUNC(module, "Checkpoint_DeleteMetaData", capi_checkpoint_delete_meta_data);
+    g_call_checkpoint_get_position = GET_FUNC(module, "Checkpoint_GetPosition", capi_checkpoint_get_position);
+    g_call_checkpoint_set_position = GET_FUNC(module, "Checkpoint_SetPosition", capi_checkpoint_set_position);
+    g_call_checkpoint_get_dimension = GET_FUNC(module, "Checkpoint_GetDimension", capi_checkpoint_get_dimension);
+    g_call_checkpoint_set_dimension = GET_FUNC(module, "Checkpoint_SetDimension", capi_checkpoint_set_dimension);
+    g_call_checkpoint_get_col_shape_type = GET_FUNC(module, "Checkpoint_GetColShapeType", capi_checkpoint_get_col_shape_type);
+    g_call_checkpoint_is_entity_in = GET_FUNC(module, "Checkpoint_IsEntityIn", capi_checkpoint_is_entity_in);
+    g_call_checkpoint_is_point_in = GET_FUNC(module, "Checkpoint_IsPointIn", capi_checkpoint_is_point_in);
+    g_call_checkpoint_set_players_only = GET_FUNC(module, "Checkpoint_SetPlayersOnly", capi_checkpoint_set_players_only);
+    g_call_checkpoint_is_players_only = GET_FUNC(module, "Checkpoint_IsPlayersOnly", capi_checkpoint_is_players_only);
+    g_call_checkpoint_get_checkpoint_type = GET_FUNC(module, "Checkpoint_GetCheckpointType", capi_checkpoint_get_checkpoint_type);
+    g_call_checkpoint_get_height = GET_FUNC(module, "Checkpoint_GetHeight", capi_checkpoint_get_height);
+    g_call_checkpoint_get_radius = GET_FUNC(module, "Checkpoint_GetRadius", capi_checkpoint_get_radius);
+    g_call_checkpoint_get_color = GET_FUNC(module, "Checkpoint_GetColor", capi_checkpoint_get_color);
+    g_call_checkpoint_get_next_position = GET_FUNC(module, "Checkpoint_GetNextPosition", capi_checkpoint_get_next_position);
+    g_call_checkpoint_set_checkpoint_type = GET_FUNC(module, "Checkpoint_SetCheckpointType", capi_checkpoint_set_checkpoint_type);
+    g_call_checkpoint_set_height = GET_FUNC(module, "Checkpoint_SetHeight", capi_checkpoint_set_height);
+    g_call_checkpoint_set_radius = GET_FUNC(module, "Checkpoint_SetRadius", capi_checkpoint_set_radius);
+    g_call_checkpoint_set_color = GET_FUNC(module, "Checkpoint_SetColor", capi_checkpoint_set_color);
+    g_call_checkpoint_set_next_position = GET_FUNC(module, "Checkpoint_SetNextPosition", capi_checkpoint_set_next_position);
+
+    // VoiceChannel
+    g_call_channel_get_type = GET_FUNC(module, "Channel_GetType", capi_channel_get_type);
+    g_call_channel_has_meta_data = GET_FUNC(module, "Channel_HasMetaData", capi_channel_has_meta_data);
+    g_call_channel_get_meta_data = GET_FUNC(module, "Channel_GetMetaData", capi_channel_get_meta_data);
+    g_call_channel_set_meta_data = GET_FUNC(module, "Channel_SetMetaData", capi_channel_set_meta_data);
+    g_call_channel_delete_meta_data = GET_FUNC(module, "Channel_DeleteMetaData", capi_channel_delete_meta_data);
+    g_call_channel_is_spatial = GET_FUNC(module, "Channel_IsSpatial", capi_channel_is_spatial);
+    g_call_channel_get_max_distance = GET_FUNC(module, "Channel_GetMaxDistance", capi_channel_get_max_distance);
+    g_call_channel_has_player = GET_FUNC(module, "Channel_HasPlayer", capi_channel_has_player);
+    g_call_channel_add_player = GET_FUNC(module, "Channel_AddPlayer", capi_channel_add_player);
+    g_call_channel_remove_player = GET_FUNC(module, "Channel_RemovePlayer", capi_channel_remove_player);
+    g_call_channel_is_player_muted = GET_FUNC(module, "Channel_IsPlayerMuted", capi_channel_is_player_muted);
+    g_call_channel_mute_player = GET_FUNC(module, "Channel_MutePlayer", capi_channel_mute_player);
+    g_call_channel_unmute_player = GET_FUNC(module, "Channel_UnmutePlayer", capi_channel_unmute_player);
+
     return 1;
 }
 // Core
@@ -525,6 +654,41 @@ void core_log_colored(const char *message)
 {
     capi_log call = GET_FUNC(module, "Core_LogColored", capi_log);
     call(message);
+}
+
+void *core_create_col_shape_cylinder(float posX, float posY, float posZ, float radius, float height)
+{
+    g_call_core_create_col_shape_cylinder(posX, posY, posZ, radius, height);
+}
+
+void *core_create_col_shape_cube(float posX1, float posY1, float posZ1, float posX2, float posY2, float posZ2)
+{
+    g_call_core_create_col_shape_cube(posX1, posY1, posZ1, posX2, posY2, posZ2);
+}
+
+void *core_create_col_shape_rectangle(float x1, float y1, float x2, float y2, float z)
+{
+    g_call_core_create_col_shape_rectangle(x1, y1, x2, y2, z);
+}
+
+void *core_create_col_shape_circle(float posX, float posY, float posZ, float radius)
+{
+    g_call_core_create_col_shape_circle(posX, posY, posZ, radius);
+}
+
+void *core_create_col_shape_sphere(float posX, float posY, float posZ, float radius)
+{
+    g_call_core_create_col_shape_sphere(posX, posY, posZ, radius);
+}
+
+void *core_create_checkpoint(unsigned short type, float x, float y, float z, float radius, float height, unsigned short r, unsigned short g, unsigned short b, unsigned short a)
+{
+    g_call_core_create_checkpoint(type, x, y, z, radius, height, r, g, b, a);
+}
+
+void *core_create_voice_channel(int spatial, float maxDistance)
+{
+    g_call_core_create_voice_channel(spatial, maxDistance);
 }
 
 // Player
@@ -1764,4 +1928,262 @@ void *core_create_vehicle(unsigned long model, float posX, float posY, float pos
                           float rotX, float rotY, float rotZ)
 {
     g_call_core_create_vehicle(model, posX, posY, posZ, rotX, rotY, rotZ);
+}
+
+// ColShape
+int col_shape_get_type(void *c)
+{
+    return g_call_col_shape_get_type(c);
+}
+
+int col_shape_has_meta_data(void* base, const char *key)
+{
+    return g_call_col_shape_has_meta_data(base, key);
+}
+
+MetaData col_shape_get_meta_data(void* base, const char *key)
+{
+    return g_call_col_shape_get_meta_data(base, key);
+}
+
+void col_shape_set_meta_data(void *base, const char *key, void *val)
+{
+    return g_call_col_shape_set_meta_data(base, key, val);
+}
+
+void col_shape_delete_meta_data(void *base, const char *key)
+{
+    return g_call_col_shape_delete_meta_data(base, key);
+}
+
+Position col_shape_get_position(void *p)
+{
+    return g_call_col_shape_get_position(p);
+}
+
+void col_shape_set_position(void* p, float x, float y, float z)
+{
+    return g_call_col_shape_set_position(p, x, y, z);
+}
+
+long col_shape_get_dimension(void* p)
+{
+    return g_call_col_shape_get_dimension(p);
+}
+
+void col_shape_set_dimension(void* p, long dimension)
+{
+    return g_call_col_shape_set_dimension(p, dimension);
+}
+
+int col_shape_get_col_shape_type(void *c)
+{
+    return g_call_col_shape_get_col_shape_type(c);
+}
+
+int col_shape_is_entity_in(void *c, void *e)
+{
+    return g_call_col_shape_is_entity_in(c, e);
+}
+
+int col_shape_is_point_in(void *c, float x, float y, float z)
+{
+    return g_call_col_shape_is_point_in(c, x, y, z);
+}
+
+void col_shape_set_players_only(void *c, int state)
+{
+    return g_call_col_shape_set_players_only(c, state);
+}
+
+int col_shape_is_players_only(void *c)
+{
+    return g_call_col_shape_is_players_only(c);
+}
+
+// Checkpoint
+int checkpoint_get_type(void *c)
+{
+    return g_call_checkpoint_get_type(c);
+}
+
+int checkpoint_has_meta_data(void* base, const char *key)
+{
+    return g_call_checkpoint_has_meta_data(base, key);
+}
+
+MetaData checkpoint_get_meta_data(void* base, const char *key)
+{
+    return g_call_checkpoint_get_meta_data(base, key);
+}
+
+void checkpoint_set_meta_data(void *base, const char *key, void *val)
+{
+    return g_call_checkpoint_set_meta_data(base, key, val);
+}
+
+void checkpoint_delete_meta_data(void *base, const char *key)
+{
+    return g_call_checkpoint_delete_meta_data(base, key);
+}
+
+Position checkpoint_get_position(void *p)
+{
+    return g_call_checkpoint_get_position(p);
+}
+
+void checkpoint_set_position(void* p, float x, float y, float z)
+{
+    return g_call_checkpoint_set_position(p, x, y, z);
+}
+
+long checkpoint_get_dimension(void* p)
+{
+    return g_call_checkpoint_get_dimension(p);
+}
+
+void checkpoint_set_dimension(void* p, long dimension)
+{
+    return g_call_checkpoint_set_dimension(p, dimension);
+}
+
+int checkpoint_get_col_shape_type(void *c)
+{
+    return g_call_checkpoint_get_col_shape_type(c);
+}
+
+int checkpoint_is_entity_in(void *c, void *e)
+{
+    return g_call_checkpoint_is_entity_in(c, e);
+}
+
+int checkpoint_is_point_in(void *c, float x, float y, float z)
+{
+    return g_call_checkpoint_is_point_in(c, x, y, z);
+}
+
+void checkpoint_set_players_only(void *c, int state)
+{
+    return g_call_checkpoint_set_players_only(c, state);
+}
+
+int checkpoint_is_players_only(void *c)
+{
+    return g_call_checkpoint_is_players_only(c);
+}
+
+unsigned char checkpoint_get_checkpoint_type(void *c)
+{
+    return g_call_checkpoint_get_checkpoint_type(c);
+}
+
+float checkpoint_get_height(void *c)
+{
+    return g_call_checkpoint_get_height(c);
+}
+
+float checkpoint_get_radius(void *c)
+{
+    return g_call_checkpoint_get_radius(c);
+}
+
+RGBA checkpoint_get_color(void *c)
+{
+    return g_call_checkpoint_get_color(c);
+}
+
+Position checkpoint_get_next_position(void *c)
+{
+    return g_call_checkpoint_get_next_position(c);
+}
+
+void checkpoint_set_checkpoint_type(void *c, unsigned char type)
+{
+    return g_call_checkpoint_set_checkpoint_type(c, type);
+}
+
+void checkpoint_set_height(void *c, float height)
+{
+    return g_call_checkpoint_set_height(c, height);
+}
+
+void checkpoint_set_radius(void *c, float radius)
+{
+    return g_call_checkpoint_set_radius(c, radius);
+}
+
+void checkpoint_set_color(void *c, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+    return g_call_checkpoint_set_color(c, r, g, b, a);
+}
+
+void checkpoint_set_next_position(void *c, float x, float y, float z)
+{
+    return g_call_checkpoint_set_next_position(c, x, y, z);
+}
+
+// VoiceChannel
+int voice_channel_get_type(void *c)
+{
+    return g_call_channel_get_type(c);
+}
+
+int voice_channel_has_meta_data(void* base, const char *key)
+{
+    return g_call_channel_has_meta_data(base, key);
+}
+
+MetaData voice_channel_get_meta_data(void* base, const char *key)
+{
+    return g_call_channel_get_meta_data(base, key);
+}
+
+void voice_channel_set_meta_data(void *base, const char *key, void *val)
+{
+    return g_call_channel_set_meta_data(base, key, val);
+}
+
+void voice_channel_delete_meta_data(void *base, const char *key)
+{
+    return g_call_channel_delete_meta_data(base, key);
+}
+
+int voice_channel_is_spatial(void *v)
+{
+    return g_call_channel_is_spatial(v);
+}
+
+float voice_channel_get_max_distance(void *v)
+{
+    return g_call_channel_get_max_distance(v);
+}
+
+int voice_channel_has_player(void *v, void *p)
+{
+    return g_call_channel_has_player(v, p);
+}
+
+void voice_channel_add_player(void *v, void *p)
+{
+    return g_call_channel_add_player(v, p);
+}
+
+void voice_channel_remove_player(void *v, void *p)
+{
+    return g_call_channel_remove_player(v, p);
+}
+
+int voice_channel_is_player_muted(void *v, void *p)
+{
+    return g_call_channel_is_player_muted(v, p);
+}
+
+void voice_channel_mute_player(void *v, void *p)
+{
+    return g_call_channel_mute_player(v, p);
+}
+
+void voice_channel_unmute_player(void *v, void *p)
+{
+    return g_call_channel_unmute_player(v, p);
 }
