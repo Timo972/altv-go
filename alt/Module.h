@@ -75,6 +75,13 @@ typedef struct fireInfo {
     unsigned long weaponHash;
 } FireInfo;
 
+typedef struct neonState {
+    int left;
+    int right;
+    int front;
+    int back;
+} VehicleNeonState;
+
 typedef struct entity {
     unsigned char Type;
     const void *Ptr;
@@ -233,7 +240,7 @@ typedef unsigned long (*capi_vehicle_get_window_tint)(void *v);
 typedef unsigned long (*capi_vehicle_get_dirt_level)(void *v);
 typedef int (*capi_vehicle_is_extra_on)(void *v, unsigned int extraID);
 typedef int (*capi_vehicle_is_neon_active)(void *v);
-typedef void (*capi_vehicle_get_neon_active)(void *v, int *left, int *right, int *front, int *back);
+typedef VehicleNeonState (*capi_vehicle_get_neon_active)(void *v);
 typedef RGBA (*capi_vehicle_get_neon_color)(void *v);
 typedef unsigned long (*capi_vehicle_get_livery)(void *v);
 typedef unsigned long (*capi_vehicle_get_roof_livery)(void *v);
@@ -326,6 +333,11 @@ typedef void (*capi_vehicle_set_bumper_damage_level)(void *v, unsigned int bumpe
 typedef void (*capi_vehicle_set_manual_engine_control)(void *v, int state);
 typedef void * (*capi_vehicle_get_attached)(void *v);
 typedef void * (*capi_vehicle_get_attached_to)(void *v);
+typedef const char * (*capi_vehicle_get_appearance_data_base64)(void *v);
+typedef const char * (*capi_vehicle_get_health_data_base64)(void *v);
+typedef const char * (*capi_vehicle_get_damage_data_base64)(void *v);
+typedef const char * (*capi_vehicle_get_script_data_base64)(void *v);
+typedef const char * (*capi_vehicle_get_game_state_base64)(void *v);
 
 typedef unsigned char (*capi_base_object_get_type)(void *base);
 
@@ -394,19 +406,19 @@ typedef void (*capi_checkpoint_set_color)(void *c, unsigned char r, unsigned cha
 typedef void (*capi_checkpoint_set_next_position)(void *c, float x, float y, float z);
 
 // VoiceChannel
-typedef int (*capi_channel_get_type)(void *c);
-typedef int (*capi_channel_has_meta_data)(void* base, const char *key);
-typedef MetaData (*capi_channel_get_meta_data)(void* base, const char *key);
-typedef void (*capi_channel_set_meta_data)(void *base, const char *key, void *val);
-typedef void (*capi_channel_delete_meta_data)(void *base, const char *key);
-typedef int (*capi_channel_is_spatial)(void *v);
-typedef float (*capi_channel_get_max_distance)(void *v);
-typedef int (*capi_channel_has_player)(void *v, void *p);
-typedef void (*capi_channel_add_player)(void *v, void *p);
-typedef void (*capi_channel_remove_player)(void *v, void *p);
-typedef int (*capi_channel_is_player_muted)(void *v, void *p);
-typedef void (*capi_channel_mute_player)(void *v, void *p);
-typedef void (*capi_channel_unmute_player)(void *v, void *p);
+typedef int (*capi_voice_channel_get_type)(void *c);
+typedef int (*capi_voice_channel_has_meta_data)(void* base, const char *key);
+typedef MetaData (*capi_voice_channel_get_meta_data)(void* base, const char *key);
+typedef void (*capi_voice_channel_set_meta_data)(void *base, const char *key, void *val);
+typedef void (*capi_voice_channel_delete_meta_data)(void *base, const char *key);
+typedef int (*capi_voice_channel_is_spatial)(void *v);
+typedef float (*capi_voice_channel_get_max_distance)(void *v);
+typedef int (*capi_voice_channel_has_player)(void *v, void *p);
+typedef void (*capi_voice_channel_add_player)(void *v, void *p);
+typedef void (*capi_voice_channel_remove_player)(void *v, void *p);
+typedef int (*capi_voice_channel_is_player_muted)(void *v, void *p);
+typedef void (*capi_voice_channel_mute_player)(void *v, void *p);
+typedef void (*capi_voice_channel_unmute_player)(void *v, void *p);
 
 typedef unsigned long (*capi_core_hash)(const char *str);
 typedef int (*capi_core_file_exists)(const char *path);
@@ -600,7 +612,7 @@ unsigned long vehicle_get_window_tint(void *v);
 unsigned long vehicle_get_dirt_level(void *v);
 int vehicle_is_extra_on(void *v, unsigned int extraID);
 int vehicle_is_neon_active(void *v);
-void vehicle_get_neon_active(void *v, int *left, int *right, int *front, int *back);
+VehicleNeonState vehicle_get_neon_active(void *v);
 RGBA vehicle_get_neon_color(void *v);
 unsigned long vehicle_get_livery(void *v);
 unsigned long vehicle_get_roof_livery(void *v);
@@ -693,6 +705,11 @@ void vehicle_set_bumper_damage_level(void *v, unsigned int bumperId, unsigned in
 void vehicle_set_manual_engine_control(void *v, int state);
 void * vehicle_get_attached(void *v);
 void * vehicle_get_attached_to(void *v);
+const char * vehicle_get_appearance_data_base64(void *v);
+const char * vehicle_get_game_state_base64(void *v);
+const char * vehicle_get_health_data_base64(void *v);
+const char * vehicle_get_damage_data_base64(void *v);
+const char * vehicle_get_script_data_base64(void *v);
 
 // MValue
 void *core_create_mvalue_bool(int value);

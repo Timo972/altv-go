@@ -3,7 +3,11 @@ package alt
 // #include <stdlib.h>
 // #include "Module.h"
 import "C"
-import "unsafe"
+import (
+	"unsafe"
+
+	"github.com/shockdev04/altv-go-pkg/internal/module"
+)
 
 type VehicleModCategory = uint8
 
@@ -163,9 +167,8 @@ func (v Vehicle) RearWheelVariation() uint8 {
 	return uint8(C.vehicle_get_rear_wheel_variation(v.Ptr))
 }
 
-// CustomTires WIP
-func CustomTires(v Vehicle) bool {
-	return false
+func (v Vehicle) CustomTires() bool {
+	return int(C.vehicle_get_custom_tires(v.Ptr)) == 1
 }
 
 func (v Vehicle) SpecialDarkness() uint8 {
@@ -196,7 +199,16 @@ func (v Vehicle) IsNeonActive() bool {
 	return int(C.vehicle_is_neon_active(v.Ptr)) == 1
 }
 
-func (v Vehicle) NeonActive() { }
+func (v Vehicle) NeonActive() (front bool, left bool, right bool, back bool) {
+	neonState := C.vehicle_get_neon_active(v.Ptr)
+
+	front = int(neonState.front) == 1
+	left = int(neonState.left) == 1
+	right = int(neonState.right) == 1
+	back = int(neonState.back) == 1
+
+	return front, left, right, back
+}
 
 func (v Vehicle) NeonColor() RGBA {
 	color := C.vehicle_get_neon_color(v.Ptr)
@@ -212,7 +224,7 @@ func (v Vehicle) RoofLivery() uint8 {
 }
 
 func (v Vehicle) AppearanceDataBase64() string {
-	return ""
+	return C.GoString(C.vehicle_get_appearance_data_base64(v.Ptr))
 }
 
 func (v Vehicle) IsEngineOn() bool {
@@ -312,7 +324,7 @@ func (v Vehicle) BodyAdditionalHealth() uint32 {
 }
 
 func (v Vehicle) HealthDataBase64() string {
-	return ""
+	return C.GoString(C.vehicle_get_health_data_base64(v.Ptr))
 }
 
 func (v Vehicle) PartDamageLevel(part uint8) uint8 {
@@ -351,8 +363,16 @@ func (v Vehicle) BumperDamageLevel(bumper uint8) uint8 {
 	return uint8(C.vehicle_get_armored_window_shoot_count(v.Ptr, C.uint(bumper)))
 }
 
+func (v Vehicle) GameStateBase64() string {
+	return C.GoString(C.vehicle_get_game_state_base64(v.Ptr))
+}
+
+func (v Vehicle) ScriptDataBase64() string {
+	return C.GoString(C.vehicle_get_script_data_base64(v.Ptr))
+}
+
 func (v Vehicle) DamageDataBase64() string {
-	return ""
+	return C.GoString(C.vehicle_get_damage_data_base64(v.Ptr))
 }
 
 func (v Vehicle) IsManualEngineControl() bool {
@@ -360,5 +380,5 @@ func (v Vehicle) IsManualEngineControl() bool {
 }
 
 func (v Vehicle) ToggleExtra(extra uint8, state bool) {
-	C.vehicle_toggle_extra(v.Ptr, C.uint(extra), C.int(state))
+	C.vehicle_toggle_extra(v.Ptr, C.uint(extra), C.int(module.Bool2int(state)))
 }
