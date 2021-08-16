@@ -314,7 +314,10 @@ func EmitServer(eventName string, args ...interface{}) {
 		cArray[i] = mValue.Ptr
 	}
 
-	C.core_trigger_local_event()
+	cEvent := C.CString(eventName)
+	defer C.free(unsafe.Pointer(cEvent))
+
+	C.core_trigger_local_event(cEvent, (*unsafe.Pointer)(ptr))
 }
 
 //export altServerScriptEvent
