@@ -1,4 +1,4 @@
-# altv-go-pkg
+# altv-go-pkg [![Build test](https://github.com/shockdev04/altv-go-pkg/actions/workflows/test-changes.yml/badge.svg)](https://github.com/shockdev04/altv-go-pkg/actions/workflows/test-changes.yml)
 Go package for alt:V Multiplayer.
 Runtime can be found [here](https://github.com/shockdev04/altv-go-module).
 
