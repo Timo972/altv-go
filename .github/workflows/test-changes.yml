@@ -77,12 +77,11 @@ jobs:
             func onStop() {
             alt.LogInfo("Resource Stopped")
             }
-
+      # export CGO_LDFLAGS="-g -02 -ldl"
       - name: Build
         run: |
           sudo add-apt-repository ppa:ubuntu-toolchain-r/test
           sudo apt-get update
           sudo apt-get install gcc-8 g++-8
-     #     export CGO_LDFLAGS="-g -02 -ldl"
           export CGO_LDFLAGS="-g -ldl"
           go build -o alt-test.so -buildmode=c-shared
