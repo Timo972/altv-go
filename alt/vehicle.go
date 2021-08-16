@@ -3,7 +3,11 @@ package alt
 // #include <stdlib.h>
 // #include "Module.h"
 import "C"
-import "unsafe"
+import (
+	"unsafe"
+
+	"github.com/shockdev04/altv-go-pkg/internal/module"
+)
 
 type VehicleModCategory = uint8
 
