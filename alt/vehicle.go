@@ -11,6 +11,92 @@ import (
 type VehicleModCategory = uint8
 type VehicleLockState = uint8
 type VehicleDoorState = uint8
+type NumberPlateStyle = uint8
+type RadioStation = uint8
+type VehicleBumper = uint8
+type VehicleBumperDamage = uint8
+type VehicleDoor = uint8
+type VehiclePart = uint8
+type VehiclePartDamage = uint8
+type WindowTint = uint8
+
+const (
+	DarkSmoke WindowTint = iota
+	Green
+	LightSmoke
+	Limo
+	None
+	PureBlack
+	Stock
+)
+
+const (
+	DamagedLevel1 VehiclePartDamage = iota
+	DamagedLevel2
+	DamagedLevel3
+	NotDamaged
+)
+
+const (
+	FrontLeft VehiclePart = iota
+	FrontRight
+	MiddleLeft
+	MiddleRight
+	RearLeft
+	RearRight
+)
+
+const (
+	DriverFront VehicleDoor = iota
+	DriverRear
+	Hood
+	PassengerFront
+	PassengerRear
+	Trunk
+)
+
+const (
+	Damaged VehicleBumperDamage = iota
+	None
+	NotDamaged
+)
+
+const (
+	Front VehicleBumper = iota
+	Rear
+)
+
+const (
+	BlaineCountyRadio RadioStation = iota
+	ChannelX
+	EastLosFm
+	FlyloFm
+	LosSantosRockRadio
+	NonStopPopFm
+	RadioLosSantos
+	RadioMirrorPark
+	RadioOff
+	RebelRadio
+	SelfRadio
+	SoulwaxFm
+	Space
+	TheBlueArk
+	TheLab
+	TheLowdown
+	VinewoodBoulevardRadio
+	WestCoastClassics
+	WestCoastTalkRadio
+	WorldWideFm
+)
+
+const (
+	BlueWhite NumberPlateStyle = iota
+	BlueWhite2
+	BlueWhite3
+	Yankton
+	YellowBlack
+	YellowBlue
+)
 
 const (
 	Closed VehicleDoorState = iota
