@@ -164,7 +164,7 @@ func (v Vehicle) RearWheelVariation() uint8 {
 }
 
 // CustomTires WIP
-func CustomTires(v Vehicle) bool {
+func (v Vehicle) CustomTires() bool {
 	return false
 }
 
@@ -361,4 +361,92 @@ func (v Vehicle) IsManualEngineControl() bool {
 
 func (v Vehicle) ToggleExtra(extra uint8, state bool) {
 	C.vehicle_toggle_extra(v.Ptr, C.uint(extra), C.int(state))
+}
+
+func (v Vehicle) SetFixed() {
+	C.vehicle_set_fixed(v.Ptr)
+}
+
+func (v Vehicle) SetMod(category uint8, id uint8) bool {
+	return int(C.vehicle_set_mod(v.Ptr, C.uint(category), C.uint(id))) == 1
+}
+
+func (v Vehicle) SetModKit(id uint8) bool {
+	return int(C.vehicle_set_mod_kit(v.Ptr, C.uint(id))) == 1
+}
+
+func (v Vehicle) SetPrimaryColor(color uint8) {
+	C.vehicle_set_primary_color(v.Ptr, C.uint(color))
+}
+
+func (v Vehicle) SetPrimaryColorRGB(color RGBA)  {
+	C.vehicle_set_primary_color_rgb(v.Ptr, C.uint(color.R), C.uint(color.G), C.uint(color.B), C.uint(color.A))
+}
+
+func (v Vehicle) SetSecondaryColor(color uint8) {
+	C.vehicle_set_secondary_color(v.Ptr, C.uint(color))
+}
+
+func (v Vehicle) SetSecondaryColorRGB(color RGBA)  {
+	C.vehicle_set_secondary_color_rgb(v.Ptr, C.uint(color.R), C.uint(color.G), C.uint(color.B), C.uint(color.A))
+}
+
+func (v Vehicle) SetPearlColor(color uint8) {
+	C.vehicle_set_pearl_color(v.Ptr, C.uint(color))
+}
+
+func (v Vehicle) SetWheelColor(color uint8) {
+	C.vehicle_set_wheel_color(v.Ptr, C.uint(color))
+}
+
+func (v Vehicle) SetInteriorColor(color uint8) {
+	C.vehicle_set_interior_color(v.Ptr, C.uint(color))
+}
+
+func (v Vehicle) SetDashboardColor(color uint8) {
+	C.vehicle_set_dashboard_color(v.Ptr, C.uint(color))
+}
+
+func (v Vehicle) SetTireSmokeColor(color RGBA) {
+	C.vehicle_set_tire_smoke_color(v.Ptr, C.uint(color.R), C.uint(color.G), C.uint(color.B), C.uint(color.A))
+}
+
+func (v Vehicle) SetWheels(wheelType uint8, variation uint8) {
+	C.vehicle_set_wheels(v.Ptr, C.uint(wheelType), C.uint(variation))
+}
+
+func (v Vehicle) SetRearWheels(variation uint8) {
+	C.vehicle_set_rear_wheels(v.Ptr, C.uint(variation))
+}
+
+func (v Vehicle) SetCustomTires(state bool) {
+	var cState int
+	if state {
+		cState = 1
+	}
+
+	C.vehicle_set_custom_tires(v.Ptr, C.int(cState))
+}
+
+func (v Vehicle) SetSpecialDarkness(value uint8) {
+	C.vehicle_set_special_darkness(v.Ptr, C.uint(value))
+}
+
+func (v Vehicle) SetNumberplateIndex(index uint32) {
+	C.vehicle_set_numberplate_index(v.Ptr, C.ulong(index))
+}
+
+func (v Vehicle) SetNumberplateText(text string) {
+	cText := C.CString(text)
+	defer C.free(unsafe.Pointer(cText))
+
+	C.vehicle_set_numberplate_text(v.Ptr, cText)
+}
+
+func (v Vehicle) SetWindowTint(tint uint8) {
+	C.vehicle_set_window_tint(v.Ptr, C.uint(tint))
+}
+
+func (v Vehicle) SetDirtLevel(dirt uint8) {
+	C.vehicle_set_dirt_level(v.Ptr, C.uint(dirt))
 }
