@@ -653,19 +653,19 @@ int load_module(const char *path)
     g_call_checkpoint_set_next_position = GET_FUNC(module, "Checkpoint_SetNextPosition", capi_checkpoint_set_next_position);
 
     // VoiceChannel
-    g_call_voice_channel_get_type = GET_FUNC(module, "voice_channel_GetType", capi_voice_channel_get_type);
-    g_call_voice_channel_has_meta_data = GET_FUNC(module, "voice_channel_HasMetaData", capi_voice_channel_has_meta_data);
-    g_call_voice_channel_get_meta_data = GET_FUNC(module, "voice_channel_GetMetaData", capi_voice_channel_get_meta_data);
-    g_call_voice_channel_set_meta_data = GET_FUNC(module, "voice_channel_SetMetaData", capi_voice_channel_set_meta_data);
-    g_call_voice_channel_delete_meta_data = GET_FUNC(module, "voice_channel_DeleteMetaData", capi_voice_channel_delete_meta_data);
-    g_call_voice_channel_is_spatial = GET_FUNC(module, "voice_channel_IsSpatial", capi_voice_channel_is_spatial);
-    g_call_voice_channel_get_max_distance = GET_FUNC(module, "voice_channel_GetMaxDistance", capi_voice_channel_get_max_distance);
-    g_call_voice_channel_has_player = GET_FUNC(module, "voice_channel_HasPlayer", capi_voice_channel_has_player);
-    g_call_voice_channel_add_player = GET_FUNC(module, "voice_channel_AddPlayer", capi_voice_channel_add_player);
-    g_call_voice_channel_remove_player = GET_FUNC(module, "voice_channel_RemovePlayer", capi_voice_channel_remove_player);
-    g_call_voice_channel_is_player_muted = GET_FUNC(module, "voice_channel_IsPlayerMuted", capi_voice_channel_is_player_muted);
-    g_call_voice_channel_mute_player = GET_FUNC(module, "voice_channel_MutePlayer", capi_voice_channel_mute_player);
-    g_call_voice_channel_unmute_player = GET_FUNC(module, "voice_channel_UnmutePlayer", capi_voice_channel_unmute_player);
+    g_call_voice_channel_get_type = GET_FUNC(module, "VoiceChannel_GetType", capi_voice_channel_get_type);
+    g_call_voice_channel_has_meta_data = GET_FUNC(module, "VoiceChannel_HasMetaData", capi_voice_channel_has_meta_data);
+    g_call_voice_channel_get_meta_data = GET_FUNC(module, "VoiceChannel_GetMetaData", capi_voice_channel_get_meta_data);
+    g_call_voice_channel_set_meta_data = GET_FUNC(module, "VoiceChannel_SetMetaData", capi_voice_channel_set_meta_data);
+    g_call_voice_channel_delete_meta_data = GET_FUNC(module, "VoiceChannel_DeleteMetaData", capi_voice_channel_delete_meta_data);
+    g_call_voice_channel_is_spatial = GET_FUNC(module, "VoiceChannel_IsSpatial", capi_voice_channel_is_spatial);
+    g_call_voice_channel_get_max_distance = GET_FUNC(module, "VoiceChannel_GetMaxDistance", capi_voice_channel_get_max_distance);
+    g_call_voice_channel_has_player = GET_FUNC(module, "VoiceChannel_HasPlayer", capi_voice_channel_has_player);
+    g_call_voice_channel_add_player = GET_FUNC(module, "VoiceChannel_AddPlayer", capi_voice_channel_add_player);
+    g_call_voice_channel_remove_player = GET_FUNC(module, "VoiceChannel_RemovePlayer", capi_voice_channel_remove_player);
+    g_call_voice_channel_is_player_muted = GET_FUNC(module, "VoiceChannel_IsPlayerMuted", capi_voice_channel_is_player_muted);
+    g_call_voice_channel_mute_player = GET_FUNC(module, "VoiceChannel_MutePlayer", capi_voice_channel_mute_player);
+    g_call_voice_channel_unmute_player = GET_FUNC(module, "VoiceChannel_UnmutePlayer", capi_voice_channel_unmute_player);
 
     return 1;
 }
