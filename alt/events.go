@@ -321,19 +321,38 @@ func EmitServer(eventName string, args ...interface{}) {
 }
 
 //export altServerScriptEvent
-func altServerScriptEvent(cName *C.char, cMValues **C.struct_data, cSize C.ulonglong) {
+func altServerScriptEvent(cName *C.char, cMValues C.struct_array, cSize C.ulonglong) {
 	name := C.GoString(cName)
-	size := int(cSize)
+	/*size := int(cSize)
 	data := (*[1 << 28]C.struct_data)(unsafe.Pointer(cMValues))[:size:size]
 	args := make([]interface{}, size)
 
 	for i := 0; i < size; i++ {
 		mValue := &MValue{Ptr: data[i].mValue, Type: uint8(data[i]._type)}
 		args[i] = mValue.GetValue()
+	}*/
+
+	size := int(cMValues.size)
+	println(size)
+	cMValueStructs := (*[1 << 28]*C.struct_metaData)(cMValues.array)[:size:size]
+	println(cMValueStructs)
+
+	args := make([]interface{}, size)
+
+	println("iterating mvalue structs")
+
+	for i, mValueStruct := range cMValueStructs {
+		println(mValueStruct)
+		_type := uint8(mValueStruct.Type)
+		println(uint(_type))
+		mValue := &MValue{Ptr: mValueStruct.Ptr, Type: _type}
+		val := mValue.GetValue()
+		println(val)
+		args[i] = val
 	}
 
 	for _, event := range On.serverScriptEvents {
-		event(name, args...)
+		event(name, args)
 	}
 }
 
