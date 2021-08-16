@@ -247,7 +247,13 @@ capi_vehicle_set_bumper_damage_level g_call_vehicle_set_bumper_damage_level;
 capi_vehicle_set_manual_engine_control g_call_vehicle_set_manual_engine_control;
 capi_vehicle_get_attached g_call_vehicle_get_attached;
 capi_vehicle_get_attached_to g_call_vehicle_get_attached_to;
+capi_vehicle_get_game_state_base64 g_call_vehicle_get_game_state_base64;
+capi_vehicle_get_appearance_data_base64 g_call_vehicle_get_appearance_data_base64;
+capi_vehicle_get_health_data_base64 g_call_vehicle_get_health_data_base64;
+capi_vehicle_get_damage_data_base64 g_call_vehicle_get_damage_data_base64;
+capi_vehicle_get_script_data_base64 g_call_vehicle_get_script_data_base64;
 
+// Core
 capi_core_hash g_call_core_hash;
 capi_core_file_exists g_call_core_file_exists;
 capi_core_read_file g_call_core_read_file;
@@ -310,19 +316,19 @@ capi_checkpoint_set_color g_call_checkpoint_set_color;
 capi_checkpoint_set_next_position g_call_checkpoint_set_next_position;
 
 // VoiceChannel
-capi_channel_get_type g_call_channel_get_type;
-capi_channel_has_meta_data g_call_channel_has_meta_data;
-capi_channel_get_meta_data g_call_channel_get_meta_data;
-capi_channel_set_meta_data g_call_channel_set_meta_data;
-capi_channel_delete_meta_data g_call_channel_delete_meta_data;
-capi_channel_is_spatial g_call_channel_is_spatial;
-capi_channel_get_max_distance g_call_channel_get_max_distance;
-capi_channel_has_player g_call_channel_has_player;
-capi_channel_add_player g_call_channel_add_player;
-capi_channel_remove_player g_call_channel_remove_player;
-capi_channel_is_player_muted g_call_channel_is_player_muted;
-capi_channel_mute_player g_call_channel_mute_player;
-capi_channel_unmute_player g_call_channel_unmute_player;
+capi_voice_channel_get_type g_call_voice_channel_get_type;
+capi_voice_channel_has_meta_data g_call_voice_channel_has_meta_data;
+capi_voice_channel_get_meta_data g_call_voice_channel_get_meta_data;
+capi_voice_channel_set_meta_data g_call_voice_channel_set_meta_data;
+capi_voice_channel_delete_meta_data g_call_voice_channel_delete_meta_data;
+capi_voice_channel_is_spatial g_call_voice_channel_is_spatial;
+capi_voice_channel_get_max_distance g_call_voice_channel_get_max_distance;
+capi_voice_channel_has_player g_call_voice_channel_has_player;
+capi_voice_channel_add_player g_call_voice_channel_add_player;
+capi_voice_channel_remove_player g_call_voice_channel_remove_player;
+capi_voice_channel_is_player_muted g_call_voice_channel_is_player_muted;
+capi_voice_channel_mute_player g_call_voice_channel_mute_player;
+capi_voice_channel_unmute_player g_call_voice_channel_unmute_player;
 
 int load_module(const char *path)
 {
@@ -570,6 +576,11 @@ int load_module(const char *path)
     g_call_vehicle_set_manual_engine_control = GET_FUNC(module, "Vehicle_SetManualEngineControl", capi_vehicle_set_manual_engine_control);
     g_call_vehicle_get_attached = GET_FUNC(module, "Vehicle_GetAttached", capi_vehicle_get_attached);
     g_call_vehicle_get_attached_to = GET_FUNC(module, "Vehicle_GetAttachedTo", capi_vehicle_get_attached_to);
+    g_call_vehicle_get_appearance_data_base64 = GET_FUNC(module, "Vehicle_GetAppearanceDataBase64", capi_vehicle_get_appearance_data_base64);
+    g_call_vehicle_get_game_state_base64 = GET_FUNC(module, "Vehicle_GetGameStateBase64", capi_vehicle_get_game_state_base64);
+    g_call_vehicle_get_health_data_base64 = GET_FUNC(module, "Vehicle_GetHealthDataBase64", capi_vehicle_get_health_data_base64);
+    g_call_vehicle_get_damage_data_base64 = GET_FUNC(module, "Vehicle_GetDamageDataBase64", capi_vehicle_get_damage_data_base64);
+    g_call_vehicle_get_script_data_base64 = GET_FUNC(module, "Vehicle_GetScriptDataBase64", capi_vehicle_get_script_data_base64);
 
     // Core
     g_call_core_hash = GET_FUNC(module, "Core_Hash", capi_core_hash);
@@ -642,19 +653,19 @@ int load_module(const char *path)
     g_call_checkpoint_set_next_position = GET_FUNC(module, "Checkpoint_SetNextPosition", capi_checkpoint_set_next_position);
 
     // VoiceChannel
-    g_call_channel_get_type = GET_FUNC(module, "Channel_GetType", capi_channel_get_type);
-    g_call_channel_has_meta_data = GET_FUNC(module, "Channel_HasMetaData", capi_channel_has_meta_data);
-    g_call_channel_get_meta_data = GET_FUNC(module, "Channel_GetMetaData", capi_channel_get_meta_data);
-    g_call_channel_set_meta_data = GET_FUNC(module, "Channel_SetMetaData", capi_channel_set_meta_data);
-    g_call_channel_delete_meta_data = GET_FUNC(module, "Channel_DeleteMetaData", capi_channel_delete_meta_data);
-    g_call_channel_is_spatial = GET_FUNC(module, "Channel_IsSpatial", capi_channel_is_spatial);
-    g_call_channel_get_max_distance = GET_FUNC(module, "Channel_GetMaxDistance", capi_channel_get_max_distance);
-    g_call_channel_has_player = GET_FUNC(module, "Channel_HasPlayer", capi_channel_has_player);
-    g_call_channel_add_player = GET_FUNC(module, "Channel_AddPlayer", capi_channel_add_player);
-    g_call_channel_remove_player = GET_FUNC(module, "Channel_RemovePlayer", capi_channel_remove_player);
-    g_call_channel_is_player_muted = GET_FUNC(module, "Channel_IsPlayerMuted", capi_channel_is_player_muted);
-    g_call_channel_mute_player = GET_FUNC(module, "Channel_MutePlayer", capi_channel_mute_player);
-    g_call_channel_unmute_player = GET_FUNC(module, "Channel_UnmutePlayer", capi_channel_unmute_player);
+    g_call_voice_channel_get_type = GET_FUNC(module, "VoiceChannel_GetType", capi_voice_channel_get_type);
+    g_call_voice_channel_has_meta_data = GET_FUNC(module, "VoiceChannel_HasMetaData", capi_voice_channel_has_meta_data);
+    g_call_voice_channel_get_meta_data = GET_FUNC(module, "VoiceChannel_GetMetaData", capi_voice_channel_get_meta_data);
+    g_call_voice_channel_set_meta_data = GET_FUNC(module, "VoiceChannel_SetMetaData", capi_voice_channel_set_meta_data);
+    g_call_voice_channel_delete_meta_data = GET_FUNC(module, "VoiceChannel_DeleteMetaData", capi_voice_channel_delete_meta_data);
+    g_call_voice_channel_is_spatial = GET_FUNC(module, "VoiceChannel_IsSpatial", capi_voice_channel_is_spatial);
+    g_call_voice_channel_get_max_distance = GET_FUNC(module, "VoiceChannel_GetMaxDistance", capi_voice_channel_get_max_distance);
+    g_call_voice_channel_has_player = GET_FUNC(module, "VoiceChannel_HasPlayer", capi_voice_channel_has_player);
+    g_call_voice_channel_add_player = GET_FUNC(module, "VoiceChannel_AddPlayer", capi_voice_channel_add_player);
+    g_call_voice_channel_remove_player = GET_FUNC(module, "VoiceChannel_RemovePlayer", capi_voice_channel_remove_player);
+    g_call_voice_channel_is_player_muted = GET_FUNC(module, "VoiceChannel_IsPlayerMuted", capi_voice_channel_is_player_muted);
+    g_call_voice_channel_mute_player = GET_FUNC(module, "VoiceChannel_MutePlayer", capi_voice_channel_mute_player);
+    g_call_voice_channel_unmute_player = GET_FUNC(module, "VoiceChannel_UnmutePlayer", capi_voice_channel_unmute_player);
 
     return 1;
 }
@@ -727,12 +738,12 @@ MetaData core_get_meta_data(const char *key)
 
 void core_set_meta_data(const char *key, void *val)
 {
-    return g_call_core_set_meta_data(key, val);
+    g_call_core_set_meta_data(key, val);
 }
 
 void core_delete_meta_data(const char *key)
 {
-    return g_call_core_delete_meta_data(key);
+    g_call_core_delete_meta_data(key);
 }
 
 int core_has_synced_meta_data(const char *key)
@@ -767,7 +778,7 @@ int core_restart_resource(const char *name)
 
 void core_set_synced_meta_data(const char *key, void *val)
 {
-    return g_call_core_set_synced_meta_data(key, val);
+    g_call_core_set_synced_meta_data(key, val);
 }
 
 void core_delete_synced_meta_data(const char *key)
@@ -782,7 +793,7 @@ Array core_get_players_by_name(const char *name)
 
 void core_set_password(const char *password)
 {
-    return g_call_core_set_password(password);
+    g_call_core_set_password(password);
 }
 
 void *core_create_col_shape_cylinder(float posX, float posY, float posZ, float radius, float height)
@@ -838,12 +849,12 @@ MetaData player_get_meta_data(void* base, const char *key)
 
 void player_set_meta_data(void *base, const char *key, void *val)
 {
-    return g_call_player_set_meta_data(base, key, val);
+    g_call_player_set_meta_data(base, key, val);
 }
 
 void player_delete_meta_data(void *base, const char *key)
 {
-    return g_call_player_delete_meta_data(base, key);
+    g_call_player_delete_meta_data(base, key);
 }
 
 int player_has_synced_meta_data(void* base, const char *key)
@@ -858,12 +869,12 @@ MetaData player_get_synced_meta_data(void* base, const char *key)
 
 void player_set_synced_meta_data(void *base, const char *key, void *val)
 {
-    return g_call_player_set_synced_meta_data(base, key, val);
+    g_call_player_set_synced_meta_data(base, key, val);
 }
 
 void player_delete_synced_meta_data(void *base, const char *key)
 {
-    return g_call_player_delete_synced_meta_data(base, key);
+    g_call_player_delete_synced_meta_data(base, key);
 }
 
 int player_has_stream_synced_meta_data(void* base, const char *key)
@@ -878,12 +889,12 @@ MetaData player_get_stream_synced_meta_data(void* base, const char *key)
 
 void player_set_stream_synced_meta_data(void *base, const char *key, void *val)
 {
-    return g_call_player_set_stream_synced_meta_data(base, key, val);
+    g_call_player_set_stream_synced_meta_data(base, key, val);
 }
 
 void player_delete_stream_synced_meta_data(void *base, const char *key)
 {
-    return g_call_player_delete_stream_synced_meta_data(base, key);
+    g_call_player_delete_stream_synced_meta_data(base, key);
 }
 
 Position player_get_position(void *p)
@@ -893,7 +904,7 @@ Position player_get_position(void *p)
 
 void player_set_position(void* p, float x, float y, float z)
 {
-    return g_call_player_set_position(p, x, y, z);
+    g_call_player_set_position(p, x, y, z);
 }
 
 Rotation player_get_rotation(void *p)
@@ -903,7 +914,7 @@ Rotation player_get_rotation(void *p)
 
 void player_set_rotation(void *p, float roll, float pitch, float yaw)
 {
-    return g_call_player_set_rotation(p, roll, pitch, yaw);
+    g_call_player_set_rotation(p, roll, pitch, yaw);
 }
 
 long player_get_dimension(void* p)
@@ -913,7 +924,7 @@ long player_get_dimension(void* p)
 
 void player_set_dimension(void* p, long dimension)
 {
-    return g_call_player_set_dimension(p, dimension);
+    g_call_player_set_dimension(p, dimension);
 }
 
 void player_spawn(void *p, float x, float y, float z, unsigned long delay)
@@ -928,7 +939,7 @@ void player_despawn(void *p)
 
 void player_set_model(void *p, unsigned long model)
 {
-    return g_call_player_set_model(p, model);
+    g_call_player_set_model(p, model);
 }
 
 unsigned long player_get_model(void *p)
@@ -943,7 +954,7 @@ unsigned int player_get_health(void *p)
 
 void player_set_health(void *p, unsigned int health)
 {
-    return g_call_player_set_health(p, health);
+    g_call_player_set_health(p, health);
 }
 
 int player_has_weapon_component(void *p, unsigned long weapon, unsigned long component)
@@ -1008,7 +1019,7 @@ unsigned int player_get_armour(void *p)
 
 void player_set_armour(void *p, unsigned int armour)
 {
-    return g_call_player_set_armour(p, armour);
+    g_call_player_set_armour(p, armour);
 }
 
 float player_get_move_speed(void *p)
@@ -1093,17 +1104,17 @@ const char* player_get_auth_token(void *p)
 
 void player_set_max_armour(void *p, unsigned int armour)
 {
-    return g_call_player_set_max_armour(p, armour);
+    g_call_player_set_max_armour(p, armour);
 }
 
 void player_set_current_weapon(void *p, unsigned long weapon)
 {
-    return g_call_player_set_current_weapon(p, weapon);
+    g_call_player_set_current_weapon(p, weapon);
 }
 
 void player_set_weapon_tint_index(void *p, unsigned long weapon, unsigned int tintIndex)
 {
-    return g_call_player_set_weapon_tint_index(p, weapon, tintIndex);
+    g_call_player_set_weapon_tint_index(p, weapon, tintIndex);
 }
 
 void player_add_weapon_component(void *p, unsigned long weapon, unsigned long component)
@@ -1123,7 +1134,7 @@ void player_clear_blood_damage(void *p)
 
 void player_set_max_health(void *p, unsigned int health)
 {
-    return g_call_player_set_max_health(p, health);
+    g_call_player_set_max_health(p, health);
 }
 
 void player_give_weapon(void *p, unsigned long weapon, long ammo, int selectWeapon)
@@ -1143,12 +1154,12 @@ void player_remove_all_weapons(void *p)
 
 void player_set_date_time(void *p, int day, int month, int year, int hour, int minute, int second)
 {
-    return g_call_player_set_date_time(p, day, month, year, hour, minute, second);
+    g_call_player_set_date_time(p, day, month, year, hour, minute, second);
 }
 
 void player_set_weather(void *p, unsigned long weather)
 {
-    return g_call_player_set_weather(p, weather);
+    g_call_player_set_weather(p, weather);
 }
 
 void player_kick(void *p, const char* reason)
@@ -1178,22 +1189,22 @@ DlcProp player_get_dlc_props(void *p, unsigned int component)
 
 void player_set_clothes(void *p, unsigned int component, unsigned int drawable, unsigned int texture, unsigned int palette)
 {
-    return g_call_player_set_clothes(p, component, drawable, texture, palette);
+    g_call_player_set_clothes(p, component, drawable, texture, palette);
 }
 
 void player_set_dlc_clothes(void *p, unsigned int component, unsigned int drawable, unsigned int texture, unsigned int palette, unsigned long dlc)
 {
-    return g_call_player_set_dlc_clothes(p, component, drawable, texture, palette, dlc);
+    g_call_player_set_dlc_clothes(p, component, drawable, texture, palette, dlc);
 }
 
 void player_set_props(void *p, unsigned int component, unsigned int drawable, unsigned int texture)
 {
-    return g_call_player_set_props(p, component, drawable, texture);
+    g_call_player_set_props(p, component, drawable, texture);
 }
 
 void player_set_dlc_props(void *p, unsigned int component, unsigned int drawable, unsigned int texture, unsigned long dlc)
 {
-    return g_call_player_set_dlc_props(p, component, drawable, texture, dlc);
+    g_call_player_set_dlc_props(p, component, drawable, texture, dlc);
 }
 
 void player_clear_props(void *p, unsigned int component)
@@ -1228,7 +1239,7 @@ void player_attach_to_entity(void *p, void *e, int otherBoneIndex, int myBoneInd
 
 void player_set_visible(void *p, int toggle)
 {
-    return g_call_player_set_visible(p, toggle);
+    g_call_player_set_visible(p, toggle);
 }
 
 int player_get_visible(void *p)
@@ -1248,7 +1259,7 @@ void * player_get_network_owner(void *p)
 
 void player_set_network_owner(void *p, void *owner, int disableMigration)
 {
-    return g_call_player_set_network_owner(p, owner, disableMigration);
+    g_call_player_set_network_owner(p, owner, disableMigration);
 }
 
 // Vehicle
@@ -1264,12 +1275,12 @@ MetaData vehicle_get_meta_data(void* base, const char *key)
 
 void vehicle_set_meta_data(void *base, const char *key, void *val)
 {
-    return g_call_vehicle_set_meta_data(base, key, val);
+    g_call_vehicle_set_meta_data(base, key, val);
 }
 
 void vehicle_delete_meta_data(void *base, const char *key)
 {
-    return g_call_vehicle_delete_meta_data(base, key);
+    g_call_vehicle_delete_meta_data(base, key);
 }
 
 int vehicle_has_synced_meta_data(void* base, const char *key)
@@ -1284,12 +1295,12 @@ MetaData vehicle_get_synced_meta_data(void* base, const char *key)
 
 void vehicle_set_synced_meta_data(void *base, const char *key, void *val)
 {
-    return g_call_vehicle_set_synced_meta_data(base, key, val);
+    g_call_vehicle_set_synced_meta_data(base, key, val);
 }
 
 void vehicle_delete_synced_meta_data(void *base, const char *key)
 {
-    return g_call_vehicle_delete_synced_meta_data(base, key);
+    g_call_vehicle_delete_synced_meta_data(base, key);
 }
 
 int vehicle_has_stream_synced_meta_data(void* base, const char *key)
@@ -1304,12 +1315,12 @@ MetaData vehicle_get_stream_synced_meta_data(void* base, const char *key)
 
 void vehicle_set_stream_synced_meta_data(void *base, const char *key, void *val)
 {
-    return g_call_vehicle_set_stream_synced_meta_data(base, key, val);
+    g_call_vehicle_set_stream_synced_meta_data(base, key, val);
 }
 
 void vehicle_delete_stream_synced_meta_data(void *base, const char *key)
 {
-    return g_call_vehicle_delete_stream_synced_meta_data(base, key);
+    g_call_vehicle_delete_stream_synced_meta_data(base, key);
 }
 
 Position vehicle_get_position(void *v)
@@ -1319,7 +1330,7 @@ Position vehicle_get_position(void *v)
 
 void vehicle_set_position(void *v, float x, float y, float z)
 {
-    return g_call_vehicle_set_position(v, x, y, z);
+    g_call_vehicle_set_position(v, x, y, z);
 }
 
 Rotation vehicle_get_rotation(void *v)
@@ -1329,7 +1340,7 @@ Rotation vehicle_get_rotation(void *v)
 
 void vehicle_set_rotation(void *v, float roll, float pitch, float yaw)
 {
-    return g_call_vehicle_set_rotation(v, roll, pitch, yaw);
+    g_call_vehicle_set_rotation(v, roll, pitch, yaw);
 }
 
 long vehicle_get_dimension(void *v)
@@ -1339,7 +1350,7 @@ long vehicle_get_dimension(void *v)
 
 void vehicle_set_dimension(void *v, long dimension)
 {
-    return g_call_vehicle_set_dimension(v, dimension);
+    g_call_vehicle_set_dimension(v, dimension);
 }
 
 unsigned long vehicle_get_id(void *v)
@@ -1364,7 +1375,7 @@ void vehicle_attach_to_entity(void *v, void *e, int otherBoneIndex, int myBoneIn
 
 void vehicle_set_visible(void *v, int toggle)
 {
-    return g_call_vehicle_set_visible(v, toggle);
+    g_call_vehicle_set_visible(v, toggle);
 }
 
 int vehicle_get_visible(void *v)
@@ -1379,7 +1390,7 @@ void * vehicle_get_network_owner(void *v)
 
 void vehicle_set_network_owner(void *v, void *owner, int disableMigration)
 {
-    return g_call_vehicle_set_network_owner(v, owner, disableMigration);
+    g_call_vehicle_set_network_owner(v, owner, disableMigration);
 }
 
 void * vehicle_get_driver(void *v)
@@ -1527,9 +1538,9 @@ int vehicle_is_neon_active(void *v)
     return g_call_vehicle_is_neon_active(v);
 }
 
-void vehicle_get_neon_active(void *v, int *left, int *right, int *front, int *back)
+VehicleNeonState vehicle_get_neon_active(void *v)
 {
-    return g_call_vehicle_get_neon_active(v, left, right, front, back);
+    return g_call_vehicle_get_neon_active(v);
 }
 
 RGBA vehicle_get_neon_color(void *v)
@@ -1724,7 +1735,7 @@ void vehicle_toggle_extra(void *v, unsigned int extraID, int state)
 
 void vehicle_set_fixed(void *v)
 {
-    return g_call_vehicle_set_fixed(v);
+    g_call_vehicle_set_fixed(v);
 }
 
 int vehicle_set_mod(void *v, unsigned int category, unsigned int id)
@@ -1739,247 +1750,247 @@ int vehicle_set_mod_kit(void *v, unsigned int id)
 
 void vehicle_set_primary_color(void *v, unsigned int color)
 {
-    return g_call_vehicle_set_primary_color(v, color);
+    g_call_vehicle_set_primary_color(v, color);
 }
 
 void vehicle_set_primary_color_r_g_b(void *v, unsigned int r, unsigned int g, unsigned int b, unsigned int a)
 {
-    return g_call_vehicle_set_primary_color_r_g_b(v, r, g, b, a);
+    g_call_vehicle_set_primary_color_r_g_b(v, r, g, b, a);
 }
 
 void vehicle_set_secondary_color(void *v, unsigned int color)
 {
-    return g_call_vehicle_set_secondary_color(v, color);
+    g_call_vehicle_set_secondary_color(v, color);
 }
 
 void vehicle_set_secondary_color_r_g_b(void *v, unsigned int r, unsigned int g, unsigned int b, unsigned int a)
 {
-    return g_call_vehicle_set_secondary_color_r_g_b(v, r, g, b, a);
+    g_call_vehicle_set_secondary_color_r_g_b(v, r, g, b, a);
 }
 
 void vehicle_set_pearl_color(void *v, unsigned int color)
 {
-    return g_call_vehicle_set_pearl_color(v, color);
+    g_call_vehicle_set_pearl_color(v, color);
 }
 
 void vehicle_set_wheel_color(void *v, unsigned int color)
 {
-    return g_call_vehicle_set_wheel_color(v, color);
+    g_call_vehicle_set_wheel_color(v, color);
 }
 
 void vehicle_set_interior_color(void *v, unsigned int color)
 {
-    return g_call_vehicle_set_interior_color(v, color);
+    g_call_vehicle_set_interior_color(v, color);
 }
 
 void vehicle_set_dashboard_color(void *v, unsigned int color)
 {
-    return g_call_vehicle_set_dashboard_color(v, color);
+    g_call_vehicle_set_dashboard_color(v, color);
 }
 
 void vehicle_set_tire_smoke_color(void *v, unsigned int r, unsigned int g, unsigned int b, unsigned int a)
 {
-    return g_call_vehicle_set_tire_smoke_color(v, r, g, b, a);
+    g_call_vehicle_set_tire_smoke_color(v, r, g, b, a);
 }
 
 void vehicle_set_wheels(void *v, unsigned int type, unsigned int variation)
 {
-    return g_call_vehicle_set_wheels(v, type, variation);
+    g_call_vehicle_set_wheels(v, type, variation);
 }
 
 void vehicle_set_rear_wheels(void *v, unsigned int variation)
 {
-    return g_call_vehicle_set_rear_wheels(v, variation);
+    g_call_vehicle_set_rear_wheels(v, variation);
 }
 
 void vehicle_set_custom_tires(void *v, int state)
 {
-    return g_call_vehicle_set_custom_tires(v, state);
+    g_call_vehicle_set_custom_tires(v, state);
 }
 
 void vehicle_set_special_darkness(void *v, unsigned int value)
 {
-    return g_call_vehicle_set_special_darkness(v, value);
+    g_call_vehicle_set_special_darkness(v, value);
 }
 
 void vehicle_set_numberplate_index(void *v, unsigned int index)
 {
-    return g_call_vehicle_set_numberplate_index(v, index);
+    g_call_vehicle_set_numberplate_index(v, index);
 }
 
 void vehicle_set_numberplate_text(void *v, const char* text)
 {
-    return g_call_vehicle_set_numberplate_text(v, text);
+    g_call_vehicle_set_numberplate_text(v, text);
 }
 
 void vehicle_set_window_tint(void *v, unsigned int tint)
 {
-    return g_call_vehicle_set_window_tint(v, tint);
+    g_call_vehicle_set_window_tint(v, tint);
 }
 
 void vehicle_set_dirt_level(void *v, unsigned int level)
 {
-    return g_call_vehicle_set_dirt_level(v, level);
+    g_call_vehicle_set_dirt_level(v, level);
 }
 
 void vehicle_set_neon_active(void *v, int left, int right, int front, int back)
 {
-    return g_call_vehicle_set_neon_active(v, left, right, front, back);
+    g_call_vehicle_set_neon_active(v, left, right, front, back);
 }
 
 void vehicle_set_neon_color(void *v, unsigned int r, unsigned int g, unsigned int b, unsigned int a)
 {
-    return g_call_vehicle_set_neon_color(v, r, g, b, a);
+    g_call_vehicle_set_neon_color(v, r, g, b, a);
 }
 
 void vehicle_set_livery(void *v, unsigned int livery)
 {
-    return g_call_vehicle_set_livery(v, livery);
+    g_call_vehicle_set_livery(v, livery);
 }
 
 void vehicle_set_roof_livery(void *v, unsigned int roofLivery)
 {
-    return g_call_vehicle_set_roof_livery(v, roofLivery);
+    g_call_vehicle_set_roof_livery(v, roofLivery);
 }
 
 void vehicle_set_engine_on(void *v, int state)
 {
-    return g_call_vehicle_set_engine_on(v, state);
+    g_call_vehicle_set_engine_on(v, state);
 }
 
 void vehicle_set_headlight_color(void *v, unsigned int color)
 {
-    return g_call_vehicle_set_headlight_color(v, color);
+    g_call_vehicle_set_headlight_color(v, color);
 }
 
 void vehicle_set_radio_station_index(void *v, unsigned int stationIndex)
 {
-    return g_call_vehicle_set_radio_station_index(v, stationIndex);
+    g_call_vehicle_set_radio_station_index(v, stationIndex);
 }
 
 void vehicle_set_siren_active(void *v, int state)
 {
-    return g_call_vehicle_set_siren_active(v, state);
+    g_call_vehicle_set_siren_active(v, state);
 }
 
 void vehicle_set_lock_state(void *v, unsigned int state)
 {
-    return g_call_vehicle_set_lock_state(v, state);
+    g_call_vehicle_set_lock_state(v, state);
 }
 
 void vehicle_set_door_state(void *v, unsigned int doorId, unsigned int state)
 {
-    return g_call_vehicle_set_door_state(v, doorId, state);
+    g_call_vehicle_set_door_state(v, doorId, state);
 }
 
 void vehicle_set_window_opened(void *v, unsigned int windowId, int state)
 {
-    return g_call_vehicle_set_window_opened(v, windowId, state);
+    g_call_vehicle_set_window_opened(v, windowId, state);
 }
 
 void vehicle_set_roof_state(void *v, unsigned int state)
 {
-    return g_call_vehicle_set_roof_state(v, state);
+    g_call_vehicle_set_roof_state(v, state);
 }
 
 void vehicle_set_lights_multiplier(void *v, float multiplier)
 {
-    return g_call_vehicle_set_lights_multiplier(v, multiplier);
+    g_call_vehicle_set_lights_multiplier(v, multiplier);
 }
 
 void vehicle_set_engine_health(void *v, unsigned long health)
 {
-    return g_call_vehicle_set_engine_health(v, health);
+    g_call_vehicle_set_engine_health(v, health);
 }
 
 void vehicle_set_petrol_tank_health(void *v, unsigned long health)
 {
-    return g_call_vehicle_set_petrol_tank_health(v, health);
+    g_call_vehicle_set_petrol_tank_health(v, health);
 }
 
 void vehicle_set_wheel_burst(void *v, unsigned int wheelId, int state)
 {
-    return g_call_vehicle_set_wheel_burst(v, wheelId, state);
+    g_call_vehicle_set_wheel_burst(v, wheelId, state);
 }
 
 void vehicle_set_wheel_has_tire(void *v, unsigned int wheelId, int state)
 {
-    return g_call_vehicle_set_wheel_has_tire(v, wheelId, state);
+    g_call_vehicle_set_wheel_has_tire(v, wheelId, state);
 }
 
 void vehicle_set_wheel_detached(void *v, unsigned int wheelId, int state)
 {
-    return g_call_vehicle_set_wheel_detached(v, wheelId, state);
+    g_call_vehicle_set_wheel_detached(v, wheelId, state);
 }
 
 void vehicle_set_wheel_on_fire(void *v, unsigned int wheelId, int state)
 {
-    return g_call_vehicle_set_wheel_on_fire(v, wheelId, state);
+    g_call_vehicle_set_wheel_on_fire(v, wheelId, state);
 }
 
 void vehicle_set_wheel_health(void *v, unsigned int wheelId, float health)
 {
-    return g_call_vehicle_set_wheel_health(v, wheelId, health);
+    g_call_vehicle_set_wheel_health(v, wheelId, health);
 }
 
 void vehicle_set_wheel_fixed(void *v, unsigned int wheelId)
 {
-    return g_call_vehicle_set_wheel_fixed(v, wheelId);
+    g_call_vehicle_set_wheel_fixed(v, wheelId);
 }
 
 void vehicle_set_body_health(void *v, unsigned long health)
 {
-    return g_call_vehicle_set_body_health(v, health);
+    g_call_vehicle_set_body_health(v, health);
 }
 
 void vehicle_set_body_additional_health(void *v, unsigned long health)
 {
-    return g_call_vehicle_set_body_additional_health(v, health);
+    g_call_vehicle_set_body_additional_health(v, health);
 }
 
 void vehicle_set_part_damage_level(void *v, unsigned int partId, unsigned int damage)
 {
-    return g_call_vehicle_set_part_damage_level(v, partId, damage);
+    g_call_vehicle_set_part_damage_level(v, partId, damage);
 }
 
 void vehicle_set_part_bullet_holes(void *v, unsigned int partId, unsigned int shootsCount)
 {
-    return g_call_vehicle_set_part_bullet_holes(v, partId, shootsCount);
+    g_call_vehicle_set_part_bullet_holes(v, partId, shootsCount);
 }
 
 void vehicle_set_light_damaged(void *v, unsigned int lightId, int isDamaged)
 {
-    return g_call_vehicle_set_light_damaged(v, lightId, isDamaged);
+    g_call_vehicle_set_light_damaged(v, lightId, isDamaged);
 }
 
 void vehicle_set_window_damaged(void *v, unsigned int windowId, int isDamaged)
 {
-    return g_call_vehicle_set_window_damaged(v, windowId, isDamaged);
+    g_call_vehicle_set_window_damaged(v, windowId, isDamaged);
 }
 
 void vehicle_set_special_light_damaged(void *v, unsigned int specialLightId, int isDamaged)
 {
-    return g_call_vehicle_set_special_light_damaged(v, specialLightId, isDamaged);
+    g_call_vehicle_set_special_light_damaged(v, specialLightId, isDamaged);
 }
 
 void vehicle_set_armored_window_health(void *v, unsigned int windowId, float health)
 {
-    return g_call_vehicle_set_armored_window_health(v, windowId, health);
+    g_call_vehicle_set_armored_window_health(v, windowId, health);
 }
 
 void vehicle_set_armored_window_shoot_count(void *v, unsigned int windowId, unsigned int count)
 {
-    return g_call_vehicle_set_armored_window_shoot_count(v, windowId, count);
+    g_call_vehicle_set_armored_window_shoot_count(v, windowId, count);
 }
 
 void vehicle_set_bumper_damage_level(void *v, unsigned int bumperId, unsigned int damageLevel)
 {
-    return g_call_vehicle_set_bumper_damage_level(v, bumperId, damageLevel);
+    g_call_vehicle_set_bumper_damage_level(v, bumperId, damageLevel);
 }
 
 void vehicle_set_manual_engine_control(void *v, int state)
 {
-    return g_call_vehicle_set_manual_engine_control(v, state);
+    g_call_vehicle_set_manual_engine_control(v, state);
 }
 
 void * vehicle_get_attached(void *v)
@@ -1990,6 +2001,31 @@ void * vehicle_get_attached(void *v)
 void * vehicle_get_attached_to(void *v)
 {
     return g_call_vehicle_get_attached_to(v);
+}
+
+const char * vehicle_get_appearance_data_base64(void *v)
+{
+    return g_call_vehicle_get_appearance_data_base64(v);
+}
+
+const char * vehicle_get_game_state_base64(void *v)
+{
+    return g_call_vehicle_get_game_state_base64(v);
+}
+
+const char * vehicle_get_health_data_base64(void *v)
+{
+    return g_call_vehicle_get_health_data_base64(v);
+}
+
+const char * vehicle_get_damage_data_base64(void *v)
+{
+    return g_call_vehicle_get_damage_data_base64(v);
+}
+
+const char * vehicle_get_script_data_base64(void *v)
+{
+    return g_call_vehicle_get_script_data_base64(v);
 }
 
 // Core
@@ -2077,12 +2113,12 @@ MetaData col_shape_get_meta_data(void* base, const char *key)
 
 void col_shape_set_meta_data(void *base, const char *key, void *val)
 {
-    return g_call_col_shape_set_meta_data(base, key, val);
+    g_call_col_shape_set_meta_data(base, key, val);
 }
 
 void col_shape_delete_meta_data(void *base, const char *key)
 {
-    return g_call_col_shape_delete_meta_data(base, key);
+    g_call_col_shape_delete_meta_data(base, key);
 }
 
 Position col_shape_get_position(void *p)
@@ -2092,7 +2128,7 @@ Position col_shape_get_position(void *p)
 
 void col_shape_set_position(void* p, float x, float y, float z)
 {
-    return g_call_col_shape_set_position(p, x, y, z);
+    g_call_col_shape_set_position(p, x, y, z);
 }
 
 long col_shape_get_dimension(void* p)
@@ -2102,7 +2138,7 @@ long col_shape_get_dimension(void* p)
 
 void col_shape_set_dimension(void* p, long dimension)
 {
-    return g_call_col_shape_set_dimension(p, dimension);
+    g_call_col_shape_set_dimension(p, dimension);
 }
 
 int col_shape_get_col_shape_type(void *c)
@@ -2122,7 +2158,7 @@ int col_shape_is_point_in(void *c, float x, float y, float z)
 
 void col_shape_set_players_only(void *c, int state)
 {
-    return g_call_col_shape_set_players_only(c, state);
+    g_call_col_shape_set_players_only(c, state);
 }
 
 int col_shape_is_players_only(void *c)
@@ -2148,12 +2184,12 @@ MetaData checkpoint_get_meta_data(void* base, const char *key)
 
 void checkpoint_set_meta_data(void *base, const char *key, void *val)
 {
-    return g_call_checkpoint_set_meta_data(base, key, val);
+    g_call_checkpoint_set_meta_data(base, key, val);
 }
 
 void checkpoint_delete_meta_data(void *base, const char *key)
 {
-    return g_call_checkpoint_delete_meta_data(base, key);
+    g_call_checkpoint_delete_meta_data(base, key);
 }
 
 Position checkpoint_get_position(void *p)
@@ -2163,7 +2199,7 @@ Position checkpoint_get_position(void *p)
 
 void checkpoint_set_position(void* p, float x, float y, float z)
 {
-    return g_call_checkpoint_set_position(p, x, y, z);
+    g_call_checkpoint_set_position(p, x, y, z);
 }
 
 long checkpoint_get_dimension(void* p)
@@ -2173,7 +2209,7 @@ long checkpoint_get_dimension(void* p)
 
 void checkpoint_set_dimension(void* p, long dimension)
 {
-    return g_call_checkpoint_set_dimension(p, dimension);
+    g_call_checkpoint_set_dimension(p, dimension);
 }
 
 int checkpoint_get_col_shape_type(void *c)
@@ -2193,7 +2229,7 @@ int checkpoint_is_point_in(void *c, float x, float y, float z)
 
 void checkpoint_set_players_only(void *c, int state)
 {
-    return g_call_checkpoint_set_players_only(c, state);
+    g_call_checkpoint_set_players_only(c, state);
 }
 
 int checkpoint_is_players_only(void *c)
@@ -2228,91 +2264,91 @@ Position checkpoint_get_next_position(void *c)
 
 void checkpoint_set_checkpoint_type(void *c, unsigned char type)
 {
-    return g_call_checkpoint_set_checkpoint_type(c, type);
+    g_call_checkpoint_set_checkpoint_type(c, type);
 }
 
 void checkpoint_set_height(void *c, float height)
 {
-    return g_call_checkpoint_set_height(c, height);
+    g_call_checkpoint_set_height(c, height);
 }
 
 void checkpoint_set_radius(void *c, float radius)
 {
-    return g_call_checkpoint_set_radius(c, radius);
+    g_call_checkpoint_set_radius(c, radius);
 }
 
 void checkpoint_set_color(void *c, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
-    return g_call_checkpoint_set_color(c, r, g, b, a);
+    g_call_checkpoint_set_color(c, r, g, b, a);
 }
 
 void checkpoint_set_next_position(void *c, float x, float y, float z)
 {
-    return g_call_checkpoint_set_next_position(c, x, y, z);
+    g_call_checkpoint_set_next_position(c, x, y, z);
 }
 
 // VoiceChannel
 int voice_channel_get_type(void *c)
 {
-    return g_call_channel_get_type(c);
+    return g_call_voice_channel_get_type(c);
 }
 
 int voice_channel_has_meta_data(void* base, const char *key)
 {
-    return g_call_channel_has_meta_data(base, key);
+    return g_call_voice_channel_has_meta_data(base, key);
 }
 
 MetaData voice_channel_get_meta_data(void* base, const char *key)
 {
-    return g_call_channel_get_meta_data(base, key);
+    return g_call_voice_channel_get_meta_data(base, key);
 }
 
 void voice_channel_set_meta_data(void *base, const char *key, void *val)
 {
-    return g_call_channel_set_meta_data(base, key, val);
+    g_call_voice_channel_set_meta_data(base, key, val);
 }
 
 void voice_channel_delete_meta_data(void *base, const char *key)
 {
-    return g_call_channel_delete_meta_data(base, key);
+    g_call_voice_channel_delete_meta_data(base, key);
 }
 
 int voice_channel_is_spatial(void *v)
 {
-    return g_call_channel_is_spatial(v);
+    return g_call_voice_channel_is_spatial(v);
 }
 
 float voice_channel_get_max_distance(void *v)
 {
-    return g_call_channel_get_max_distance(v);
+    return g_call_voice_channel_get_max_distance(v);
 }
 
 int voice_channel_has_player(void *v, void *p)
 {
-    return g_call_channel_has_player(v, p);
+    return g_call_voice_channel_has_player(v, p);
 }
 
 void voice_channel_add_player(void *v, void *p)
 {
-    return g_call_channel_add_player(v, p);
+    g_call_voice_channel_add_player(v, p);
 }
 
 void voice_channel_remove_player(void *v, void *p)
 {
-    return g_call_channel_remove_player(v, p);
+    g_call_voice_channel_remove_player(v, p);
 }
 
 int voice_channel_is_player_muted(void *v, void *p)
 {
-    return g_call_channel_is_player_muted(v, p);
+    return g_call_voice_channel_is_player_muted(v, p);
 }
 
 void voice_channel_mute_player(void *v, void *p)
 {
-    return g_call_channel_mute_player(v, p);
+    g_call_voice_channel_mute_player(v, p);
 }
 
 void voice_channel_unmute_player(void *v, void *p)
 {
-    return g_call_channel_unmute_player(v, p);
+    g_call_voice_channel_unmute_player(v, p);
 }

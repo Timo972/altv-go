@@ -10,17 +10,32 @@ type eventType = uint16
 type playerConnectListener = func(p *Player)
 type playerDisconnectListener = func(p *Player, reason string)
 type consoleCommandListener = func(command string, args []string)
-type explosionListener = func(p *Player, t *Entity, pos Position, explosionType int16, explosionFX uint)
+type explosionListener = func(p *Player, t interface{}, pos Position, explosionType int16, explosionFX uint) bool
 type playerChangeVehicleSeatListener = func(p *Player, v *Vehicle, oldSeat uint8, newSeat uint8)
-type playerDamageListener = func(p *Player, attacker *Entity, damage uint16, weapon uint32)
-type playerDeathListener = func(p *Player, killer *Entity, weapon uint32)
+type playerDamageListener = func(p *Player, attacker interface{}, damage uint16, weapon uint32)
+type playerDeathListener = func(p *Player, killer interface{}, weapon uint32)
 type playerEnterVehicleListener = func(p *Player, v *Vehicle, seat uint8)
+type playerEnteringVehicleListener = func(p *Player, v *Vehicle, seat uint8)
 type playerLeaveVehicleListener = func(p *Player, v *Vehicle, seat uint8)
-type removeEntityListener = func(entity *Entity)
+type removeEntityListener = func(entity interface{})
 type resourceStartListener = func(resourceName string)
-
+type entityEnterColShapeListener = func(colShape *ColShape, entity interface{})
+type entityLeaveColShapeListener = func(colShape *ColShape, entity interface{})
+type fireListener = func(player *Player, fires []FireInfo) bool
+type globalMetaDataChangeListener = func(key string, newValue interface{}, oldValue interface{})
+type globalSyncedMetaDataChangeListener func(key string, newValue interface{}, oldValue interface{})
+type netOwnerChangeListener = func(entity interface{}, owner *Player, oldOwner *Player)
+type playerWeaponChangeListener = func(player *Player, oldWeapon uint32, newWeapon uint32)
+type resourceErrorListener = func(resourceName string)
+type resourceStopListener = func(resourceName string)
+type startProjectileListener = func(player *Player, position Position, direction Position, ammoHash uint16, weaponHash uint32) bool
+type streamSyncedMetaDataChangeListener = func(entity interface{}, key string, newValue interface{}, oldValue interface{})
+type syncedMetaDataChangeListener = func(entity interface{}, key string, newValue interface{}, oldValue interface{})
+type vehicleAttachListener = func(vehicle *Vehicle, attachedVehicle *Vehicle)
+type vehicleDestroyListener = func(vehicle *Vehicle)
+type vehicleDetachListener = func(vehicle *Vehicle, detachedVehicle *Vehicle)
 // TODO bodyPart ENUM
-type weaponDamageListener = func(source *Player, target *Entity, weapon uint32, damage uint8, offset Position, bodyPart int8)
+type weaponDamageListener = func(source *Player, target interface{}, weapon uint32, damage uint16, offset Position, bodyPart int8) bool
 
 type eventManager struct {
 	playerConnectEvents           []playerConnectListener
@@ -35,6 +50,22 @@ type eventManager struct {
 	removeEntityEvents            []removeEntityListener
 	resourceStartEvents           []resourceStartListener
 	weaponDamageEvents            []weaponDamageListener
+	playerEnteringVehicleEvents   []playerEnteringVehicleListener
+	entityEnterColShapeEvents []entityEnterColShapeListener
+	entityLeaveColShapeEvents []entityLeaveColShapeListener
+	fireEvents []fireListener
+	globalMetaDataChangeEvents []globalMetaDataChangeListener
+	globalSyncedMetaDataChangeEvents []globalSyncedMetaDataChangeListener
+	netOwnerChangeEvents []netOwnerChangeListener
+	playerWeaponChangeEvents []playerWeaponChangeListener
+	resourceErrorEvents []resourceErrorListener
+	resourceStopEvents []resourceStopListener
+	startProjectileEvents []startProjectileListener
+	streamSyncedMetaDataChangeEvents []streamSyncedMetaDataChangeListener
+	syncedMetaDataChangeEvents []syncedMetaDataChangeListener
+	vehicleAttachEvents []vehicleAttachListener
+	vehicleDetachEvents []vehicleDetachListener
+	vehicleDestroyEvents []vehicleDestroyListener
 }
 
 type listener interface {
@@ -50,6 +81,22 @@ type listener interface {
 	RemoveEntity(listener removeEntityListener)
 	ResourceStart(listener resourceStartListener)
 	WeaponDamage(listener weaponDamageListener)
+	PlayerEnteringVehicle(listener playerEnteringVehicleListener)
+	EntityEnterColShape(listener entityEnterColShapeListener)
+	EntityLeaveColShape(listener entityLeaveColShapeListener)
+	StartFire(listener fireListener)
+	GlobalMetaChange(listener globalMetaDataChangeListener)
+	GlobalSyncedMetaChange(listener globalSyncedMetaDataChangeListener)
+	NetOwnerChange(listener netOwnerChangeListener)
+	PlayerWeaponChange(listener playerWeaponChangeListener)
+	ResourceError(listener resourceErrorListener)
+	ResourceStop(listener resourceStopListener)
+	StartProjectile(listener startProjectileListener)
+	StreamSyncedMetaChange(listener streamSyncedMetaDataChangeListener)
+	SyncedMetaChange(listener syncedMetaDataChangeListener)
+	VehicleAttach(listener vehicleAttachListener)
+	VehicleDetach(listener vehicleDetachListener)
+	VehicleDestroy(listener vehicleDestroyListener)
 }
 
 const (
@@ -159,6 +206,87 @@ func (e eventManager) WeaponDamage(listener weaponDamageListener) {
 	registerOnEvent(Resource.Name, weaponDamageEvent)
 }
 
+func (e eventManager) PlayerEnteringVehicle(listener playerEnteringVehicleListener) {
+	On.playerEnteringVehicleEvents = append(On.playerEnteringVehicleEvents, listener)
+	registerOnEvent(Resource.Name, playerEnteringVehicle)
+}
+
+func (e eventManager) EntityEnterColShape(listener entityEnterColShapeListener) {
+	On.entityEnterColShapeEvents = append(On.entityEnterColShapeEvents, listener)
+	registerOnEvent(Resource.Name, colshapeEvent)
+}
+
+func (e eventManager) EntityLeaveColShape(listener entityLeaveColShapeListener) {
+	On.entityLeaveColShapeEvents = append(On.entityLeaveColShapeEvents, listener)
+	registerOnEvent(Resource.Name, colshapeEvent)
+}
+
+func (e eventManager) StartFire(listener fireListener) {
+	On.fireEvents = append(On.fireEvents, listener)
+	registerOnEvent(Resource.Name, fireEvent)
+}
+
+func (e eventManager) GlobalMetaChange(listener globalMetaDataChangeListener) {
+	On.globalMetaDataChangeEvents = append(On.globalMetaDataChangeEvents, listener)
+	registerOnEvent(Resource.Name, globalMetaChange)
+}
+
+func (e eventManager) GlobalSyncedMetaChange(listener globalSyncedMetaDataChangeListener) {
+	On.globalSyncedMetaDataChangeEvents = append(On.globalSyncedMetaDataChangeEvents, listener)
+	registerOnEvent(Resource.Name, globalSyncedMetaChange)
+}
+
+func (e eventManager) NetOwnerChange(listener netOwnerChangeListener) {
+	On.netOwnerChangeEvents = append(On.netOwnerChangeEvents, listener)
+	registerOnEvent(Resource.Name, netownerChange)
+}
+
+func (e eventManager) PlayerWeaponChange(listener playerWeaponChangeListener) {
+	On.playerWeaponChangeEvents = append(On.playerWeaponChangeEvents, listener)
+	registerOnEvent(Resource.Name, playerWeaponChange)
+}
+
+func (e eventManager) ResourceError(listener resourceErrorListener) {
+	On.resourceErrorEvents = append(On.resourceErrorEvents, listener)
+	registerOnEvent(Resource.Name, resourceError)
+}
+
+func (e eventManager) ResourceStop(listener resourceStopListener) {
+	On.resourceStopEvents = append(On.resourceStopEvents, listener)
+	registerOnEvent(Resource.Name, resourceStop)
+}
+
+func (e eventManager) StartProjectile(listener startProjectileListener) {
+	On.startProjectileEvents = append(On.startProjectileEvents, listener)
+	registerOnEvent(Resource.Name, startProjectileEvent)
+}
+
+func (e eventManager) StreamSyncedMetaChange(listener streamSyncedMetaDataChangeListener) {
+	On.streamSyncedMetaDataChangeEvents = append(On.streamSyncedMetaDataChangeEvents, listener)
+	registerOnEvent(Resource.Name, streamSyncedMetaChange)
+}
+
+func (e eventManager) SyncedMetaChange(listener syncedMetaDataChangeListener) {
+	On.syncedMetaDataChangeEvents = append(On.syncedMetaDataChangeEvents, listener)
+	registerOnEvent(Resource.Name, syncedMetaChange)
+}
+
+func (e eventManager) VehicleAttach(listener vehicleAttachListener) {
+	On.vehicleAttachEvents = append(On.vehicleAttachEvents, listener)
+	registerOnEvent(Resource.Name, vehicleAttach)
+}
+
+func (e eventManager) VehicleDetach(listener vehicleDetachListener) {
+	On.vehicleDetachEvents = append(On.vehicleDetachEvents, listener)
+	registerOnEvent(Resource.Name, vehicleDetach)
+}
+
+func (e eventManager) VehicleDestroy(listener vehicleDestroyListener) {
+	On.vehicleDestroyEvents = append(On.vehicleDestroyEvents, listener)
+	registerOnEvent(Resource.Name, vehicleDestroy)
+}
+
+
 //export altPlayerConnectEvent
 func altPlayerConnectEvent(player unsafe.Pointer) {
 	for _, event := range On.playerConnectEvents {
@@ -187,19 +315,365 @@ func altConsoleCommandEvent(cName *C.char, cArray **C.char, cSize C.ulonglong) {
 }
 
 //export altPlayerDisconnectEvent
-func altPlayerDisconnectEvent(player unsafe.Pointer, reason *C.char) {
+func altPlayerDisconnectEvent(p unsafe.Pointer, cReason *C.char) {
+	reason := C.GoString(cReason)
+	player := NewPlayer(p)
 	for _, event := range On.playerDisconnectEvents {
-		reason := C.GoString(reason)
-		player := NewPlayer(player)
 		event(player, reason)
 	}
 }
 
 //export altExplosionEvent
-func altExplosionEvent(player unsafe.Pointer, entity unsafe.Pointer, pos C.struct_pos, explosionType C.short, explosionFX C.uint) {
+func altExplosionEvent(p unsafe.Pointer, e C.struct_entity, pos C.struct_pos, explosionType C.short, explosionFX C.uint) {
+	player := NewPlayer(p)
+	goPos := Position{X: float32(pos.x), Y: float32(pos.y), Z: float32(pos.z)}
+	expType := int16(explosionType)
+	expFX := uint(explosionFX)
+
+	var entity interface{}
+	entityType := BaseObjectType(e.Type)
+
+	if entityType == PlayerObject {
+		entity = NewPlayer(e.Ptr)
+	} else if entityType == VehicleObject {
+		entity = NewVehicle(e.Ptr)
+	}
+
 	for _, event := range On.explosionEvents {
-		player := NewPlayer(player)
-		entity := NewEntity(entity)
-		event(player, entity, Position{X: float32(pos.x), Y: float32(pos.y), Z: float32(pos.z)}, int16(explosionType), uint(explosionFX))
+		event(player, entity, goPos, expType, expFX)
+	}
+}
+
+//export altPlayerChangeVehicleSeatEvent
+func altPlayerChangeVehicleSeatEvent(p unsafe.Pointer, v unsafe.Pointer, old C.uchar, new C.uchar) {
+	player := NewPlayer(p)
+	vehicle := NewVehicle(v)
+	oSeat := uint8(old)
+	nSeat := uint8(new)
+
+	for _, event := range On.playerChangeVehicleSeatEvents {
+		event(player, vehicle, oSeat, nSeat)
+	}
+}
+
+//export altPlayerDamageEvent
+func altPlayerDamageEvent(p unsafe.Pointer, e C.struct_entity, dmg C.ushort, weap C.ulong) {
+	player := NewPlayer(p)
+	damage := uint16(dmg)
+	weapon := uint32(weap)
+
+	var entity interface{}
+	entityType := BaseObjectType(e.Type)
+
+	if entityType == PlayerObject {
+		entity = NewPlayer(e.Ptr)
+	} else if entityType == VehicleObject {
+		entity = NewVehicle(e.Ptr)
+	}
+
+	for _, event := range On.playerDamageEvents {
+		event(player, entity, damage, weapon)
+	}
+}
+
+//export altPlayerDeathEvent
+func altPlayerDeathEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong) {
+	player := NewPlayer(p)
+	weapon := uint32(weap)
+
+	var entity interface{}
+	entityType := BaseObjectType(e.Type)
+
+	if entityType == PlayerObject {
+		entity = NewPlayer(e.Ptr)
+	} else if entityType == VehicleObject {
+		entity = NewVehicle(e.Ptr)
+	}
+
+	for _, event := range On.playerDeathEvents {
+		event(player, entity, weapon)
+	}
+}
+
+//export altPlayerEnterVehicleEvent
+func altPlayerEnterVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.uchar) {
+	player := NewPlayer(p)
+	vehicle := NewVehicle(v)
+	seat := uint8(s)
+
+	for _, event := range On.playerEnterVehicleEvents {
+		event(player, vehicle, seat)
+	}
+}
+
+//export altPlayerLeaveVehicleEvent
+func altPlayerLeaveVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.uchar) {
+	player := NewPlayer(p)
+	vehicle := NewVehicle(v)
+	seat := uint8(s)
+
+	for _, event := range On.playerLeaveVehicleEvents {
+		event(player, vehicle, seat)
+	}
+}
+
+//export altRemoveEntityEvent
+func altRemoveEntityEvent(e C.struct_entity) {
+	var entity interface{}
+	entityType := BaseObjectType(e.Type)
+
+	if entityType == PlayerObject {
+		entity = NewPlayer(e.Ptr)
+	} else if entityType == VehicleObject {
+		entity = NewVehicle(e.Ptr)
+	}
+
+	for _, event := range On.removeEntityEvents {
+		event(entity)
+	}
+}
+
+//export altResourceStartEvent
+func altResourceStartEvent(n *C.char) {
+	name := C.GoString(n)
+
+	for _, event := range On.resourceStartEvents {
+		event(name)
+	}
+}
+
+//export altResourceStopEvent
+func altResourceStopEvent(n *C.char) {
+	name := C.GoString(n)
+
+	for _, event := range On.resourceStopEvents {
+		event(name)
+	}
+}
+
+//export altResourceErrorEvent
+func altResourceErrorEvent(n *C.char) {
+	name := C.GoString(n)
+
+	for _, event := range On.resourceErrorEvents {
+		event(name)
+	}
+}
+
+//export altWeaponDamageEvent
+func altWeaponDamageEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong, dmg C.ushort, ofs C.struct_pos, bPart C.short) {
+	player := NewPlayer(p)
+	weapon := uint32(weap)
+	damage := uint16(dmg)
+	offset := Position{X:float32(ofs.x),Y:float32(ofs.y),Z:float32(ofs.z)}
+	bodyPart := int8(bPart)
+
+	var entity interface{}
+	entityType := BaseObjectType(e.Type)
+
+	if entityType == PlayerObject {
+		entity = NewPlayer(e.Ptr)
+	} else if entityType == VehicleObject {
+		entity = NewVehicle(e.Ptr)
+	}
+
+	for _, event := range On.weaponDamageEvents {
+		event(player, entity, weapon, damage, offset, bodyPart)
+	}
+}
+
+//export altPlayerEnteringVehicleEvent
+func altPlayerEnteringVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.ushort) {
+	player := NewPlayer(p)
+	vehicle := NewVehicle(v)
+	seat := uint8(s)
+
+	for _, event := range On.playerEnteringVehicleEvents {
+		event(player, vehicle, seat)
+	}
+}
+
+//export altColShapeEvent
+func altColShapeEvent(c unsafe.Pointer, e C.struct_entity, s C.int) {
+	colShape := NewColShape(c)
+	state := int(s) == 1
+
+	var entity interface{}
+	entityType := BaseObjectType(e.Type)
+
+	if entityType == PlayerObject {
+		entity = NewPlayer(e.Ptr)
+	} else if entityType == VehicleObject {
+		entity = NewVehicle(e.Ptr)
+	}
+
+	if state {
+		for _, event := range On.entityEnterColShapeEvents {
+			event(colShape, entity)
+		}
+	} else {
+		for _, event := range On.entityLeaveColShapeEvents {
+			event(colShape, entity)
+		}
+	}
+}
+
+//export altFireEvent
+func altFireEvent(p unsafe.Pointer, f C.struct_array) {
+	player := NewPlayer(p)
+
+	size := int(f.size)
+	cFireInfoStructs := (*[1 << 28]C.struct_fireInfo)(f.array)[:size:size]
+
+	array := make([]FireInfo, size)
+
+	for i, fireStruct := range cFireInfoStructs {
+		array[i] = FireInfo{WeaponHash: uint32(fireStruct.weaponHash),Position: Position{X:float32(fireStruct.position.x),Y:float32(fireStruct.position.y),Z:float32(fireStruct.position.z)}}
+	}
+
+	for _, event := range On.fireEvents {
+		event(player, array)
+	}
+}
+
+//export altGlobalMetaDataChangeEvent
+func altGlobalMetaDataChangeEvent(k *C.char, nVal C.struct_metaData, oVal C.struct_metaData) {
+	key := C.GoString(k)
+	newVal := &MValue{Ptr: nVal.Ptr, Type: uint8(nVal.Type), Value: nil}
+	oldVal := &MValue{Ptr: oVal.Ptr, Type: uint8(oVal.Type), Value: nil}
+	oldValue :=  oldVal.GetValue()
+	newValue := newVal.GetValue()
+
+	for _, event := range On.globalMetaDataChangeEvents {
+		event(key, newValue, oldValue)
+	}
+}
+
+//export altGlobalSyncedMetaDataChangeEvent
+func altGlobalSyncedMetaDataChangeEvent(k *C.char, nVal C.struct_metaData, oVal C.struct_metaData) {
+	key := C.GoString(k)
+	newVal := &MValue{Ptr: nVal.Ptr, Type: uint8(nVal.Type), Value: nil}
+	oldVal := &MValue{Ptr: oVal.Ptr, Type: uint8(oVal.Type), Value: nil}
+	oldValue :=  oldVal.GetValue()
+	newValue := newVal.GetValue()
+
+	for _, event := range On.globalSyncedMetaDataChangeEvents {
+		event(key, newValue, oldValue)
+	}
+}
+
+//export altNetOwnerChangeEvent
+func altNetOwnerChangeEvent(e C.struct_entity, o unsafe.Pointer, oo unsafe.Pointer) {
+	owner := NewPlayer(o)
+	oldOwner := NewPlayer(oo)
+
+	var entity interface{}
+	entityType := BaseObjectType(e.Type)
+
+	if entityType == PlayerObject {
+		entity = NewPlayer(e.Ptr)
+	} else if entityType == VehicleObject {
+		entity = NewVehicle(e.Ptr)
+	}
+
+	for _, event := range On.netOwnerChangeEvents {
+		event(entity, owner, oldOwner)
+	}
+}
+
+//export altPlayerWeaponChangeEvent
+func altPlayerWeaponChangeEvent(p unsafe.Pointer, oWeap C.ulong, nWeap C.ulong) {
+	player := NewPlayer(p)
+	oldWeapon := uint32(oWeap)
+	newWeapon := uint32(nWeap)
+
+	for _, event := range On.playerWeaponChangeEvents {
+		event(player, oldWeapon, newWeapon)
+	}
+}
+
+//export altStartProjectileEvent
+func altStartProjectileEvent(p unsafe.Pointer, pos C.struct_pos, dir C.struct_pos, aHash C.uint, wHash C.ulong) {
+	player := NewPlayer(p)
+	position := Position{X:float32(pos.x),Y:float32(pos.y),Z:float32(pos.z)}
+	direction := Position{X:float32(dir.x),Y:float32(dir.y),Z:float32(dir.z)}
+	ammoHash := uint16(aHash)
+	weaponHash := uint32(wHash)
+
+	for _, event := range On.startProjectileEvents {
+		event(player, position, direction, ammoHash, weaponHash)
+	}
+}
+
+//export altStreamSyncedMetaDataChangeEvent
+func altStreamSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.struct_metaData, oVal C.struct_metaData) {
+	key := C.GoString(k)
+	newVal := &MValue{Ptr: nVal.Ptr, Type: uint8(nVal.Type), Value: nil}
+	oldVal := &MValue{Ptr: oVal.Ptr, Type: uint8(oVal.Type), Value: nil}
+	oldValue :=  oldVal.GetValue()
+	newValue := newVal.GetValue()
+
+	var entity interface{}
+	entityType := BaseObjectType(e.Type)
+
+	if entityType == PlayerObject {
+		entity = NewPlayer(e.Ptr)
+	} else if entityType == VehicleObject {
+		entity = NewVehicle(e.Ptr)
+	}
+
+	for _, event := range On.streamSyncedMetaDataChangeEvents {
+		event(entity, key, newValue, oldValue)
+	}
+}
+
+//export altSyncedMetaDataChangeEvent
+func altSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.struct_metaData, oVal C.struct_metaData) {
+	key := C.GoString(k)
+	newVal := &MValue{Ptr: nVal.Ptr, Type: uint8(nVal.Type), Value: nil}
+	oldVal := &MValue{Ptr: oVal.Ptr, Type: uint8(oVal.Type), Value: nil}
+	oldValue :=  oldVal.GetValue()
+	newValue := newVal.GetValue()
+
+	var entity interface{}
+	entityType := BaseObjectType(e.Type)
+
+	if entityType == PlayerObject {
+		entity = NewPlayer(e.Ptr)
+	} else if entityType == VehicleObject {
+		entity = NewVehicle(e.Ptr)
+	}
+
+	for _, event := range On.streamSyncedMetaDataChangeEvents {
+		event(entity, key, newValue, oldValue)
+	}
+}
+
+//export altVehicleAttachEvent
+func altVehicleAttachEvent(v unsafe.Pointer, a unsafe.Pointer) {
+	vehicle := NewVehicle(v)
+	attached := NewVehicle(a)
+
+	for _, event := range On.vehicleAttachEvents {
+		event(vehicle, attached)
+	}
+}
+
+//export altVehicleDetachEvent
+func altVehicleDetachEvent(v unsafe.Pointer, a unsafe.Pointer) {
+	vehicle := NewVehicle(v)
+	attached := NewVehicle(a)
+
+	for _, event := range On.vehicleDetachEvents {
+		event(vehicle, attached)
+	}
+}
+
+//export altVehicleDestroyEvent
+func altVehicleDestroyEvent(v unsafe.Pointer) {
+	vehicle := NewVehicle(v)
+
+	for _, event := range On.vehicleDestroyEvents {
+		event(vehicle)
 	}
 }
