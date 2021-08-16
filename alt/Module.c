@@ -625,6 +625,7 @@ int load_module(const char *path)
     g_call_core_create_col_shape_sphere = GET_FUNC(module, "Core_CreateColShapeSphere", capi_core_create_col_shape_sphere);
     g_call_core_create_checkpoint = GET_FUNC(module, "Core_CreateCheckpoint", capi_core_create_checkpoint);
     g_call_core_create_voice_channel = GET_FUNC(module, "Core_CreateVoiceChannel", capi_core_create_voice_channel);
+    g_call_core_create_vehicle = GET_FUNC(module, "Core_CreateVehicle", capi_core_create_vehicle);
 
     // Checkpoint
     g_call_checkpoint_get_type = GET_FUNC(module, "Checkpoint_GetType", capi_checkpoint_get_type);
@@ -1623,12 +1624,12 @@ float vehicle_get_lights_multiplier(void *v)
     return g_call_vehicle_get_lights_multiplier(v);
 }
 
-unsigned long vehicle_get_engine_health(void *v)
+long vehicle_get_engine_health(void *v)
 {
     return g_call_vehicle_get_engine_health(v);
 }
 
-unsigned long vehicle_get_petrol_tank_health(void *v)
+long vehicle_get_petrol_tank_health(void *v)
 {
     return g_call_vehicle_get_petrol_tank_health(v);
 }
@@ -1898,12 +1899,12 @@ void vehicle_set_lights_multiplier(void *v, float multiplier)
     g_call_vehicle_set_lights_multiplier(v, multiplier);
 }
 
-void vehicle_set_engine_health(void *v, unsigned long health)
+void vehicle_set_engine_health(void *v, long health)
 {
     g_call_vehicle_set_engine_health(v, health);
 }
 
-void vehicle_set_petrol_tank_health(void *v, unsigned long health)
+void vehicle_set_petrol_tank_health(void *v, long health)
 {
     g_call_vehicle_set_petrol_tank_health(v, health);
 }
