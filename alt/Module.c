@@ -272,6 +272,7 @@ capi_core_set_synced_meta_data g_call_core_set_synced_meta_data;
 capi_core_delete_synced_meta_data g_call_core_delete_synced_meta_data;
 capi_core_get_players_by_name g_call_core_get_players_by_name;
 capi_core_set_password g_call_core_set_password;
+capi_core_trigger_local_event g_call_core_trigger_local_event;
 
 // Colshape
 capi_col_shape_get_type g_call_col_shape_get_type;
@@ -601,6 +602,7 @@ int load_module(const char *path)
     g_call_core_delete_synced_meta_data = GET_FUNC(module, "Core_DeleteSyncedMetaData", capi_core_delete_synced_meta_data);
     g_call_core_get_players_by_name = GET_FUNC(module, "Core_GetPlayersByName", capi_core_get_players_by_name);
     g_call_core_set_password = GET_FUNC(module, "Core_SetPassword", capi_core_set_password);
+    g_call_core_trigger_local_event = GET_FUNC(module, "Core_TriggerLocalEvent", capi_core_trigger_local_event);
 
     // ColShape
     g_call_col_shape_get_type = GET_FUNC(module, "ColShape_GetType", capi_col_shape_get_type);
@@ -717,7 +719,7 @@ int core_file_exists(const char *path)
     return g_call_core_file_exists(path);
 }
 
-const char * core_read_file(const char *path)
+const char *core_read_file(const char *path)
 {
     return g_call_core_read_file(path);
 }
@@ -833,17 +835,17 @@ void *core_create_voice_channel(int spatial, float maxDistance)
 }
 
 // Player
-const char * player_get_name(void *p)
+const char *player_get_name(void *p)
 {
     return g_call_player_get_name(p);
 }
 
-int player_has_meta_data(void* base, const char *key)
+int player_has_meta_data(void *base, const char *key)
 {
     return g_call_player_has_meta_data(base, key);
 }
 
-MetaData player_get_meta_data(void* base, const char *key)
+MetaData player_get_meta_data(void *base, const char *key)
 {
     return g_call_player_get_meta_data(base, key);
 }
@@ -858,12 +860,12 @@ void player_delete_meta_data(void *base, const char *key)
     g_call_player_delete_meta_data(base, key);
 }
 
-int player_has_synced_meta_data(void* base, const char *key)
+int player_has_synced_meta_data(void *base, const char *key)
 {
     return g_call_player_has_synced_meta_data(base, key);
 }
 
-MetaData player_get_synced_meta_data(void* base, const char *key)
+MetaData player_get_synced_meta_data(void *base, const char *key)
 {
     return g_call_player_get_synced_meta_data(base, key);
 }
@@ -878,12 +880,12 @@ void player_delete_synced_meta_data(void *base, const char *key)
     g_call_player_delete_synced_meta_data(base, key);
 }
 
-int player_has_stream_synced_meta_data(void* base, const char *key)
+int player_has_stream_synced_meta_data(void *base, const char *key)
 {
     return g_call_player_has_stream_synced_meta_data(base, key);
 }
 
-MetaData player_get_stream_synced_meta_data(void* base, const char *key)
+MetaData player_get_stream_synced_meta_data(void *base, const char *key)
 {
     return g_call_player_get_stream_synced_meta_data(base, key);
 }
@@ -903,7 +905,7 @@ Position player_get_position(void *p)
     return g_call_player_get_position(p);
 }
 
-void player_set_position(void* p, float x, float y, float z)
+void player_set_position(void *p, float x, float y, float z)
 {
     g_call_player_set_position(p, x, y, z);
 }
@@ -918,12 +920,12 @@ void player_set_rotation(void *p, float roll, float pitch, float yaw)
     g_call_player_set_rotation(p, roll, pitch, yaw);
 }
 
-long player_get_dimension(void* p)
+long player_get_dimension(void *p)
 {
     return g_call_player_get_dimension(p);
 }
 
-void player_set_dimension(void* p, long dimension)
+void player_set_dimension(void *p, long dimension)
 {
     g_call_player_set_dimension(p, dimension);
 }
@@ -1043,7 +1045,7 @@ int player_is_in_vehicle(void *p)
     return g_call_player_is_in_vehicle(p);
 }
 
-void * player_get_vehicle(void *p)
+void *player_get_vehicle(void *p)
 {
     return g_call_player_get_vehicle(p);
 }
@@ -1053,7 +1055,7 @@ unsigned int player_get_seat(void *p)
     return g_call_player_get_seat(p);
 }
 
-void * player_get_entity_aiming_at(void *p)
+void *player_get_entity_aiming_at(void *p)
 {
     return g_call_player_get_entity_aiming_at(p);
 }
@@ -1078,7 +1080,7 @@ unsigned long player_get_ping(void *p)
     return g_call_player_get_ping(p);
 }
 
-const char* player_get_ip(void *p)
+const char *player_get_ip(void *p)
 {
     return g_call_player_get_ip(p);
 }
@@ -1098,7 +1100,7 @@ unsigned long long player_get_hwid_ex_hash(void *p)
     return g_call_player_get_hwid_ex_hash(p);
 }
 
-const char* player_get_auth_token(void *p)
+const char *player_get_auth_token(void *p)
 {
     return g_call_player_get_auth_token(p);
 }
@@ -1163,7 +1165,7 @@ void player_set_weather(void *p, unsigned long weather)
     g_call_player_set_weather(p, weather);
 }
 
-void player_kick(void *p, const char* reason)
+void player_kick(void *p, const char *reason)
 {
     return g_call_player_kick(p, reason);
 }
@@ -1253,7 +1255,7 @@ unsigned long player_get_id(void *p)
     return g_call_player_get_id(p);
 }
 
-void * player_get_network_owner(void *p)
+void *player_get_network_owner(void *p)
 {
     return g_call_player_get_network_owner(p);
 }
@@ -1264,12 +1266,12 @@ void player_set_network_owner(void *p, void *owner, int disableMigration)
 }
 
 // Vehicle
-int vehicle_has_meta_data(void* base, const char *key)
+int vehicle_has_meta_data(void *base, const char *key)
 {
     return g_call_vehicle_has_meta_data(base, key);
 }
 
-MetaData vehicle_get_meta_data(void* base, const char *key)
+MetaData vehicle_get_meta_data(void *base, const char *key)
 {
     return g_call_vehicle_get_meta_data(base, key);
 }
@@ -1284,12 +1286,12 @@ void vehicle_delete_meta_data(void *base, const char *key)
     g_call_vehicle_delete_meta_data(base, key);
 }
 
-int vehicle_has_synced_meta_data(void* base, const char *key)
+int vehicle_has_synced_meta_data(void *base, const char *key)
 {
     return g_call_vehicle_has_synced_meta_data(base, key);
 }
 
-MetaData vehicle_get_synced_meta_data(void* base, const char *key)
+MetaData vehicle_get_synced_meta_data(void *base, const char *key)
 {
     return g_call_vehicle_get_synced_meta_data(base, key);
 }
@@ -1304,12 +1306,12 @@ void vehicle_delete_synced_meta_data(void *base, const char *key)
     g_call_vehicle_delete_synced_meta_data(base, key);
 }
 
-int vehicle_has_stream_synced_meta_data(void* base, const char *key)
+int vehicle_has_stream_synced_meta_data(void *base, const char *key)
 {
     return g_call_vehicle_has_stream_synced_meta_data(base, key);
 }
 
-MetaData vehicle_get_stream_synced_meta_data(void* base, const char *key)
+MetaData vehicle_get_stream_synced_meta_data(void *base, const char *key)
 {
     return g_call_vehicle_get_stream_synced_meta_data(base, key);
 }
@@ -1384,7 +1386,7 @@ int vehicle_get_visible(void *v)
     return g_call_vehicle_get_visible(v);
 }
 
-void * vehicle_get_network_owner(void *v)
+void *vehicle_get_network_owner(void *v)
 {
     return g_call_vehicle_get_network_owner(v);
 }
@@ -1394,7 +1396,7 @@ void vehicle_set_network_owner(void *v, void *owner, int disableMigration)
     g_call_vehicle_set_network_owner(v, owner, disableMigration);
 }
 
-void * vehicle_get_driver(void *v)
+void *vehicle_get_driver(void *v)
 {
     return g_call_vehicle_get_driver(v);
 }
@@ -1514,7 +1516,7 @@ unsigned long vehicle_get_numberplate_index(void *v)
     return g_call_vehicle_get_numberplate_index(v);
 }
 
-const char* vehicle_get_numberplate_text(void *v)
+const char *vehicle_get_numberplate_text(void *v)
 {
     return g_call_vehicle_get_numberplate_text(v);
 }
@@ -1819,7 +1821,7 @@ void vehicle_set_numberplate_index(void *v, unsigned int index)
     g_call_vehicle_set_numberplate_index(v, index);
 }
 
-void vehicle_set_numberplate_text(void *v, const char* text)
+void vehicle_set_numberplate_text(void *v, const char *text)
 {
     g_call_vehicle_set_numberplate_text(v, text);
 }
@@ -1994,37 +1996,37 @@ void vehicle_set_manual_engine_control(void *v, int state)
     g_call_vehicle_set_manual_engine_control(v, state);
 }
 
-void * vehicle_get_attached(void *v)
+void *vehicle_get_attached(void *v)
 {
     return g_call_vehicle_get_attached(v);
 }
 
-void * vehicle_get_attached_to(void *v)
+void *vehicle_get_attached_to(void *v)
 {
     return g_call_vehicle_get_attached_to(v);
 }
 
-const char * vehicle_get_appearance_data_base64(void *v)
+const char *vehicle_get_appearance_data_base64(void *v)
 {
     return g_call_vehicle_get_appearance_data_base64(v);
 }
 
-const char * vehicle_get_game_state_base64(void *v)
+const char *vehicle_get_game_state_base64(void *v)
 {
     return g_call_vehicle_get_game_state_base64(v);
 }
 
-const char * vehicle_get_health_data_base64(void *v)
+const char *vehicle_get_health_data_base64(void *v)
 {
     return g_call_vehicle_get_health_data_base64(v);
 }
 
-const char * vehicle_get_damage_data_base64(void *v)
+const char *vehicle_get_damage_data_base64(void *v)
 {
     return g_call_vehicle_get_damage_data_base64(v);
 }
 
-const char * vehicle_get_script_data_base64(void *v)
+const char *vehicle_get_script_data_base64(void *v)
 {
     return g_call_vehicle_get_script_data_base64(v);
 }
@@ -2096,18 +2098,23 @@ void *core_create_vehicle(unsigned long model, float posX, float posY, float pos
     g_call_core_create_vehicle(model, posX, posY, posZ, rotX, rotY, rotZ);
 }
 
+void core_trigger_local_event(const char *ev, void **MValues)
+{
+    g_call_core_trigger_local_event(ev, MValues);
+}
+
 // ColShape
 int col_shape_get_type(void *c)
 {
     return g_call_col_shape_get_type(c);
 }
 
-int col_shape_has_meta_data(void* base, const char *key)
+int col_shape_has_meta_data(void *base, const char *key)
 {
     return g_call_col_shape_has_meta_data(base, key);
 }
 
-MetaData col_shape_get_meta_data(void* base, const char *key)
+MetaData col_shape_get_meta_data(void *base, const char *key)
 {
     return g_call_col_shape_get_meta_data(base, key);
 }
@@ -2127,17 +2134,17 @@ Position col_shape_get_position(void *p)
     return g_call_col_shape_get_position(p);
 }
 
-void col_shape_set_position(void* p, float x, float y, float z)
+void col_shape_set_position(void *p, float x, float y, float z)
 {
     g_call_col_shape_set_position(p, x, y, z);
 }
 
-long col_shape_get_dimension(void* p)
+long col_shape_get_dimension(void *p)
 {
     return g_call_col_shape_get_dimension(p);
 }
 
-void col_shape_set_dimension(void* p, long dimension)
+void col_shape_set_dimension(void *p, long dimension)
 {
     g_call_col_shape_set_dimension(p, dimension);
 }
@@ -2173,12 +2180,12 @@ int checkpoint_get_type(void *c)
     return g_call_checkpoint_get_type(c);
 }
 
-int checkpoint_has_meta_data(void* base, const char *key)
+int checkpoint_has_meta_data(void *base, const char *key)
 {
     return g_call_checkpoint_has_meta_data(base, key);
 }
 
-MetaData checkpoint_get_meta_data(void* base, const char *key)
+MetaData checkpoint_get_meta_data(void *base, const char *key)
 {
     return g_call_checkpoint_get_meta_data(base, key);
 }
@@ -2198,17 +2205,17 @@ Position checkpoint_get_position(void *p)
     return g_call_checkpoint_get_position(p);
 }
 
-void checkpoint_set_position(void* p, float x, float y, float z)
+void checkpoint_set_position(void *p, float x, float y, float z)
 {
     g_call_checkpoint_set_position(p, x, y, z);
 }
 
-long checkpoint_get_dimension(void* p)
+long checkpoint_get_dimension(void *p)
 {
     return g_call_checkpoint_get_dimension(p);
 }
 
-void checkpoint_set_dimension(void* p, long dimension)
+void checkpoint_set_dimension(void *p, long dimension)
 {
     g_call_checkpoint_set_dimension(p, dimension);
 }
@@ -2294,12 +2301,12 @@ int voice_channel_get_type(void *c)
     return g_call_voice_channel_get_type(c);
 }
 
-int voice_channel_has_meta_data(void* base, const char *key)
+int voice_channel_has_meta_data(void *base, const char *key)
 {
     return g_call_voice_channel_has_meta_data(base, key);
 }
 
-MetaData voice_channel_get_meta_data(void* base, const char *key)
+MetaData voice_channel_get_meta_data(void *base, const char *key)
 {
     return g_call_voice_channel_get_meta_data(base, key);
 }
