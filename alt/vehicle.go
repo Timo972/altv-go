@@ -198,10 +198,10 @@ func (v Vehicle) IsNeonActive() bool {
 func (v Vehicle) NeonActive() (front bool, left bool, right bool, back bool) {
 	neonState := C.vehicle_get_neon_active(v.Ptr)
 
-	front = neonState.front
-	left = neonState.left
-	right = neonState.right
-	back = neonState.back
+	front = int(neonState.front) == 1
+	left = int(neonState.left) == 1
+	right = int(neonState.right) == 1
+	back = int(neonState.back) == 1
 
 	return front, left, right, back
 }
@@ -376,5 +376,5 @@ func (v Vehicle) IsManualEngineControl() bool {
 }
 
 func (v Vehicle) ToggleExtra(extra uint8, state bool) {
-	C.vehicle_toggle_extra(v.Ptr, C.uint(extra), C.int(state))
+	C.vehicle_toggle_extra(v.Ptr, C.uint(extra), C.int(module.Bool2int(state)))
 }

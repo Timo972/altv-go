@@ -1538,9 +1538,9 @@ int vehicle_is_neon_active(void *v)
     return g_call_vehicle_is_neon_active(v);
 }
 
-VehicleNeonState vehicle_get_neon_active(void *v, int *left, int *right, int *front, int *back)
+VehicleNeonState vehicle_get_neon_active(void *v)
 {
-    return g_call_vehicle_get_neon_active(v, left, right, front, back);
+    return g_call_vehicle_get_neon_active(v);
 }
 
 RGBA vehicle_get_neon_color(void *v)
