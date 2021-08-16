@@ -9,6 +9,31 @@ import (
 )
 
 type VehicleModCategory = uint8
+type VehicleLockState = uint8
+type VehicleDoorState = uint8
+
+const (
+	Closed VehicleDoorState = iota
+	OpenedLevel1
+	OpenedLevel2
+	OpenedLevel3
+	OpenedLevel4
+	OpenedLevel5
+	OpenedLevel6
+	OpenedLevel7
+	Unknown
+)
+
+const (
+	ForceDoorsShut  VehicleLockState = iota
+	InitiallyLocked
+	LockPlayerInside
+	Locked
+	LockedCanBeDamaged
+	LockoutPlayerOnly
+	None
+	Unlocked
+)
 
 const (
 	Aerials VehicleModCategory = iota
@@ -278,12 +303,12 @@ func (v Vehicle) LightsMultiplier() float32 {
 	return float32(C.vehicle_get_lights_multiplier(v.Ptr))
 }
 
-func (v Vehicle) EngineHealth() uint32 {
-	return uint32(C.vehicle_get_engine_health(v.Ptr))
+func (v Vehicle) EngineHealth() int32 {
+	return int32(C.vehicle_get_engine_health(v.Ptr))
 }
 
-func (v Vehicle) PetrolTankHealth() uint32 {
-	return uint32(C.vehicle_get_petrol_tank_health(v.Ptr))
+func (v Vehicle) PetrolTankHealth() int32 {
+	return int32(C.vehicle_get_petrol_tank_health(v.Ptr))
 }
 
 func (v Vehicle) WheelsCount() uint8 {
@@ -439,12 +464,7 @@ func (v Vehicle) SetRearWheels(variation uint8) {
 }
 
 func (v Vehicle) SetCustomTires(state bool) {
-	var cState int
-	if state {
-		cState = 1
-	}
-
-	C.vehicle_set_custom_tires(v.Ptr, C.int(cState))
+	C.vehicle_set_custom_tires(v.Ptr, C.int(module.Bool2int(state)))
 }
 
 func (v Vehicle) SetSpecialDarkness(value uint8) {
@@ -452,7 +472,7 @@ func (v Vehicle) SetSpecialDarkness(value uint8) {
 }
 
 func (v Vehicle) SetNumberplateIndex(index uint32) {
-	C.vehicle_set_numberplate_index(v.Ptr, C.ulong(index))
+	C.vehicle_set_numberplate_index(v.Ptr, C.uint(index))
 }
 
 func (v Vehicle) SetNumberplateText(text string) {
@@ -468,4 +488,142 @@ func (v Vehicle) SetWindowTint(tint uint8) {
 
 func (v Vehicle) SetDirtLevel(dirt uint8) {
 	C.vehicle_set_dirt_level(v.Ptr, C.uint(dirt))
+}
+
+func (v Vehicle) SetNeonActive(front bool, left bool, right bool, back bool) {
+	C.vehicle_set_neon_active(v.Ptr, C.int(module.Bool2int(front)), C.int(module.Bool2int(left)), C.int(module.Bool2int(right)), C.int(module.Bool2int(back)))
+}
+
+func (v Vehicle) SetNeonColor(color RGBA) {
+	C.vehicle_set_neon_color(v.Ptr, C.uint(color.R), C.uint(color.G), C.uint(color.B), C.uint(color.A))
+}
+
+func (v Vehicle) SetLivery(livery uint8) {
+	C.vehicle_set_livery(v.Ptr, C.uint(livery))
+}
+
+func (v Vehicle) SetRoofLivery(roofLivery uint8) {
+	C.vehicle_set_roof_livery(v.Ptr, C.uint(roofLivery))
+}
+
+func (v Vehicle) SetEngineOn(state bool) {
+	C.vehicle_set_engine_on(v.Ptr, C.int(module.Bool2int(state)))
+}
+
+func (v Vehicle) SetHeadlightColor(color uint8) {
+	C.vehicle_set_headlight_color(v.Ptr, C.uint(color))
+}
+
+func (v Vehicle) SetRadioStationIndex(stationIndex uint32) {
+	C.vehicle_set_radio_station_index(v.Ptr, C.uint(stationIndex))
+}
+
+func (v Vehicle) SetSirenActive(state bool) {
+	C.vehicle_set_siren_active(v.Ptr, C.int(module.Bool2int(state)))
+}
+
+func (v Vehicle) SetLockState(state uint8) {
+	C.vehicle_set_lock_state(v.Ptr, C.uint(state))
+}
+
+func (v Vehicle) SetDoorState(doorId uint8, state uint8) {
+	C.vehicle_set_door_state(v.Ptr, C.uint(doorId), C.uint(state))
+}
+
+func (v Vehicle) SetWindowOpened(windowId uint8, state bool) {
+	C.vehicle_set_window_opened(v.Ptr, C.uint(windowId), C.int(module.Bool2int(state)))
+}
+
+func (v Vehicle) SetRoofState(state uint8) {
+	C.vehicle_set_roof_state(v.Ptr, C.uint(state))
+}
+
+func (v Vehicle) SetLightsMultiplier(multiplier float32) {
+	C.vehicle_set_lights_multiplier(v.Ptr, C.float(multiplier))
+}
+
+func (v Vehicle) SetEngineHealth(health int32) {
+	C.vehicle_set_engine_health(v.Ptr, C.long(health))
+}
+
+func (v Vehicle) SetPetrolTankHealth(health int32) {
+	C.vehicle_set_petrol_tank_health(v.Ptr, C.long(health))
+}
+
+func (v Vehicle) SetWheelBurst(wheelId uint8, state bool) {
+	C.vehicle_set_wheel_burst(v.Ptr, C.uint(wheelId), C.int(module.Bool2int(state)))
+}
+
+func (v Vehicle) SetWheelHasTire(wheelId uint8, state bool) {
+	C.vehicle_set_wheel_has_tire(v.Ptr, C.uint(wheelId), C.int(module.Bool2int(state)))
+}
+
+func (v Vehicle) SetWheelDetached(wheelId uint8, state bool) {
+	C.vehicle_set_wheel_detached(v.Ptr, C.uint(wheelId), C.int(module.Bool2int(state)))
+}
+
+func (v Vehicle) SetWheelOnFire(wheelId uint8, state bool) {
+	C.vehicle_set_wheel_on_fire(v.Ptr, C.uint(wheelId), C.int(module.Bool2int(state)))
+}
+
+func (v Vehicle) SetWheelHealth(wheelId uint8, health float32) {
+	C.vehicle_set_wheel_health(v.Ptr, C.uint(wheelId), C.float(health))
+}
+
+func (v Vehicle) SetWheelFixed(wheelId uint8) {
+	C.vehicle_set_wheel_fixed(v.Ptr, C.uint(wheelId))
+}
+
+func (v Vehicle) SetBodyHealth(health uint32) {
+	C.vehicle_set_body_health(v.Ptr, C.ulong(health))
+}
+
+func (v Vehicle) SetBodyAdditionalHealth(health uint32) {
+	C.vehicle_set_body_additional_health(v.Ptr, C.ulong(health))
+}
+
+func (v Vehicle) SetPartDamageLevel(partId uint8, damage uint8) {
+	C.vehicle_set_part_damage_level(v.Ptr, C.uint(partId), C.uint(damage))
+}
+
+func (v Vehicle) SetPartBulletHoles(partId uint8, shootsCount uint8) {
+	C.vehicle_set_part_bullet_holes(v.Ptr, C.uint(partId), C.uint(shootsCount))
+}
+
+func (v Vehicle) SetLightDamaged(lightId uint8, isDamaged bool) {
+	C.vehicle_set_light_damaged(v.Ptr, C.uint(lightId), C.int(module.Bool2int(isDamaged)))
+}
+
+func (v Vehicle) SetWindowDamaged(windowId uint8, isDamaged bool) {
+	C.vehicle_set_window_damaged(v.Ptr, C.uint(windowId), C.int(module.Bool2int(isDamaged)))
+}
+
+func (v Vehicle) SetSpecialLightDamaged(specialLightId uint8, isDamaged bool) {
+	C.vehicle_set_special_light_damaged(v.Ptr, C.uint(specialLightId), C.int(module.Bool2int(isDamaged)))
+}
+
+func (v Vehicle) SetArmoredWindowHealth(windowId uint8, health float32) {
+	C.vehicle_set_armored_window_health(v.Ptr, C.uint(windowId), C.float(health))
+}
+
+func (v Vehicle) SetArmoredWindowShootCount(windowId uint8, count uint8) {
+	C.vehicle_set_armored_window_shoot_count(v.Ptr, C.uint(windowId), C.uint(count))
+}
+
+func (v Vehicle) SetBumperDamageLevel(bumperId uint8, damageLevel uint8) {
+	C.vehicle_set_bumper_damage_level(v.Ptr, C.uint(bumperId), C.uint(damageLevel))
+}
+
+func (v Vehicle) SetManualEngineControl(state bool) {
+	C.vehicle_set_manual_engine_control(v.Ptr, C.int(module.Bool2int(state)))
+}
+
+func (v Vehicle) Attached() *Vehicle {
+	ptr := C.vehicle_get_attached(v.Ptr)
+	return NewVehicle(ptr)
+}
+
+func (v Vehicle) AttachedTo() *Vehicle {
+	ptr := C.vehicle_get_attached_to(v.Ptr)
+	return NewVehicle(ptr)
 }

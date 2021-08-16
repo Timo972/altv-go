@@ -1623,12 +1623,12 @@ float vehicle_get_lights_multiplier(void *v)
     return g_call_vehicle_get_lights_multiplier(v);
 }
 
-unsigned long vehicle_get_engine_health(void *v)
+long vehicle_get_engine_health(void *v)
 {
     return g_call_vehicle_get_engine_health(v);
 }
 
-unsigned long vehicle_get_petrol_tank_health(void *v)
+long vehicle_get_petrol_tank_health(void *v)
 {
     return g_call_vehicle_get_petrol_tank_health(v);
 }
@@ -1898,12 +1898,12 @@ void vehicle_set_lights_multiplier(void *v, float multiplier)
     g_call_vehicle_set_lights_multiplier(v, multiplier);
 }
 
-void vehicle_set_engine_health(void *v, unsigned long health)
+void vehicle_set_engine_health(void *v, long health)
 {
     g_call_vehicle_set_engine_health(v, health);
 }
 
-void vehicle_set_petrol_tank_health(void *v, unsigned long health)
+void vehicle_set_petrol_tank_health(void *v, long health)
 {
     g_call_vehicle_set_petrol_tank_health(v, health);
 }
