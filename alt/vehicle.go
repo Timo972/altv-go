@@ -4,8 +4,9 @@ package alt
 // #include "Module.h"
 import "C"
 import (
-	"github.com/shockdev04/altv-go-pkg/internal/module"
 	"unsafe"
+
+	"github.com/shockdev04/altv-go-pkg/internal/module"
 )
 
 type VehicleModCategory = uint8
@@ -21,20 +22,20 @@ type VehiclePartDamage = uint8
 type WindowTint = uint8
 
 const (
-	DarkSmoke WindowTint = iota
-	Green
-	LightSmoke
-	Limo
-	None
-	PureBlack
-	Stock
+	TintDarkSmoke WindowTint = iota
+	TintGreen
+	TintLightSmoke
+	TintLimo
+	TintNone
+	TintPureBlack
+	TintStock
 )
 
 const (
-	DamagedLevel1 VehiclePartDamage = iota
-	DamagedLevel2
-	DamagedLevel3
-	NotDamaged
+	PartDamagedLevel1 VehiclePartDamage = iota
+	PartDamagedLevel2
+	PartDamagedLevel3
+	PartNotDamaged
 )
 
 const (
@@ -47,18 +48,18 @@ const (
 )
 
 const (
-	DriverFront VehicleDoor = iota
-	DriverRear
-	Hood
-	PassengerFront
-	PassengerRear
-	Trunk
+	DoorDriverFront VehicleDoor = iota
+	DoorDriverRear
+	DoorHood
+	DoorPassengerFront
+	DoorPassengerRear
+	DoorTrunk
 )
 
 const (
-	Damaged VehicleBumperDamage = iota
-	None
-	NotDamaged
+	BumperDamaged VehicleBumperDamage = iota
+	BumperNone
+	BumperNotDamaged
 )
 
 const (
@@ -111,7 +112,7 @@ const (
 )
 
 const (
-	ForceDoorsShut  VehicleLockState = iota
+	ForceDoorsShut VehicleLockState = iota
 	InitiallyLocked
 	LockPlayerInside
 	Locked
@@ -224,7 +225,7 @@ func (v Vehicle) PrimaryColor() uint8 {
 
 func (v Vehicle) PrimaryColorRGB() RGBA {
 	color := C.vehicle_get_primary_color_r_g_b(v.Ptr)
-	return RGBA{R: uint8(color.r), G: uint8(color.g), B: uint8(color.b), A: uint8(color.a) }
+	return RGBA{R: uint8(color.r), G: uint8(color.g), B: uint8(color.b), A: uint8(color.a)}
 }
 
 func (v Vehicle) IsSecondaryColorRGB() bool {
@@ -237,7 +238,7 @@ func (v Vehicle) SecondaryColor() uint8 {
 
 func (v Vehicle) SecondaryColorRGB() RGBA {
 	color := C.vehicle_get_secondary_color_r_g_b(v.Ptr)
-	return RGBA{R: uint8(color.r), G: uint8(color.g), B: uint8(color.b), A: uint8(color.a) }
+	return RGBA{R: uint8(color.r), G: uint8(color.g), B: uint8(color.b), A: uint8(color.a)}
 }
 
 func (v Vehicle) PearlColor() uint8 {
@@ -262,7 +263,7 @@ func (v Vehicle) IsTireSmokeColorCustom() bool {
 
 func (v Vehicle) TireSmokeColor() RGBA {
 	color := C.vehicle_get_tire_smoke_color(v.Ptr)
-	return RGBA{R: uint8(color.r), G: uint8(color.g), B: uint8(color.b), A: uint8(color.a) }
+	return RGBA{R: uint8(color.r), G: uint8(color.g), B: uint8(color.b), A: uint8(color.a)}
 }
 
 func (v Vehicle) WheelType() uint8 {
@@ -322,7 +323,7 @@ func (v Vehicle) NeonActive() (front bool, left bool, right bool, back bool) {
 
 func (v Vehicle) NeonColor() RGBA {
 	color := C.vehicle_get_neon_color(v.Ptr)
-	return RGBA{R: uint8(color.r), G: uint8(color.g), B: uint8(color.b), A: uint8(color.a) }
+	return RGBA{R: uint8(color.r), G: uint8(color.g), B: uint8(color.b), A: uint8(color.a)}
 }
 
 func (v Vehicle) Livery() uint8 {
@@ -509,7 +510,7 @@ func (v Vehicle) SetPrimaryColor(color uint8) {
 	C.vehicle_set_primary_color(v.Ptr, C.uint(color))
 }
 
-func (v Vehicle) SetPrimaryColorRGB(color RGBA)  {
+func (v Vehicle) SetPrimaryColorRGB(color RGBA) {
 	C.vehicle_set_primary_color_r_g_b(v.Ptr, C.uint(color.R), C.uint(color.G), C.uint(color.B), C.uint(color.A))
 }
 
@@ -517,7 +518,7 @@ func (v Vehicle) SetSecondaryColor(color uint8) {
 	C.vehicle_set_secondary_color(v.Ptr, C.uint(color))
 }
 
-func (v Vehicle) SetSecondaryColorRGB(color RGBA)  {
+func (v Vehicle) SetSecondaryColorRGB(color RGBA) {
 	C.vehicle_set_secondary_color_r_g_b(v.Ptr, C.uint(color.R), C.uint(color.G), C.uint(color.B), C.uint(color.A))
 }
 
