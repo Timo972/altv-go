@@ -305,19 +305,30 @@ func (e eventManager) ClientEvent(listener clientEventListener) {
 }
 
 func EmitServer(eventName string, args ...interface{}) {
+	println("EmitServer call", eventName, args)
 	size := len(args)
-	ptr := C.malloc(C.size_t(size))
-	cArray := (*[1 << 30]unsafe.Pointer)(ptr)
+	println("arg length", size)
+	ptr := C.malloc(C.size_t(size) * C.size_t(unsafe.Sizeof(uintptr(0))))
+	println("carg ptr", ptr)
+	cArray := (*[1 << 30]C.struct_data)(ptr)
+	println("carg arry", cArray)
 
 	for i := 0; i < size; i++ {
 		mValue := CreateMValue(args[i])
-		cArray[i] = mValue.Ptr
+
+		cArray[i].mValue = mValue.Ptr
+		println("MValue type:",mValue.Type)
+		cArray[i].Type = C.uint(mValue.Type)
 	}
+
+	println("created MValues")
 
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	C.core_trigger_local_event(cEvent, (*unsafe.Pointer)(ptr))
+	println("Sending to capi")
+
+	C.core_trigger_local_event(cEvent, (*C.struct_data)(ptr), C.ulonglong(size))
 }
 
 //export altServerScriptEvent

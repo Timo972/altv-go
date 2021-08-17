@@ -105,7 +105,7 @@ typedef struct array
 typedef struct data
 {
     void *mValue;
-    unsigned int type;
+    unsigned int Type;
 } CustomData;
 
 typedef void (*capi_log)(const char *message);
@@ -379,7 +379,7 @@ typedef void *(*capi_core_create_col_shape_sphere)(float posX, float posY, float
 typedef void *(*capi_core_create_checkpoint)(unsigned char type, float x, float y, float z, float radius, float height, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 typedef void *(*capi_core_create_voice_channel)(int spatial, float maxDistance);
 
-typedef void (*capi_core_trigger_local_event)(const char *ev, void **MValues);
+typedef void (*capi_core_trigger_local_event)(const char *ev, CustomData *MValues, unsigned long long MValuesSize);
 
 // Colshape
 typedef int (*capi_col_shape_get_type)(void *c);
@@ -752,7 +752,7 @@ void *core_create_col_shape_sphere(float posX, float posY, float posZ, float rad
 void *core_create_checkpoint(unsigned char type, float x, float y, float z, float radius, float height, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 void *core_create_voice_channel(int spatial, float maxDistance);
 
-void core_trigger_local_event(const char *ev, void **MValues);
+void core_trigger_local_event(const char *ev, CustomData *MValues, unsigned long long MValuesSize);
 
 // Colshape
 int col_shape_get_type(void *c);

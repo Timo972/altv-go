@@ -2098,9 +2098,9 @@ void *core_create_vehicle(unsigned long model, float posX, float posY, float pos
     g_call_core_create_vehicle(model, posX, posY, posZ, rotX, rotY, rotZ);
 }
 
-void core_trigger_local_event(const char *ev, void **MValues)
+void core_trigger_local_event(const char *ev, CustomData *MValues, unsigned long long MValuesSize)
 {
-    g_call_core_trigger_local_event(ev, MValues);
+    g_call_core_trigger_local_event(ev, MValues, MValuesSize);
 }
 
 // ColShape
