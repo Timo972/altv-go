@@ -1,5 +1,8 @@
 package alt
 
+//#ifndef _WIN32
+//#include <stdlib.h>
+//#endif
 // #include "Module.h"
 import "C"
 import (
