@@ -80,7 +80,7 @@ type vehicleDetachListener = func(vehicle *Vehicle, detachedVehicle *Vehicle)
 // TODO bodyPart ENUM
 type weaponDamageListener = func(source *Player, target interface{}, weapon uint32, damage uint16, offset Position, bodyPart int8) bool
 type serverEventListener = func(eventName string, args ...interface{})
-type clientEventListener = func(eventName string, args ...interface{})
+type clientEventListener = func(player *Player, eventName string, args ...interface{})
 
 type eventManager struct {
 	playerConnectEvents              []playerConnectListener
@@ -303,7 +303,7 @@ func (e eventManager) ServerEvent(listener serverEventListener) {
 }
 
 func (e eventManager) ClientEvent(listener clientEventListener) {
-	On.serverScriptEvents = append(On.clientScriptEvents, listener)
+	On.clientScriptEvents = append(On.clientScriptEvents, listener)
 	registerOnEvent(Resource.Name, clientScriptEvent)
 }
 
@@ -335,38 +335,57 @@ func EmitServer(eventName string, args ...interface{}) {
 }
 
 //export altServerScriptEvent
-func altServerScriptEvent(cName *C.char, cMValues C.struct_array, cSize C.ulonglong) {
+func altServerScriptEvent(cName *C.char, cMValues C.struct_array) {
 	name := C.GoString(cName)
-	/*size := int(cSize)
-	data := (*[1 << 28]C.struct_data)(unsafe.Pointer(cMValues))[:size:size]
-	args := make([]interface{}, size)
-
-	for i := 0; i < size; i++ {
-		mValue := &MValue{Ptr: data[i].mValue, Type: uint8(data[i]._type)}
-		args[i] = mValue.GetValue()
-	}*/
 
 	size := int(cMValues.size)
 	println(size)
-	cMValueStructs := (*[1 << 28]*C.struct_metaData)(cMValues.array)[:size:size]
+	cMValueStructs := (*[1 << 28]C.struct_metaData)(cMValues.array)[:size:size]
 	println(cMValueStructs)
 
 	args := make([]interface{}, size)
 
 	println("iterating mvalue structs")
 
-	for i, mValueStruct := range cMValueStructs {
-		println(mValueStruct)
-		_type := uint8(mValueStruct.Type)
-		println(uint(_type))
-		mValue := &MValue{Ptr: mValueStruct.Ptr, Type: _type}
+	for i := 0; i < size; i++ {
+		cMVal := cMValueStructs[i]
+		_type := uint8(cMVal.Type)
+		println("meta type (in go)", _type)
+		mValue := &MValue{Ptr: cMVal.Ptr, Type: _type, Value: nil}
 		val := mValue.GetValue()
-		println(val)
 		args[i] = val
 	}
 
 	for _, event := range On.serverScriptEvents {
-		event(name, args)
+		event(name, args...)
+	}
+}
+
+//export altClientScriptEvent
+func altClientScriptEvent(p unsafe.Pointer, cName *C.char, cMValues C.struct_array) {
+	player := NewPlayer(p)
+	name := C.GoString(cName)
+
+	size := int(cMValues.size)
+	println(size)
+	cMValueStructs := (*[1 << 28]C.struct_metaData)(cMValues.array)[:size:size]
+	println(cMValueStructs)
+
+	args := make([]interface{}, size)
+
+	println("iterating mvalue structs")
+
+	for i := 0; i < size; i++ {
+		cMVal := cMValueStructs[i]
+		_type := uint8(cMVal.Type)
+		println("meta type (in go)", _type)
+		mValue := &MValue{Ptr: cMVal.Ptr, Type: _type, Value: nil}
+		val := mValue.GetValue()
+		args[i] = val
+	}
+
+	for _, event := range On.clientScriptEvents {
+		event(player, name, args...)
 	}
 }
 
