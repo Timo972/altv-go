@@ -142,8 +142,68 @@ func GetPlayersByName(name string) []*Player {
 	return players
 }
 
+func GetPlayers() []*Player {
+	arr := C.core_get_players()
+
+	size := int(arr.size)
+	values := (*[1 << 28]unsafe.Pointer)(arr.array)[:size:size]
+
+	players := make([]*Player, size)
+
+	if size == 0 {
+		return players
+	}
+
+	for i := 0; i < size; i++ {
+		p := values[i]
+		players[i] = NewPlayer(p)
+	}
+
+	return players
+}
+
+func GetVehicles() []*Vehicle {
+	arr := C.core_get_vehicles()
+
+	size := int(arr.size)
+	values := (*[1 << 28]unsafe.Pointer)(arr.array)[:size:size]
+
+	vehicles := make([]*Vehicle, size)
+
+	if size == 0 {
+		return vehicles
+	}
+
+	for i := 0; i < size; i++ {
+		v := values[i]
+		vehicles[i] = NewVehicle(v)
+	}
+
+	return vehicles
+}
+
 func SetPassword(password string) {
 	cPassword := C.CString(password)
 	defer C.free(unsafe.Pointer(cPassword))
 	C.core_set_password(cPassword)
+}
+
+func Branch() string {
+	return C.GoString(C.core_get_branch())
+}
+
+func Version() string {
+	return C.GoString(C.core_get_version())
+}
+
+func RootDir() string {
+	return C.GoString(C.core_get_root_directory())
+}
+
+func SDKVersion() uint32 {
+	return uint32(C.core_get_sdk_version())
+}
+
+func Debug() bool {
+	return int(C.core_is_debug()) == 1
 }

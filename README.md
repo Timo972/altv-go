@@ -39,3 +39,6 @@ go build -o my-resource.dll -buildmode=c-shared
 export CGO_LDFLAGS="-g -02 -ldl"
 go build -o my-resource.so -buildmode=c-shared
 ```
+
+## TODO
+- [ ] make Player.Vehicle() return nil if theres no vehicle

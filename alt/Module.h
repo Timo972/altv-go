@@ -199,6 +199,8 @@ typedef int (*capi_player_get_visible)(void *p);
 typedef unsigned long (*capi_player_get_id)(void *p);
 typedef void *(*capi_player_get_network_owner)(void *p);
 typedef void (*capi_player_set_network_owner)(void *p, void *owner, int disableMigration);
+typedef void (*capi_player_destroy)(void *p);
+typedef int (*capi_player_is_valid)(void *p);
 
 // Vehicle
 typedef int (*capi_vehicle_has_meta_data)(void *base, const char *key);
@@ -354,6 +356,8 @@ typedef const char *(*capi_vehicle_get_health_data_base64)(void *v);
 typedef const char *(*capi_vehicle_get_damage_data_base64)(void *v);
 typedef const char *(*capi_vehicle_get_script_data_base64)(void *v);
 typedef const char *(*capi_vehicle_get_game_state_base64)(void *v);
+typedef void (*capi_vehicle_destroy)(void *v);
+typedef int (*capi_vehicle_is_valid)(void *v);
 
 typedef unsigned char (*capi_base_object_get_type)(void *base);
 
@@ -396,6 +400,8 @@ typedef int (*capi_col_shape_is_entity_in)(void *c, void *e);
 typedef int (*capi_col_shape_is_point_in)(void *c, float x, float y, float z);
 typedef void (*capi_col_shape_set_players_only)(void *c, int state);
 typedef int (*capi_col_shape_is_players_only)(void *c);
+typedef void (*capi_col_shape_destroy)(void *c);
+typedef int (*capi_col_shape_is_valid)(void *c);
 
 // Checkpoint
 typedef int (*capi_checkpoint_get_type)(void *c);
@@ -422,6 +428,8 @@ typedef void (*capi_checkpoint_set_height)(void *c, float height);
 typedef void (*capi_checkpoint_set_radius)(void *c, float radius);
 typedef void (*capi_checkpoint_set_color)(void *c, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 typedef void (*capi_checkpoint_set_next_position)(void *c, float x, float y, float z);
+typedef void (*capi_checkpoint_destroy)(void *c);
+typedef int (*capi_checkpoint_is_valid)(void *c);
 
 // VoiceChannel
 typedef int (*capi_voice_channel_get_type)(void *c);
@@ -437,6 +445,8 @@ typedef void (*capi_voice_channel_remove_player)(void *v, void *p);
 typedef int (*capi_voice_channel_is_player_muted)(void *v, void *p);
 typedef void (*capi_voice_channel_mute_player)(void *v, void *p);
 typedef void (*capi_voice_channel_unmute_player)(void *v, void *p);
+typedef void (*capi_voice_channel_destroy)(void *v);
+typedef int (*capi_voice_channel_is_valid)(void *v);
 
 typedef unsigned long (*capi_core_hash)(const char *str);
 typedef int (*capi_core_file_exists)(const char *path);
@@ -455,7 +465,14 @@ typedef int (*capi_core_restart_resource)(const char *name);
 typedef void (*capi_core_set_synced_meta_data)(const char *key, void *val);
 typedef void (*capi_core_delete_synced_meta_data)(const char *key);
 typedef Array (*capi_core_get_players_by_name)(const char *name);
+typedef Array (*capi_core_get_players)();
+typedef Array (*capi_core_get_vehicles)();
 typedef void (*capi_core_set_password)(const char *password);
+typedef const char * (*capi_core_get_branch)();
+typedef const char * (*capi_core_get_version)();
+typedef int (*capi_core_is_debug)();
+typedef unsigned int (*capi_core_get_sdk_version)();
+typedef const char * (*capi_core_get_root_directory)();
 
 int load_module(const char *path);
 
@@ -484,7 +501,14 @@ int core_restart_resource(const char *name);
 void core_set_synced_meta_data(const char *key, void *val);
 void core_delete_synced_meta_data(const char *key);
 Array core_get_players_by_name(const char *name);
+Array core_get_players();
+Array core_get_vehicles();
 void core_set_password(const char *password);
+const char * core_get_branch();
+const char * core_get_version();
+int core_is_debug();
+unsigned int core_get_sdk_version();
+const char * core_get_root_directory();
 
 // Player
 const char *player_get_name(void *p);
@@ -573,6 +597,8 @@ int player_get_visible(void *p);
 unsigned long player_get_id(void *p);
 void *player_get_network_owner(void *p);
 void player_set_network_owner(void *p, void *owner, int disableMigration);
+void player_destroy(void *p);
+int player_is_valid(void *p);
 
 // Vehicle
 int vehicle_has_meta_data(void *base, const char *key);
@@ -728,6 +754,8 @@ const char *vehicle_get_game_state_base64(void *v);
 const char *vehicle_get_health_data_base64(void *v);
 const char *vehicle_get_damage_data_base64(void *v);
 const char *vehicle_get_script_data_base64(void *v);
+void vehicle_destroy(void *v);
+int vehicle_is_valid(void *v);
 
 // MValue
 void *core_create_mvalue_bool(int value);
@@ -769,6 +797,8 @@ int col_shape_is_entity_in(void *c, void *e);
 int col_shape_is_point_in(void *c, float x, float y, float z);
 void col_shape_set_players_only(void *c, int state);
 int col_shape_is_players_only(void *c);
+void col_shape_destroy(void *c);
+int col_shape_is_valid(void *p);
 
 // Checkpoint
 int checkpoint_get_type(void *c);
@@ -795,6 +825,8 @@ void checkpoint_set_height(void *c, float height);
 void checkpoint_set_radius(void *c, float radius);
 void checkpoint_set_color(void *c, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 void checkpoint_set_next_position(void *c, float x, float y, float z);
+void checkpoint_destroy(void *c);
+int checkpoint_is_valid(void *p);
 
 // VoiceChannel
 int voice_channel_get_type(void *c);
@@ -810,5 +842,7 @@ void voice_channel_remove_player(void *v, void *p);
 int voice_channel_is_player_muted(void *v, void *p);
 void voice_channel_mute_player(void *v, void *p);
 void voice_channel_unmute_player(void *v, void *p);
+void voice_channel_destroy(void *v);
+int voice_channel_is_valid(void *p);
 
 #endif
