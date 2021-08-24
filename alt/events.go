@@ -348,6 +348,7 @@ func EmitServer(eventName string, args ...interface{}) {
 	defer C.free(unsafe.Pointer(cEvent))
 
 	argPtr, argSize := createArgArray(args)
+	defer C.free(unsafe.Pointer(argPtr))
 
 	C.core_trigger_local_event(cEvent, argPtr, argSize)
 }
@@ -357,6 +358,7 @@ func EmitClient(player *Player, eventName string, args... interface{}) {
 	defer C.free(unsafe.Pointer(cEvent))
 
 	argPtr, argSize := createArgArray(args)
+	defer C.free(unsafe.Pointer(argPtr))
 
 	C.core_trigger_client_event(player.Ptr, cEvent, argPtr, argSize)
 }
@@ -366,11 +368,13 @@ func EmitClients(players []*Player, eventName string, args... interface{}) {
 	defer C.free(unsafe.Pointer(cEvent))
 
 	argPtr, argSize := createArgArray(args)
+	defer C.free(unsafe.Pointer(argPtr))
 
 	clientSize := uint64(len(players))
 
 	clientArrayPtr := C.malloc(C.size_t(clientSize))
 	clientArray := (*[1 << 30]unsafe.Pointer)(clientArrayPtr)
+	defer C.free(clientArrayPtr)
 
 	for i := uint64(0); i < clientSize; i++ {
 		clientArray[i] = players[i].Ptr
@@ -384,6 +388,7 @@ func EmitAllClients(eventName string, args... interface{}) {
 	defer C.free(unsafe.Pointer(cEvent))
 
 	argPtr, argSize := createArgArray(args)
+	defer C.free(unsafe.Pointer(argPtr))
 
 	C.core_trigger_client_event_for_all(cEvent, argPtr, argSize)
 }
