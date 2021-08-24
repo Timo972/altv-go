@@ -329,10 +329,7 @@ func (e eventManager) AllClientEvents(listener allClientEventsListener) {
 	registerOnEvent(Resource.Name, clientScriptEvent)
 }
 
-func EmitServer(eventName string, args ...interface{}) {
-	cEvent := C.CString(eventName)
-	defer C.free(unsafe.Pointer(cEvent))
-
+func createArgArray(args []interface{}) (*C.struct_data, C.ulonglong) {
 	size := len(args)
 	ptr := C.malloc(C.size_t(C.sizeof_CustomData * size))
 	cArray := (*[1 << 30]C.struct_data)(ptr)
@@ -340,11 +337,55 @@ func EmitServer(eventName string, args ...interface{}) {
 	for i := 0; i < size; i++ {
 		mValue := CreateMValue(args[i])
 
-		data := C.struct_data{mValue: mValue.Ptr, Type: C.uint(mValue.Type)}
-		cArray[i] = data
+		cArray[i] = C.struct_data{mValue: mValue.Ptr, Type: C.uint(mValue.Type)}
 	}
 
-	C.core_trigger_local_event(cEvent, (*C.struct_data)(ptr), C.ulonglong(size))
+	return (*C.struct_data)(ptr), C.ulonglong(size)
+}
+
+func EmitServer(eventName string, args ...interface{}) {
+	cEvent := C.CString(eventName)
+	defer C.free(unsafe.Pointer(cEvent))
+
+	argPtr, argSize := createArgArray(args)
+
+	C.core_trigger_local_event(cEvent, argPtr, argSize)
+}
+
+func EmitClient(player *Player, eventName string, args... interface{}) {
+	cEvent := C.CString(eventName)
+	defer C.free(unsafe.Pointer(cEvent))
+
+	argPtr, argSize := createArgArray(args)
+
+	C.core_trigger_client_event(player.Ptr, cEvent, argPtr, argSize)
+}
+
+func EmitClients(players []*Player, eventName string, args... interface{}) {
+	cEvent := C.CString(eventName)
+	defer C.free(unsafe.Pointer(cEvent))
+
+	argPtr, argSize := createArgArray(args)
+
+	clientSize := uint64(len(players))
+
+	clientArrayPtr := C.malloc(C.size_t(clientSize))
+	clientArray := (*[1 << 30]unsafe.Pointer)(clientArrayPtr)
+
+	for i := uint64(0); i < clientSize; i++ {
+		clientArray[i] = players[i].Ptr
+	}
+
+	C.core_trigger_client_event_for((*unsafe.Pointer)(clientArrayPtr), C.ulonglong(clientSize), cEvent, argPtr, argSize)
+}
+
+func EmitAllClients(eventName string, args... interface{}) {
+	cEvent := C.CString(eventName)
+	defer C.free(unsafe.Pointer(cEvent))
+
+	argPtr, argSize := createArgArray(args)
+
+	C.core_trigger_client_event_for_all(cEvent, argPtr, argSize)
 }
 
 //export altServerScriptEvent

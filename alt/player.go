@@ -283,3 +283,7 @@ func (p Player) MaxHealth() uint16 {
 func (p Player) MaxArmour() uint16 {
 	return uint16(C.player_get_max_armour(p.Ptr))
 }
+
+func (p *Player) Emit(eventName string, args... interface{}) {
+	EmitClient(p, eventName, args...)
+}
