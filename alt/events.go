@@ -333,27 +333,16 @@ func EmitServer(eventName string, args ...interface{}) {
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	println("EmitServer call", eventName, args)
 	size := len(args)
-	println("arg length", size)
 	ptr := C.malloc(C.size_t(C.sizeof_CustomData * size))
-	println("carg ptr", ptr)
 	cArray := (*[1 << 30]C.struct_data)(ptr)
-	println("carg arry", cArray)
 
 	for i := 0; i < size; i++ {
 		mValue := CreateMValue(args[i])
 
-		println("MValue type:", mValue.Type)
-		println("MValue ptr:", mValue.Ptr)
-
 		data := C.struct_data{mValue: mValue.Ptr, Type: C.uint(mValue.Type)}
 		cArray[i] = data
 	}
-
-	println("created MValues")
-
-	println("Sending to capi")
 
 	C.core_trigger_local_event(cEvent, (*C.struct_data)(ptr), C.ulonglong(size))
 }
