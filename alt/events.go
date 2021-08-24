@@ -364,15 +364,19 @@ func EmitClient(player *Player, eventName string, args... interface{}) {
 }
 
 func EmitClients(players []*Player, eventName string, args... interface{}) {
+	clientSize := uint64(len(players))
+
+	if clientSize < 1 {
+		return
+	}
+
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
 	argPtr, argSize := createArgArray(args)
 	defer C.free(unsafe.Pointer(argPtr))
 
-	clientSize := uint64(len(players))
-
-	clientArrayPtr := C.malloc(C.size_t(clientSize))
+	clientArrayPtr := C.malloc(C.size_t(clientSize) * C.size_t(8))
 	clientArray := (*[1 << 30]unsafe.Pointer)(clientArrayPtr)
 	defer C.free(clientArrayPtr)
 
