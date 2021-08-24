@@ -88,6 +88,8 @@ capi_player_get_visible g_call_player_get_visible;
 capi_player_get_id g_call_player_get_id;
 capi_player_get_network_owner g_call_player_get_network_owner;
 capi_player_set_network_owner g_call_player_set_network_owner;
+capi_player_destroy g_call_player_destroy;
+capi_player_is_valid g_call_player_is_valid;
 
 // Vehicle
 capi_core_create_vehicle g_call_core_create_vehicle;
@@ -252,6 +254,8 @@ capi_vehicle_get_appearance_data_base64 g_call_vehicle_get_appearance_data_base6
 capi_vehicle_get_health_data_base64 g_call_vehicle_get_health_data_base64;
 capi_vehicle_get_damage_data_base64 g_call_vehicle_get_damage_data_base64;
 capi_vehicle_get_script_data_base64 g_call_vehicle_get_script_data_base64;
+capi_vehicle_destroy g_call_vehicle_destroy;
+capi_vehicle_is_valid g_call_vehicle_is_valid;
 
 // Core
 capi_core_hash g_call_core_hash;
@@ -271,7 +275,14 @@ capi_core_restart_resource g_call_core_restart_resource;
 capi_core_set_synced_meta_data g_call_core_set_synced_meta_data;
 capi_core_delete_synced_meta_data g_call_core_delete_synced_meta_data;
 capi_core_get_players_by_name g_call_core_get_players_by_name;
+capi_core_get_players g_call_core_get_players;
+capi_core_get_vehicles g_call_core_get_vehicles;
 capi_core_set_password g_call_core_set_password;
+capi_core_get_branch g_call_core_get_branch;
+capi_core_get_version g_call_core_get_version;
+capi_core_is_debug g_call_core_is_debug;
+capi_core_get_sdk_version g_call_core_get_sdk_version;
+capi_core_get_root_directory g_call_core_get_root_directory;
 capi_core_trigger_local_event g_call_core_trigger_local_event;
 
 // Colshape
@@ -289,6 +300,8 @@ capi_col_shape_is_entity_in g_call_col_shape_is_entity_in;
 capi_col_shape_is_point_in g_call_col_shape_is_point_in;
 capi_col_shape_set_players_only g_call_col_shape_set_players_only;
 capi_col_shape_is_players_only g_call_col_shape_is_players_only;
+capi_col_shape_destroy g_call_col_shape_destroy;
+capi_col_shape_is_valid g_call_col_shape_is_valid;
 
 // Checkpoint
 capi_checkpoint_get_type g_call_checkpoint_get_type;
@@ -315,6 +328,8 @@ capi_checkpoint_set_height g_call_checkpoint_set_height;
 capi_checkpoint_set_radius g_call_checkpoint_set_radius;
 capi_checkpoint_set_color g_call_checkpoint_set_color;
 capi_checkpoint_set_next_position g_call_checkpoint_set_next_position;
+capi_checkpoint_destroy g_call_checkpoint_destroy;
+capi_checkpoint_is_valid g_call_checkpoint_is_valid;
 
 // VoiceChannel
 capi_voice_channel_get_type g_call_voice_channel_get_type;
@@ -330,6 +345,8 @@ capi_voice_channel_remove_player g_call_voice_channel_remove_player;
 capi_voice_channel_is_player_muted g_call_voice_channel_is_player_muted;
 capi_voice_channel_mute_player g_call_voice_channel_mute_player;
 capi_voice_channel_unmute_player g_call_voice_channel_unmute_player;
+capi_voice_channel_destroy g_call_voice_channel_destroy;
+capi_voice_channel_is_valid g_call_voice_channel_is_valid;
 
 int load_module(const char *path)
 {
@@ -427,6 +444,8 @@ int load_module(const char *path)
     g_call_player_get_id = GET_FUNC(module, "Player_GetID", capi_player_get_id);
     g_call_player_get_network_owner = GET_FUNC(module, "Player_GetNetworkOwner", capi_player_get_network_owner);
     g_call_player_set_network_owner = GET_FUNC(module, "Player_SetNetworkOwner", capi_player_set_network_owner);
+    g_call_player_destroy = GET_FUNC(module, "Player_Destroy", capi_player_destroy);
+    g_call_player_is_valid = GET_FUNC(module, "Player_IsValid", capi_player_is_valid);
 
     // Vehicle
     g_call_vehicle_has_meta_data = GET_FUNC(module, "Vehicle_HasMetaData", capi_vehicle_has_meta_data);
@@ -582,6 +601,8 @@ int load_module(const char *path)
     g_call_vehicle_get_health_data_base64 = GET_FUNC(module, "Vehicle_GetHealthDataBase64", capi_vehicle_get_health_data_base64);
     g_call_vehicle_get_damage_data_base64 = GET_FUNC(module, "Vehicle_GetDamageDataBase64", capi_vehicle_get_damage_data_base64);
     g_call_vehicle_get_script_data_base64 = GET_FUNC(module, "Vehicle_GetScriptDataBase64", capi_vehicle_get_script_data_base64);
+    g_call_vehicle_destroy = GET_FUNC(module, "Vehicle_Destroy", capi_vehicle_destroy);
+    g_call_vehicle_is_valid = GET_FUNC(module, "Vehicle_IsValid", capi_vehicle_is_valid);
 
     // Core
     g_call_core_hash = GET_FUNC(module, "Core_Hash", capi_core_hash);
@@ -601,7 +622,15 @@ int load_module(const char *path)
     g_call_core_set_synced_meta_data = GET_FUNC(module, "Core_SetSyncedMetaData", capi_core_set_synced_meta_data);
     g_call_core_delete_synced_meta_data = GET_FUNC(module, "Core_DeleteSyncedMetaData", capi_core_delete_synced_meta_data);
     g_call_core_get_players_by_name = GET_FUNC(module, "Core_GetPlayersByName", capi_core_get_players_by_name);
+    g_call_core_get_players = GET_FUNC(module, "Core_GetPlayers", capi_core_get_players);
+    g_call_core_get_vehicles = GET_FUNC(module, "Core_GetVehicles", capi_core_get_vehicles);
     g_call_core_set_password = GET_FUNC(module, "Core_SetPassword", capi_core_set_password);
+    g_call_core_get_branch = GET_FUNC(module, "Core_GetBranch", capi_core_get_branch);
+    g_call_core_get_version = GET_FUNC(module, "Core_GetVersion", capi_core_get_version);
+    g_call_core_is_debug = GET_FUNC(module, "Core_IsDebug", capi_core_is_debug);
+    g_call_core_get_sdk_version = GET_FUNC(module, "Core_GetSDKVersion", capi_core_get_sdk_version);
+    g_call_core_get_root_directory = GET_FUNC(module, "Core_GetRootDirectory", capi_core_get_root_directory);
+
     g_call_core_trigger_local_event = GET_FUNC(module, "Core_TriggerLocalEvent", capi_core_trigger_local_event);
 
     // ColShape
@@ -619,6 +648,8 @@ int load_module(const char *path)
     g_call_col_shape_is_point_in = GET_FUNC(module, "ColShape_IsPointIn", capi_col_shape_is_point_in);
     g_call_col_shape_set_players_only = GET_FUNC(module, "ColShape_SetPlayersOnly", capi_col_shape_set_players_only);
     g_call_col_shape_is_players_only = GET_FUNC(module, "ColShape_IsPlayersOnly", capi_col_shape_is_players_only);
+    g_call_col_shape_destroy = GET_FUNC(module, "ColShape_Destroy", capi_col_shape_destroy);
+    g_call_col_shape_is_valid = GET_FUNC(module, "ColShape_IsValid", capi_col_shape_is_valid);
 
     g_call_core_create_col_shape_cylinder = GET_FUNC(module, "Core_CreateColShapeCylinder", capi_core_create_col_shape_cylinder);
     g_call_core_create_col_shape_cube = GET_FUNC(module, "Core_CreateColShapeCube", capi_core_create_col_shape_cube);
@@ -654,6 +685,8 @@ int load_module(const char *path)
     g_call_checkpoint_set_radius = GET_FUNC(module, "Checkpoint_SetRadius", capi_checkpoint_set_radius);
     g_call_checkpoint_set_color = GET_FUNC(module, "Checkpoint_SetColor", capi_checkpoint_set_color);
     g_call_checkpoint_set_next_position = GET_FUNC(module, "Checkpoint_SetNextPosition", capi_checkpoint_set_next_position);
+    g_call_checkpoint_destroy = GET_FUNC(module, "Checkpoint_Destroy", capi_checkpoint_destroy);
+    g_call_checkpoint_is_valid = GET_FUNC(module, "Checkpoint_IsValid", capi_checkpoint_is_valid);
 
     // VoiceChannel
     g_call_voice_channel_get_type = GET_FUNC(module, "VoiceChannel_GetType", capi_voice_channel_get_type);
@@ -669,6 +702,8 @@ int load_module(const char *path)
     g_call_voice_channel_is_player_muted = GET_FUNC(module, "VoiceChannel_IsPlayerMuted", capi_voice_channel_is_player_muted);
     g_call_voice_channel_mute_player = GET_FUNC(module, "VoiceChannel_MutePlayer", capi_voice_channel_mute_player);
     g_call_voice_channel_unmute_player = GET_FUNC(module, "VoiceChannel_UnmutePlayer", capi_voice_channel_unmute_player);
+    g_call_voice_channel_destroy = GET_FUNC(module, "VoiceChannel_Destroy", capi_voice_channel_destroy);
+    g_call_voice_channel_is_valid = GET_FUNC(module, "VoiceChannel_IsValid", capi_voice_channel_is_valid);
 
     return 1;
 }
@@ -794,9 +829,44 @@ Array core_get_players_by_name(const char *name)
     return g_call_core_get_players_by_name(name);
 }
 
+Array core_get_players()
+{
+    return g_call_core_get_players();
+}
+
+Array core_get_vehicles()
+{
+    return g_call_core_get_vehicles();
+}
+
 void core_set_password(const char *password)
 {
     g_call_core_set_password(password);
+}
+
+const char * core_get_branch()
+{
+    return g_call_core_get_branch();
+}
+
+const char * core_get_version()
+{
+    return g_call_core_get_version();
+}
+
+int core_is_debug()
+{
+    return g_call_core_is_debug();
+}
+
+unsigned int core_get_sdk_version()
+{
+    return g_call_core_get_sdk_version();
+}
+
+const char * core_get_root_directory()
+{
+    return g_call_core_get_root_directory();
 }
 
 void *core_create_col_shape_cylinder(float posX, float posY, float posZ, float radius, float height)
@@ -1263,6 +1333,16 @@ void *player_get_network_owner(void *p)
 void player_set_network_owner(void *p, void *owner, int disableMigration)
 {
     g_call_player_set_network_owner(p, owner, disableMigration);
+}
+
+void player_destroy(void *p)
+{
+    g_call_player_destroy(p);
+}
+
+int player_is_valid(void *p)
+{
+    return g_call_player_is_valid(p);
 }
 
 // Vehicle
@@ -2006,6 +2086,16 @@ void *vehicle_get_attached_to(void *v)
     return g_call_vehicle_get_attached_to(v);
 }
 
+void vehicle_destroy(void *v)
+{
+    g_call_vehicle_destroy(v);
+}
+
+int vehicle_is_valid(void *p)
+{
+    return g_call_vehicle_is_valid(p);
+}
+
 const char *vehicle_get_appearance_data_base64(void *v)
 {
     return g_call_vehicle_get_appearance_data_base64(v);
@@ -2174,6 +2264,16 @@ int col_shape_is_players_only(void *c)
     return g_call_col_shape_is_players_only(c);
 }
 
+void col_shape_destroy(void *c)
+{
+    g_call_col_shape_destroy(c);
+}
+
+int col_shape_is_valid(void *p)
+{
+    return g_call_col_shape_is_valid(p);
+}
+
 // Checkpoint
 int checkpoint_get_type(void *c)
 {
@@ -2295,6 +2395,17 @@ void checkpoint_set_next_position(void *c, float x, float y, float z)
     g_call_checkpoint_set_next_position(c, x, y, z);
 }
 
+void checkpoint_destroy(void *c)
+{
+    g_call_checkpoint_destroy(c);
+}
+
+int checkpoint_is_valid(void *p)
+{
+    return g_call_checkpoint_is_valid(p);
+}
+
+
 // VoiceChannel
 int voice_channel_get_type(void *c)
 {
@@ -2360,3 +2471,14 @@ void voice_channel_unmute_player(void *v, void *p)
 {
     g_call_voice_channel_unmute_player(v, p);
 }
+
+void voice_channel_destroy(void *c)
+{
+    g_call_voice_channel_destroy(c);
+}
+
+int voice_channel_is_valid(void *p)
+{
+    return g_call_voice_channel_is_valid(p);
+}
+

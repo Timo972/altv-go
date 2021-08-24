@@ -1,5 +1,8 @@
 package alt
 
+//#ifndef _WIN32
+//#include <stdlib.h>
+//#endif
 // #include "Module.h"
 import "C"
 import (
@@ -77,7 +80,7 @@ type vehicleDetachListener = func(vehicle *Vehicle, detachedVehicle *Vehicle)
 // TODO bodyPart ENUM
 type weaponDamageListener = func(source *Player, target interface{}, weapon uint32, damage uint16, offset Position, bodyPart int8) bool
 type serverEventListener = func(eventName string, args ...interface{})
-type clientEventListener = func(eventName string, args ...interface{})
+type clientEventListener = func(player *Player, eventName string, args ...interface{})
 
 type eventManager struct {
 	playerConnectEvents              []playerConnectListener
@@ -300,7 +303,7 @@ func (e eventManager) ServerEvent(listener serverEventListener) {
 }
 
 func (e eventManager) ClientEvent(listener clientEventListener) {
-	On.serverScriptEvents = append(On.clientScriptEvents, listener)
+	On.clientScriptEvents = append(On.clientScriptEvents, listener)
 	registerOnEvent(Resource.Name, clientScriptEvent)
 }
 

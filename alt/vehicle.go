@@ -4,6 +4,7 @@ package alt
 // #include "Module.h"
 import "C"
 import (
+	"errors"
 	"unsafe"
 
 	"github.com/shockdev04/altv-go-pkg/internal/module"
@@ -186,11 +187,17 @@ func NewVehicle(p unsafe.Pointer) *Vehicle {
 	return vehicle
 }
 
-func CreateVehicle(model uint32, pos Position, rot Rotation) *Vehicle {
+func CreateVehicle(model uint32, pos Position, rot Rotation) (*Vehicle, error) {
 	vehicle := C.core_create_vehicle(C.ulong(model), C.float(pos.X), C.float(pos.Y), C.float(pos.Z),
 		C.float(rot.X), C.float(rot.Y), C.float(rot.Z))
 
-	return NewVehicle(vehicle)
+	veh := NewVehicle(vehicle)
+
+	if !veh.Valid() {
+		return nil, errors.New("could not create vehicle")
+	}
+
+	return veh, nil
 }
 
 func (v Vehicle) Driver() *Player {
@@ -213,6 +220,10 @@ func (v Vehicle) ModsCount(category VehicleModCategory) uint8 {
 
 func (v Vehicle) ModKit() uint8 {
 	return uint8(C.vehicle_get_mod_kit(v.Ptr))
+}
+
+func (v Vehicle) ModKitsCount() uint8 {
+	return uint8(C.vehicle_get_mod_kits_count(v.Ptr))
 }
 
 func (v Vehicle) IsPrimaryColorRGB() bool {

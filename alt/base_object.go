@@ -1,5 +1,8 @@
 package alt
 
+//#ifndef _WIN32
+//#include <stdlib.h>
+//#endif
 // #include "Module.h"
 import "C"
 import (
@@ -32,6 +35,37 @@ type Base interface {
 	GetMetaData(key string) interface{}
 	SetMetaData(key string, value interface{})
 	DeleteMetaData(key string)
+}
+
+func (b BaseObject) Valid() bool {
+	// TODO check if it works with player
+	// if so add for other base object extenders
+    if b.Type == PlayerObject {
+    	return int(C.player_is_valid(b.Ptr)) == 1
+    } else if b.Type == VoiceChannelObject {
+    	return int(C.voice_channel_is_valid(b.Ptr)) == 1
+    } else if b.Type == CheckpointObject {
+		return int(C.checkpoint_is_valid(b.Ptr)) == 1
+    } else if b.Type == ColshapeObject {
+		return int(C.col_shape_is_valid(b.Ptr)) == 1
+    } else if b.Type == VehicleObject {
+		return int(C.vehicle_is_valid(b.Ptr)) == 1
+    }
+    return false
+}
+
+func (b BaseObject) Destroy() {
+	if b.Type == PlayerObject {
+		C.player_destroy(b.Ptr)
+	} else if b.Type == VoiceChannelObject {
+		C.voice_channel_destroy(b.Ptr)
+	} else if b.Type == CheckpointObject {
+		C.checkpoint_destroy(b.Ptr)
+	} else if b.Type == ColshapeObject {
+		C.col_shape_destroy(b.Ptr)
+	} else if b.Type == VehicleObject {
+		C.vehicle_destroy(b.Ptr)
+	}
 }
 
 func (b BaseObject) HasMetaData(key string) bool {
