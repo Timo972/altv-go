@@ -377,6 +377,37 @@ func altServerScriptEvent(cName *C.char, cMValues unsafe.Pointer, _size C.ulongl
 	}
 }
 
+//export altClientScriptEvent
+func altClientScriptEvent(p unsafe.Pointer, cName *C.char, cMValues unsafe.Pointer, _size C.ulonglong) {
+	name := C.GoString(cName)
+	player := NewPlayer(p)
+
+	size := uint64(_size)
+
+	args := make([]interface{}, 0)
+
+	cMValueStructs := (*[1 << 30]C.struct_metaData)(cMValues)[:size:size]
+
+	for i := uint64(0); i < size; i++ {
+		cMVal := cMValueStructs[i]
+		_type := uint8(cMVal.Type)
+
+		mValue := &MValue{Ptr: cMVal.Ptr, Type: _type, Value: nil}
+
+		val := mValue.GetValue()
+
+		args = append(args, val)
+	}
+
+	for _, event := range On.allClientScriptEvents {
+		event(player, name, args...)
+	}
+
+	for _, event := range On.clientScriptEvents[name] {
+		event(player, args...)
+	}
+}
+
 //export altPlayerConnectEvent
 func altPlayerConnectEvent(player unsafe.Pointer) {
 	for _, event := range On.playerConnectEvents {
