@@ -350,19 +350,12 @@ func EmitServer(eventName string, args ...interface{}) {
 //export altServerScriptEvent
 func altServerScriptEvent(cName *C.char, cMValues unsafe.Pointer, _size C.ulonglong) {
 	name := C.GoString(cName)
-	println("EventName:", name)
 
 	size := uint64(_size)
-	println("Args size:", size)
 
-	//args := make([]interface{}, size)
 	args := make([]interface{}, 0)
 
 	cMValueStructs := (*[1 << 30]C.struct_metaData)(cMValues)[:size:size]
-
-	println(cMValueStructs)
-
-	println("iterating mvalue structs")
 
 	for i := uint64(0); i < size; i++ {
 		cMVal := cMValueStructs[i]
@@ -370,17 +363,10 @@ func altServerScriptEvent(cName *C.char, cMValues unsafe.Pointer, _size C.ulongl
 
 		mValue := &MValue{Ptr: cMVal.Ptr, Type: _type, Value: nil}
 
-		println("MValue type (in go):", mValue.Type)
-		println("MValue ptr (in go):", mValue.Ptr)
-
 		val := mValue.GetValue()
-
-		println("MValue value (in go):", val)
 
 		args = append(args, val)
 	}
-
-	println("calling on server script events")
 
 	for _, event := range On.allServerScriptEvents {
 		event(name, args...)
@@ -389,8 +375,6 @@ func altServerScriptEvent(cName *C.char, cMValues unsafe.Pointer, _size C.ulongl
 	for _, event := range On.serverScriptEvents[name] {
 		event(args...)
 	}
-
-	println("after calling on server script events")
 }
 
 //export altPlayerConnectEvent
