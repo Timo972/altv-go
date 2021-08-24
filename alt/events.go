@@ -305,10 +305,13 @@ func (e eventManager) ClientEvent(listener clientEventListener) {
 }
 
 func EmitServer(eventName string, args ...interface{}) {
+	cEvent := C.CString(eventName)
+	defer C.free(unsafe.Pointer(cEvent))
+
 	println("EmitServer call", eventName, args)
 	size := len(args)
 	println("arg length", size)
-	ptr := C.malloc(C.size_t(size) * C.size_t(unsafe.Sizeof(uintptr(0))))
+	ptr := C.malloc(C.size_t(C.sizeof_CustomData * size))
 	println("carg ptr", ptr)
 	cArray := (*[1 << 30]C.struct_data)(ptr)
 	println("carg arry", cArray)
@@ -316,15 +319,14 @@ func EmitServer(eventName string, args ...interface{}) {
 	for i := 0; i < size; i++ {
 		mValue := CreateMValue(args[i])
 
-		cArray[i].mValue = mValue.Ptr
-		println("MValue type:",mValue.Type)
-		cArray[i].Type = C.uint(mValue.Type)
+		println("MValue type:", mValue.Type)
+		println("MValue ptr:", mValue.Ptr)
+
+		data := C.struct_data{mValue: mValue.Ptr, Type: C.uint(mValue.Type)}
+		cArray[i] = data
 	}
 
 	println("created MValues")
-
-	cEvent := C.CString(eventName)
-	defer C.free(unsafe.Pointer(cEvent))
 
 	println("Sending to capi")
 
@@ -332,39 +334,39 @@ func EmitServer(eventName string, args ...interface{}) {
 }
 
 //export altServerScriptEvent
-func altServerScriptEvent(cName *C.char, cMValues C.struct_array, cSize C.ulonglong) {
+func altServerScriptEvent(cName *C.char, cMValues unsafe.Pointer, _size C.ulonglong) {
 	name := C.GoString(cName)
-	/*size := int(cSize)
-	data := (*[1 << 28]C.struct_data)(unsafe.Pointer(cMValues))[:size:size]
-	args := make([]interface{}, size)
+	println(name)
 
-	for i := 0; i < size; i++ {
-		mValue := &MValue{Ptr: data[i].mValue, Type: uint8(data[i]._type)}
-		args[i] = mValue.GetValue()
-	}*/
-
-	size := int(cMValues.size)
+	size := uint64(_size)
 	println(size)
-	cMValueStructs := (*[1 << 28]*C.struct_metaData)(cMValues.array)[:size:size]
-	println(cMValueStructs)
 
 	args := make([]interface{}, size)
+
+	cMValueStructs := (*[1 << 30]C.struct_metaData)(cMValues)[:size:size]
+
+	println(cMValueStructs)
 
 	println("iterating mvalue structs")
 
-	for i, mValueStruct := range cMValueStructs {
-		println(mValueStruct)
-		_type := uint8(mValueStruct.Type)
-		println(uint(_type))
-		mValue := &MValue{Ptr: mValueStruct.Ptr, Type: _type}
+	for i := uint64(0); i < size; i++ {
+		cMVal := cMValueStructs[i]
+		_type := uint8(cMVal.Type)
+
+		println("meta type (in go)", _type)
+		mValue := &MValue{Ptr: cMVal.Ptr, Type: _type, Value: nil}
 		val := mValue.GetValue()
-		println(val)
-		args[i] = val
+
+		args = append(args, val)
 	}
 
+	println("calling on server script events")
+
 	for _, event := range On.serverScriptEvents {
-		event(name, args)
+		event(name, args...)
 	}
+
+	println("after calling on server script events")
 }
 
 //export altPlayerConnectEvent

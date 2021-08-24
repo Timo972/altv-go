@@ -11,7 +11,8 @@ import (
 type MValueType = uint8
 
 const (
-	MValueNone MValueType = iota + 229
+	MValueNone MValueType = iota
+	MValueNil
 	MValueBool
 	MValueInt
 	MValueUInt
@@ -21,10 +22,10 @@ const (
 	MValueDict
 	MValueBaseObject
 	MValueFunction
-	MValueVector2
 	MValueVector3
 	MValueRGBA
 	MValueByteArray
+	MValueVector2
 )
 
 type MValue struct {
