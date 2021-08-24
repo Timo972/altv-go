@@ -79,8 +79,10 @@ type vehicleDetachListener = func(vehicle *Vehicle, detachedVehicle *Vehicle)
 
 // TODO bodyPart ENUM
 type weaponDamageListener = func(source *Player, target interface{}, weapon uint32, damage uint16, offset Position, bodyPart int8) bool
-type serverEventListener = func(eventName string, args ...interface{})
-type clientEventListener = func(player *Player, eventName string, args ...interface{})
+type allServerEventsListener = func(eventName string, args ...interface{})
+type serverEventListener = func(args ...interface{})
+type allClientEventsListener = func(player *Player, eventName string, args ...interface{})
+type clientEventListener = func(player *Player, args ...interface{})
 
 type eventManager struct {
 	playerConnectEvents              []playerConnectListener
@@ -111,8 +113,10 @@ type eventManager struct {
 	vehicleAttachEvents              []vehicleAttachListener
 	vehicleDetachEvents              []vehicleDetachListener
 	vehicleDestroyEvents             []vehicleDestroyListener
-	serverScriptEvents               []serverEventListener
-	clientScriptEvents               []clientEventListener
+	serverScriptEvents               map[string][]serverEventListener
+	clientScriptEvents               map[string][]clientEventListener
+	allServerScriptEvents 			 []allServerEventsListener
+	allClientScriptEvents 			 []allClientEventsListener
 }
 
 type listener interface {
@@ -144,8 +148,10 @@ type listener interface {
 	VehicleAttach(listener vehicleAttachListener)
 	VehicleDetach(listener vehicleDetachListener)
 	VehicleDestroy(listener vehicleDestroyListener)
-	ServerEvent(listener serverEventListener)
-	ClientEvent(listener clientEventListener)
+	AllServerEvents(listener allServerEventsListener)
+	ServerEvent(eventName string, listener serverEventListener)
+	AllClientEvents(listener allClientEventsListener)
+	ClientEvent(eventName string, listener clientEventListener)
 }
 
 var On = &eventManager{}
@@ -297,13 +303,29 @@ func (e eventManager) VehicleDestroy(listener vehicleDestroyListener) {
 	registerOnEvent(Resource.Name, vehicleDestroy)
 }
 
-func (e eventManager) ServerEvent(listener serverEventListener) {
-	On.serverScriptEvents = append(On.serverScriptEvents, listener)
+func (e eventManager) ServerEvent(eventName string, listener serverEventListener) {
+	if On.serverScriptEvents == nil {
+		On.serverScriptEvents = make(map[string][]serverEventListener)
+	}
+	On.serverScriptEvents[eventName] = append(On.serverScriptEvents[eventName], listener)
 	registerOnEvent(Resource.Name, serverScriptEvent)
 }
 
-func (e eventManager) ClientEvent(listener clientEventListener) {
-	On.clientScriptEvents = append(On.clientScriptEvents, listener)
+func (e eventManager) AllServerEvents(listener allServerEventsListener) {
+	On.allServerScriptEvents = append(On.allServerScriptEvents, listener)
+	registerOnEvent(Resource.Name, serverScriptEvent)
+}
+
+func (e eventManager) ClientEvent(eventName string, listener clientEventListener) {
+	if On.clientScriptEvents == nil {
+		On.clientScriptEvents = make(map[string][]clientEventListener)
+	}
+	On.clientScriptEvents[eventName] = append(On.clientScriptEvents[eventName], listener)
+	registerOnEvent(Resource.Name, clientScriptEvent)
+}
+
+func (e eventManager) AllClientEvents(listener allClientEventsListener) {
+	On.allClientScriptEvents = append(On.allClientScriptEvents, listener)
 	registerOnEvent(Resource.Name, clientScriptEvent)
 }
 
@@ -339,14 +361,16 @@ func EmitServer(eventName string, args ...interface{}) {
 //export altServerScriptEvent
 func altServerScriptEvent(cName *C.char, cMValues unsafe.Pointer, _size C.ulonglong) {
 	name := C.GoString(cName)
-	println(name)
+	println("EventName:", name)
 
 	size := uint64(_size)
-	println(size)
+	println("Args size:", size)
 
-	args := make([]interface{}, size)
+	//args := make([]interface{}, size)
+	args := make([]interface{}, 0)
 
 	cMValueStructs := (*[1 << 30]C.struct_metaData)(cMValues)[:size:size]
+	defer C.free(cMValues)
 
 	println(cMValueStructs)
 
@@ -356,17 +380,26 @@ func altServerScriptEvent(cName *C.char, cMValues unsafe.Pointer, _size C.ulongl
 		cMVal := cMValueStructs[i]
 		_type := uint8(cMVal.Type)
 
-		println("meta type (in go)", _type)
 		mValue := &MValue{Ptr: cMVal.Ptr, Type: _type, Value: nil}
+
+		println("MValue type (in go):", mValue.Type)
+		println("MValue ptr (in go):", mValue.Ptr)
+
 		val := mValue.GetValue()
+
+		println("MValue value (in go):", val)
 
 		args = append(args, val)
 	}
 
 	println("calling on server script events")
 
-	for _, event := range On.serverScriptEvents {
+	for _, event := range On.allServerScriptEvents {
 		event(name, args...)
+	}
+
+	for _, event := range On.serverScriptEvents[name] {
+		event(args...)
 	}
 
 	println("after calling on server script events")
