@@ -284,6 +284,17 @@ capi_core_is_debug g_call_core_is_debug;
 capi_core_get_sdk_version g_call_core_get_sdk_version;
 capi_core_get_root_directory g_call_core_get_root_directory;
 capi_core_trigger_local_event g_call_core_trigger_local_event;
+// Meta
+capi_core_create_mvalue_bool g_call_core_create_mvalue_bool;
+capi_core_create_mvalue_double g_call_core_create_mvalue_double;
+capi_core_create_mvalue_int g_call_core_create_mvalue_int;
+capi_core_create_mvalue_uint g_call_core_create_mvalue_uint;
+capi_core_create_mvalue_string g_call_core_create_mvalue_string;
+capi_core_get_mvalue_bool g_call_core_get_mvalue_bool;
+capi_core_get_mvalue_double g_call_core_get_mvalue_double;
+capi_core_get_mvalue_int g_call_core_get_mvalue_int;
+capi_core_get_mvalue_uint g_call_core_get_mvalue_uint;
+capi_core_get_mvalue_string g_call_core_get_mvalue_string;
 
 // Colshape
 capi_col_shape_get_type g_call_col_shape_get_type;
@@ -632,6 +643,17 @@ int load_module(const char *path)
     g_call_core_get_root_directory = GET_FUNC(module, "Core_GetRootDirectory", capi_core_get_root_directory);
 
     g_call_core_trigger_local_event = GET_FUNC(module, "Core_TriggerLocalEvent", capi_core_trigger_local_event);
+
+    g_call_core_create_mvalue_bool = GET_FUNC(module, "Core_CreateMValueBool", capi_core_create_mvalue_bool);
+    g_call_core_create_mvalue_double = GET_FUNC(module, "Core_CreateMValueDouble", capi_core_create_mvalue_double);
+    g_call_core_create_mvalue_int = GET_FUNC(module, "Core_CreateMValueInt", capi_core_create_mvalue_int);
+    g_call_core_create_mvalue_uint = GET_FUNC(module, "Core_CreateMValueUInt", capi_core_create_mvalue_uint);
+    g_call_core_create_mvalue_string = GET_FUNC(module, "Core_CreateMValueString", capi_core_create_mvalue_string);
+    g_call_core_get_mvalue_bool = GET_FUNC(module, "Core_GetMValueBool", capi_core_get_mvalue_bool);
+    g_call_core_get_mvalue_double = GET_FUNC(module, "Core_GetMValueDouble", capi_core_get_mvalue_double);
+    g_call_core_get_mvalue_int = GET_FUNC(module, "Core_GetMValueInt", capi_core_get_mvalue_int);
+    g_call_core_get_mvalue_uint = GET_FUNC(module, "Core_GetMValueUInt", capi_core_get_mvalue_uint);
+    g_call_core_get_mvalue_string = GET_FUNC(module, "Core_GetMValueString", capi_core_get_mvalue_string);
 
     // ColShape
     g_call_col_shape_get_type = GET_FUNC(module, "ColShape_GetType", capi_col_shape_get_type);
@@ -2124,62 +2146,52 @@ const char *vehicle_get_script_data_base64(void *v)
 // Core
 void *core_create_mvalue_bool(int val)
 {
-    capi_core_create_mvalue_bool call = GET_FUNC(module, "Core_CreateMValueBool", capi_core_create_mvalue_bool);
-    return call(val);
+    return g_call_core_create_mvalue_bool(val);
 }
 
 void *core_create_mvalue_int(long long val)
 {
-    capi_core_create_mvalue_int call = GET_FUNC(module, "Core_CreateMValueInt", capi_core_create_mvalue_int);
-    return call(val);
+    return g_call_core_create_mvalue_int(val);
 }
 
 void *core_create_mvalue_uint(unsigned long long val)
 {
-    capi_core_create_mvalue_uint call = GET_FUNC(module, "Core_CreateMValueUInt", capi_core_create_mvalue_uint);
-    return call(val);
+    return g_call_core_create_mvalue_uint(val);
 }
 
 void *core_create_mvalue_double(double val)
 {
-    capi_core_create_mvalue_double call = GET_FUNC(module, "Core_CreateMValueDouble", capi_core_create_mvalue_double);
-    return call(val);
+    return g_call_core_create_mvalue_double(val);
 }
 
 void *core_create_mvalue_string(const char *val)
 {
-    capi_core_create_mvalue_string call = GET_FUNC(module, "Core_CreateMValueString", capi_core_create_mvalue_string);
-    return call(val);
+    return g_call_core_create_mvalue_string(val);
 }
 
 int core_get_mvalue_bool(void *val)
 {
-    capi_core_get_mvalue_bool call = GET_FUNC(module, "Core_GetMValueBool", capi_core_get_mvalue_bool);
-    return call(val);
+    return g_call_core_get_mvalue_bool(val);
 }
 
 long long core_get_mvalue_int(void *val)
 {
-    capi_core_get_mvalue_int call = GET_FUNC(module, "Core_GetMValueInt", capi_core_get_mvalue_int);
-    return call(val);
+    return g_call_core_get_mvalue_int(val);
 }
 
 unsigned long long core_get_mvalue_uint(void *val)
 {
-    capi_core_get_mvalue_uint call = GET_FUNC(module, "Core_GetMValueUInt", capi_core_get_mvalue_uint);
-    return call(val);
+    return g_call_core_get_mvalue_uint(val);
 }
 
 double core_get_mvalue_double(void *val)
 {
-    capi_core_get_mvalue_double call = GET_FUNC(module, "Core_GetMValueDouble", capi_core_get_mvalue_double);
-    return call(val);
+    return g_call_core_get_mvalue_double(val);
 }
 
 const char *core_get_mvalue_string(void *val)
 {
-    capi_core_get_mvalue_string call = GET_FUNC(module, "Core_GetMValueString", capi_core_get_mvalue_string);
-    return call(val);
+    return g_call_core_get_mvalue_string(val);
 }
 
 void *core_create_vehicle(unsigned long model, float posX, float posY, float posZ,
