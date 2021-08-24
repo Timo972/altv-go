@@ -370,7 +370,6 @@ func altServerScriptEvent(cName *C.char, cMValues unsafe.Pointer, _size C.ulongl
 	args := make([]interface{}, 0)
 
 	cMValueStructs := (*[1 << 30]C.struct_metaData)(cMValues)[:size:size]
-	defer C.free(cMValues)
 
 	println(cMValueStructs)
 
