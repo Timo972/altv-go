@@ -284,6 +284,9 @@ capi_core_is_debug g_call_core_is_debug;
 capi_core_get_sdk_version g_call_core_get_sdk_version;
 capi_core_get_root_directory g_call_core_get_root_directory;
 capi_core_trigger_local_event g_call_core_trigger_local_event;
+capi_core_trigger_client_event g_call_core_trigger_client_event;
+capi_core_trigger_client_event_for g_call_core_trigger_client_event_for;
+capi_core_trigger_client_event_for_all g_call_core_trigger_client_event_for_all;
 // Meta
 capi_core_create_mvalue_bool g_call_core_create_mvalue_bool;
 capi_core_create_mvalue_double g_call_core_create_mvalue_double;
@@ -643,6 +646,9 @@ int load_module(const char *path)
     g_call_core_get_root_directory = GET_FUNC(module, "Core_GetRootDirectory", capi_core_get_root_directory);
 
     g_call_core_trigger_local_event = GET_FUNC(module, "Core_TriggerLocalEvent", capi_core_trigger_local_event);
+    g_call_core_trigger_client_event = GET_FUNC(module, "Core_TriggerClientEvent", capi_core_trigger_client_event);
+    g_call_core_trigger_client_event_for = GET_FUNC(module, "Core_TriggerClientEventFor", capi_core_trigger_client_event_for);
+    g_call_core_trigger_client_event_for_all = GET_FUNC(module, "Core_TriggerClientEventForAll", capi_core_trigger_client_event_for_all);
 
     g_call_core_create_mvalue_bool = GET_FUNC(module, "Core_CreateMValueBool", capi_core_create_mvalue_bool);
     g_call_core_create_mvalue_double = GET_FUNC(module, "Core_CreateMValueDouble", capi_core_create_mvalue_double);
@@ -2203,6 +2209,21 @@ void *core_create_vehicle(unsigned long model, float posX, float posY, float pos
 void core_trigger_local_event(const char *ev, CustomData *MValues, unsigned long long MValuesSize)
 {
     g_call_core_trigger_local_event(ev, MValues, MValuesSize);
+}
+
+void core_trigger_client_event(void *p, const char *ev, CustomData *MValues, unsigned long long MValuesSize)
+{
+    g_call_core_trigger_client_event(p, ev, MValues, MValuesSize);
+}
+
+void core_trigger_client_event_for(void **p, unsigned long long clientSize, const char *ev, CustomData *MValues, unsigned long long MValuesSize)
+{
+    g_call_core_trigger_client_event_for(p, clientSize, ev, MValues, MValuesSize);
+}
+
+void core_trigger_client_event_for_all(const char *ev, CustomData *MValues, unsigned long long MValuesSize)
+{
+    g_call_core_trigger_client_event_for_all(ev, MValues, MValuesSize);
 }
 
 // ColShape

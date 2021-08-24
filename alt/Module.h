@@ -384,6 +384,9 @@ typedef void *(*capi_core_create_checkpoint)(unsigned char type, float x, float 
 typedef void *(*capi_core_create_voice_channel)(int spatial, float maxDistance);
 
 typedef void (*capi_core_trigger_local_event)(const char *ev, CustomData *MValues, unsigned long long MValuesSize);
+typedef void (*capi_core_trigger_client_event)(void *p, const char *ev, CustomData *MValues, unsigned long long MValuesSize);
+typedef void (*capi_core_trigger_client_event_for)(void **p, unsigned long long clientSize, const char *ev, CustomData *MValues, unsigned long long MValuesSize);
+typedef void (*capi_core_trigger_client_event_for_all)(const char *ev, CustomData *MValues, unsigned long long MValuesSize);
 
 // Colshape
 typedef int (*capi_col_shape_get_type)(void *c);
@@ -781,6 +784,9 @@ void *core_create_checkpoint(unsigned char type, float x, float y, float z, floa
 void *core_create_voice_channel(int spatial, float maxDistance);
 
 void core_trigger_local_event(const char *ev, CustomData *MValues, unsigned long long MValuesSize);
+void core_trigger_client_event(void *p, const char *ev, CustomData *MValues, unsigned long long MValuesSize);
+void core_trigger_client_event_for(void **p, unsigned long long clientSize, const char *ev, CustomData *MValues, unsigned long long MValuesSize);
+void core_trigger_client_event_for_all(const char *ev, CustomData *MValues, unsigned long long MValuesSize);
 
 // Colshape
 int col_shape_get_type(void *c);
