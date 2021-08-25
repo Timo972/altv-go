@@ -293,6 +293,7 @@ capi_core_create_mvalue_double g_call_core_create_mvalue_double;
 capi_core_create_mvalue_int g_call_core_create_mvalue_int;
 capi_core_create_mvalue_uint g_call_core_create_mvalue_uint;
 capi_core_create_mvalue_string g_call_core_create_mvalue_string;
+capi_core_create_mvalue_list g_call_core_create_mvalue_list;
 capi_core_get_mvalue_bool g_call_core_get_mvalue_bool;
 capi_core_get_mvalue_double g_call_core_get_mvalue_double;
 capi_core_get_mvalue_int g_call_core_get_mvalue_int;
@@ -655,6 +656,7 @@ int load_module(const char *path)
     g_call_core_create_mvalue_int = GET_FUNC(module, "Core_CreateMValueInt", capi_core_create_mvalue_int);
     g_call_core_create_mvalue_uint = GET_FUNC(module, "Core_CreateMValueUInt", capi_core_create_mvalue_uint);
     g_call_core_create_mvalue_string = GET_FUNC(module, "Core_CreateMValueString", capi_core_create_mvalue_string);
+    g_call_core_create_mvalue_list = GET_FUNC(module, "Core_CreateMValueList", capi_core_create_mvalue_list);
     g_call_core_get_mvalue_bool = GET_FUNC(module, "Core_GetMValueBool", capi_core_get_mvalue_bool);
     g_call_core_get_mvalue_double = GET_FUNC(module, "Core_GetMValueDouble", capi_core_get_mvalue_double);
     g_call_core_get_mvalue_int = GET_FUNC(module, "Core_GetMValueInt", capi_core_get_mvalue_int);
@@ -2173,6 +2175,11 @@ void *core_create_mvalue_double(double val)
 void *core_create_mvalue_string(const char *val)
 {
     return g_call_core_create_mvalue_string(val);
+}
+
+void *core_create_mvalue_list(const char *json, unsigned long long size)
+{
+    return g_call_core_create_mvalue_list(json, size);
 }
 
 int core_get_mvalue_bool(void *val)

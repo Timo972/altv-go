@@ -366,6 +366,7 @@ typedef void *(*capi_core_create_mvalue_int)(long long val);
 typedef void *(*capi_core_create_mvalue_uint)(unsigned long long val);
 typedef void *(*capi_core_create_mvalue_double)(double val);
 typedef void *(*capi_core_create_mvalue_string)(const char *val);
+typedef void *(*capi_core_create_mvalue_list)(const char *json, unsigned long long size);
 
 typedef int (*capi_core_get_mvalue_bool)(void *val);
 typedef long long (*capi_core_get_mvalue_int)(void *val);
@@ -766,6 +767,7 @@ void *core_create_mvalue_int(long long val);
 void *core_create_mvalue_uint(unsigned long long val);
 void *core_create_mvalue_double(double val);
 void *core_create_mvalue_string(const char *val);
+void *core_create_mvalue_list(const char *json, unsigned long long size);
 
 int core_get_mvalue_bool(void *val);
 long long core_get_mvalue_int(void *val);
