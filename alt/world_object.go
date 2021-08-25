@@ -15,33 +15,33 @@ type WorldObject struct {
 }
 
 type World interface {
-	Position() *Position
+	Position() *Vector3
 	SetPosition()
 	Dimension() int32
 	SetDimension()
 }
 
-func (w WorldObject) Position() Position {
-	var pos Position
+func (w WorldObject) Position() Vector3 {
+	var pos Vector3
 
 	if w.Type == PlayerObject {
 		cPos := C.player_get_position(w.Ptr)
-		pos = Position{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
+		pos = Vector3{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
 	} else if w.Type == CheckpointObject {
 		cPos := C.checkpoint_get_position(w.Ptr)
-		pos = Position{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
+		pos = Vector3{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
 	} else if w.Type == ColshapeObject {
 		cPos := C.col_shape_get_position(w.Ptr)
-		pos = Position{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
+		pos = Vector3{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
 	} else if w.Type == VehicleObject {
 		cPos := C.vehicle_get_position(w.Ptr)
-		pos = Position{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
+		pos = Vector3{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
 	}
 
 	return pos
 }
 
-func (w WorldObject) SetPosition(pos Position) {
+func (w WorldObject) SetPosition(pos Vector3) {
 	if w.Type == PlayerObject {
 		C.player_set_position(w.Ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z))
 	} else if w.Type == CheckpointObject {

@@ -2252,7 +2252,7 @@ const char *core_get_mvalue_string(void *val)
     return g_call_core_get_mvalue_string(val);
 }
 
-void *core_get_mvalue_base_object(void *val)
+Entity core_get_mvalue_base_object(void *val)
 {
     return g_call_core_get_mvalue_base_object(val);
 }

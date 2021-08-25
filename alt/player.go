@@ -29,7 +29,7 @@ func (p Player) SetModel(model uint32) {
 	C.player_set_model(p.Ptr, C.ulong(model))
 }
 
-func (p Player) Spawn(pos Position, delayMs uint32) {
+func (p Player) Spawn(pos Vector3, delayMs uint32) {
 	C.player_spawn(p.Ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z), C.ulong(delayMs))
 }
 
@@ -110,14 +110,14 @@ func (p Player) MoveSpeed() float32 {
 	return float32(C.player_get_move_speed(p.Ptr))
 }
 
-func (p Player) AimPos() Position {
+func (p Player) AimPos() Vector3 {
 	cPos := C.player_get_aim_pos(p.Ptr)
-	return Position{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
+	return Vector3{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
 }
 
-func (p Player) HeadRotation() Rotation {
+func (p Player) HeadRotation() Vector3 {
 	cRot := C.player_get_head_rotation(p.Ptr)
-	return Rotation{X: float32(cRot.roll), Y: float32(cRot.pitch), Z: float32(cRot.yaw)}
+	return Vector3{X: float32(cRot.roll), Y: float32(cRot.pitch), Z: float32(cRot.yaw)}
 }
 
 func (p Player) IsInVehicle() bool {
@@ -141,9 +141,9 @@ func (p Player) EntityAimingAt() *Entity {
 	return nil
 }
 
-func (p Player) EntityAimOffset() Position {
+func (p Player) EntityAimOffset() Vector3 {
 	cPos := C.player_get_entity_aim_offset(p.Ptr)
-	return Position{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
+	return Vector3{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
 }
 
 func (p Player) IsFlashlightActive() bool {

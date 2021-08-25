@@ -187,7 +187,7 @@ func NewVehicle(p unsafe.Pointer) *Vehicle {
 	return vehicle
 }
 
-func CreateVehicle(model uint32, pos Position, rot Rotation) (*Vehicle, error) {
+func CreateVehicle(model uint32, pos Vector3, rot Vector3) (*Vehicle, error) {
 	vehicle := C.core_create_vehicle(C.ulong(model), C.float(pos.X), C.float(pos.Y), C.float(pos.Z),
 		C.float(rot.X), C.float(rot.Y), C.float(rot.Z))
 

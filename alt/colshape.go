@@ -58,7 +58,7 @@ func (c ColShape) SetPlayersOnly(state bool) {
 	}
 }
 
-func (c ColShape) IsPointIn(pos Position) bool {
+func (c ColShape) IsPointIn(pos Vector3) bool {
 	if c.Type == ColshapeObject {
 		return int(C.col_shape_is_point_in(c.Ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z))) == 1
 	} else if c.Type == CheckpointObject {

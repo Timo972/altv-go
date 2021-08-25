@@ -52,7 +52,7 @@ const (
 type playerConnectListener = func(p *Player)
 type playerDisconnectListener = func(p *Player, reason string)
 type consoleCommandListener = func(command string, args []string)
-type explosionListener = func(p *Player, t interface{}, pos Position, explosionType int16, explosionFX uint) bool
+type explosionListener = func(p *Player, t interface{}, pos Vector3, explosionType int16, explosionFX uint) bool
 type playerChangeVehicleSeatListener = func(p *Player, v *Vehicle, oldSeat uint8, newSeat uint8)
 type playerDamageListener = func(p *Player, attacker interface{}, healthDamage uint16, armourDamage uint16, weapon uint32)
 type playerDeathListener = func(p *Player, killer interface{}, weapon uint32)
@@ -70,7 +70,7 @@ type netOwnerChangeListener = func(entity interface{}, owner *Player, oldOwner *
 type playerWeaponChangeListener = func(player *Player, oldWeapon uint32, newWeapon uint32)
 type resourceErrorListener = func(resourceName string)
 type resourceStopListener = func(resourceName string)
-type startProjectileListener = func(player *Player, position Position, direction Position, ammoHash uint16, weaponHash uint32) bool
+type startProjectileListener = func(player *Player, position Vector3, direction Vector3, ammoHash uint16, weaponHash uint32) bool
 type streamSyncedMetaDataChangeListener = func(entity interface{}, key string, newValue interface{}, oldValue interface{})
 type syncedMetaDataChangeListener = func(entity interface{}, key string, newValue interface{}, oldValue interface{})
 type vehicleAttachListener = func(vehicle *Vehicle, attachedVehicle *Vehicle)
@@ -78,7 +78,7 @@ type vehicleDestroyListener = func(vehicle *Vehicle)
 type vehicleDetachListener = func(vehicle *Vehicle, detachedVehicle *Vehicle)
 
 // TODO bodyPart ENUM
-type weaponDamageListener = func(source *Player, target interface{}, weapon uint32, damage uint16, offset Position, bodyPart int8) bool
+type weaponDamageListener = func(source *Player, target interface{}, weapon uint32, damage uint16, offset Vector3, bodyPart int8) bool
 type allServerEventsListener = func(eventName string, args ...interface{})
 type serverEventListener = func(args ...interface{})
 type allClientEventsListener = func(player *Player, eventName string, args ...interface{})
@@ -496,7 +496,7 @@ func altPlayerDisconnectEvent(p unsafe.Pointer, cReason *C.char) {
 //export altExplosionEvent
 func altExplosionEvent(p unsafe.Pointer, e C.struct_entity, pos C.struct_pos, explosionType C.short, explosionFX C.uint) {
 	player := NewPlayer(p)
-	goPos := Position{X: float32(pos.x), Y: float32(pos.y), Z: float32(pos.z)}
+	goPos := Vector3{X: float32(pos.x), Y: float32(pos.y), Z: float32(pos.z)}
 	expType := int16(explosionType)
 	expFX := uint(explosionFX)
 
@@ -636,7 +636,7 @@ func altWeaponDamageEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong, dmg
 	player := NewPlayer(p)
 	weapon := uint32(weap)
 	damage := uint16(dmg)
-	offset := Position{X: float32(ofs.x), Y: float32(ofs.y), Z: float32(ofs.z)}
+	offset := Vector3{X: float32(ofs.x), Y: float32(ofs.y), Z: float32(ofs.z)}
 	bodyPart := int8(bPart)
 
 	var entity interface{}
@@ -699,7 +699,7 @@ func altFireEvent(p unsafe.Pointer, f C.struct_array) {
 	array := make([]FireInfo, size)
 
 	for i, fireStruct := range cFireInfoStructs {
-		array[i] = FireInfo{WeaponHash: uint32(fireStruct.weaponHash), Position: Position{X: float32(fireStruct.position.x), Y: float32(fireStruct.position.y), Z: float32(fireStruct.position.z)}}
+		array[i] = FireInfo{WeaponHash: uint32(fireStruct.weaponHash), Position: Vector3{X: float32(fireStruct.position.x), Y: float32(fireStruct.position.y), Z: float32(fireStruct.position.z)}}
 	}
 
 	for _, event := range On.fireEvents {
@@ -766,8 +766,8 @@ func altPlayerWeaponChangeEvent(p unsafe.Pointer, oWeap C.ulong, nWeap C.ulong) 
 //export altStartProjectileEvent
 func altStartProjectileEvent(p unsafe.Pointer, pos C.struct_pos, dir C.struct_pos, aHash C.uint, wHash C.ulong) {
 	player := NewPlayer(p)
-	position := Position{X: float32(pos.x), Y: float32(pos.y), Z: float32(pos.z)}
-	direction := Position{X: float32(dir.x), Y: float32(dir.y), Z: float32(dir.z)}
+	position := Vector3{X: float32(pos.x), Y: float32(pos.y), Z: float32(pos.z)}
+	direction := Vector3{X: float32(dir.x), Y: float32(dir.y), Z: float32(dir.z)}
 	ammoHash := uint16(aHash)
 	weaponHash := uint32(wHash)
 

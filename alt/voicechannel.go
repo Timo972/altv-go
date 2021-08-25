@@ -5,10 +5,18 @@ package alt
 import "C"
 import (
 	"github.com/shockdev04/altv-go-pkg/internal/module"
+	"unsafe"
 )
 
 type VoiceChannel struct {
 	BaseObject
+}
+
+func NewVoiceChannel(v unsafe.Pointer) *VoiceChannel {
+	voiceChannel := &VoiceChannel{}
+	voiceChannel.Ptr = v
+	voiceChannel.Type = VoiceChannelObject
+	return voiceChannel
 }
 
 func CreateVoiceChannel(spatial bool, maxDistance float32) *VoiceChannel{

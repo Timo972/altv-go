@@ -39,7 +39,7 @@ func (e Entity) Detach() {
 }
 
 // AttachToEntity TODO: make capi accept x, y, z instead of Position and Rotation
-func (e Entity) AttachToEntity(entity Entity, otherBoneIndex int16, myBoneIndex int16, position Position, rotation Rotation, collision bool, noFixedRotation bool) {
+func (e Entity) AttachToEntity(entity Entity, otherBoneIndex int16, myBoneIndex int16, position Vector3, rotation Vector3, collision bool, noFixedRotation bool) {
 	//C.player_attach_to_entity(p.Ptr, entity.Ptr, C.int(otherBoneIndex), C.int(myBoneIndex), )
 }
 
@@ -87,17 +87,17 @@ func (e Entity) SetNetworkOwner(owner *Player, disableMigration bool) {
 	}
 }
 
-func (e Entity) Rotation() Rotation {
+func (e Entity) Rotation() Vector3 {
 	var cRot C.struct_rot
 	if e.Type == PlayerObject {
 		cRot = C.player_get_rotation(e.Ptr)
 	} else if e.Type == VehicleObject {
 		cRot = C.vehicle_get_rotation(e.Ptr)
 	}
-	return Rotation{X: float32(cRot.roll), Y: float32(cRot.pitch), Z: float32(cRot.yaw)}
+	return Vector3{X: float32(cRot.roll), Y: float32(cRot.pitch), Z: float32(cRot.yaw)}
 }
 
-func (e Entity) SetRotation(rotation Rotation) {
+func (e Entity) SetRotation(rotation Vector3) {
 	if e.Type == PlayerObject {
 		C.player_set_rotation(e.Ptr, C.float(rotation.X), C.float(rotation.Y), C.float(rotation.Z))
 	} else if e.Type == VehicleObject {

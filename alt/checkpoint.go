@@ -3,9 +3,17 @@ package alt
 // #include <stdlib.h>
 // #include "Module.h"
 import "C"
+import "unsafe"
 
 type Checkpoint struct {
 	ColShape
+}
+
+func NewCheckpoint(cp unsafe.Pointer) *Checkpoint {
+	checkpoint := &Checkpoint{}
+	checkpoint.Ptr = cp
+	checkpoint.Type = CheckpointObject
+	return checkpoint
 }
 
 // CreateCheckpoint Create a checkpoint
@@ -35,9 +43,9 @@ func (c Checkpoint) Color() RGBA {
 	return RGBA{R:uint8(cRGBA.r),G:uint8(cRGBA.g),B:uint8(cRGBA.b),A:uint8(cRGBA.a)}
 }
 
-func (c Checkpoint) NextPosition() Position {
+func (c Checkpoint) NextPosition() Vector3 {
 	cPos := C.checkpoint_get_next_position(c.Ptr)
-	return Position{X:float32(cPos.x),Y:float32(cPos.y),Z:float32(cPos.z)}
+	return Vector3{X:float32(cPos.x),Y:float32(cPos.y),Z:float32(cPos.z)}
 }
 
 func (c Checkpoint) SetCheckpointType(checkpointType uint8) {
@@ -56,6 +64,6 @@ func (c Checkpoint) SetColor(color RGBA) {
 	C.checkpoint_set_color(c.Ptr, C.uchar(color.R), C.uchar(color.G), C.uchar(color.B), C.uchar(color.A))
 }
 
-func (c Checkpoint) SetNextPosition(pos Position) {
+func (c Checkpoint) SetNextPosition(pos Vector3) {
 	C.checkpoint_set_next_position(c.Ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z))
 }
