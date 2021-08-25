@@ -293,11 +293,21 @@ capi_core_create_mvalue_double g_call_core_create_mvalue_double;
 capi_core_create_mvalue_int g_call_core_create_mvalue_int;
 capi_core_create_mvalue_uint g_call_core_create_mvalue_uint;
 capi_core_create_mvalue_string g_call_core_create_mvalue_string;
+capi_core_create_mvalue_base_object g_call_core_create_mvalue_base_object;
+capi_core_create_mvalue_vector2 g_call_core_create_mvalue_vector2;
+capi_core_create_mvalue_vector3 g_call_core_create_mvalue_vector3;
+capi_core_create_mvalue_rgba g_call_core_create_mvalue_rgba;
+capi_core_create_mvalue_byte_array g_call_core_create_mvalue_byte_array;
 capi_core_get_mvalue_bool g_call_core_get_mvalue_bool;
 capi_core_get_mvalue_double g_call_core_get_mvalue_double;
 capi_core_get_mvalue_int g_call_core_get_mvalue_int;
 capi_core_get_mvalue_uint g_call_core_get_mvalue_uint;
 capi_core_get_mvalue_string g_call_core_get_mvalue_string;
+capi_core_get_mvalue_base_object g_call_core_get_mvalue_base_object;
+capi_core_get_mvalue_vector2 g_call_core_get_mvalue_vector2;
+capi_core_get_mvalue_vector3 g_call_core_get_mvalue_vector3;
+capi_core_get_mvalue_rgba g_call_core_get_mvalue_rgba;
+capi_core_get_mvalue_byte_array g_call_core_get_mvalue_byte_array;
 
 // Colshape
 capi_col_shape_get_type g_call_col_shape_get_type;
@@ -655,11 +665,21 @@ int load_module(const char *path)
     g_call_core_create_mvalue_int = GET_FUNC(module, "Core_CreateMValueInt", capi_core_create_mvalue_int);
     g_call_core_create_mvalue_uint = GET_FUNC(module, "Core_CreateMValueUInt", capi_core_create_mvalue_uint);
     g_call_core_create_mvalue_string = GET_FUNC(module, "Core_CreateMValueString", capi_core_create_mvalue_string);
+    g_call_core_create_mvalue_base_object = GET_FUNC(module, "Core_CreateMValueBaseObject", capi_core_create_mvalue_base_object);
+    g_call_core_create_mvalue_vector2 = GET_FUNC(module, "Core_CreateMValueVector2", capi_core_create_mvalue_vector2);
+    g_call_core_create_mvalue_vector3 = GET_FUNC(module, "Core_CreateMValueVector3", capi_core_create_mvalue_vector3);
+    g_call_core_create_mvalue_rgba = GET_FUNC(module, "Core_CreateMValueRGBA", capi_core_create_mvalue_rgba);
+    g_call_core_create_mvalue_byte_array = GET_FUNC(module, "Core_CreateMValueByteArray", capi_core_create_mvalue_byte_array);
     g_call_core_get_mvalue_bool = GET_FUNC(module, "Core_GetMValueBool", capi_core_get_mvalue_bool);
     g_call_core_get_mvalue_double = GET_FUNC(module, "Core_GetMValueDouble", capi_core_get_mvalue_double);
     g_call_core_get_mvalue_int = GET_FUNC(module, "Core_GetMValueInt", capi_core_get_mvalue_int);
     g_call_core_get_mvalue_uint = GET_FUNC(module, "Core_GetMValueUInt", capi_core_get_mvalue_uint);
     g_call_core_get_mvalue_string = GET_FUNC(module, "Core_GetMValueString", capi_core_get_mvalue_string);
+    g_call_core_get_mvalue_base_object = GET_FUNC(module, "Core_GetMValueBaseObject", capi_core_get_mvalue_base_object);
+    g_call_core_get_mvalue_vector2 = GET_FUNC(module, "Core_GetMValueVector2", capi_core_get_mvalue_vector2);
+    g_call_core_get_mvalue_vector3 = GET_FUNC(module, "Core_GetMValueVector3", capi_core_get_mvalue_vector3);
+    g_call_core_get_mvalue_rgba = GET_FUNC(module, "Core_GetMValueRGBA", capi_core_get_mvalue_rgba);
+    g_call_core_get_mvalue_byte_array = GET_FUNC(module, "Core_GetMValueByteArray", capi_core_get_mvalue_byte_array);
 
     // ColShape
     g_call_col_shape_get_type = GET_FUNC(module, "ColShape_GetType", capi_col_shape_get_type);
@@ -2175,6 +2195,31 @@ void *core_create_mvalue_string(const char *val)
     return g_call_core_create_mvalue_string(val);
 }
 
+void *core_create_mvalue_base_object(void *o)
+{
+    return g_call_core_create_mvalue_base_object(o);
+}
+
+void *core_create_mvalue_vector2(float x, float y)
+{
+    return g_call_core_create_mvalue_vector2(x, y);
+}
+
+void *core_create_mvalue_vector3(float x, float y, float z)
+{
+    return g_call_core_create_mvalue_vector3(x, y, z);
+}
+
+void *core_create_mvalue_rgba(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+    return g_call_core_create_mvalue_rgba(r, g, b, a);
+}
+
+void *core_create_mvalue_byte_array(unsigned char *data, unsigned long long size)
+{
+    return g_call_core_create_mvalue_byte_array(data, size);
+}
+
 int core_get_mvalue_bool(void *val)
 {
     return g_call_core_get_mvalue_bool(val);
@@ -2198,6 +2243,31 @@ double core_get_mvalue_double(void *val)
 const char *core_get_mvalue_string(void *val)
 {
     return g_call_core_get_mvalue_string(val);
+}
+
+void *core_get_mvalue_base_object(void *val)
+{
+    return g_call_core_get_mvalue_base_object(val);
+}
+
+Position core_get_mvalue_vector2(void *val)
+{
+    return g_call_core_get_mvalue_vector2(val);
+}
+
+Position core_get_mvalue_vector3(void *val)
+{
+    return g_call_core_get_mvalue_vector3(val);
+}
+
+RGBA core_get_mvalue_rgba(void *val)
+{
+    return g_call_core_get_mvalue_rgba(val);
+}
+
+Array core_get_mvalue_byte_array(void *val)
+{
+    return g_call_core_get_mvalue_byte_array(val);
 }
 
 void *core_create_vehicle(unsigned long model, float posX, float posY, float posZ,

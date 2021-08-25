@@ -366,12 +366,22 @@ typedef void *(*capi_core_create_mvalue_int)(long long val);
 typedef void *(*capi_core_create_mvalue_uint)(unsigned long long val);
 typedef void *(*capi_core_create_mvalue_double)(double val);
 typedef void *(*capi_core_create_mvalue_string)(const char *val);
+typedef void *(*capi_core_create_mvalue_base_object)(const char *val);
+typedef void *(*capi_core_create_mvalue_vector2)(float x float y);
+typedef void *(*capi_core_create_mvalue_vector3)(float x, float y, float z);
+typedef void *(*capi_core_create_mvalue_rgba)(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+typedef void *(*capi_core_create_mvalue_byte_array)(unsigned char *data, unsigned long long size);
 
 typedef int (*capi_core_get_mvalue_bool)(void *val);
 typedef long long (*capi_core_get_mvalue_int)(void *val);
 typedef unsigned long long (*capi_core_get_mvalue_uint)(void *val);
 typedef double (*capi_core_get_mvalue_double)(void *val);
 typedef const char *(*capi_core_get_mvalue_string)(void *val);
+typedef void *(*capi_core_get_mvalue_base_object)(void *val);
+typedef Position (*capi_core_get_mvalue_vector2)(void *val);
+typedef Position (*capi_core_get_mvalue_vector3)(void *val);
+typedef RGBA (*capi_core_get_mvalue_rgba)(void *val);
+typedef Array (*capi_core_get_mvalue_byte_array)(void *val);
 
 typedef void *(*capi_core_create_vehicle)(unsigned long model, float posX, float posY, float posZ,
                                           float rotX, float rotY, float rotZ);
@@ -766,12 +776,22 @@ void *core_create_mvalue_int(long long val);
 void *core_create_mvalue_uint(unsigned long long val);
 void *core_create_mvalue_double(double val);
 void *core_create_mvalue_string(const char *val);
+void *core_create_mvalue_base_object(const char *val);
+void *core_create_mvalue_vector2(float x float y);
+void *core_create_mvalue_vector3(float x, float y, float z);
+void *core_create_mvalue_rgba(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+void *core_create_mvalue_byte_array(unsigned char *data, unsigned long long size);
 
 int core_get_mvalue_bool(void *val);
 long long core_get_mvalue_int(void *val);
 unsigned long long core_get_mvalue_uint(void *val);
 double core_get_mvalue_double(void *val);
 const char *core_get_mvalue_string(void *val);
+void *core_get_mvalue_base_object(void *val);
+Position core_get_mvalue_vector2(void *val);
+Position core_get_mvalue_vector3(void *val);
+RGBA core_get_mvalue_rgba(void *val);
+Array core_get_mvalue_byte_array(void *val);
 
 void *core_create_vehicle(unsigned long model, float posX, float posY, float posZ,
                           float rotX, float rotY, float rotZ);
