@@ -17,30 +17,35 @@ jobs:
         with:
           go-version: '1.16'
 
-      - name: Create exmaple main.go
-        shell: bash
+      - name: Test
         run: |
-          cat <<EOF >main.go
-          package main
+          cd alt
+          go test
 
-          import "C"
-          import "github.com/shockdev04/altv-go-pkg/alt"
+      #- name: Create exmaple main.go
+      #  shell: bash
+      #  run: |
+      #    cat <<EOF >main.go
+      #    package main
+      #
+      #    import "C"
+      #    import "github.com/shockdev04/altv-go-pkg/alt"
+      #
+      #    func main() { }
+      #
+      #    //export onStart
+      #    func onStart() {
+      #    alt.LogInfo("Resource Started")
+      #    }
+      #
+      #    //export onStop
+      #    func onStop() {
+      #    alt.LogInfo("Resource Stopped")
+      #    }
 
-          func main() { }
-
-          //export onStart
-          func onStart() {
-          alt.LogInfo("Resource Started")
-          }
-
-          //export onStop
-          func onStop() {
-          alt.LogInfo("Resource Stopped")
-          }
-
-      - name: Build
-        shell: cmd
-        run: go build -o alt-test.dll -buildmode=c-shared
+      #- name: Build
+      #  shell: cmd
+      #  run: go build -o alt-test.dll -buildmode=c-shared
 
   test-linux:
     name: Test changes on Linux
@@ -57,26 +62,26 @@ jobs:
         with:
           go-version: '1.16'
 
-      - name: Create exmaple main.go
-        shell: bash
-        run: |
-            cat <<EOF >main.go
-            package main
-
-            import "C"
-            import "github.com/shockdev04/altv-go-pkg/alt"
-
-            func main() { }
-
-            //export onStart
-            func onStart() {
-            alt.LogInfo("Resource Started")
-            }
-
-            //export onStop
-            func onStop() {
-            alt.LogInfo("Resource Stopped")
-            }
+      #- name: Create exmaple main.go
+      #  shell: bash
+      #  run: |
+      #      cat <<EOF >main.go
+      #      package main
+      #
+      #      import "C"
+      #      import "github.com/shockdev04/altv-go-pkg/alt"
+      #
+      #      func main() { }
+      #
+      #      //export onStart
+      #      func onStart() {
+      #      alt.LogInfo("Resource Started")
+      #      }
+      #
+      #      //export onStop
+      #      func onStop() {
+      #      alt.LogInfo("Resource Stopped")
+      #      }
 
       - name: Install gcc and g++
         run: |
@@ -84,8 +89,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install gcc-8 g++-8
 
-      # export CGO_LDFLAGS="-g -02 -ldl"
-      - name: Build
+      - name: Test
         run: |
+          cd alt
           export CGO_LDFLAGS="-g -ldl"
-          go build -o alt-test.so -buildmode=c-shared
+          go test
+
+      # export CGO_LDFLAGS="-g -02 -ldl"
+      #- name: Build
+      #  run: |
+      #    export CGO_LDFLAGS="-g -ldl"
+      #    go build -o alt-test.so -buildmode=c-shared

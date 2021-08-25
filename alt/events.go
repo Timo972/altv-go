@@ -54,7 +54,7 @@ type playerDisconnectListener = func(p *Player, reason string)
 type consoleCommandListener = func(command string, args []string)
 type explosionListener = func(p *Player, t interface{}, pos Position, explosionType int16, explosionFX uint) bool
 type playerChangeVehicleSeatListener = func(p *Player, v *Vehicle, oldSeat uint8, newSeat uint8)
-type playerDamageListener = func(p *Player, attacker interface{}, damage uint16, weapon uint32)
+type playerDamageListener = func(p *Player, attacker interface{}, healthDamage uint16, armourDamage uint16, weapon uint32)
 type playerDeathListener = func(p *Player, killer interface{}, weapon uint32)
 type playerEnterVehicleListener = func(p *Player, v *Vehicle, seat uint8)
 type playerEnteringVehicleListener = func(p *Player, v *Vehicle, seat uint8)
@@ -364,15 +364,19 @@ func EmitClient(player *Player, eventName string, args... interface{}) {
 }
 
 func EmitClients(players []*Player, eventName string, args... interface{}) {
+	clientSize := uint64(len(players))
+
+	if clientSize < 1 {
+		return
+	}
+
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
 	argPtr, argSize := createArgArray(args)
 	defer C.free(unsafe.Pointer(argPtr))
 
-	clientSize := uint64(len(players))
-
-	clientArrayPtr := C.malloc(C.size_t(clientSize))
+	clientArrayPtr := C.malloc(C.size_t(clientSize) * C.size_t(8))
 	clientArray := (*[1 << 30]unsafe.Pointer)(clientArrayPtr)
 	defer C.free(clientArrayPtr)
 
@@ -523,9 +527,10 @@ func altPlayerChangeVehicleSeatEvent(p unsafe.Pointer, v unsafe.Pointer, old C.u
 }
 
 //export altPlayerDamageEvent
-func altPlayerDamageEvent(p unsafe.Pointer, e C.struct_entity, dmg C.ushort, weap C.ulong) {
+func altPlayerDamageEvent(p unsafe.Pointer, e C.struct_entity, healthDmg C.ushort, armourDmg C.ushort, weap C.ulong) {
 	player := NewPlayer(p)
-	damage := uint16(dmg)
+	healthDamage := uint16(healthDmg)
+	armourDamage := uint16(armourDmg)
 	weapon := uint32(weap)
 
 	var entity interface{}
@@ -538,7 +543,7 @@ func altPlayerDamageEvent(p unsafe.Pointer, e C.struct_entity, dmg C.ushort, wea
 	}
 
 	for _, event := range On.playerDamageEvents {
-		event(player, entity, damage, weapon)
+		event(player, entity, healthDamage, armourDamage, weapon)
 	}
 }
 

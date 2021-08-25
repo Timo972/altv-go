@@ -371,6 +371,7 @@ typedef void *(*capi_core_create_mvalue_vector2)(float x float y);
 typedef void *(*capi_core_create_mvalue_vector3)(float x, float y, float z);
 typedef void *(*capi_core_create_mvalue_rgba)(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 typedef void *(*capi_core_create_mvalue_byte_array)(unsigned char *data, unsigned long long size);
+typedef void *(*capi_core_create_mvalue_list)(const char *json, unsigned long long size);
 
 typedef int (*capi_core_get_mvalue_bool)(void *val);
 typedef long long (*capi_core_get_mvalue_int)(void *val);
@@ -781,6 +782,7 @@ void *core_create_mvalue_vector2(float x float y);
 void *core_create_mvalue_vector3(float x, float y, float z);
 void *core_create_mvalue_rgba(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 void *core_create_mvalue_byte_array(unsigned char *data, unsigned long long size);
+void *core_create_mvalue_list(const char *json, unsigned long long size);
 
 int core_get_mvalue_bool(void *val);
 long long core_get_mvalue_int(void *val);

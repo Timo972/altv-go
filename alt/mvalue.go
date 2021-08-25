@@ -6,6 +6,7 @@ package alt
 // #include "Module.h"
 import "C"
 import (
+	"encoding/json"
 	"unsafe"
 
 	"github.com/shockdev04/altv-go-pkg/internal/module"
@@ -46,12 +47,21 @@ func CreateMValue(value interface{}) *MValue {
 		mValuePtr = C.core_create_mvalue_bool(C.int(module.Bool2int(value.(bool))))
 		mValueType = MValueBool
 	case int:
+	case int8:
+	case int16:
+	case int32:
+	case int64:
 		mValuePtr = C.core_create_mvalue_int(C.longlong(int64(t)))
 		mValueType = MValueInt
 	case uint:
+	case uint8:
+	case uint16:
+	case uint32:
+	case uint64:
 		mValuePtr = C.core_create_mvalue_uint(C.ulonglong(value.(uint64)))
 		mValueType = MValueUInt
 	case float32:
+	case float64:
 		mValuePtr = C.core_create_mvalue_double(C.double(value.(float64)))
 		mValueType = MValueDouble
 	case string:
@@ -60,6 +70,28 @@ func CreateMValue(value interface{}) *MValue {
 
 		mValuePtr = C.core_create_mvalue_string(cstr)
 		mValueType = MValueString
+	case []interface{}:
+	case []bool:
+	case []int:
+	case []int8:
+	case []int16:
+	case []int32:
+	case []int64:
+	case []string:
+	case []uint:
+	case []uint8:
+	case []uint16:
+	case []uint32:
+	case []uint64:
+	case []float32:
+	case []float64:
+		js, _ := json.Marshal(value)
+		cJson := C.CString(string(js))
+		defer C.free(unsafe.Pointer(cJson))
+		size := len(value.([]interface{}))
+
+		mValuePtr = C.core_create_mvalue_list(cJson, C.ulonglong(size))
+		mValueType = MValueList
 	default:
 		mValuePtr = nil
 		mValueType = MValueNone
