@@ -2197,9 +2197,9 @@ void *core_create_mvalue_string(const char *val)
     return g_call_core_create_mvalue_string(val);
 }
 
-void *core_create_mvalue_base_object(void *o)
+void *core_create_mvalue_base_object(unsigned char type, void *o)
 {
-    return g_call_core_create_mvalue_base_object(o);
+    return g_call_core_create_mvalue_base_object(type, o);
 }
 
 void *core_create_mvalue_vector2(float x, float y)
