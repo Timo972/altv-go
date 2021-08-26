@@ -42,7 +42,7 @@ func CreateMValue(value interface{}) *MValue {
 	var mValuePtr unsafe.Pointer
 	var mValueType MValueType
 
-	switch t := value.(type) {
+	switch value.(type) {
 	case bool:
 		mValuePtr = C.core_create_mvalue_bool(C.int(module.Bool2int(value.(bool))))
 		mValueType = MValueBool
@@ -116,46 +116,49 @@ func CreateMValue(value interface{}) *MValue {
 
 		mValuePtr = C.core_create_mvalue_vector3(C.float(v3.X), C.float(v3.Y), C.float(v3.Z))
 		mValueType = MValueVector3
-	case Player, Vehicle, ColShape, Checkpoint, VoiceChannel:
-		println("create baseobject mvalue")
+	case *Player, *Vehicle, *ColShape, *Checkpoint, *VoiceChannel:
 		var ptr unsafe.Pointer
 		var _type BaseObjectType
 
-		player, ok := value.(Player)
+		player, ok := value.(*Player)
 		if ok {
 			ptr = player.Ptr
 			_type = player.Type
 		}
 
-		vehicle, ok := value.(Vehicle)
+		vehicle, ok := value.(*Vehicle)
 		if ok {
 			ptr = vehicle.Ptr
 			_type = vehicle.Type
-			println("create vehicle mvalue")
 		}
 
-		colShape, ok := value.(ColShape)
+		colShape, ok := value.(*ColShape)
 		if ok {
 			ptr = colShape.Ptr
 			_type = colShape.Type
 		}
 
-		checkpoint, ok := value.(Checkpoint)
+		checkpoint, ok := value.(*Checkpoint)
 		if ok {
 			ptr = checkpoint.Ptr
 			_type = checkpoint.Type
 		}
 
-		voiceChannel, ok := value.(VoiceChannel)
+		voiceChannel, ok := value.(*VoiceChannel)
 		if ok {
 			ptr = voiceChannel.Ptr
 			_type = voiceChannel.Type
 		}
 
+		if ptr == nil {
+			mValuePtr = nil
+			mValueType = MValueNone
+			break
+		}
+
 		mValuePtr = C.core_create_mvalue_base_object(C.uchar(_type), ptr)
 		mValueType = MValueBaseObject
 	default:
-		println("mvalue for type: ", t)
 		mValuePtr = nil
 		mValueType = MValueNone
 	}
