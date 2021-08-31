@@ -4,9 +4,9 @@ package alt
 // #include "Module.h"
 import "C"
 import (
-    "unsafe"
+	"unsafe"
 
-    "github.com/shockdev04/altv-go-pkg/internal/module"
+	"github.com/shockdev04/altv-go-pkg/internal/module"
 )
 
 type Player struct {
@@ -46,14 +46,14 @@ func (p Player) HasWeaponComponent(weapon uint32, component uint32) bool {
 }
 
 func (p Player) CurrentWeaponComponents() []uint32 {
-    cArrStruct := C.player_get_current_weapon_components(p.Ptr)
-    size := int(cArrStruct.size)
+	cArrStruct := C.player_get_current_weapon_components(p.Ptr)
+	size := int(cArrStruct.size)
 
-    if size == 0 {
-    	return []uint32{}
+	if size == 0 {
+		return []uint32{}
 	}
 
-    var cArr unsafe.Pointer = cArrStruct.array
+	var cArr unsafe.Pointer = cArrStruct.array
 	cIntArray := (*[1 << 28]C.uint)(cArr)[:size:size]
 	comps := make([]uint32, size)
 	for i, cInt := range cIntArray {
@@ -126,6 +126,9 @@ func (p Player) IsInVehicle() bool {
 
 func (p Player) Vehicle() *Vehicle {
 	cPtr := C.player_get_vehicle(p.Ptr)
+	if cPtr == nil {
+		return nil
+	}
 	veh := NewVehicle(unsafe.Pointer(cPtr))
 	return veh
 }
@@ -284,6 +287,6 @@ func (p Player) MaxArmour() uint16 {
 	return uint16(C.player_get_max_armour(p.Ptr))
 }
 
-func (p *Player) Emit(eventName string, args... interface{}) {
+func (p *Player) Emit(eventName string, args ...interface{}) {
 	EmitClient(p, eventName, args...)
 }

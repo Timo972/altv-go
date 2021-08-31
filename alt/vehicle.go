@@ -5,6 +5,7 @@ package alt
 import "C"
 import (
 	"errors"
+	"fmt"
 	"unsafe"
 
 	"github.com/shockdev04/altv-go-pkg/internal/module"
@@ -191,6 +192,10 @@ func CreateVehicle(model uint32, pos Vector3, rot Vector3) (*Vehicle, error) {
 	vehicle := C.core_create_vehicle(C.ulong(model), C.float(pos.X), C.float(pos.Y), C.float(pos.Z),
 		C.float(rot.X), C.float(rot.Y), C.float(rot.Z))
 
+	if vehicle == nil {
+		return nil, fmt.Errorf("failed to create vehicle: %v is not a proper model hash", model)
+	}
+
 	veh := NewVehicle(vehicle)
 
 	if !veh.Valid() {
@@ -202,6 +207,9 @@ func CreateVehicle(model uint32, pos Vector3, rot Vector3) (*Vehicle, error) {
 
 func (v Vehicle) Driver() *Player {
 	cPtr := C.vehicle_get_driver(v.Ptr)
+	if cPtr == nil {
+		return nil
+	}
 	player := NewPlayer(unsafe.Pointer(cPtr))
 	return player
 }
@@ -718,10 +726,16 @@ func (v Vehicle) SetManualEngineControl(state bool) {
 
 func (v Vehicle) Attached() *Vehicle {
 	ptr := C.vehicle_get_attached(v.Ptr)
+	if ptr == nil {
+		return nil
+	}
 	return NewVehicle(ptr)
 }
 
 func (v Vehicle) AttachedTo() *Vehicle {
 	ptr := C.vehicle_get_attached_to(v.Ptr)
+	if ptr == nil {
+		return nil
+	}
 	return NewVehicle(ptr)
 }

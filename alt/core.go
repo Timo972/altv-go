@@ -37,6 +37,15 @@ func GetEntityByID(id uint16) interface{} {
 	} else if entityType == VehicleObject {
 		v := NewVehicle(entity.Ptr)
 		return v
+	} else if entityType == ColshapeObject {
+		c := NewColShape(entity.Ptr)
+		return c
+	} else if entityType == CheckpointObject {
+		c := NewCheckpoint(entity.Ptr)
+		return c
+	} else if entityType == VoiceChannelObject {
+		v := NewVoiceChannel(entity.Ptr)
+		return v
 	}
 
 	return nil
