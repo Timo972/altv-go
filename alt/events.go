@@ -115,8 +115,8 @@ type eventManager struct {
 	vehicleDestroyEvents             []vehicleDestroyListener
 	serverScriptEvents               map[string][]serverEventListener
 	clientScriptEvents               map[string][]clientEventListener
-	allServerScriptEvents 			 []allServerEventsListener
-	allClientScriptEvents 			 []allClientEventsListener
+	allServerScriptEvents            []allServerEventsListener
+	allClientScriptEvents            []allClientEventsListener
 }
 
 type listener interface {
@@ -329,7 +329,8 @@ func (e eventManager) AllClientEvents(listener allClientEventsListener) {
 	registerOnEvent(Resource.Name, clientScriptEvent)
 }
 
-func createArgArray(args []interface{}) (*C.struct_data, C.ulonglong) {
+// NewArgArray internally used to convert values to CMValue array
+func NewArgArray(args []interface{}) (*C.struct_data, C.ulonglong) {
 	size := len(args)
 	ptr := C.malloc(C.size_t(C.sizeof_CustomData * size))
 	cArray := (*[1 << 30]C.struct_data)(ptr)
@@ -347,23 +348,23 @@ func EmitServer(eventName string, args ...interface{}) {
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	argPtr, argSize := createArgArray(args)
+	argPtr, argSize := NewArgArray(args)
 	defer C.free(unsafe.Pointer(argPtr))
 
 	C.core_trigger_local_event(cEvent, argPtr, argSize)
 }
 
-func EmitClient(player *Player, eventName string, args... interface{}) {
+func EmitClient(player *Player, eventName string, args ...interface{}) {
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	argPtr, argSize := createArgArray(args)
+	argPtr, argSize := NewArgArray(args)
 	defer C.free(unsafe.Pointer(argPtr))
 
 	C.core_trigger_client_event(player.Ptr, cEvent, argPtr, argSize)
 }
 
-func EmitClients(players []*Player, eventName string, args... interface{}) {
+func EmitClients(players []*Player, eventName string, args ...interface{}) {
 	clientSize := uint64(len(players))
 
 	if clientSize < 1 {
@@ -373,7 +374,7 @@ func EmitClients(players []*Player, eventName string, args... interface{}) {
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	argPtr, argSize := createArgArray(args)
+	argPtr, argSize := NewArgArray(args)
 	defer C.free(unsafe.Pointer(argPtr))
 
 	clientArrayPtr := C.malloc(C.size_t(clientSize) * C.size_t(8))
@@ -387,11 +388,11 @@ func EmitClients(players []*Player, eventName string, args... interface{}) {
 	C.core_trigger_client_event_for((*unsafe.Pointer)(clientArrayPtr), C.ulonglong(clientSize), cEvent, argPtr, argSize)
 }
 
-func EmitAllClients(eventName string, args... interface{}) {
+func EmitAllClients(eventName string, args ...interface{}) {
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	argPtr, argSize := createArgArray(args)
+	argPtr, argSize := NewArgArray(args)
 	defer C.free(unsafe.Pointer(argPtr))
 
 	C.core_trigger_client_event_for_all(cEvent, argPtr, argSize)

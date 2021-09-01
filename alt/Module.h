@@ -111,6 +111,8 @@ typedef struct data
 typedef void (*capi_log)(const char *message);
 
 typedef void (*capi_register_alt_event)(const char *resourceName, unsigned short eventType);
+typedef int (*capi_register_alt_export)(const char *resourceName, const char *exportName, CustomData data);
+typedef MetaData (*capi_get_alt_export)(const char *targetResourceName, const char *exportName);
 
 // Player
 typedef const char *(*capi_player_get_name)(void *p);
@@ -372,6 +374,8 @@ typedef void *(*capi_core_create_mvalue_vector3)(float x, float y, float z);
 typedef void *(*capi_core_create_mvalue_rgba)(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 typedef void *(*capi_core_create_mvalue_byte_array)(unsigned char *data, unsigned long long size);
 typedef void *(*capi_core_create_mvalue_list)(const char *json, unsigned long long size);
+typedef void *(*capi_create_mvalue_function)(const char *resourceName, unsigned long long id);
+typedef MetaData (*capi_call_mvalue_function)(void *ptr, CustomData *mValues, unsigned long long size);
 
 typedef int (*capi_core_get_mvalue_bool)(void *val);
 typedef long long (*capi_core_get_mvalue_int)(void *val);
@@ -492,6 +496,8 @@ int load_module(const char *path);
 
 // Core
 void register_alt_event(const char *resourceName, unsigned short eventType);
+int register_alt_export(const char *resourceName, const char *exportName, CustomData data);
+MetaData get_alt_export(const char *targetResourceName, const char *exportName);
 
 void core_log_info(const char *message);
 void core_log_debug(const char *message);
@@ -783,6 +789,8 @@ void *core_create_mvalue_vector3(float x, float y, float z);
 void *core_create_mvalue_rgba(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 void *core_create_mvalue_byte_array(unsigned char *data, unsigned long long size);
 void *core_create_mvalue_list(const char *json, unsigned long long size);
+void *create_mvalue_function(const char *resourceName, unsigned long long id);
+MetaData call_mvalue_function(void *ptr, CustomData *mValues, unsigned long long size);
 
 int core_get_mvalue_bool(void *val);
 long long core_get_mvalue_int(void *val);

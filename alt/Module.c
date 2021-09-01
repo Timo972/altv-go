@@ -258,6 +258,8 @@ capi_vehicle_destroy g_call_vehicle_destroy;
 capi_vehicle_is_valid g_call_vehicle_is_valid;
 
 // Core
+capi_register_alt_export g_call_register_alt_export;
+capi_get_alt_export g_call_get_alt_export;
 capi_core_hash g_call_core_hash;
 capi_core_file_exists g_call_core_file_exists;
 capi_core_read_file g_call_core_read_file;
@@ -299,6 +301,8 @@ capi_core_create_mvalue_vector3 g_call_core_create_mvalue_vector3;
 capi_core_create_mvalue_rgba g_call_core_create_mvalue_rgba;
 capi_core_create_mvalue_byte_array g_call_core_create_mvalue_byte_array;
 capi_core_create_mvalue_list g_call_core_create_mvalue_list;
+capi_create_mvalue_function g_call_create_mvalue_function;
+capi_call_mvalue_function g_call_call_mvalue_function;
 capi_core_get_mvalue_bool g_call_core_get_mvalue_bool;
 capi_core_get_mvalue_double g_call_core_get_mvalue_double;
 capi_core_get_mvalue_int g_call_core_get_mvalue_int;
@@ -630,6 +634,8 @@ int load_module(const char *path)
     g_call_vehicle_is_valid = GET_FUNC(module, "Vehicle_IsValid", capi_vehicle_is_valid);
 
     // Core
+    g_call_register_alt_export = GET_FUNC(module, "RegisterAltExport", capi_register_alt_export);
+    g_call_get_alt_export = GET_FUNC(module, "GetAltExport", capi_get_alt_export);
     g_call_core_hash = GET_FUNC(module, "Core_Hash", capi_core_hash);
     g_call_core_file_exists = GET_FUNC(module, "Core_FileExists", capi_core_file_exists);
     g_call_core_read_file = GET_FUNC(module, "Core_ReadFile", capi_core_read_file);
@@ -672,6 +678,8 @@ int load_module(const char *path)
     g_call_core_create_mvalue_rgba = GET_FUNC(module, "Core_CreateMValueRGBA", capi_core_create_mvalue_rgba);
     g_call_core_create_mvalue_byte_array = GET_FUNC(module, "Core_CreateMValueByteArray", capi_core_create_mvalue_byte_array);
     g_call_core_create_mvalue_list = GET_FUNC(module, "Core_CreateMValueList", capi_core_create_mvalue_list);
+    g_call_create_mvalue_function = GET_FUNC(module, "CreateMValueFunction", capi_create_mvalue_function);
+    g_call_call_mvalue_function = GET_FUNC(module, "CallMValueFunction", capi_call_mvalue_function);
     g_call_core_get_mvalue_bool = GET_FUNC(module, "Core_GetMValueBool", capi_core_get_mvalue_bool);
     g_call_core_get_mvalue_double = GET_FUNC(module, "Core_GetMValueDouble", capi_core_get_mvalue_double);
     g_call_core_get_mvalue_int = GET_FUNC(module, "Core_GetMValueInt", capi_core_get_mvalue_int);
@@ -762,6 +770,16 @@ void register_alt_event(const char *resourceName, unsigned short eventType)
 {
     capi_register_alt_event call = GET_FUNC(module, "RegisterAltEvent", capi_register_alt_event);
     call(resourceName, eventType);
+}
+
+int register_alt_export(const char *resourceName, const char *exportName, CustomData data)
+{
+    return g_call_register_alt_export(resourceName, exportName, data);
+}
+
+MetaData get_alt_export(const char *targetResourceName, const char *exportName)
+{
+    return g_call_get_alt_export(targetResourceName, exportName);
 }
 
 void core_log_info(const char *message)
@@ -2225,6 +2243,16 @@ void *core_create_mvalue_byte_array(unsigned char *data, unsigned long long size
 void *core_create_mvalue_list(const char *json, unsigned long long size)
 {
     return g_call_core_create_mvalue_list(json, size);
+}
+
+void *create_mvalue_function(const char *resourceName, unsigned long long id)
+{
+    return g_call_create_mvalue_function(resourceName, id);
+}
+
+MetaData call_mvalue_function(void *ptr, CustomData *mValues, unsigned long long size)
+{
+    return g_call_call_mvalue_function(ptr, mValues, size);
 }
 
 int core_get_mvalue_bool(void *val)
