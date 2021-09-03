@@ -32,6 +32,7 @@ const (
 	startProjectileEvent
 	weaponDamageEvent
 	vehicleDestroy
+	vehicleDamage
 	checkpointEvent
 	colshapeEvent
 	playerEnterVehicle
@@ -75,6 +76,7 @@ type streamSyncedMetaDataChangeListener = func(entity interface{}, key string, n
 type syncedMetaDataChangeListener = func(entity interface{}, key string, newValue interface{}, oldValue interface{})
 type vehicleAttachListener = func(vehicle *Vehicle, attachedVehicle *Vehicle)
 type vehicleDestroyListener = func(vehicle *Vehicle)
+type vehicleDamageListener = func(vehicle *Vehicle, entity interface{}, bodyDamage uint32, additionalBodyDamage uint32, engineDamage uint32, petrolTankDamage uint32, damageWidth uint32)
 type vehicleDetachListener = func(vehicle *Vehicle, detachedVehicle *Vehicle)
 
 // TODO bodyPart ENUM
@@ -113,6 +115,7 @@ type eventManager struct {
 	vehicleAttachEvents              []vehicleAttachListener
 	vehicleDetachEvents              []vehicleDetachListener
 	vehicleDestroyEvents             []vehicleDestroyListener
+	vehicleDamageEvents              []vehicleDamageListener
 	serverScriptEvents               map[string][]serverEventListener
 	clientScriptEvents               map[string][]clientEventListener
 	allServerScriptEvents            []allServerEventsListener
@@ -148,6 +151,7 @@ type listener interface {
 	VehicleAttach(listener vehicleAttachListener)
 	VehicleDetach(listener vehicleDetachListener)
 	VehicleDestroy(listener vehicleDestroyListener)
+	VehicleDamage(listener vehicleDamageListener)
 	AllServerEvents(listener allServerEventsListener)
 	ServerEvent(eventName string, listener serverEventListener)
 	AllClientEvents(listener allClientEventsListener)
@@ -301,6 +305,11 @@ func (e eventManager) VehicleDetach(listener vehicleDetachListener) {
 func (e eventManager) VehicleDestroy(listener vehicleDestroyListener) {
 	On.vehicleDestroyEvents = append(On.vehicleDestroyEvents, listener)
 	registerOnEvent(Resource.Name, vehicleDestroy)
+}
+
+func (e eventManager) VehicleDamage(listener vehicleDamageListener) {
+	On.vehicleDamageEvents = append(On.vehicleDamageEvents, listener)
+	registerOnEvent(Resource.Name, vehicleDamage)
 }
 
 func (e eventManager) ServerEvent(eventName string, listener serverEventListener) {
@@ -847,5 +856,29 @@ func altVehicleDestroyEvent(v unsafe.Pointer) {
 
 	for _, event := range On.vehicleDestroyEvents {
 		event(vehicle)
+	}
+}
+
+//export altVehicleDamageEvent
+func altVehicleDamageEvent(v unsafe.Pointer, e C.struct_entity, body C.uint, additional C.uint, engine C.uint, tank C.uint, width C.uint) {
+	vehicle := NewVehicle(v)
+
+	var entity interface{}
+	entityType := BaseObjectType(e.Type)
+
+	if entityType == PlayerObject {
+		entity = NewPlayer(e.Ptr)
+	} else if entityType == VehicleObject {
+		entity = NewVehicle(e.Ptr)
+	}
+
+	bodyDamage := uint32(body)
+	additionalBodyDamage := uint32(additional)
+	engineDamage := uint32(engine)
+	tankDamage := uint32(tank)
+	damageWidth := uint32(width)
+
+	for _, event := range On.vehicleDamageEvents {
+		event(vehicle, entity, bodyDamage, additionalBodyDamage, engineDamage, tankDamage, damageWidth)
 	}
 }

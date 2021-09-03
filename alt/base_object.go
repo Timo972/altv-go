@@ -39,6 +39,9 @@ type Base interface {
 
 func (b BaseObject) Valid() bool {
 	// TODO check if it works with player
+	if b.Ptr == nil {
+		return false
+	}
 	// if so add for other base object extenders
     if b.Type == PlayerObject {
     	return int(C.player_is_valid(b.Ptr)) == 1
