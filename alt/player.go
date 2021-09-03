@@ -290,3 +290,11 @@ func (p Player) MaxArmour() uint16 {
 func (p *Player) Emit(eventName string, args ...interface{}) {
 	EmitClient(p, eventName, args...)
 }
+
+func (p Player) Invincible() bool {
+	return int(C.player_get_invincible(p.Ptr)) == 1
+}
+
+func (p Player) SetInvincible(toggle bool) {
+	C.player_set_invincible(p.Ptr, C.int(module.Bool2int(toggle)))
+}
