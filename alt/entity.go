@@ -233,3 +233,20 @@ func (e Entity) DeleteStreamSyncedMetaData(key string) {
 		C.vehicle_delete_stream_synced_meta_data(e.Ptr, cKey)
 	}
 }
+
+func (e Entity) Streamed() bool {
+	if e.Type == PlayerObject {
+		return int(C.player_get_streamed(e.Ptr)) == 1
+	} else if e.Type == VehicleObject {
+		return int(C.vehicle_get_streamed(e.Ptr)) == 1
+	}
+	return false
+}
+
+func (e Entity) SetStreamed(toggle bool) {
+	if e.Type == PlayerObject {
+		C.player_set_streamed(e.Ptr, C.int(module.Bool2int(toggle)))
+	} else if e.Type == VehicleObject {
+		C.vehicle_set_streamed(e.Ptr, C.int(module.Bool2int(toggle)))
+	}
+}
