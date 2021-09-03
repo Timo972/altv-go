@@ -203,6 +203,10 @@ typedef void *(*capi_player_get_network_owner)(void *p);
 typedef void (*capi_player_set_network_owner)(void *p, void *owner, int disableMigration);
 typedef void (*capi_player_destroy)(void *p);
 typedef int (*capi_player_is_valid)(void *p);
+typedef int (*capi_player_get_streamed)(void *p);
+typedef void (*capi_player_set_streamed)(void *p, int toggle);
+typedef int (*capi_player_get_invincible)(void *p);
+typedef void (*capi_player_set_invincible)(void *p, int toggle);
 
 // Vehicle
 typedef int (*capi_vehicle_has_meta_data)(void *base, const char *key);
@@ -360,6 +364,8 @@ typedef const char *(*capi_vehicle_get_script_data_base64)(void *v);
 typedef const char *(*capi_vehicle_get_game_state_base64)(void *v);
 typedef void (*capi_vehicle_destroy)(void *v);
 typedef int (*capi_vehicle_is_valid)(void *v);
+typedef int (*capi_vehicle_get_streamed)(void *v);
+typedef void (*capi_vehicle_set_streamed)(void *v, int toggle);
 
 typedef unsigned char (*capi_base_object_get_type)(void *base);
 
@@ -619,6 +625,10 @@ void *player_get_network_owner(void *p);
 void player_set_network_owner(void *p, void *owner, int disableMigration);
 void player_destroy(void *p);
 int player_is_valid(void *p);
+int player_get_streamed(void *p);
+void player_set_streamed(void *p, int toggle);
+int player_get_invincible(void *p);
+void player_set_invincible(void *p, int toggle);
 
 // Vehicle
 int vehicle_has_meta_data(void *base, const char *key);
@@ -776,6 +786,8 @@ const char *vehicle_get_damage_data_base64(void *v);
 const char *vehicle_get_script_data_base64(void *v);
 void vehicle_destroy(void *v);
 int vehicle_is_valid(void *v);
+int vehicle_get_streamed(void *v);
+void vehicle_set_streamed(void *v, int toggle);
 
 // MValue
 void *core_create_mvalue_bool(int value);

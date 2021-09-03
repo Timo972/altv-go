@@ -90,6 +90,10 @@ capi_player_get_network_owner g_call_player_get_network_owner;
 capi_player_set_network_owner g_call_player_set_network_owner;
 capi_player_destroy g_call_player_destroy;
 capi_player_is_valid g_call_player_is_valid;
+capi_player_get_streamed g_call_player_get_streamed;
+capi_player_set_streamed g_call_player_set_streamed
+capi_player_get_invincible g_call_player_get_invincible;
+capi_player_set_invincible g_call_player_set_invincible;
 
 // Vehicle
 capi_core_create_vehicle g_call_core_create_vehicle;
@@ -256,6 +260,8 @@ capi_vehicle_get_damage_data_base64 g_call_vehicle_get_damage_data_base64;
 capi_vehicle_get_script_data_base64 g_call_vehicle_get_script_data_base64;
 capi_vehicle_destroy g_call_vehicle_destroy;
 capi_vehicle_is_valid g_call_vehicle_is_valid;
+capi_vehicle_get_streamed g_call_vehicle_get_streamed;
+capi_vehicle_set_streamed g_call_vehicle_set_streamed;
 
 // Core
 capi_register_alt_export g_call_register_alt_export;
@@ -475,6 +481,10 @@ int load_module(const char *path)
     g_call_player_set_network_owner = GET_FUNC(module, "Player_SetNetworkOwner", capi_player_set_network_owner);
     g_call_player_destroy = GET_FUNC(module, "Player_Destroy", capi_player_destroy);
     g_call_player_is_valid = GET_FUNC(module, "Player_IsValid", capi_player_is_valid);
+    g_call_player_get_streamed = GET_FUNC(module, "Player_GetStreamed", capi_player_get_streamed);
+    g_call_player_get_invincible = GET_FUNC(module, "Player_GetInvincible", capi_player_get_invincible);
+    g_call_player_set_streamed = GET_FUNC(module, "Player_SetStreamed", capi_player_set_streamed);
+    g_call_player_set_invincible = GET_FUNC(module, "Player_SetInvincible", capi_player_set_invincible);
 
     // Vehicle
     g_call_vehicle_has_meta_data = GET_FUNC(module, "Vehicle_HasMetaData", capi_vehicle_has_meta_data);
@@ -632,6 +642,8 @@ int load_module(const char *path)
     g_call_vehicle_get_script_data_base64 = GET_FUNC(module, "Vehicle_GetScriptDataBase64", capi_vehicle_get_script_data_base64);
     g_call_vehicle_destroy = GET_FUNC(module, "Vehicle_Destroy", capi_vehicle_destroy);
     g_call_vehicle_is_valid = GET_FUNC(module, "Vehicle_IsValid", capi_vehicle_is_valid);
+    g_call_vehicle_get_streamed = GET_FUNC(module, "Vehicle_GetStreamed", capi_vehicle_get_streamed);
+    g_call_vehicle_set_streamed = GET_FUNC(module, "Vehicle_SetStreamed", capi_vehicle_set_streamed);
 
     // Core
     g_call_register_alt_export = GET_FUNC(module, "RegisterAltExport", capi_register_alt_export);
@@ -1413,6 +1425,26 @@ int player_is_valid(void *p)
     return g_call_player_is_valid(p);
 }
 
+int player_get_streamed(void *p)
+{
+    return g_call_player_get_streamed(p);
+}
+
+int player_get_invincible(void *p)
+{
+    return g_call_player_get_invincible(p);
+}
+
+void player_set_streamed(void *p, int toggle)
+{
+    g_call_player_set_streamed(p, toggle);
+}
+
+void player_set_invincible(void *p, int toggle)
+{
+    g_call_player_set_invincible(p, toggle);
+}
+
 // Vehicle
 int vehicle_has_meta_data(void *base, const char *key)
 {
@@ -2162,6 +2194,16 @@ void vehicle_destroy(void *v)
 int vehicle_is_valid(void *p)
 {
     return g_call_vehicle_is_valid(p);
+}
+
+int vehicle_get_streamed(void *v)
+{
+    return g_call_vehicle_get_streamed(v);
+}
+
+void vehicle_set_streamed(void *v, int toggle)
+{
+    g_call_vehicle_set_streamed(v, toggle);
 }
 
 const char *vehicle_get_appearance_data_base64(void *v)
