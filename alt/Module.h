@@ -207,6 +207,7 @@ typedef int (*capi_player_get_streamed)(void *p);
 typedef void (*capi_player_set_streamed)(void *p, int toggle);
 typedef int (*capi_player_get_invincible)(void *p);
 typedef void (*capi_player_set_invincible)(void *p, int toggle);
+typedef void (*capi_player_set_into_vehicle)(void *p, void *v, unsigned char seat);
 
 // Vehicle
 typedef int (*capi_vehicle_has_meta_data)(void *base, const char *key);
@@ -629,6 +630,7 @@ int player_get_streamed(void *p);
 void player_set_streamed(void *p, int toggle);
 int player_get_invincible(void *p);
 void player_set_invincible(void *p, int toggle);
+void player_set_into_vehicle(void *p, void *v, unsigned char seat);
 
 // Vehicle
 int vehicle_has_meta_data(void *base, const char *key);

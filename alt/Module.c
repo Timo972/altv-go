@@ -94,6 +94,7 @@ capi_player_get_streamed g_call_player_get_streamed;
 capi_player_set_streamed g_call_player_set_streamed;
 capi_player_get_invincible g_call_player_get_invincible;
 capi_player_set_invincible g_call_player_set_invincible;
+capi_player_set_into_vehicle g_call_player_set_into_vehicle;
 
 // Vehicle
 capi_core_create_vehicle g_call_core_create_vehicle;
@@ -485,6 +486,7 @@ int load_module(const char *path)
     g_call_player_get_invincible = GET_FUNC(module, "Player_GetInvincible", capi_player_get_invincible);
     g_call_player_set_streamed = GET_FUNC(module, "Player_SetStreamed", capi_player_set_streamed);
     g_call_player_set_invincible = GET_FUNC(module, "Player_SetInvincible", capi_player_set_invincible);
+    g_call_player_set_into_vehicle = GET_FUNC(module, "Player_SetIntoVehicle", capi_player_set_into_vehicle);
 
     // Vehicle
     g_call_vehicle_has_meta_data = GET_FUNC(module, "Vehicle_HasMetaData", capi_vehicle_has_meta_data);
@@ -1443,6 +1445,11 @@ void player_set_streamed(void *p, int toggle)
 void player_set_invincible(void *p, int toggle)
 {
     g_call_player_set_invincible(p, toggle);
+}
+
+void player_set_into_vehicle(void *p, void *v, unsigned char seat)
+{
+    g_call_player_set_into_vehicle(p, v, seat);
 }
 
 // Vehicle

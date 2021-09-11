@@ -298,3 +298,7 @@ func (p Player) Invincible() bool {
 func (p Player) SetInvincible(toggle bool) {
 	C.player_set_invincible(p.Ptr, C.int(module.Bool2int(toggle)))
 }
+
+func (p Player) SetIntoVehicle(v *Vehicle, seat uint8) {
+	C.player_set_into_vehicle(p.Ptr, v.Ptr, C.uchar(seat))
+}
