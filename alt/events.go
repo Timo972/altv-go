@@ -7,6 +7,7 @@ package alt
 import "C"
 import (
 	"unsafe"
+	"github.com/shockdev04/altv-go-pkg/internal/module"
 )
 
 type eventType = uint16
@@ -68,7 +69,7 @@ type fireListener = func(player *Player, fires []FireInfo) bool
 type globalMetaDataChangeListener = func(key string, newValue interface{}, oldValue interface{})
 type globalSyncedMetaDataChangeListener func(key string, newValue interface{}, oldValue interface{})
 type netOwnerChangeListener = func(entity interface{}, owner *Player, oldOwner *Player)
-type playerWeaponChangeListener = func(player *Player, oldWeapon uint32, newWeapon uint32)
+type playerWeaponChangeListener = func(player *Player, oldWeapon uint32, newWeapon uint32) bool
 type resourceErrorListener = func(resourceName string)
 type resourceStopListener = func(resourceName string)
 type startProjectileListener = func(player *Player, position Vector3, direction Vector3, ammoHash uint16, weaponHash uint32) bool
@@ -78,7 +79,6 @@ type vehicleAttachListener = func(vehicle *Vehicle, attachedVehicle *Vehicle)
 type vehicleDestroyListener = func(vehicle *Vehicle)
 type vehicleDamageListener = func(vehicle *Vehicle, entity interface{}, bodyDamage uint32, additionalBodyDamage uint32, engineDamage uint32, petrolTankDamage uint32, damageWidth uint32)
 type vehicleDetachListener = func(vehicle *Vehicle, detachedVehicle *Vehicle)
-
 // TODO bodyPart ENUM
 type weaponDamageListener = func(source *Player, target interface{}, weapon uint32, damage uint16, offset Vector3, bodyPart int8) bool
 type allServerEventsListener = func(eventName string, args ...interface{})
@@ -504,7 +504,7 @@ func altPlayerDisconnectEvent(p unsafe.Pointer, cReason *C.char) {
 }
 
 //export altExplosionEvent
-func altExplosionEvent(p unsafe.Pointer, e C.struct_entity, pos C.struct_pos, explosionType C.short, explosionFX C.uint) {
+func altExplosionEvent(p unsafe.Pointer, e C.struct_entity, pos C.struct_pos, explosionType C.short, explosionFX C.uint) C.int {
 	player := NewPlayer(p)
 	goPos := Vector3{X: float32(pos.x), Y: float32(pos.y), Z: float32(pos.z)}
 	expType := int16(explosionType)
@@ -519,9 +519,16 @@ func altExplosionEvent(p unsafe.Pointer, e C.struct_entity, pos C.struct_pos, ex
 		entity = NewVehicle(e.Ptr)
 	}
 
+	cont := true
+
 	for _, event := range On.explosionEvents {
-		event(player, entity, goPos, expType, expFX)
+		c := event(player, entity, goPos, expType, expFX)
+		if !c {
+			cont = c
+		}
 	}
+
+	return C.int(module.Bool2int(cont))
 }
 
 //export altPlayerChangeVehicleSeatEvent
@@ -642,7 +649,7 @@ func altResourceErrorEvent(n *C.char) {
 }
 
 //export altWeaponDamageEvent
-func altWeaponDamageEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong, dmg C.ushort, ofs C.struct_pos, bPart C.short) {
+func altWeaponDamageEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong, dmg C.ushort, ofs C.struct_pos, bPart C.short) C.int {
 	player := NewPlayer(p)
 	weapon := uint32(weap)
 	damage := uint16(dmg)
@@ -658,9 +665,16 @@ func altWeaponDamageEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong, dmg
 		entity = NewVehicle(e.Ptr)
 	}
 
+	cont := false
+
 	for _, event := range On.weaponDamageEvents {
-		event(player, entity, weapon, damage, offset, bodyPart)
+		c := event(player, entity, weapon, damage, offset, bodyPart)
+		if !c {
+			cont = c
+		}
 	}
+
+	return C.int(module.Bool2int(!cont))
 }
 
 //export altPlayerEnteringVehicleEvent
@@ -700,7 +714,7 @@ func altColShapeEvent(c unsafe.Pointer, e C.struct_entity, s C.int) {
 }
 
 //export altFireEvent
-func altFireEvent(p unsafe.Pointer, f C.struct_array) {
+func altFireEvent(p unsafe.Pointer, f C.struct_array) C.int {
 	player := NewPlayer(p)
 
 	size := int(f.size)
@@ -712,9 +726,16 @@ func altFireEvent(p unsafe.Pointer, f C.struct_array) {
 		array[i] = FireInfo{WeaponHash: uint32(fireStruct.weaponHash), Position: Vector3{X: float32(fireStruct.position.x), Y: float32(fireStruct.position.y), Z: float32(fireStruct.position.z)}}
 	}
 
+	cont := true
+
 	for _, event := range On.fireEvents {
-		event(player, array)
+		c := event(player, array)
+		if !c {
+			cont = c
+		}
 	}
+
+	return C.int(module.Bool2int(cont))
 }
 
 //export altGlobalMetaDataChangeEvent
@@ -763,27 +784,41 @@ func altNetOwnerChangeEvent(e C.struct_entity, o unsafe.Pointer, oo unsafe.Point
 }
 
 //export altPlayerWeaponChangeEvent
-func altPlayerWeaponChangeEvent(p unsafe.Pointer, oWeap C.ulong, nWeap C.ulong) {
+func altPlayerWeaponChangeEvent(p unsafe.Pointer, oWeap C.ulong, nWeap C.ulong) C.int {
 	player := NewPlayer(p)
 	oldWeapon := uint32(oWeap)
 	newWeapon := uint32(nWeap)
 
+	cont := true
+
 	for _, event := range On.playerWeaponChangeEvents {
-		event(player, oldWeapon, newWeapon)
+		c := event(player, oldWeapon, newWeapon)
+		if !c {
+			cont = c
+		}
 	}
+
+	return C.int(module.Bool2int(cont))
 }
 
 //export altStartProjectileEvent
-func altStartProjectileEvent(p unsafe.Pointer, pos C.struct_pos, dir C.struct_pos, aHash C.uint, wHash C.ulong) {
+func altStartProjectileEvent(p unsafe.Pointer, pos C.struct_pos, dir C.struct_pos, aHash C.uint, wHash C.ulong) C.int {
 	player := NewPlayer(p)
 	position := Vector3{X: float32(pos.x), Y: float32(pos.y), Z: float32(pos.z)}
 	direction := Vector3{X: float32(dir.x), Y: float32(dir.y), Z: float32(dir.z)}
 	ammoHash := uint16(aHash)
 	weaponHash := uint32(wHash)
 
+	cont := true
+
 	for _, event := range On.startProjectileEvents {
-		event(player, position, direction, ammoHash, weaponHash)
+		c := event(player, position, direction, ammoHash, weaponHash)
+		if !c {
+			cont = c
+		}
 	}
+
+	return C.int(module.Bool2int(cont))
 }
 
 //export altStreamSyncedMetaDataChangeEvent
