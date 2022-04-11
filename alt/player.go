@@ -13,7 +13,7 @@ type Player struct {
 	Entity
 }
 
-func NewPlayer(p unsafe.Pointer) *Player {
+func newPlayer(p unsafe.Pointer) *Player {
 	player := &Player{}
 	player.Ptr = p
 	player.Type = PlayerObject
@@ -129,7 +129,7 @@ func (p Player) Vehicle() *Vehicle {
 	if cPtr == nil {
 		return nil
 	}
-	veh := NewVehicle(unsafe.Pointer(cPtr))
+	veh := newVehicle(unsafe.Pointer(cPtr))
 	return veh
 }
 

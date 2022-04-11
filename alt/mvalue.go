@@ -199,35 +199,35 @@ func (v MValue) GetValue() interface{} {
 		entity := C.core_get_mvalue_base_object(v.Ptr)
 		_type := uint8(entity.Type)
 		if _type == PlayerObject {
-			v.Value = NewPlayer(entity.Ptr)
+			v.Value = newPlayer(entity.Ptr)
 		} else if _type == VehicleObject {
-			v.Value = NewVehicle(entity.Ptr)
+			v.Value = newVehicle(entity.Ptr)
 		} else if _type == ColshapeObject {
-			v.Value = NewColShape(entity.Ptr)
+			v.Value = newColShape(entity.Ptr)
 		} else if _type == CheckpointObject {
-			v.Value = NewCheckpoint(entity.Ptr)
+			v.Value = newCheckpoint(entity.Ptr)
 		} else if _type == VoiceChannelObject {
-			v.Value = NewVoiceChannel(entity.Ptr)
+			v.Value = newVoiceChannel(entity.Ptr)
 		}
 	case MValueVector2:
 		v2 := C.core_get_mvalue_vector2(v.Ptr)
-		v.Value = Vector2{X:float32(v2.x),Y:float32(v2.y)}
+		v.Value = Vector2{X: float32(v2.x), Y: float32(v2.y)}
 	case MValueVector3:
 		v3 := C.core_get_mvalue_vector3(v.Ptr)
-		v.Value = Vector3{X:float32(v3.x),Y:float32(v3.y),Z:float32(v3.z)}
+		v.Value = Vector3{X: float32(v3.x), Y: float32(v3.y), Z: float32(v3.z)}
 	case MValueRGBA:
 		color := C.core_get_mvalue_rgba(v.Ptr)
-		v.Value = RGBA{R:uint8(color.r),G:uint8(color.g),B:uint8(color.g),A:uint8(color.a)}
+		v.Value = RGBA{R: uint8(color.r), G: uint8(color.g), B: uint8(color.g), A: uint8(color.a)}
 	case MValueByteArray:
 		arr := C.core_get_mvalue_byte_array(v.Ptr)
 		v.Value = C.GoBytes(arr.array, C.int(arr.size))
 	case MValueFunction:
-		v.Value = func(args...interface{}) interface{} {
-			cArgPtr, cArgSize := NewArgArray(args)
+		v.Value = func(args ...interface{}) interface{} {
+			cArgPtr, cArgSize := newArgArray(args)
 			defer C.free(unsafe.Pointer(cArgPtr))
 
 			cMeta := C.call_mvalue_function(v.Ptr, cArgPtr, cArgSize)
-			mVal := &MValue{Ptr:cMeta.Ptr,Type: uint8(cMeta.Type)}
+			mVal := &MValue{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
 
 			value := mVal.GetValue()
 

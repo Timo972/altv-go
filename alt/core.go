@@ -7,44 +7,54 @@ import (
 	"unsafe"
 )
 
+var File FileApi = &fileApi{}
+
+type fileApi struct {
+}
+
+type FileApi interface {
+	Exists(path string) bool
+	Read(path string) string
+}
+
+func (f *fileApi) Exists(path string) bool {
+	cStr := C.CString(path)
+	defer C.free(unsafe.Pointer(cStr))
+	return int(C.core_file_exists(cStr)) == 1
+}
+
+func (f *fileApi) Read(path string) string {
+	cStr := C.CString(path)
+	defer C.free(unsafe.Pointer(cStr))
+	cContent := C.core_read_file(cStr)
+	return C.GoString(cContent)
+}
+
 func Hash(str string) uint32 {
 	cStr := C.CString(str)
 	defer C.free(unsafe.Pointer(cStr))
 	return uint32(C.core_hash(cStr))
 }
 
-func FileExists(str string) bool {
-	cStr := C.CString(str)
-	defer C.free(unsafe.Pointer(cStr))
-	return int(C.core_file_exists(cStr)) == 1
-}
-
-func FileRead(str string) string {
-	cStr := C.CString(str)
-	defer C.free(unsafe.Pointer(cStr))
-	cContent := C.core_read_file(cStr)
-	return C.GoString(cContent)
-}
-
-func GetEntityByID(id uint16) interface{} {
+func EntityByID(id uint16) interface{} {
 	entity := C.core_get_entity_by_id(C.ushort(id))
 
 	entityType := BaseObjectType(entity.Type)
 
 	if entityType == PlayerObject {
-		p := NewPlayer(entity.Ptr)
+		p := newPlayer(entity.Ptr)
 		return p
 	} else if entityType == VehicleObject {
-		v := NewVehicle(entity.Ptr)
+		v := newVehicle(entity.Ptr)
 		return v
 	} else if entityType == ColshapeObject {
-		c := NewColShape(entity.Ptr)
+		c := newColShape(entity.Ptr)
 		return c
 	} else if entityType == CheckpointObject {
-		c := NewCheckpoint(entity.Ptr)
+		c := newCheckpoint(entity.Ptr)
 		return c
 	} else if entityType == VoiceChannelObject {
-		v := NewVoiceChannel(entity.Ptr)
+		v := newVoiceChannel(entity.Ptr)
 		return v
 	}
 
@@ -129,7 +139,7 @@ func RestartResource(name string) bool {
 	return int(C.core_restart_resource(cName)) == 1
 }
 
-func GetPlayersByName(name string) []*Player {
+func PlayersByName(name string) []*Player {
 	cName := C.CString(name)
 	defer C.free(unsafe.Pointer(cName))
 	arr := C.core_get_players_by_name(cName)
@@ -145,13 +155,13 @@ func GetPlayersByName(name string) []*Player {
 
 	for i := 0; i < size; i++ {
 		player := values[i]
-		players[i] = NewPlayer(player)
+		players[i] = newPlayer(player)
 	}
 
 	return players
 }
 
-func GetPlayers() []*Player {
+func Players() []*Player {
 	arr := C.core_get_players()
 
 	size := int(arr.size)
@@ -165,13 +175,13 @@ func GetPlayers() []*Player {
 
 	for i := 0; i < size; i++ {
 		p := values[i]
-		players[i] = NewPlayer(p)
+		players[i] = newPlayer(p)
 	}
 
 	return players
 }
 
-func GetVehicles() []*Vehicle {
+func Vehicles() []*Vehicle {
 	arr := C.core_get_vehicles()
 
 	size := int(arr.size)
@@ -185,7 +195,7 @@ func GetVehicles() []*Vehicle {
 
 	for i := 0; i < size; i++ {
 		v := values[i]
-		vehicles[i] = NewVehicle(v)
+		vehicles[i] = newVehicle(v)
 	}
 
 	return vehicles
