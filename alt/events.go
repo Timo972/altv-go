@@ -916,6 +916,8 @@ func altPlayerBeforeConnectEvent(cInfo C.struct_connectionInfo, cReason *C.char)
 	info := newConnectionInfo(cInfo)
 	reason := C.GoString(cReason)
 
+	// FIXME: C.CString memory leak?
+
 	for _, event := range On.playerBeforeConnectEvents {
 		r := event(info, reason)
 		if r != "" {
@@ -929,6 +931,8 @@ func altPlayerBeforeConnectEvent(cInfo C.struct_connectionInfo, cReason *C.char)
 //export altConnectionQueueAddEvent
 func altConnectionQueueAddEvent(cInfo C.struct_connectionInfo) *C.char {
 	info := newConnectionInfo(cInfo)
+
+	// FIXME: C.CString memory leak?
 
 	for _, event := range On.connectionQueueAddEvents {
 		r := event(info)

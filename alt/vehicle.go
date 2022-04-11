@@ -332,10 +332,10 @@ func (v Vehicle) IsNeonActive() bool {
 func (v Vehicle) NeonActive() (front bool, left bool, right bool, back bool) {
 	neonState := C.vehicle_get_neon_active(v.Ptr)
 
-	front = int(neonState.front) == 1
-	left = int(neonState.left) == 1
-	right = int(neonState.right) == 1
-	back = int(neonState.back) == 1
+	front = uint8(neonState.front) == 1
+	left = uint8(neonState.left) == 1
+	right = uint8(neonState.right) == 1
+	back = uint8(neonState.back) == 1
 
 	return front, left, right, back
 }

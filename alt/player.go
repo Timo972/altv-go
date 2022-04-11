@@ -302,3 +302,119 @@ func (p Player) SetInvincible(toggle bool) {
 func (p Player) SetIntoVehicle(v *Vehicle, seat uint8) {
 	C.player_set_into_vehicle(p.Ptr, v.Ptr, C.uchar(seat))
 }
+
+func (p Player) PlayAmbientSpeech(speechName string, speechParam string, speechDictHash uint32) {
+	cSpeechName := C.CString(speechName)
+	defer C.free(unsafe.Pointer(cSpeechName))
+
+	cSpeechParam := C.CString(speechParam)
+	defer C.free(unsafe.Pointer(cSpeechParam))
+
+	C.player_play_ambient_speech(p.Ptr, cSpeechName, cSpeechParam, C.uint(speechDictHash))
+}
+
+func (p Player) SetHeadOverlay(overlayID uint8, index uint8, opacity float32) bool {
+	return int(C.player_set_head_overlay(p.Ptr, C.uchar(overlayID), C.uchar(index), C.float(opacity))) == 1
+}
+
+func (p Player) RemoveHeadOverlay(overlayID uint8) bool {
+	return int(C.player_remove_head_overlay(p.Ptr, C.uchar(overlayID))) == 1
+}
+
+func (p Player) SetHeadOverlayColor(overlayID uint8, colorType uint8, colorIndex uint8, secondColorIndex uint8) bool {
+	return int(C.player_set_head_overlay_color(p.Ptr, C.uchar(overlayID), C.uchar(colorType), C.uchar(colorIndex), C.uchar(secondColorIndex))) == 1
+}
+
+func (p Player) HeadOverlay(overlayID uint8) HeadOverlay {
+	return newHeadOverlay(C.player_get_head_overlay(p.Ptr, C.uchar(overlayID)))
+}
+
+func (p Player) SetFaceFeature(index uint8, scale float32) bool {
+	return int(C.player_set_face_feature(p.Ptr, C.uchar(index), C.float(scale))) == 1
+}
+
+func (p Player) FaceFeatureScale(index uint8) float32 {
+	return float32(C.player_get_face_feature_scale(p.Ptr, C.uchar(index)))
+}
+
+func (p Player) RemoveFaceFeature(index uint8) bool {
+	return int(C.player_remove_face_feature(p.Ptr, C.uchar(index))) == 1
+}
+
+func (p Player) SetHeadBlendPaletteColor(id uint8, r uint8, g uint8, b uint8) bool {
+	return int(C.player_set_head_blend_palette_color(p.Ptr, C.uchar(id), C.uchar(r), C.uchar(g), C.uchar(b))) == 1
+}
+
+func (p Player) SetHeadBlendPaletteColorRGBA(id uint8, color RGBA) bool {
+	return int(C.player_set_head_blend_palette_color(p.Ptr, C.uchar(id), C.uchar(color.R), C.uchar(color.G), C.uchar(color.B))) == 1
+}
+
+func (p Player) HeadBlendPaletteColor(id uint8) RGBA {
+	return newRGBA(C.player_get_head_blend_palette_color(p.Ptr, C.uchar(id)))
+}
+
+func (p Player) SetHeadBlendData(shapeFirstID uint32, shapeSecondID uint32, shapeThirdID uint32, skinFirstID uint32, skinSecondID uint32, skinThirdID uint32, shapeMix float32, skinMix float32, thirdMix float32) {
+	C.player_set_head_blend_data(p.Ptr, C.uint(shapeFirstID), C.uint(shapeSecondID), C.uint(shapeThirdID), C.uint(skinFirstID), C.uint(skinSecondID), C.uint(skinThirdID), C.float(shapeMix), C.float(skinMix), C.float(thirdMix))
+}
+
+func (p Player) HeadBlendData() HeadBlendData {
+	return newHeadBlendData(C.player_get_head_blend_data(p.Ptr))
+}
+
+func (p Player) SetEyeColor(color int16) bool {
+	return int(C.player_set_eye_color(p.Ptr, C.short(color))) == 1
+}
+
+func (p Player) EyeColor() int16 {
+	return int16(C.player_get_eye_color(p.Ptr))
+}
+
+func (p Player) SetHairColor(color uint8) {
+	C.player_set_hair_color(p.Ptr, C.uchar(color))
+}
+
+func (p Player) HairColor() uint8 {
+	return uint8(C.player_get_hair_color(p.Ptr))
+}
+
+func (p Player) SetHairHighlightColor(color uint8) {
+	C.player_set_hair_highlight_color(p.Ptr, C.uchar(color))
+}
+
+func (p Player) HairHighlightColor() uint8 {
+	return uint8(C.player_get_hair_highlight_color(p.Ptr))
+}
+
+// TODO:
+func (p Player) Weapons() {}
+
+func (p Player) HasLocalMetaData(key string) bool {
+	cKey := C.CString(key)
+	defer C.free(unsafe.Pointer(cKey))
+	return int(C.player_has_local_meta_data(p.Ptr, cKey)) == 1
+}
+
+func (p Player) SetLocalMetaData(key string, value interface{}) {
+	meta := CreateMValue(value)
+	cKey := C.CString(key)
+	defer C.free(unsafe.Pointer(cKey))
+
+	C.player_set_local_meta_data(p.Ptr, cKey, meta.Ptr)
+}
+
+func (p Player) LocalMetaData(key string) interface{} {
+	cKey := C.CString(key)
+	defer C.free(unsafe.Pointer(cKey))
+
+	cMeta := C.player_get_local_meta_data(p.Ptr, cKey)
+	mValue := &MValue{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type), Value: nil}
+
+	return mValue.GetValue()
+}
+
+func (p Player) DeleteLocalMetaData(key string) {
+	cKey := C.CString(key)
+	defer C.free(unsafe.Pointer(cKey))
+
+	C.player_delete_local_meta_data(p.Ptr, cKey)
+}
