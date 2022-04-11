@@ -290,7 +290,7 @@ capi_core_set_password g_call_core_set_password;
 capi_core_get_branch g_call_core_get_branch;
 capi_core_get_version g_call_core_get_version;
 capi_core_is_debug g_call_core_is_debug;
-capi_core_get_sdk_version g_call_core_get_sdk_version;
+capi_core_get_sdk_hash g_call_core_get_sdk_hash;
 capi_core_get_root_directory g_call_core_get_root_directory;
 capi_core_trigger_local_event g_call_core_trigger_local_event;
 capi_core_trigger_client_event g_call_core_trigger_client_event;
@@ -673,7 +673,7 @@ int load_module(const char *path)
     g_call_core_get_branch = GET_FUNC(module, "Core_GetBranch", capi_core_get_branch);
     g_call_core_get_version = GET_FUNC(module, "Core_GetVersion", capi_core_get_version);
     g_call_core_is_debug = GET_FUNC(module, "Core_IsDebug", capi_core_is_debug);
-    g_call_core_get_sdk_version = GET_FUNC(module, "Core_GetSDKVersion", capi_core_get_sdk_version);
+    g_call_core_get_sdk_hash = GET_FUNC(module, "Core_GetSDKHash", capi_core_get_sdk_hash);
     g_call_core_get_root_directory = GET_FUNC(module, "Core_GetRootDirectory", capi_core_get_root_directory);
 
     g_call_core_trigger_local_event = GET_FUNC(module, "Core_TriggerLocalEvent", capi_core_trigger_local_event);
@@ -941,9 +941,9 @@ int core_is_debug()
     return g_call_core_is_debug();
 }
 
-unsigned int core_get_sdk_version()
+const char *core_get_sdk_hash()
 {
-    return g_call_core_get_sdk_version();
+    return g_call_core_get_sdk_hash();
 }
 
 const char * core_get_root_directory()

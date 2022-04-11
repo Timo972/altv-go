@@ -496,7 +496,7 @@ typedef void (*capi_core_set_password)(const char *password);
 typedef const char * (*capi_core_get_branch)();
 typedef const char * (*capi_core_get_version)();
 typedef int (*capi_core_is_debug)();
-typedef unsigned int (*capi_core_get_sdk_version)();
+typedef const char * (*capi_core_get_sdk_hash)();
 typedef const char * (*capi_core_get_root_directory)();
 
 int load_module(const char *path);
@@ -534,7 +534,7 @@ void core_set_password(const char *password);
 const char * core_get_branch();
 const char * core_get_version();
 int core_is_debug();
-unsigned int core_get_sdk_version();
+const char * core_get_sdk_hash();
 const char * core_get_root_directory();
 
 // Player

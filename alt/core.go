@@ -209,8 +209,8 @@ func RootDir() string {
 	return C.GoString(C.core_get_root_directory())
 }
 
-func SDKVersion() uint32 {
-	return uint32(C.core_get_sdk_version())
+func SDKHash() string {
+	return C.GoString(C.core_get_sdk_hash())
 }
 
 func Debug() bool {
