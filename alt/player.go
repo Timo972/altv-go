@@ -21,6 +21,24 @@ func newPlayer(p unsafe.Pointer) *Player {
 	return player
 }
 
+func newPlayerArray(arr C.struct_array) []*Player {
+	size := int(arr.size)
+	values := (*[1 << 28]unsafe.Pointer)(arr.array)[:size:size]
+
+	players := make([]*Player, size)
+
+	if size == 0 {
+		return players
+	}
+
+	for i := 0; i < size; i++ {
+		p := values[i]
+		players[i] = newPlayer(p)
+	}
+
+	return players
+}
+
 func (p Player) Name() string {
 	return C.GoString(C.player_get_name(p.Ptr))
 }

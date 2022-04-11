@@ -188,6 +188,24 @@ func newVehicle(p unsafe.Pointer) *Vehicle {
 	return vehicle
 }
 
+func newVehicleArray(arr C.struct_array) []*Vehicle {
+	size := int(arr.size)
+	values := (*[1 << 28]unsafe.Pointer)(arr.array)[:size:size]
+
+	vehicles := make([]*Vehicle, size)
+
+	if size == 0 {
+		return vehicles
+	}
+
+	for i := 0; i < size; i++ {
+		v := values[i]
+		vehicles[i] = newVehicle(v)
+	}
+
+	return vehicles
+}
+
 func CreateVehicle(model uint32, pos Vector3, rot Vector3) (*Vehicle, error) {
 	vehicle := C.core_create_vehicle(C.ulong(model), C.float(pos.X), C.float(pos.Y), C.float(pos.Z),
 		C.float(rot.X), C.float(rot.Y), C.float(rot.Z))

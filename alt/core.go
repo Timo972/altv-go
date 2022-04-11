@@ -164,41 +164,13 @@ func PlayersByName(name string) []*Player {
 func Players() []*Player {
 	arr := C.core_get_players()
 
-	size := int(arr.size)
-	values := (*[1 << 28]unsafe.Pointer)(arr.array)[:size:size]
-
-	players := make([]*Player, size)
-
-	if size == 0 {
-		return players
-	}
-
-	for i := 0; i < size; i++ {
-		p := values[i]
-		players[i] = newPlayer(p)
-	}
-
-	return players
+	return newPlayerArray(arr)
 }
 
 func Vehicles() []*Vehicle {
 	arr := C.core_get_vehicles()
 
-	size := int(arr.size)
-	values := (*[1 << 28]unsafe.Pointer)(arr.array)[:size:size]
-
-	vehicles := make([]*Vehicle, size)
-
-	if size == 0 {
-		return vehicles
-	}
-
-	for i := 0; i < size; i++ {
-		v := values[i]
-		vehicles[i] = newVehicle(v)
-	}
-
-	return vehicles
+	return newVehicleArray(arr)
 }
 
 func SetPassword(password string) {

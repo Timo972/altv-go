@@ -587,6 +587,8 @@ typedef void (*capi_voice_channel_mute_player)(void *v, void *p);
 typedef void (*capi_voice_channel_unmute_player)(void *v, void *p);
 typedef void (*capi_voice_channel_destroy)(void *v);
 typedef int (*capi_voice_channel_is_valid)(void *v);
+typedef unsigned long long (*capi_voice_channel_get_player_count)(void *v);
+typedef Array (*capi_voice_channel_get_players)(void *v);
 
 // Blip
 typedef int (*capi_blip_get_type)(void *c);
@@ -1158,6 +1160,8 @@ void voice_channel_mute_player(void *v, void *p);
 void voice_channel_unmute_player(void *v, void *p);
 void voice_channel_destroy(void *v);
 int voice_channel_is_valid(void *p);
+unsigned long long voice_channel_get_player_count(void *v);
+Array voice_channel_get_players(void *v);
 
 // Blip
 int blip_get_type(void *c);

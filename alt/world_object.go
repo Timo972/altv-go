@@ -22,23 +22,21 @@ type World interface {
 }
 
 func (w WorldObject) Position() Vector3 {
-	var pos Vector3
+	var cPos C.struct_pos
 
 	if w.Type == PlayerObject {
-		cPos := C.player_get_position(w.Ptr)
-		pos = Vector3{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
+		cPos = C.player_get_position(w.Ptr)
 	} else if w.Type == CheckpointObject {
-		cPos := C.checkpoint_get_position(w.Ptr)
-		pos = Vector3{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
+		cPos = C.checkpoint_get_position(w.Ptr)
 	} else if w.Type == ColshapeObject {
-		cPos := C.col_shape_get_position(w.Ptr)
-		pos = Vector3{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
+		cPos = C.col_shape_get_position(w.Ptr)
 	} else if w.Type == VehicleObject {
-		cPos := C.vehicle_get_position(w.Ptr)
-		pos = Vector3{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
+		cPos = C.vehicle_get_position(w.Ptr)
+	} else if w.Type == BlipObject {
+		cPos = C.blip_get_position(w.Ptr)
 	}
 
-	return pos
+	return Vector3{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
 }
 
 func (w WorldObject) SetPosition(pos Vector3) {
@@ -50,6 +48,8 @@ func (w WorldObject) SetPosition(pos Vector3) {
 		C.col_shape_set_position(w.Ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z))
 	} else if w.Type == VehicleObject {
 		C.vehicle_set_position(w.Ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z))
+	} else if w.Type == BlipObject {
+		C.blip_set_position(w.Ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z))
 	}
 }
 
@@ -64,6 +64,8 @@ func (w WorldObject) Dimension() int32 {
 		dimension = int32(C.col_shape_get_dimension(w.Ptr))
 	} else if w.Type == VehicleObject {
 		dimension = int32(C.vehicle_get_dimension(w.Ptr))
+	} else if w.Type == BlipObject {
+		dimension = int32(C.blip_get_dimension(w.Ptr))
 	}
 
 	return dimension
@@ -78,5 +80,7 @@ func (w WorldObject) SetDimension(dimension int32) {
 		C.col_shape_set_dimension(w.Ptr, C.long(dimension))
 	} else if w.Type == VehicleObject {
 		C.vehicle_set_dimension(w.Ptr, C.long(dimension))
+	} else if w.Type == BlipObject {
+		C.blip_set_dimension(w.Ptr, C.long(dimension))
 	}
 }

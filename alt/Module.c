@@ -450,6 +450,8 @@ capi_voice_channel_mute_player g_call_voice_channel_mute_player;
 capi_voice_channel_unmute_player g_call_voice_channel_unmute_player;
 capi_voice_channel_destroy g_call_voice_channel_destroy;
 capi_voice_channel_is_valid g_call_voice_channel_is_valid;
+capi_voice_channel_get_player_count g_call_voice_channel_get_player_count;
+capi_voice_channel_get_players g_call_voice_channel_get_players;
 
 // Blip
 capi_blip_get_type g_call_blip_get_type;
@@ -989,6 +991,8 @@ int load_module(const char *path)
     g_call_voice_channel_unmute_player = GET_FUNC(module, "VoiceChannel_UnmutePlayer", capi_voice_channel_unmute_player);
     g_call_voice_channel_destroy = GET_FUNC(module, "VoiceChannel_Destroy", capi_voice_channel_destroy);
     g_call_voice_channel_is_valid = GET_FUNC(module, "VoiceChannel_IsValid", capi_voice_channel_is_valid);
+    g_call_voice_channel_get_player_count = GET_FUNC(module, "VoiceChannel_GetPlayerCount", capi_voice_channel_get_player_count);
+    g_call_voice_channel_get_players = GET_FUNC(module, "VoiceChannel_GetPlayers", capi_voice_channel_get_players);
 
     // Blip
     g_call_blip_get_type = GET_FUNC(module, "Blip_GetType", capi_blip_get_type);
@@ -3293,6 +3297,16 @@ void voice_channel_destroy(void *c)
 int voice_channel_is_valid(void *p)
 {
     return g_call_voice_channel_is_valid(p);
+}
+
+unsigned long long voice_channel_get_player_count(void *c)
+{
+    return g_call_voice_channel_get_player_count(c);
+}
+
+Array voice_channel_get_players(void *c)
+{
+    return g_call_voice_channel_get_players(c);
 }
 
 // Blip

@@ -57,3 +57,13 @@ func (v VoiceChannel) MutePlayer(player *Player) {
 func (v VoiceChannel) UnmutePlayer(player *Player) {
 	C.voice_channel_unmute_player(v.Ptr, player.Ptr)
 }
+
+func (v VoiceChannel) PlayerCount() uint64 {
+	return uint64(C.voice_channel_get_player_count(v.Ptr))
+}
+
+func (v VoiceChannel) Players() []*Player {
+	arr := C.voice_channel_get_players(v.Ptr)
+
+	return newPlayerArray(arr)
+}

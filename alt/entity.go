@@ -243,9 +243,50 @@ func (e Entity) Streamed() bool {
 }
 
 func (e Entity) SetStreamed(toggle bool) {
+	state := C.int(module.Bool2int(toggle))
 	if e.Type == PlayerObject {
-		C.player_set_streamed(e.Ptr, C.int(module.Bool2int(toggle)))
+		C.player_set_streamed(e.Ptr, state)
 	} else if e.Type == VehicleObject {
-		C.vehicle_set_streamed(e.Ptr, C.int(module.Bool2int(toggle)))
+		C.vehicle_set_streamed(e.Ptr, state)
+	}
+}
+
+func (e Entity) IsFrozen() bool {
+	var cFrozen C.int
+	if e.Type == PlayerObject {
+		cFrozen = C.player_is_frozen(e.Ptr)
+	} else if e.Type == VehicleObject {
+		cFrozen = C.vehicle_is_frozen(e.Ptr)
+	}
+
+	return int(cFrozen) == 1
+}
+
+func (e Entity) SetFrozen(state bool) {
+	s := C.int(module.Bool2int(state))
+	if e.Type == PlayerObject {
+		C.player_set_frozen(e.Ptr, s)
+	} else if e.Type == VehicleObject {
+		C.vehicle_set_frozen(e.Ptr, s)
+	}
+}
+
+func (e Entity) HasCollision() bool {
+	var cCol C.int
+	if e.Type == PlayerObject {
+		cCol = C.player_has_collision(e.Ptr)
+	} else if e.Type == VehicleObject {
+		cCol = C.vehicle_has_collision(e.Ptr)
+	}
+
+	return int(cCol) == 1
+}
+
+func (e Entity) SetCollision(state bool) {
+	s := C.int(module.Bool2int(state))
+	if e.Type == PlayerObject {
+		C.player_set_collision(e.Ptr, s)
+	} else if e.Type == VehicleObject {
+		C.vehicle_set_collision(e.Ptr, s)
 	}
 }
