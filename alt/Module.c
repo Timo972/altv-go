@@ -290,6 +290,45 @@ capi_vehicle_destroy g_call_vehicle_destroy;
 capi_vehicle_is_valid g_call_vehicle_is_valid;
 capi_vehicle_get_streamed g_call_vehicle_get_streamed;
 capi_vehicle_set_streamed g_call_vehicle_set_streamed;
+capi_vehicle_is_frozen g_call_vehicle_is_frozen;
+capi_vehicle_set_frozen g_call_vehicle_set_frozen;
+capi_vehicle_has_collision g_call_vehicle_has_collision;
+capi_vehicle_set_collision g_call_vehicle_set_collision;
+capi_vehicle_is_drift_mode g_call_vehicle_is_drift_mode;
+capi_vehicle_set_drift_mode g_call_vehicle_set_drift_mode;
+capi_vehicle_is_train_mission_train g_call_vehicle_is_train_mission_train;
+capi_vehicle_set_train_mission_train g_call_vehicle_set_train_mission_train;
+capi_vehicle_get_train_track_id g_call_vehicle_get_train_track_id;
+capi_vehicle_set_train_track_id g_call_vehicle_set_train_track_id;
+capi_vehicle_get_train_engine_id g_call_vehicle_get_train_engine_id;
+capi_vehicle_set_train_engine_id g_call_vehicle_set_train_engine_id;
+capi_vehicle_get_train_config_index g_call_vehicle_get_train_config_index;
+capi_vehicle_set_train_config_index g_call_vehicle_set_train_config_index;
+capi_vehicle_get_train_distance_from_engine g_call_vehicle_get_train_distance_from_engine;
+capi_vehicle_set_train_distance_from_engine g_call_vehicle_set_train_distance_from_engine;
+capi_vehicle_is_train_engine g_call_vehicle_is_train_engine;
+capi_vehicle_set_train_is_engine g_call_vehicle_set_train_is_engine;
+capi_vehicle_is_train_caboose g_call_vehicle_is_train_caboose;
+capi_vehicle_set_train_is_caboose g_call_vehicle_set_train_is_caboose;
+capi_vehicle_get_train_direction g_call_vehicle_get_train_direction;
+capi_vehicle_set_train_direction g_call_vehicle_set_train_direction;
+capi_vehicle_has_train_passenger_carriages g_call_vehicle_has_train_passenger_carriages;
+capi_vehicle_set_train_has_passenger_carriages g_call_vehicle_set_train_has_passenger_carriages;
+capi_vehicle_get_train_render_derailed g_call_vehicle_get_train_render_derailed;
+capi_vehicle_set_train_render_derailed g_call_vehicle_set_train_render_derailed;
+capi_vehicle_get_train_force_doors_open g_call_vehicle_get_train_force_doors_open;
+capi_vehicle_set_train_force_doors_open g_call_vehicle_set_train_force_doors_open;
+capi_vehicle_get_train_cruise_speed g_call_vehicle_get_train_cruise_speed;
+capi_vehicle_set_train_cruise_speed g_call_vehicle_set_train_cruise_speed;
+capi_vehicle_get_train_carriage_config_index g_call_vehicle_get_train_carriage_config_index;
+capi_vehicle_set_train_carriage_config_index g_call_vehicle_set_train_carriage_config_index;
+capi_vehicle_get_train_linked_to_backward_id g_call_vehicle_get_train_linked_to_backward_id;
+capi_vehicle_set_train_linked_to_backward_id g_call_vehicle_set_train_linked_to_backward_id;
+capi_vehicle_get_train_linked_to_forward_id g_call_vehicle_get_train_linked_to_forward_id;
+capi_vehicle_set_train_linked_to_forward_id g_call_vehicle_set_train_linked_to_forward_id;
+capi_vehicle_is_boat_anchor_active g_call_vehicle_is_boat_anchor_active;
+capi_vehicle_set_boat_anchor_active g_call_vehicle_set_boat_anchor_active;
+capi_vehicle_set_search_light g_call_vehicle_set_search_light;
 
 // Core
 capi_register_alt_export g_call_register_alt_export;
@@ -323,6 +362,7 @@ capi_core_trigger_local_event g_call_core_trigger_local_event;
 capi_core_trigger_client_event g_call_core_trigger_client_event;
 capi_core_trigger_client_event_for g_call_core_trigger_client_event_for;
 capi_core_trigger_client_event_for_all g_call_core_trigger_client_event_for_all;
+
 // Meta
 capi_core_create_mvalue_bool g_call_core_create_mvalue_bool;
 capi_core_create_mvalue_double g_call_core_create_mvalue_double;
@@ -700,6 +740,45 @@ int load_module(const char *path)
     g_call_vehicle_is_valid = GET_FUNC(module, "Vehicle_IsValid", capi_vehicle_is_valid);
     g_call_vehicle_get_streamed = GET_FUNC(module, "Vehicle_GetStreamed", capi_vehicle_get_streamed);
     g_call_vehicle_set_streamed = GET_FUNC(module, "Vehicle_SetStreamed", capi_vehicle_set_streamed);
+    g_call_vehicle_is_frozen = GET_FUNC(module, "Vehicle_IsFrozen", capi_vehicle_is_frozen);
+    g_call_vehicle_set_frozen = GET_FUNC(module, "Vehicle_SetFrozen", capi_vehicle_set_frozen);
+    g_call_vehicle_has_collision = GET_FUNC(module, "Vehicle_HasCollision", capi_vehicle_has_collision);
+    g_call_vehicle_set_collision = GET_FUNC(module, "Vehicle_SetCollision", capi_vehicle_set_collision);
+    g_call_vehicle_is_drift_mode = GET_FUNC(module, "Vehicle_IsDriftMode", capi_vehicle_is_drift_mode);
+    g_call_vehicle_set_drift_mode = GET_FUNC(module, "Vehicle_SetDriftMode", capi_vehicle_set_drift_mode);
+    g_call_vehicle_is_train_mission_train = GET_FUNC(module, "Vehicle_IsTrainMissionTrain", capi_vehicle_is_train_mission_train);
+    g_call_vehicle_set_train_mission_train = GET_FUNC(module, "Vehicle_SetTrainMissionTrain", capi_vehicle_set_train_mission_train);
+    g_call_vehicle_get_train_track_id = GET_FUNC(module, "Vehicle_GetTrainTrackId", capi_vehicle_get_train_track_id);
+    g_call_vehicle_set_train_track_id = GET_FUNC(module, "Vehicle_SetTrainTrackId", capi_vehicle_set_train_track_id);
+    g_call_vehicle_get_train_engine_id = GET_FUNC(module, "Vehicle_GetTrainEngineId", capi_vehicle_get_train_engine_id);
+    g_call_vehicle_set_train_engine_id = GET_FUNC(module, "Vehicle_SetTrainEngineId", capi_vehicle_set_train_engine_id);
+    g_call_vehicle_get_train_config_index = GET_FUNC(module, "Vehicle_GetTrainConfigIndex", capi_vehicle_get_train_config_index);
+    g_call_vehicle_set_train_config_index = GET_FUNC(module, "Vehicle_SetTrainConfigIndex", capi_vehicle_set_train_config_index);
+    g_call_vehicle_get_train_distance_from_engine = GET_FUNC(module, "Vehicle_GetTrainDistanceFromEngine", capi_vehicle_get_train_distance_from_engine);
+    g_call_vehicle_set_train_distance_from_engine = GET_FUNC(module, "Vehicle_SetTrainDistanceFromEngine", capi_vehicle_set_train_distance_from_engine);
+    g_call_vehicle_is_train_engine = GET_FUNC(module, "Vehicle_IsTrainEngine", capi_vehicle_is_train_engine);
+    g_call_vehicle_set_train_is_engine = GET_FUNC(module, "Vehicle_SetTrainIsEngine", capi_vehicle_set_train_is_engine);
+    g_call_vehicle_is_train_caboose = GET_FUNC(module, "Vehicle_IsTrainCaboose", capi_vehicle_is_train_caboose);
+    g_call_vehicle_set_train_is_caboose = GET_FUNC(module, "Vehicle_SetTrainIsCaboose", capi_vehicle_set_train_is_caboose);
+    g_call_vehicle_get_train_direction = GET_FUNC(module, "Vehicle_GetTrainDirection", capi_vehicle_get_train_direction);
+    g_call_vehicle_set_train_direction = GET_FUNC(module, "Vehicle_SetTrainDirection", capi_vehicle_set_train_direction);
+    g_call_vehicle_has_train_passenger_carriages = GET_FUNC(module, "Vehicle_HasTrainPassengerCarriages", capi_vehicle_has_train_passenger_carriages);
+    g_call_vehicle_set_train_has_passenger_carriages = GET_FUNC(module, "Vehicle_SetTrainHasPassengerCarriages", capi_vehicle_set_train_has_passenger_carriages);
+    g_call_vehicle_get_train_render_derailed = GET_FUNC(module, "Vehicle_GetTrainRenderDerailed", capi_vehicle_get_train_render_derailed);
+    g_call_vehicle_set_train_render_derailed = GET_FUNC(module, "Vehicle_SetTrainRenderDerailed", capi_vehicle_set_train_render_derailed);
+    g_call_vehicle_get_train_force_doors_open = GET_FUNC(module, "Vehicle_GetTrainForceDoorsOpen", capi_vehicle_get_train_force_doors_open);
+    g_call_vehicle_set_train_force_doors_open = GET_FUNC(module, "Vehicle_SetTrainForceDoorsOpen", capi_vehicle_set_train_force_doors_open);
+    g_call_vehicle_get_train_cruise_speed = GET_FUNC(module, "Vehicle_GetTrainCruiseSpeed", capi_vehicle_get_train_cruise_speed);
+    g_call_vehicle_set_train_cruise_speed = GET_FUNC(module, "Vehicle_SetTrainCruiseSpeed", capi_vehicle_set_train_cruise_speed);
+    g_call_vehicle_get_train_carriage_config_index = GET_FUNC(module, "Vehicle_GetTrainCarriageConfigIndex", capi_vehicle_get_train_carriage_config_index);
+    g_call_vehicle_set_train_carriage_config_index = GET_FUNC(module, "Vehicle_SetTrainCarriageConfigIndex", capi_vehicle_set_train_carriage_config_index);
+    g_call_vehicle_get_train_linked_to_backward_id = GET_FUNC(module, "Vehicle_GetTrainLinkedToBackwardId", capi_vehicle_get_train_linked_to_backward_id);
+    g_call_vehicle_set_train_linked_to_backward_id = GET_FUNC(module, "Vehicle_SetTrainLinkedToBackwardId", capi_vehicle_set_train_linked_to_backward_id);
+    g_call_vehicle_get_train_linked_to_forward_id = GET_FUNC(module, "Vehicle_GetTrainLinkedToForwardId", capi_vehicle_get_train_linked_to_forward_id);
+    g_call_vehicle_set_train_linked_to_forward_id = GET_FUNC(module, "Vehicle_SetTrainLinkedToForwardId", capi_vehicle_set_train_linked_to_forward_id);
+    g_call_vehicle_is_boat_anchor_active = GET_FUNC(module, "Vehicle_IsBoatAnchorActive", capi_vehicle_is_boat_anchor_active);
+    g_call_vehicle_set_boat_anchor_active = GET_FUNC(module, "Vehicle_SetBoatAnchorActive", capi_vehicle_set_boat_anchor_active);
+    g_call_vehicle_set_search_light = GET_FUNC(module, "Vehicle_SetSearchLight", capi_vehicle_set_search_light);
 
     // Core
     g_call_register_alt_export = GET_FUNC(module, "RegisterAltExport", capi_register_alt_export);
@@ -2428,6 +2507,201 @@ const char *vehicle_get_damage_data_base64(void *v)
 const char *vehicle_get_script_data_base64(void *v)
 {
     return g_call_vehicle_get_script_data_base64(v);
+}
+
+int vehicle_is_frozen(void *v)
+{
+    return g_call_vehicle_is_frozen(v);
+}
+
+void vehicle_set_frozen(void *v, int state)
+{
+    return g_call_vehicle_set_frozen(v, state);
+}
+
+int vehicle_has_collision(void *v)
+{
+    return g_call_vehicle_has_collision(v);
+}
+
+void vehicle_set_collision(void *v, int state)
+{
+    return g_call_vehicle_set_collision(v, state);
+}
+
+int vehicle_is_drift_mode(void *v)
+{
+    return g_call_vehicle_is_drift_mode(v);
+}
+
+void vehicle_set_drift_mode(void *v, int state)
+{
+    return g_call_vehicle_set_drift_mode(v, state);
+}
+
+int vehicle_is_train_mission_train(void *v)
+{
+    return g_call_vehicle_is_train_mission_train(v);
+}
+
+void vehicle_set_train_mission_train(void *v, int value)
+{
+    return g_call_vehicle_set_train_mission_train(v, value);
+}
+
+char vehicle_get_train_track_id(void *v)
+{
+    return g_call_vehicle_get_train_track_id(v);
+}
+
+void vehicle_set_train_track_id(void *v, char trackId)
+{
+    return g_call_vehicle_set_train_track_id(v, trackId);
+}
+
+void * vehicle_get_train_engine_id(void *v)
+{
+    return g_call_vehicle_get_train_engine_id(v);
+}
+
+void vehicle_set_train_engine_id(void *v, void *e)
+{
+    return g_call_vehicle_set_train_engine_id(v, e);
+}
+
+char vehicle_get_train_config_index(void *v)
+{
+    return g_call_vehicle_get_train_config_index(v);
+}
+
+void vehicle_set_train_config_index(void *v, char trainConfigIndex)
+{
+    return g_call_vehicle_set_train_config_index(v, trainConfigIndex);
+}
+
+float vehicle_get_train_distance_from_engine(void *v)
+{
+    return g_call_vehicle_get_train_distance_from_engine(v);
+}
+
+void vehicle_set_train_distance_from_engine(void *v, float distanceFromEngine)
+{
+    return g_call_vehicle_set_train_distance_from_engine(v, distanceFromEngine);
+}
+
+int vehicle_is_train_engine(void *v)
+{
+    return g_call_vehicle_is_train_engine(v);
+}
+
+void vehicle_set_train_is_engine(void *v, int isEngine)
+{
+    return g_call_vehicle_set_train_is_engine(v, isEngine);
+}
+
+int vehicle_is_train_caboose(void *v)
+{
+    return g_call_vehicle_is_train_caboose(v);
+}
+
+void vehicle_set_train_is_caboose(void *v, int isCaboose)
+{
+    return g_call_vehicle_set_train_is_caboose(v, isCaboose);
+}
+
+int vehicle_get_train_direction(void *v)
+{
+    return g_call_vehicle_get_train_direction(v);
+}
+
+void vehicle_set_train_direction(void *v, int direction)
+{
+    return g_call_vehicle_set_train_direction(v, direction);
+}
+
+int vehicle_has_train_passenger_carriages(void *v)
+{
+    return g_call_vehicle_has_train_passenger_carriages(v);
+}
+
+void vehicle_set_train_has_passenger_carriages(void *v, int hasPassengerCarriages)
+{
+    return g_call_vehicle_set_train_has_passenger_carriages(v, hasPassengerCarriages);
+}
+
+int vehicle_get_train_render_derailed(void *v)
+{
+    return g_call_vehicle_get_train_render_derailed(v);
+}
+
+void vehicle_set_train_render_derailed(void *v, int renderDerailed)
+{
+    return g_call_vehicle_set_train_render_derailed(v, renderDerailed);
+}
+
+int vehicle_get_train_force_doors_open(void *v)
+{
+    return g_call_vehicle_get_train_force_doors_open(v);
+}
+
+void vehicle_set_train_force_doors_open(void *v, int forceDoorsOpen)
+{
+    return g_call_vehicle_set_train_force_doors_open(v, forceDoorsOpen);
+}
+
+float vehicle_get_train_cruise_speed(void *v)
+{
+    return g_call_vehicle_get_train_cruise_speed(v);
+}
+
+void vehicle_set_train_cruise_speed(void *v, float cruiseSpeed)
+{
+    return g_call_vehicle_set_train_cruise_speed(v, cruiseSpeed);
+}
+
+char vehicle_get_train_carriage_config_index(void *v)
+{
+    return g_call_vehicle_get_train_carriage_config_index(v);
+}
+
+void vehicle_set_train_carriage_config_index(void *v, char carriageConfigIndex)
+{
+    return g_call_vehicle_set_train_carriage_config_index(v, carriageConfigIndex);
+}
+
+void * vehicle_get_train_linked_to_backward_id(void *v)
+{
+    return g_call_vehicle_get_train_linked_to_backward_id(v);
+}
+
+void vehicle_set_train_linked_to_backward_id(void *v, void *e)
+{
+    return g_call_vehicle_set_train_linked_to_backward_id(v, e);
+}
+
+void * vehicle_get_train_linked_to_forward_id(void *v)
+{
+    return g_call_vehicle_get_train_linked_to_forward_id(v);
+}
+
+void vehicle_set_train_linked_to_forward_id(void *v, void *e)
+{
+    return g_call_vehicle_set_train_linked_to_forward_id(v, e);
+}
+
+int vehicle_is_boat_anchor_active(void *v)
+{
+    return g_call_vehicle_is_boat_anchor_active(v);
+}
+
+void vehicle_set_boat_anchor_active(void *v, int state)
+{
+    return g_call_vehicle_set_boat_anchor_active(v, state);
+}
+
+int vehicle_set_search_light(void *v, int state, void *e)
+{
+    return g_call_vehicle_set_search_light(v, state, e);
 }
 
 // Core
