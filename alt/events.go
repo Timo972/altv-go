@@ -14,18 +14,30 @@ type eventType = uint16
 
 const (
 	none eventType = iota
+
+	serverStarted
+
 	playerConnect
+	playerBeforeConnect
 	playerDisconnect
+
+	connectionQueueAdd
+	connectionQueueRemove
+
 	resourceStart
 	resourceStop
 	resourceError
+
 	serverScriptEvent
 	clientScriptEvent
+
 	metaChange
 	syncedMetaChange
 	streamSyncedMetaChange
 	globalMetaChange
 	globalSyncedMetaChange
+	localSyncedMetaChange
+
 	playerDamage
 	playerDeath
 	fireEvent
@@ -34,6 +46,7 @@ const (
 	weaponDamageEvent
 	vehicleDestroy
 	vehicleDamage
+
 	checkpointEvent
 	colshapeEvent
 	playerEnterVehicle
@@ -41,54 +54,78 @@ const (
 	playerLeaveVehicle
 	playerChangeVehicleSeat
 	playerWeaponChange
+	playerRequestControl
+
 	vehicleAttach
 	vehicleDetach
-	netownerChange
+	netOwnerChange
+
 	removeEntityEvent
 	createBaseObjectEvent
 	removeBaseObjectEvent
 	dataNodeReceivedEvent
+
 	consoleCommandEvent
 )
 
+type serverStartedListener = func()
+
 type playerConnectListener = func(p *Player)
+type playerBeforeConnectListener = func(connectionInfo ConnectionInfo, reason string) string
 type playerDisconnectListener = func(p *Player, reason string)
-type consoleCommandListener = func(command string, args []string)
-type explosionListener = func(p *Player, t interface{}, pos Vector3, explosionType int16, explosionFX uint) bool
-type playerChangeVehicleSeatListener = func(p *Player, v *Vehicle, oldSeat uint8, newSeat uint8)
-type playerDamageListener = func(p *Player, attacker interface{}, healthDamage uint16, armourDamage uint16, weapon uint32)
-type playerDeathListener = func(p *Player, killer interface{}, weapon uint32)
-type playerEnterVehicleListener = func(p *Player, v *Vehicle, seat uint8)
-type playerEnteringVehicleListener = func(p *Player, v *Vehicle, seat uint8)
-type playerLeaveVehicleListener = func(p *Player, v *Vehicle, seat uint8)
-type removeEntityListener = func(entity interface{})
+
+type connectionQueueAddListener = func(connectionInfo ConnectionInfo) string
+type connectionQueueRemoveListener = func(connectionInfo ConnectionInfo)
+
 type resourceStartListener = func(resourceName string)
-type entityEnterColShapeListener = func(colShape *ColShape, entity interface{})
-type entityLeaveColShapeListener = func(colShape *ColShape, entity interface{})
-type fireListener = func(player *Player, fires []FireInfo) bool
+type resourceStopListener = func(resourceName string)
+type resourceErrorListener = func(resourceName string)
+
+type metaDataChangeListener = func(key string, newValue interface{}, oldValue interface{})
+type syncedMetaDataChangeListener = func(entity interface{}, key string, newValue interface{}, oldValue interface{})
+type streamSyncedMetaDataChangeListener = func(entity interface{}, key string, newValue interface{}, oldValue interface{})
 type globalMetaDataChangeListener = func(key string, newValue interface{}, oldValue interface{})
 type globalSyncedMetaDataChangeListener func(key string, newValue interface{}, oldValue interface{})
-type netOwnerChangeListener = func(entity interface{}, owner *Player, oldOwner *Player)
-type playerWeaponChangeListener = func(player *Player, oldWeapon uint32, newWeapon uint32) bool
-type resourceErrorListener = func(resourceName string)
-type resourceStopListener = func(resourceName string)
+type localSyncedMetaDataChangeListener = func(player *Player, key string, newValue interface{}, oldValue interface{})
+
+type playerDamageListener = func(p *Player, attacker interface{}, healthDamage uint16, armourDamage uint16, weapon uint32)
+type playerDeathListener = func(p *Player, killer interface{}, weapon uint32)
+type fireListener = func(player *Player, fires []FireInfo) bool
+type explosionListener = func(p *Player, t interface{}, pos Vector3, explosionType int16, explosionFX uint) bool
 type startProjectileListener = func(player *Player, position Vector3, direction Vector3, ammoHash uint16, weaponHash uint32) bool
-type streamSyncedMetaDataChangeListener = func(entity interface{}, key string, newValue interface{}, oldValue interface{})
-type syncedMetaDataChangeListener = func(entity interface{}, key string, newValue interface{}, oldValue interface{})
-type vehicleAttachListener = func(vehicle *Vehicle, attachedVehicle *Vehicle)
-type vehicleDestroyListener = func(vehicle *Vehicle)
-type vehicleDamageListener = func(vehicle *Vehicle, entity interface{}, bodyDamage uint32, additionalBodyDamage uint32, engineDamage uint32, petrolTankDamage uint32, damageWidth uint32)
-type vehicleDetachListener = func(vehicle *Vehicle, detachedVehicle *Vehicle)
 
 // TODO bodyPart ENUM
 type weaponDamageListener = func(source *Player, target interface{}, weapon uint32, damage uint16, offset Vector3, bodyPart int8) bool
+type vehicleDestroyListener = func(vehicle *Vehicle)
+type vehicleDamageListener = func(vehicle *Vehicle, entity interface{}, bodyDamage uint32, additionalBodyDamage uint32, engineDamage uint32, petrolTankDamage uint32, damageWidth uint32)
+
+type entityEnterColShapeListener = func(colShape *ColShape, entity interface{})
+type entityLeaveColShapeListener = func(colShape *ColShape, entity interface{})
+type playerEnterVehicleListener = func(p *Player, v *Vehicle, seat uint8)
+type playerEnteringVehicleListener = func(p *Player, v *Vehicle, seat uint8)
+type playerLeaveVehicleListener = func(p *Player, v *Vehicle, seat uint8)
+type playerChangeVehicleSeatListener = func(p *Player, v *Vehicle, oldSeat uint8, newSeat uint8)
+type playerWeaponChangeListener = func(player *Player, oldWeapon uint32, newWeapon uint32) bool
+
+type vehicleAttachListener = func(vehicle *Vehicle, attachedVehicle *Vehicle)
+type vehicleDetachListener = func(vehicle *Vehicle, detachedVehicle *Vehicle)
+type netOwnerChangeListener = func(entity interface{}, owner *Player, oldOwner *Player)
+
+type removeEntityListener = func(entity interface{})
+
+type consoleCommandListener = func(command string, args []string)
+
 type allServerEventsListener = func(eventName string, args ...interface{})
 type serverEventListener = func(args ...interface{})
 type allClientEventsListener = func(player *Player, eventName string, args ...interface{})
 type clientEventListener = func(player *Player, args ...interface{})
 
 type eventManager struct {
+	serverStartedEvents              []serverStartedListener
 	playerConnectEvents              []playerConnectListener
+	playerBeforeConnectEvents        []playerBeforeConnectListener
+	connectionQueueAddEvents         []connectionQueueAddListener
+	connectionQueueRemoveEvents      []connectionQueueRemoveListener
 	consoleCommandEvents             []consoleCommandListener
 	playerDisconnectEvents           []playerDisconnectListener
 	explosionEvents                  []explosionListener
@@ -106,6 +143,8 @@ type eventManager struct {
 	fireEvents                       []fireListener
 	globalMetaDataChangeEvents       []globalMetaDataChangeListener
 	globalSyncedMetaDataChangeEvents []globalSyncedMetaDataChangeListener
+	localSyncedMetaDataChangeEvents  []localSyncedMetaDataChangeListener
+	metaDataChangeEvents             []metaDataChangeListener
 	netOwnerChangeEvents             []netOwnerChangeListener
 	playerWeaponChangeEvents         []playerWeaponChangeListener
 	resourceErrorEvents              []resourceErrorListener
@@ -124,7 +163,11 @@ type eventManager struct {
 }
 
 type listener interface {
+	ServerStarted(listener serverStartedListener)
 	PlayerConnect(listener playerConnectListener)
+	PlayerBeforeConnect(listener playerBeforeConnectListener)
+	ConnectionQueueAdd(listener connectionQueueAddListener)
+	ConnectionQueueRemove(listener connectionQueueRemoveListener)
 	ConsoleCommand(listener consoleCommandListener)
 	PlayerDisconnect(listener playerDisconnectListener)
 	Explosion(listener explosionListener)
@@ -142,6 +185,8 @@ type listener interface {
 	StartFire(listener fireListener)
 	GlobalMetaChange(listener globalMetaDataChangeListener)
 	GlobalSyncedMetaChange(listener globalSyncedMetaDataChangeListener)
+	LocalSyncedMetaChange(listener localSyncedMetaDataChangeListener)
+	MetaChange(listener metaDataChangeListener)
 	NetOwnerChange(listener netOwnerChangeListener)
 	PlayerWeaponChange(listener playerWeaponChangeListener)
 	ResourceError(listener resourceErrorListener)
@@ -168,9 +213,29 @@ func registerOnEvent(resource string, event uint16) {
 	C.register_alt_event(cresource, C.ushort(event))
 }
 
+func (e eventManager) ServerStarted(listener serverStartedListener) {
+	e.serverStartedEvents = append(e.serverStartedEvents, listener)
+	registerOnEvent(Resource.Name, serverStarted)
+}
+
 func (e eventManager) PlayerConnect(listener playerConnectListener) {
 	On.playerConnectEvents = append(On.playerConnectEvents, listener)
 	registerOnEvent(Resource.Name, playerConnect)
+}
+
+func (e eventManager) PlayerBeforeConnect(listener playerBeforeConnectListener) {
+	On.playerBeforeConnectEvents = append(On.playerBeforeConnectEvents, listener)
+	registerOnEvent(Resource.Name, playerBeforeConnect)
+}
+
+func (e eventManager) ConnectionQueueAdd(listener connectionQueueAddListener) {
+	On.connectionQueueAddEvents = append(On.connectionQueueAddEvents, listener)
+	registerOnEvent(Resource.Name, connectionQueueAdd)
+}
+
+func (e eventManager) ConnectionQueueRemove(listener connectionQueueRemoveListener) {
+	On.connectionQueueRemoveEvents = append(On.connectionQueueRemoveEvents, listener)
+	registerOnEvent(Resource.Name, connectionQueueRemove)
 }
 
 func (e eventManager) ConsoleCommand(listener consoleCommandListener) {
@@ -258,9 +323,19 @@ func (e eventManager) GlobalSyncedMetaChange(listener globalSyncedMetaDataChange
 	registerOnEvent(Resource.Name, globalSyncedMetaChange)
 }
 
+func (e eventManager) MetaChange(listener metaDataChangeListener) {
+	On.metaDataChangeEvents = append(On.metaDataChangeEvents, listener)
+	registerOnEvent(Resource.Name, metaChange)
+}
+
+func (e eventManager) LocalSyncedMetaChange(listener localSyncedMetaDataChangeListener) {
+	On.localSyncedMetaDataChangeEvents = append(On.localSyncedMetaDataChangeEvents, listener)
+	registerOnEvent(Resource.Name, localSyncedMetaChange)
+}
+
 func (e eventManager) NetOwnerChange(listener netOwnerChangeListener) {
 	On.netOwnerChangeEvents = append(On.netOwnerChangeEvents, listener)
-	registerOnEvent(Resource.Name, netownerChange)
+	registerOnEvent(Resource.Name, netOwnerChange)
 }
 
 func (e eventManager) PlayerWeaponChange(listener playerWeaponChangeListener) {
@@ -466,6 +541,13 @@ func altClientScriptEvent(p unsafe.Pointer, cName *C.char, cMValues unsafe.Point
 
 	for _, event := range On.clientScriptEvents[name] {
 		event(player, args...)
+	}
+}
+
+//export altServerStartedEvent
+func altServerStartedEvent() {
+	for _, event := range On.serverStartedEvents {
+		event()
 	}
 }
 
@@ -765,6 +847,33 @@ func altGlobalSyncedMetaDataChangeEvent(k *C.char, nVal C.struct_metaData, oVal 
 	}
 }
 
+//export altLocalSyncedMetaDataChangeEvent
+func altLocalSyncedMetaDataChangeEvent(p unsafe.Pointer, cKey *C.char, cNewValue C.struct_metaData, cOldValue C.struct_metaData) {
+	player := newPlayer(p)
+	key := C.GoString(cKey)
+	newVal := &MValue{Ptr: cNewValue.Ptr, Type: uint8(cNewValue.Type), Value: nil}
+	oldVal := &MValue{Ptr: cOldValue.Ptr, Type: uint8(cOldValue.Type), Value: nil}
+	oldValue := oldVal.GetValue()
+	newValue := newVal.GetValue()
+
+	for _, event := range On.localSyncedMetaDataChangeEvents {
+		event(player, key, newValue, oldValue)
+	}
+}
+
+//export altMetaDataChangeEvent
+func altMetaDataChangeEvent(cKey *C.char, cNewValue C.struct_metaData, cOldValue C.struct_metaData) {
+	key := C.GoString(cKey)
+	newVal := &MValue{Ptr: cNewValue.Ptr, Type: uint8(cNewValue.Type), Value: nil}
+	oldVal := &MValue{Ptr: cOldValue.Ptr, Type: uint8(cOldValue.Type), Value: nil}
+	oldValue := oldVal.GetValue()
+	newValue := newVal.GetValue()
+
+	for _, event := range On.metaDataChangeEvents {
+		event(key, newValue, oldValue)
+	}
+}
+
 //export altNetOwnerChangeEvent
 func altNetOwnerChangeEvent(e C.struct_entity, o unsafe.Pointer, oo unsafe.Pointer) {
 	owner := newPlayer(o)
@@ -800,6 +909,44 @@ func altPlayerWeaponChangeEvent(p unsafe.Pointer, oWeap C.ulong, nWeap C.ulong) 
 	}
 
 	return C.int(module.Bool2int(cont))
+}
+
+//export altPlayerBeforeConnectEvent
+func altPlayerBeforeConnectEvent(cInfo C.struct_connectionInfo, cReason *C.char) *C.char {
+	info := newConnectionInfo(cInfo)
+	reason := C.GoString(cReason)
+
+	for _, event := range On.playerBeforeConnectEvents {
+		r := event(info, reason)
+		if r != "" {
+			return C.CString(r)
+		}
+	}
+
+	return C.CString("")
+}
+
+//export altConnectionQueueAddEvent
+func altConnectionQueueAddEvent(cInfo C.struct_connectionInfo) *C.char {
+	info := newConnectionInfo(cInfo)
+
+	for _, event := range On.connectionQueueAddEvents {
+		r := event(info)
+		if r != "" {
+			return C.CString(r)
+		}
+	}
+
+	return C.CString("")
+}
+
+//export altConnectionQueueRemoveEvent
+func altConnectionQueueRemoveEvent(cInfo C.struct_connectionInfo) {
+	info := newConnectionInfo(cInfo)
+
+	for _, event := range On.connectionQueueRemoveEvents {
+		event(info)
+	}
 }
 
 //export altStartProjectileEvent

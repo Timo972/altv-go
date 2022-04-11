@@ -84,10 +84,10 @@ typedef struct fireInfo
 
 typedef struct neonState
 {
-    int left;
-    int right;
-    int front;
-    int back;
+    unsigned char left;
+    unsigned char right;
+    unsigned char front;
+    unsigned char back;
 } VehicleNeonState;
 
 typedef struct entity
@@ -107,6 +107,52 @@ typedef struct data
     void *mValue;
     unsigned int Type;
 } CustomData;
+
+typedef struct connectionInfo {
+    const char *name;
+    unsigned long long socialID;
+    unsigned long long hwidHash;
+    unsigned long long hwidExHash;
+    const char *authToken;
+    unsigned char isDebug;
+    const char *branch;
+    unsigned int build;
+    const char *cdnUrl;
+    unsigned long long passwordHash;
+    const char *ip;
+    const char *discordUserID;
+} ConnectionInfo;
+
+typedef struct weapon {
+    unsigned int hash;
+    unsigned char tintIndex;
+    Array components;
+} Weapon;
+
+typedef struct headBlendData {
+    unsigned int shapeFirstID;
+    unsigned int shapeSecondID;
+    unsigned int shapeThirdID;
+    unsigned int skinFirstID;
+    unsigned int skinSecondID;
+    unsigned int skinThirdID;
+    float shapeMix;
+    float skinMix;
+    float thirdMix;
+} HeadBlendData;
+
+typedef struct headOverlay {
+    unsigned char index;
+    float opacity;
+    unsigned char colorType;
+    unsigned char colorIndex;
+    unsigned char secondColorIndex;
+} HeadOverlay;
+
+typedef struct vector2 {
+    float x;
+    float y;
+} Vector2;
 
 typedef void (*capi_log)(const char *message);
 
