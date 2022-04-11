@@ -95,6 +95,33 @@ capi_player_set_streamed g_call_player_set_streamed;
 capi_player_get_invincible g_call_player_get_invincible;
 capi_player_set_invincible g_call_player_set_invincible;
 capi_player_set_into_vehicle g_call_player_set_into_vehicle;
+capi_player_is_frozen g_call_player_is_frozen;
+capi_player_set_frozen g_call_player_set_frozen;
+capi_player_has_collision g_call_player_has_collision;
+capi_player_set_collision g_call_player_set_collision;
+capi_player_play_ambient_speech g_call_player_play_ambient_speech;
+capi_player_set_head_overlay g_call_player_set_head_overlay;
+capi_player_remove_head_overlay g_call_player_remove_head_overlay;
+capi_player_set_head_overlay_color g_call_player_set_head_overlay_color;
+capi_player_get_head_overlay g_call_player_get_head_overlay;
+capi_player_set_face_feature g_call_player_set_face_feature;
+capi_player_get_face_feature_scale g_call_player_get_face_feature_scale;
+capi_player_remove_face_feature g_call_player_remove_face_feature;
+capi_player_set_head_blend_palette_color g_call_player_set_head_blend_palette_color;
+capi_player_get_head_blend_palette_color g_call_player_get_head_blend_palette_color;
+capi_player_set_head_blend_data g_call_player_set_head_blend_data;
+capi_player_get_head_blend_data g_call_player_get_head_blend_data;
+capi_player_set_eye_color g_call_player_set_eye_color;
+capi_player_get_eye_color g_call_player_get_eye_color;
+capi_player_set_hair_color g_call_player_set_hair_color;
+capi_player_get_hair_color g_call_player_get_hair_color;
+capi_player_set_hair_highlight_color g_call_player_set_hair_highlight_color;
+capi_player_get_hair_highlight_color g_call_player_get_hair_highlight_color;
+capi_player_get_weapons g_call_player_get_weapons;
+capi_player_has_local_meta_data g_call_player_has_local_meta_data;
+capi_player_set_local_meta_data g_call_player_set_local_meta_data;
+capi_player_get_local_meta_data g_call_player_get_local_meta_data;
+capi_player_delete_local_meta_data g_call_player_delete_local_meta_data;
 
 // Vehicle
 capi_core_create_vehicle g_call_core_create_vehicle;
@@ -487,6 +514,33 @@ int load_module(const char *path)
     g_call_player_set_streamed = GET_FUNC(module, "Player_SetStreamed", capi_player_set_streamed);
     g_call_player_set_invincible = GET_FUNC(module, "Player_SetInvincible", capi_player_set_invincible);
     g_call_player_set_into_vehicle = GET_FUNC(module, "Player_SetIntoVehicle", capi_player_set_into_vehicle);
+    g_call_player_is_frozen = GET_FUNC(module, "Player_IsFrozen", capi_player_is_frozen);
+    g_call_player_set_frozen = GET_FUNC(module, "Player_SetFrozen", capi_player_set_frozen);
+    g_call_player_has_collision = GET_FUNC(module, "Player_HasCollision", capi_player_has_collision);
+    g_call_player_set_collision = GET_FUNC(module, "Player_SetCollision", capi_player_set_collision);
+    g_call_player_play_ambient_speech = GET_FUNC(module, "Player_PlayAmbientSpeech", capi_player_play_ambient_speech);
+    g_call_player_set_head_overlay = GET_FUNC(module, "Player_SetHeadOverlay", capi_player_set_head_overlay);
+    g_call_player_remove_head_overlay = GET_FUNC(module, "Player_RemoveHeadOverlay", capi_player_remove_head_overlay);
+    g_call_player_set_head_overlay_color = GET_FUNC(module, "Player_SetHeadOverlayColor", capi_player_set_head_overlay_color);
+    g_call_player_get_head_overlay = GET_FUNC(module, "Player_GetHeadOverlay", capi_player_get_head_overlay);
+    g_call_player_set_face_feature = GET_FUNC(module, "Player_SetFaceFeature", capi_player_set_face_feature);
+    g_call_player_get_face_feature_scale = GET_FUNC(module, "Player_GetFaceFeatureScale", capi_player_get_face_feature_scale);
+    g_call_player_remove_face_feature = GET_FUNC(module, "Player_RemoveFaceFeature", capi_player_remove_face_feature);
+    g_call_player_set_head_blend_palette_color = GET_FUNC(module, "Player_SetHeadBlendPaletteColor", capi_player_set_head_blend_palette_color);
+    g_call_player_get_head_blend_palette_color = GET_FUNC(module, "Player_GetHeadBlendPaletteColor", capi_player_get_head_blend_palette_color);
+    g_call_player_set_head_blend_data = GET_FUNC(module, "Player_SetHeadBlendData", capi_player_set_head_blend_data);
+    g_call_player_get_head_blend_data = GET_FUNC(module, "Player_GetHeadBlendData", capi_player_get_head_blend_data);
+    g_call_player_set_eye_color = GET_FUNC(module, "Player_SetEyeColor", capi_player_set_eye_color);
+    g_call_player_get_eye_color = GET_FUNC(module, "Player_GetEyeColor", capi_player_get_eye_color);
+    g_call_player_set_hair_color = GET_FUNC(module, "Player_SetHairColor", capi_player_set_hair_color);
+    g_call_player_get_hair_color = GET_FUNC(module, "Player_GetHairColor", capi_player_get_hair_color);
+    g_call_player_set_hair_highlight_color = GET_FUNC(module, "Player_SetHairHighlightColor", capi_player_set_hair_highlight_color);
+    g_call_player_get_hair_highlight_color = GET_FUNC(module, "Player_GetHairHighlightColor", capi_player_get_hair_highlight_color);
+    g_call_player_get_weapons = GET_FUNC(module, "Player_GetWeapons", capi_player_get_weapons);
+    g_call_player_has_local_meta_data = GET_FUNC(module, "Player_HasLocalMetaData", capi_player_has_local_meta_data);
+    g_call_player_set_local_meta_data = GET_FUNC(module, "Player_SetLocalMetaData", capi_player_set_local_meta_data);
+    g_call_player_get_local_meta_data = GET_FUNC(module, "Player_GetLocalMetaData", capi_player_get_local_meta_data);
+    g_call_player_delete_local_meta_data = GET_FUNC(module, "Player_DeleteLocalMetaData", capi_player_delete_local_meta_data);
 
     // Vehicle
     g_call_vehicle_has_meta_data = GET_FUNC(module, "Vehicle_HasMetaData", capi_vehicle_has_meta_data);
@@ -1450,6 +1504,144 @@ void player_set_invincible(void *p, int toggle)
 void player_set_into_vehicle(void *p, void *v, unsigned char seat)
 {
     g_call_player_set_into_vehicle(p, v, seat);
+}
+
+int player_is_frozen(void *p)
+{
+    return g_call_player_is_frozen(p);
+}
+
+void player_set_frozen(void *p, int state)
+{
+    return g_call_player_set_frozen(p, state);
+}
+
+int player_has_collision(void *p)
+{
+    return g_call_player_has_collision(p);
+}
+
+void player_set_collision(void *p, int state)
+{
+    return g_call_player_set_collision(p, state);
+}
+
+void player_play_ambient_speech(void *p, const char *speechName, const char *speechParam, unsigned int speechDictHash)
+{
+    return g_call_player_play_ambient_speech(p, speechName, speechParam, speechDictHash);
+}
+
+int player_set_head_overlay(void *p, unsigned char overlayID, unsigned char index, float opacity)
+{
+    return g_call_player_set_head_overlay(p, overlayID, index, opacity);
+}
+
+int player_remove_head_overlay(void *p, unsigned char overlayID)
+{
+    return g_call_player_remove_head_overlay(p, overlayID);
+}
+
+int player_set_head_overlay_color(void *p, unsigned char overlayID, unsigned char colorType, unsigned char colorIndex,
+                           unsigned char secondColorIndex)
+{
+    return g_call_player_set_head_overlay_color(p, overlayID, colorType, colorIndex, secondColorIndex);
+}
+
+HeadOverlay player_get_head_overlay(void *p, unsigned char overlayID)
+{
+    return g_call_player_get_head_overlay(p, overlayID);
+}
+
+int player_set_face_feature(void *p, unsigned char index, float scale)
+{
+    return g_call_player_set_face_feature(p, index, scale);
+}
+
+float player_get_face_feature_scale(void *p, unsigned char index)
+{
+    return g_call_player_get_face_feature_scale(p, index);
+}
+
+int player_remove_face_feature(void *p, unsigned char index)
+{
+    return g_call_player_remove_face_feature(p, index);
+}
+
+int player_set_head_blend_palette_color(void *p, unsigned char id, unsigned char red, unsigned char green, unsigned char blue)
+{
+    return g_call_player_set_head_blend_palette_color(p, id, red, green, blue);
+}
+
+RGBA player_get_head_blend_palette_color(void *p, unsigned char id)
+{
+    return g_call_player_get_head_blend_palette_color(p, id);
+}
+
+void player_set_head_blend_data(void *p, unsigned int shapeFirstID, unsigned int shapeSecondID, unsigned int shapeThirdID,
+                        unsigned int skinFirstID, unsigned int skinSecondID, unsigned int skinThirdID,
+                        float shapeMix, float skinMix, float thirdMix)
+{
+    return g_call_player_set_head_blend_data(p, shapeFirstID, shapeSecondID, shapeThirdID, skinFirstID, skinSecondID, skinThirdID, shapeMix, skinMix, thirdMix);
+}
+
+HeadBlendData player_get_head_blend_data(void *p)
+{
+    return g_call_player_get_head_blend_data(p);
+}
+
+int player_set_eye_color(void *p, short eyeColor)
+{
+    return g_call_player_set_eye_color(p, eyeColor);
+}
+
+short player_get_eye_color(void *p)
+{
+    return g_call_player_get_eye_color(p);
+}
+
+void player_set_hair_color(void *p, unsigned char hairColor)
+{
+    return g_call_player_set_hair_color(p, hairColor);
+}
+
+unsigned char player_get_hair_color(void *p)
+{
+    return g_call_player_get_hair_color(p);
+}
+
+void player_set_hair_highlight_color(void *p, unsigned char hairHighlightColor)
+{
+    return g_call_player_set_hair_highlight_color(p, hairHighlightColor);
+}
+
+unsigned char player_get_hair_highlight_color(void *p)
+{
+    return g_call_player_get_hair_highlight_color(p);
+}
+
+Array player_get_weapons(void *p)
+{
+    return g_call_player_get_weapons(p);
+}
+
+int player_has_local_meta_data(void *p, const char *key)
+{
+    return g_call_player_has_local_meta_data(p, key);
+}
+
+void player_set_local_meta_data(void *p, const char *key, void *val)
+{
+    return g_call_player_set_local_meta_data(p, key, val);
+}
+
+MetaData player_get_local_meta_data(void *p, const char *key)
+{
+    return g_call_player_get_local_meta_data(p, key);
+}
+
+void player_delete_local_meta_data(void *p, const char *key)
+{
+    return g_call_player_delete_local_meta_data(p, key);
 }
 
 // Vehicle

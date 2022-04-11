@@ -254,6 +254,36 @@ typedef void (*capi_player_set_streamed)(void *p, int toggle);
 typedef int (*capi_player_get_invincible)(void *p);
 typedef void (*capi_player_set_invincible)(void *p, int toggle);
 typedef void (*capi_player_set_into_vehicle)(void *p, void *v, unsigned char seat);
+typedef int (*capi_player_is_frozen)(void *p);
+typedef void (*capi_player_set_frozen)(void *p, int state);
+typedef int (*capi_player_has_collision)(void *p);
+typedef void (*capi_player_set_collision)(void *p, int state);
+typedef void (*capi_player_play_ambient_speech)(void *p, const char *speechName, const char *speechParam, unsigned int speechDictHash);
+typedef int (*capi_player_set_head_overlay)(void *p, unsigned char overlayID, unsigned char index, float opacity);
+typedef int (*capi_player_remove_head_overlay)(void *p, unsigned char overlayID);
+typedef int (*capi_player_set_head_overlay_color)(void *p, unsigned char overlayID, unsigned char colorType, unsigned char colorIndex,
+                           unsigned char secondColorIndex);
+typedef HeadOverlay (*capi_player_get_head_overlay)(void *p, unsigned char overlayID);
+typedef int (*capi_player_set_face_feature)(void *p, unsigned char index, float scale);
+typedef float (*capi_player_get_face_feature_scale)(void *p, unsigned char index);
+typedef int (*capi_player_remove_face_feature)(void *p, unsigned char index);
+typedef int (*capi_player_set_head_blend_palette_color)(void *p, unsigned char id, unsigned char red, unsigned char green, unsigned char blue);
+typedef RGBA (*capi_player_get_head_blend_palette_color)(void *p, unsigned char id);
+typedef void (*capi_player_set_head_blend_data)(void *p, unsigned int shapeFirstID, unsigned int shapeSecondID, unsigned int shapeThirdID,
+                        unsigned int skinFirstID, unsigned int skinSecondID, unsigned int skinThirdID,
+                        float shapeMix, float skinMix, float thirdMix);
+typedef HeadBlendData (*capi_player_get_head_blend_data)(void *p);
+typedef int (*capi_player_set_eye_color)(void *p, short eyeColor);
+typedef short (*capi_player_get_eye_color)(void *p);
+typedef void (*capi_player_set_hair_color)(void *p, unsigned char hairColor);
+typedef unsigned char (*capi_player_get_hair_color)(void *p);
+typedef void (*capi_player_set_hair_highlight_color)(void *p, unsigned char hairHighlightColor);
+typedef unsigned char (*capi_player_get_hair_highlight_color)(void *p);
+typedef Array (*capi_player_get_weapons)(void *p);
+typedef int (*capi_player_has_local_meta_data)(void *p, const char *key);
+typedef void (*capi_player_set_local_meta_data)(void *p, const char *key, void *val);
+typedef MetaData (*capi_player_get_local_meta_data)(void *p, const char *key);
+typedef void (*capi_player_delete_local_meta_data)(void *p, const char *key);
 
 // Vehicle
 typedef int (*capi_vehicle_has_meta_data)(void *base, const char *key);
@@ -677,6 +707,36 @@ void player_set_streamed(void *p, int toggle);
 int player_get_invincible(void *p);
 void player_set_invincible(void *p, int toggle);
 void player_set_into_vehicle(void *p, void *v, unsigned char seat);
+int player_is_frozen(void *p);
+void player_set_frozen(void *p, int state);
+int player_has_collision(void *p);
+void player_set_collision(void *p, int state);
+void player_play_ambient_speech(void *p, const char *speechName, const char *speechParam, unsigned int speechDictHash);
+int player_set_head_overlay(void *p, unsigned char overlayID, unsigned char index, float opacity);
+int player_remove_head_overlay(void *p, unsigned char overlayID);
+int player_set_head_overlay_color(void *p, unsigned char overlayID, unsigned char colorType, unsigned char colorIndex,
+                           unsigned char secondColorIndex);
+HeadOverlay player_get_head_overlay(void *p, unsigned char overlayID);
+int player_set_face_feature(void *p, unsigned char index, float scale);
+float player_get_face_feature_scale(void *p, unsigned char index);
+int player_remove_face_feature(void *p, unsigned char index);
+int player_set_head_blend_palette_color(void *p, unsigned char id, unsigned char red, unsigned char green, unsigned char blue);
+RGBA player_get_head_blend_palette_color(void *p, unsigned char id);
+void player_set_head_blend_data(void *p, unsigned int shapeFirstID, unsigned int shapeSecondID, unsigned int shapeThirdID,
+                        unsigned int skinFirstID, unsigned int skinSecondID, unsigned int skinThirdID,
+                        float shapeMix, float skinMix, float thirdMix);
+HeadBlendData player_get_head_blend_data(void *p);
+int player_set_eye_color(void *p, short eyeColor);
+short player_get_eye_color(void *p);
+void player_set_hair_color(void *p, unsigned char hairColor);
+unsigned char player_get_hair_color(void *p);
+void player_set_hair_highlight_color(void *p, unsigned char hairHighlightColor);
+unsigned char player_get_hair_highlight_color(void *p);
+Array player_get_weapons(void *p);
+int player_has_local_meta_data(void *p, const char *key);
+void player_set_local_meta_data(void *p, const char *key, void *val);
+MetaData player_get_local_meta_data(void *p, const char *key);
+void player_delete_local_meta_data(void *p, const char *key);
 
 // Vehicle
 int vehicle_has_meta_data(void *base, const char *key);
