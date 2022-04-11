@@ -180,7 +180,7 @@ type Vehicle struct {
 	Entity
 }
 
-func NewVehicle(p unsafe.Pointer) *Vehicle {
+func newVehicle(p unsafe.Pointer) *Vehicle {
 	vehicle := &Vehicle{}
 	vehicle.Ptr = p
 	vehicle.Type = VehicleObject
@@ -196,7 +196,7 @@ func CreateVehicle(model uint32, pos Vector3, rot Vector3) (*Vehicle, error) {
 		return nil, fmt.Errorf("failed to create vehicle: %v is not a proper model hash", model)
 	}
 
-	veh := NewVehicle(vehicle)
+	veh := newVehicle(vehicle)
 
 	if !veh.Valid() {
 		return nil, errors.New("could not create vehicle")
@@ -210,7 +210,7 @@ func (v Vehicle) Driver() *Player {
 	if cPtr == nil {
 		return nil
 	}
-	player := NewPlayer(unsafe.Pointer(cPtr))
+	player := newPlayer(unsafe.Pointer(cPtr))
 	return player
 }
 
@@ -729,7 +729,7 @@ func (v Vehicle) Attached() *Vehicle {
 	if ptr == nil {
 		return nil
 	}
-	return NewVehicle(ptr)
+	return newVehicle(ptr)
 }
 
 func (v Vehicle) AttachedTo() *Vehicle {
@@ -737,5 +737,5 @@ func (v Vehicle) AttachedTo() *Vehicle {
 	if ptr == nil {
 		return nil
 	}
-	return NewVehicle(ptr)
+	return newVehicle(ptr)
 }

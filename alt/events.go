@@ -6,8 +6,8 @@ package alt
 // #include "Module.h"
 import "C"
 import (
-	"unsafe"
 	"github.com/shockdev04/altv-go-pkg/internal/module"
+	"unsafe"
 )
 
 type eventType = uint16
@@ -79,6 +79,7 @@ type vehicleAttachListener = func(vehicle *Vehicle, attachedVehicle *Vehicle)
 type vehicleDestroyListener = func(vehicle *Vehicle)
 type vehicleDamageListener = func(vehicle *Vehicle, entity interface{}, bodyDamage uint32, additionalBodyDamage uint32, engineDamage uint32, petrolTankDamage uint32, damageWidth uint32)
 type vehicleDetachListener = func(vehicle *Vehicle, detachedVehicle *Vehicle)
+
 // TODO bodyPart ENUM
 type weaponDamageListener = func(source *Player, target interface{}, weapon uint32, damage uint16, offset Vector3, bodyPart int8) bool
 type allServerEventsListener = func(eventName string, args ...interface{})
@@ -339,7 +340,7 @@ func (e eventManager) AllClientEvents(listener allClientEventsListener) {
 }
 
 // NewArgArray internally used to convert values to CMValue array
-func NewArgArray(args []interface{}) (*C.struct_data, C.ulonglong) {
+func newArgArray(args []interface{}) (*C.struct_data, C.ulonglong) {
 	size := len(args)
 	ptr := C.malloc(C.size_t(C.sizeof_CustomData * size))
 	cArray := (*[1 << 30]C.struct_data)(ptr)
@@ -357,7 +358,7 @@ func EmitServer(eventName string, args ...interface{}) {
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	argPtr, argSize := NewArgArray(args)
+	argPtr, argSize := newArgArray(args)
 	defer C.free(unsafe.Pointer(argPtr))
 
 	C.core_trigger_local_event(cEvent, argPtr, argSize)
@@ -367,7 +368,7 @@ func EmitClient(player *Player, eventName string, args ...interface{}) {
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	argPtr, argSize := NewArgArray(args)
+	argPtr, argSize := newArgArray(args)
 	defer C.free(unsafe.Pointer(argPtr))
 
 	C.core_trigger_client_event(player.Ptr, cEvent, argPtr, argSize)
@@ -383,7 +384,7 @@ func EmitClients(players []*Player, eventName string, args ...interface{}) {
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	argPtr, argSize := NewArgArray(args)
+	argPtr, argSize := newArgArray(args)
 	defer C.free(unsafe.Pointer(argPtr))
 
 	clientArrayPtr := C.malloc(C.size_t(clientSize) * C.size_t(8))
@@ -401,7 +402,7 @@ func EmitAllClients(eventName string, args ...interface{}) {
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	argPtr, argSize := NewArgArray(args)
+	argPtr, argSize := newArgArray(args)
 	defer C.free(unsafe.Pointer(argPtr))
 
 	C.core_trigger_client_event_for_all(cEvent, argPtr, argSize)
@@ -440,7 +441,7 @@ func altServerScriptEvent(cName *C.char, cMValues unsafe.Pointer, _size C.ulongl
 //export altClientScriptEvent
 func altClientScriptEvent(p unsafe.Pointer, cName *C.char, cMValues unsafe.Pointer, _size C.ulonglong) {
 	name := C.GoString(cName)
-	player := NewPlayer(p)
+	player := newPlayer(p)
 
 	size := uint64(_size)
 
@@ -471,7 +472,7 @@ func altClientScriptEvent(p unsafe.Pointer, cName *C.char, cMValues unsafe.Point
 //export altPlayerConnectEvent
 func altPlayerConnectEvent(player unsafe.Pointer) {
 	for _, event := range On.playerConnectEvents {
-		player := NewPlayer(player)
+		player := newPlayer(player)
 		event(player)
 	}
 }
@@ -497,7 +498,7 @@ func altConsoleCommandEvent(cName *C.char, cArray **C.char, cSize C.ulonglong) {
 //export altPlayerDisconnectEvent
 func altPlayerDisconnectEvent(p unsafe.Pointer, cReason *C.char) {
 	reason := C.GoString(cReason)
-	player := NewPlayer(p)
+	player := newPlayer(p)
 	for _, event := range On.playerDisconnectEvents {
 		event(player, reason)
 	}
@@ -505,7 +506,7 @@ func altPlayerDisconnectEvent(p unsafe.Pointer, cReason *C.char) {
 
 //export altExplosionEvent
 func altExplosionEvent(p unsafe.Pointer, e C.struct_entity, pos C.struct_pos, explosionType C.short, explosionFX C.uint) C.int {
-	player := NewPlayer(p)
+	player := newPlayer(p)
 	goPos := Vector3{X: float32(pos.x), Y: float32(pos.y), Z: float32(pos.z)}
 	expType := int16(explosionType)
 	expFX := uint(explosionFX)
@@ -514,9 +515,9 @@ func altExplosionEvent(p unsafe.Pointer, e C.struct_entity, pos C.struct_pos, ex
 	entityType := BaseObjectType(e.Type)
 
 	if entityType == PlayerObject {
-		entity = NewPlayer(e.Ptr)
+		entity = newPlayer(e.Ptr)
 	} else if entityType == VehicleObject {
-		entity = NewVehicle(e.Ptr)
+		entity = newVehicle(e.Ptr)
 	}
 
 	cont := true
@@ -533,8 +534,8 @@ func altExplosionEvent(p unsafe.Pointer, e C.struct_entity, pos C.struct_pos, ex
 
 //export altPlayerChangeVehicleSeatEvent
 func altPlayerChangeVehicleSeatEvent(p unsafe.Pointer, v unsafe.Pointer, old C.uchar, new C.uchar) {
-	player := NewPlayer(p)
-	vehicle := NewVehicle(v)
+	player := newPlayer(p)
+	vehicle := newVehicle(v)
 	oSeat := uint8(old)
 	nSeat := uint8(new)
 
@@ -545,7 +546,7 @@ func altPlayerChangeVehicleSeatEvent(p unsafe.Pointer, v unsafe.Pointer, old C.u
 
 //export altPlayerDamageEvent
 func altPlayerDamageEvent(p unsafe.Pointer, e C.struct_entity, healthDmg C.ushort, armourDmg C.ushort, weap C.ulong) {
-	player := NewPlayer(p)
+	player := newPlayer(p)
 	healthDamage := uint16(healthDmg)
 	armourDamage := uint16(armourDmg)
 	weapon := uint32(weap)
@@ -554,9 +555,9 @@ func altPlayerDamageEvent(p unsafe.Pointer, e C.struct_entity, healthDmg C.ushor
 	entityType := BaseObjectType(e.Type)
 
 	if entityType == PlayerObject {
-		entity = NewPlayer(e.Ptr)
+		entity = newPlayer(e.Ptr)
 	} else if entityType == VehicleObject {
-		entity = NewVehicle(e.Ptr)
+		entity = newVehicle(e.Ptr)
 	}
 
 	for _, event := range On.playerDamageEvents {
@@ -566,16 +567,16 @@ func altPlayerDamageEvent(p unsafe.Pointer, e C.struct_entity, healthDmg C.ushor
 
 //export altPlayerDeathEvent
 func altPlayerDeathEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong) {
-	player := NewPlayer(p)
+	player := newPlayer(p)
 	weapon := uint32(weap)
 
 	var entity interface{}
 	entityType := BaseObjectType(e.Type)
 
 	if entityType == PlayerObject {
-		entity = NewPlayer(e.Ptr)
+		entity = newPlayer(e.Ptr)
 	} else if entityType == VehicleObject {
-		entity = NewVehicle(e.Ptr)
+		entity = newVehicle(e.Ptr)
 	}
 
 	for _, event := range On.playerDeathEvents {
@@ -585,8 +586,8 @@ func altPlayerDeathEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong) {
 
 //export altPlayerEnterVehicleEvent
 func altPlayerEnterVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.uchar) {
-	player := NewPlayer(p)
-	vehicle := NewVehicle(v)
+	player := newPlayer(p)
+	vehicle := newVehicle(v)
 	seat := uint8(s)
 
 	for _, event := range On.playerEnterVehicleEvents {
@@ -596,8 +597,8 @@ func altPlayerEnterVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.uchar) {
 
 //export altPlayerLeaveVehicleEvent
 func altPlayerLeaveVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.uchar) {
-	player := NewPlayer(p)
-	vehicle := NewVehicle(v)
+	player := newPlayer(p)
+	vehicle := newVehicle(v)
 	seat := uint8(s)
 
 	for _, event := range On.playerLeaveVehicleEvents {
@@ -611,9 +612,9 @@ func altRemoveEntityEvent(e C.struct_entity) {
 	entityType := BaseObjectType(e.Type)
 
 	if entityType == PlayerObject {
-		entity = NewPlayer(e.Ptr)
+		entity = newPlayer(e.Ptr)
 	} else if entityType == VehicleObject {
-		entity = NewVehicle(e.Ptr)
+		entity = newVehicle(e.Ptr)
 	}
 
 	for _, event := range On.removeEntityEvents {
@@ -650,7 +651,7 @@ func altResourceErrorEvent(n *C.char) {
 
 //export altWeaponDamageEvent
 func altWeaponDamageEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong, dmg C.ushort, ofs C.struct_pos, bPart C.short) C.int {
-	player := NewPlayer(p)
+	player := newPlayer(p)
 	weapon := uint32(weap)
 	damage := uint16(dmg)
 	offset := Vector3{X: float32(ofs.x), Y: float32(ofs.y), Z: float32(ofs.z)}
@@ -660,9 +661,9 @@ func altWeaponDamageEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong, dmg
 	entityType := BaseObjectType(e.Type)
 
 	if entityType == PlayerObject {
-		entity = NewPlayer(e.Ptr)
+		entity = newPlayer(e.Ptr)
 	} else if entityType == VehicleObject {
-		entity = NewVehicle(e.Ptr)
+		entity = newVehicle(e.Ptr)
 	}
 
 	cont := false
@@ -679,8 +680,8 @@ func altWeaponDamageEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong, dmg
 
 //export altPlayerEnteringVehicleEvent
 func altPlayerEnteringVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.ushort) {
-	player := NewPlayer(p)
-	vehicle := NewVehicle(v)
+	player := newPlayer(p)
+	vehicle := newVehicle(v)
 	seat := uint8(s)
 
 	for _, event := range On.playerEnteringVehicleEvents {
@@ -690,16 +691,16 @@ func altPlayerEnteringVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.ushor
 
 //export altColShapeEvent
 func altColShapeEvent(c unsafe.Pointer, e C.struct_entity, s C.int) {
-	colShape := NewColShape(c)
+	colShape := newColShape(c)
 	state := int(s) == 1
 
 	var entity interface{}
 	entityType := BaseObjectType(e.Type)
 
 	if entityType == PlayerObject {
-		entity = NewPlayer(e.Ptr)
+		entity = newPlayer(e.Ptr)
 	} else if entityType == VehicleObject {
-		entity = NewVehicle(e.Ptr)
+		entity = newVehicle(e.Ptr)
 	}
 
 	if state {
@@ -715,7 +716,7 @@ func altColShapeEvent(c unsafe.Pointer, e C.struct_entity, s C.int) {
 
 //export altFireEvent
 func altFireEvent(p unsafe.Pointer, f C.struct_array) C.int {
-	player := NewPlayer(p)
+	player := newPlayer(p)
 
 	size := int(f.size)
 	cFireInfoStructs := (*[1 << 28]C.struct_fireInfo)(f.array)[:size:size]
@@ -766,16 +767,16 @@ func altGlobalSyncedMetaDataChangeEvent(k *C.char, nVal C.struct_metaData, oVal 
 
 //export altNetOwnerChangeEvent
 func altNetOwnerChangeEvent(e C.struct_entity, o unsafe.Pointer, oo unsafe.Pointer) {
-	owner := NewPlayer(o)
-	oldOwner := NewPlayer(oo)
+	owner := newPlayer(o)
+	oldOwner := newPlayer(oo)
 
 	var entity interface{}
 	entityType := BaseObjectType(e.Type)
 
 	if entityType == PlayerObject {
-		entity = NewPlayer(e.Ptr)
+		entity = newPlayer(e.Ptr)
 	} else if entityType == VehicleObject {
-		entity = NewVehicle(e.Ptr)
+		entity = newVehicle(e.Ptr)
 	}
 
 	for _, event := range On.netOwnerChangeEvents {
@@ -785,7 +786,7 @@ func altNetOwnerChangeEvent(e C.struct_entity, o unsafe.Pointer, oo unsafe.Point
 
 //export altPlayerWeaponChangeEvent
 func altPlayerWeaponChangeEvent(p unsafe.Pointer, oWeap C.ulong, nWeap C.ulong) C.int {
-	player := NewPlayer(p)
+	player := newPlayer(p)
 	oldWeapon := uint32(oWeap)
 	newWeapon := uint32(nWeap)
 
@@ -803,7 +804,7 @@ func altPlayerWeaponChangeEvent(p unsafe.Pointer, oWeap C.ulong, nWeap C.ulong) 
 
 //export altStartProjectileEvent
 func altStartProjectileEvent(p unsafe.Pointer, pos C.struct_pos, dir C.struct_pos, aHash C.uint, wHash C.ulong) C.int {
-	player := NewPlayer(p)
+	player := newPlayer(p)
 	position := Vector3{X: float32(pos.x), Y: float32(pos.y), Z: float32(pos.z)}
 	direction := Vector3{X: float32(dir.x), Y: float32(dir.y), Z: float32(dir.z)}
 	ammoHash := uint16(aHash)
@@ -833,9 +834,9 @@ func altStreamSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.str
 	entityType := BaseObjectType(e.Type)
 
 	if entityType == PlayerObject {
-		entity = NewPlayer(e.Ptr)
+		entity = newPlayer(e.Ptr)
 	} else if entityType == VehicleObject {
-		entity = NewVehicle(e.Ptr)
+		entity = newVehicle(e.Ptr)
 	}
 
 	for _, event := range On.streamSyncedMetaDataChangeEvents {
@@ -855,9 +856,9 @@ func altSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.struct_me
 	entityType := BaseObjectType(e.Type)
 
 	if entityType == PlayerObject {
-		entity = NewPlayer(e.Ptr)
+		entity = newPlayer(e.Ptr)
 	} else if entityType == VehicleObject {
-		entity = NewVehicle(e.Ptr)
+		entity = newVehicle(e.Ptr)
 	}
 
 	for _, event := range On.streamSyncedMetaDataChangeEvents {
@@ -867,8 +868,8 @@ func altSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.struct_me
 
 //export altVehicleAttachEvent
 func altVehicleAttachEvent(v unsafe.Pointer, a unsafe.Pointer) {
-	vehicle := NewVehicle(v)
-	attached := NewVehicle(a)
+	vehicle := newVehicle(v)
+	attached := newVehicle(a)
 
 	for _, event := range On.vehicleAttachEvents {
 		event(vehicle, attached)
@@ -877,8 +878,8 @@ func altVehicleAttachEvent(v unsafe.Pointer, a unsafe.Pointer) {
 
 //export altVehicleDetachEvent
 func altVehicleDetachEvent(v unsafe.Pointer, a unsafe.Pointer) {
-	vehicle := NewVehicle(v)
-	attached := NewVehicle(a)
+	vehicle := newVehicle(v)
+	attached := newVehicle(a)
 
 	for _, event := range On.vehicleDetachEvents {
 		event(vehicle, attached)
@@ -887,7 +888,7 @@ func altVehicleDetachEvent(v unsafe.Pointer, a unsafe.Pointer) {
 
 //export altVehicleDestroyEvent
 func altVehicleDestroyEvent(v unsafe.Pointer) {
-	vehicle := NewVehicle(v)
+	vehicle := newVehicle(v)
 
 	for _, event := range On.vehicleDestroyEvents {
 		event(vehicle)
@@ -896,15 +897,15 @@ func altVehicleDestroyEvent(v unsafe.Pointer) {
 
 //export altVehicleDamageEvent
 func altVehicleDamageEvent(v unsafe.Pointer, e C.struct_entity, body C.uint, additional C.uint, engine C.uint, tank C.uint, width C.uint) {
-	vehicle := NewVehicle(v)
+	vehicle := newVehicle(v)
 
 	var entity interface{}
 	entityType := BaseObjectType(e.Type)
 
 	if entityType == PlayerObject {
-		entity = NewPlayer(e.Ptr)
+		entity = newPlayer(e.Ptr)
 	} else if entityType == VehicleObject {
-		entity = NewVehicle(e.Ptr)
+		entity = newVehicle(e.Ptr)
 	}
 
 	bodyDamage := uint32(body)

@@ -9,7 +9,7 @@ type Checkpoint struct {
 	ColShape
 }
 
-func NewCheckpoint(cp unsafe.Pointer) *Checkpoint {
+func newCheckpoint(cp unsafe.Pointer) *Checkpoint {
 	checkpoint := &Checkpoint{}
 	checkpoint.Ptr = cp
 	checkpoint.Type = CheckpointObject
@@ -40,12 +40,12 @@ func (c Checkpoint) Radius() float32 {
 
 func (c Checkpoint) Color() RGBA {
 	cRGBA := C.checkpoint_get_color(c.Ptr)
-	return RGBA{R:uint8(cRGBA.r),G:uint8(cRGBA.g),B:uint8(cRGBA.b),A:uint8(cRGBA.a)}
+	return RGBA{R: uint8(cRGBA.r), G: uint8(cRGBA.g), B: uint8(cRGBA.b), A: uint8(cRGBA.a)}
 }
 
 func (c Checkpoint) NextPosition() Vector3 {
 	cPos := C.checkpoint_get_next_position(c.Ptr)
-	return Vector3{X:float32(cPos.x),Y:float32(cPos.y),Z:float32(cPos.z)}
+	return Vector3{X: float32(cPos.x), Y: float32(cPos.y), Z: float32(cPos.z)}
 }
 
 func (c Checkpoint) SetCheckpointType(checkpointType uint8) {

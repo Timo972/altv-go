@@ -12,14 +12,14 @@ type VoiceChannel struct {
 	BaseObject
 }
 
-func NewVoiceChannel(v unsafe.Pointer) *VoiceChannel {
+func newVoiceChannel(v unsafe.Pointer) *VoiceChannel {
 	voiceChannel := &VoiceChannel{}
 	voiceChannel.Ptr = v
 	voiceChannel.Type = VoiceChannelObject
 	return voiceChannel
 }
 
-func CreateVoiceChannel(spatial bool, maxDistance float32) *VoiceChannel{
+func CreateVoiceChannel(spatial bool, maxDistance float32) *VoiceChannel {
 	voiceChannel := &VoiceChannel{}
 	voiceChannel.Ptr = C.core_create_voice_channel(C.int(module.Bool2int(spatial)), C.float(maxDistance))
 	voiceChannel.Type = VoiceChannelObject

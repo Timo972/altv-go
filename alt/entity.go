@@ -13,7 +13,7 @@ type Entity struct {
 	WorldObject
 }
 
-func NewEntity(e unsafe.Pointer) *Entity {
+func newEntity(e unsafe.Pointer) *Entity {
 	entity := &Entity{}
 	entity.Ptr = e
 	//entity.Type = PlayerObject
@@ -76,7 +76,7 @@ func (e Entity) NetworkOwner() *Player {
 	} else if e.Type == VehicleObject {
 		cPtr = unsafe.Pointer(C.vehicle_get_network_owner(e.Ptr))
 	}
-	return NewPlayer(cPtr)
+	return newPlayer(cPtr)
 }
 
 func (e Entity) SetNetworkOwner(owner *Player, disableMigration bool) {
@@ -173,7 +173,6 @@ func (e Entity) GetStreamSyncedMetaData(key string) interface{} {
 
 		return mValue.GetValue()
 	}
-
 
 	return nil
 }
