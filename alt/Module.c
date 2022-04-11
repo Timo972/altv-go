@@ -451,6 +451,86 @@ capi_voice_channel_unmute_player g_call_voice_channel_unmute_player;
 capi_voice_channel_destroy g_call_voice_channel_destroy;
 capi_voice_channel_is_valid g_call_voice_channel_is_valid;
 
+// Blip
+capi_blip_get_type g_call_blip_get_type;
+capi_blip_has_meta_data g_call_blip_has_meta_data;
+capi_blip_get_meta_data g_call_blip_get_meta_data;
+capi_blip_set_meta_data g_call_blip_set_meta_data;
+capi_blip_delete_meta_data g_call_blip_delete_meta_data;
+capi_blip_destroy g_call_blip_destroy;
+capi_blip_is_valid g_call_blip_is_valid;
+capi_blip_get_position g_call_blip_get_position;
+capi_blip_set_position g_call_blip_set_position;
+capi_blip_get_dimension g_call_blip_get_dimension;
+capi_blip_set_dimension g_call_blip_set_dimension;
+capi_blip_is_global g_call_blip_is_global;
+capi_blip_get_target g_call_blip_get_target;
+capi_blip_is_attached g_call_blip_is_attached;
+capi_blip_attached_to g_call_blip_attached_to;
+capi_blip_attach_to g_call_blip_attach_to;
+capi_blip_get_blip_type g_call_blip_get_blip_type;
+capi_blip_get_display g_call_blip_get_display;
+capi_blip_set_display g_call_blip_set_display;
+capi_blip_get_sprite g_call_blip_get_sprite;
+capi_blip_get_color g_call_blip_get_color;
+capi_blip_get_secondary_color g_call_blip_get_secondary_color;
+capi_blip_get_alpha g_call_blip_get_alpha;
+capi_blip_get_flash_timer g_call_blip_get_flash_timer;
+capi_blip_get_flash_interval g_call_blip_get_flash_interval;
+capi_blip_get_as_friendly g_call_blip_get_as_friendly;
+capi_blip_get_route g_call_blip_get_route;
+capi_blip_get_bright g_call_blip_get_bright;
+capi_blip_get_number g_call_blip_get_number;
+capi_blip_get_show_cone g_call_blip_get_show_cone;
+capi_blip_get_flashes g_call_blip_get_flashes;
+capi_blip_get_flashes_alternate g_call_blip_get_flashes_alternate;
+capi_blip_get_as_short_range g_call_blip_get_as_short_range;
+capi_blip_get_priority g_call_blip_get_priority;
+capi_blip_get_rotation g_call_blip_get_rotation;
+capi_blip_get_gxt_name g_call_blip_get_gxt_name;
+capi_blip_get_name g_call_blip_get_name;
+capi_blip_get_route_color g_call_blip_get_route_color;
+capi_blip_get_pulse g_call_blip_get_pulse;
+capi_blip_get_as_mission_creator g_call_blip_get_as_mission_creator;
+capi_blip_get_tick_visible g_call_blip_get_tick_visible;
+capi_blip_get_heading_indicator_visible g_call_blip_get_heading_indicator_visible;
+capi_blip_get_outline_indicator_visible g_call_blip_get_outline_indicator_visible;
+capi_blip_get_friend_indicator_visible g_call_blip_get_friend_indicator_visible;
+capi_blip_get_crew_indicator_visible g_call_blip_get_crew_indicator_visible;
+capi_blip_get_category g_call_blip_get_category;
+capi_blip_get_as_high_detail g_call_blip_get_as_high_detail;
+capi_blip_get_shrinked g_call_blip_get_shrinked;
+capi_blip_set_sprite g_call_blip_set_sprite;
+capi_blip_set_color g_call_blip_set_color;
+capi_blip_set_route g_call_blip_set_route;
+capi_blip_set_route_color g_call_blip_set_route_color;
+capi_blip_set_secondary_color g_call_blip_set_secondary_color;
+capi_blip_set_alpha g_call_blip_set_alpha;
+capi_blip_set_flash_timer g_call_blip_set_flash_timer;
+capi_blip_set_flash_interval g_call_blip_set_flash_interval;
+capi_blip_set_as_friendly g_call_blip_set_as_friendly;
+capi_blip_set_bright g_call_blip_set_bright;
+capi_blip_set_number g_call_blip_set_number;
+capi_blip_set_show_cone g_call_blip_set_show_cone;
+capi_blip_set_flashes g_call_blip_set_flashes;
+capi_blip_set_flashes_alternate g_call_blip_set_flashes_alternate;
+capi_blip_set_as_short_range g_call_blip_set_as_short_range;
+capi_blip_set_priority g_call_blip_set_priority;
+capi_blip_set_rotation g_call_blip_set_rotation;
+capi_blip_set_gxt_name g_call_blip_set_gxt_name;
+capi_blip_set_name g_call_blip_set_name;
+capi_blip_set_pulse g_call_blip_set_pulse;
+capi_blip_set_as_mission_creator g_call_blip_set_as_mission_creator;
+capi_blip_set_tick_visible g_call_blip_set_tick_visible;
+capi_blip_set_heading_indicator_visible g_call_blip_set_heading_indicator_visible;
+capi_blip_set_outline_indicator_visible g_call_blip_set_outline_indicator_visible;
+capi_blip_set_friend_indicator_visible g_call_blip_set_friend_indicator_visible;
+capi_blip_set_crew_indicator_visible g_call_blip_set_crew_indicator_visible;
+capi_blip_set_category g_call_blip_set_category;
+capi_blip_set_as_high_detail g_call_blip_set_as_high_detail;
+capi_blip_set_shrinked g_call_blip_set_shrinked;
+capi_blip_fade g_call_blip_fade;
+
 int load_module(const char *path)
 {
     module = LOAD_LIB(path);
@@ -909,6 +989,86 @@ int load_module(const char *path)
     g_call_voice_channel_unmute_player = GET_FUNC(module, "VoiceChannel_UnmutePlayer", capi_voice_channel_unmute_player);
     g_call_voice_channel_destroy = GET_FUNC(module, "VoiceChannel_Destroy", capi_voice_channel_destroy);
     g_call_voice_channel_is_valid = GET_FUNC(module, "VoiceChannel_IsValid", capi_voice_channel_is_valid);
+
+    // Blip
+    g_call_blip_get_type = GET_FUNC(module, "Blip_GetType", capi_blip_get_type);
+    g_call_blip_has_meta_data = GET_FUNC(module, "Blip_HasMetaData", capi_blip_has_meta_data);
+    g_call_blip_get_meta_data = GET_FUNC(module, "Blip_GetMetaData", capi_blip_get_meta_data);
+    g_call_blip_set_meta_data = GET_FUNC(module, "Blip_SetMetaData", capi_blip_set_meta_data);
+    g_call_blip_delete_meta_data = GET_FUNC(module, "Blip_DeleteMetaData", capi_blip_delete_meta_data);
+    g_call_blip_destroy = GET_FUNC(module, "Blip_Destroy", capi_blip_destroy);
+    g_call_blip_is_valid = GET_FUNC(module, "Blip_IsValid", capi_blip_is_valid);
+    g_call_blip_get_position = GET_FUNC(module, "Blip_GetPosition", capi_blip_get_position);
+    g_call_blip_set_position = GET_FUNC(module, "Blip_SetPosition", capi_blip_set_position);
+    g_call_blip_get_dimension = GET_FUNC(module, "Blip_GetDimension", capi_blip_get_dimension);
+    g_call_blip_set_dimension = GET_FUNC(module, "Blip_SetDimension", capi_blip_set_dimension);
+    g_call_blip_is_global = GET_FUNC(module, "Blip_IsGlobal", capi_blip_is_global);
+    g_call_blip_get_target = GET_FUNC(module, "Blip_GetTarget", capi_blip_get_target);
+    g_call_blip_is_attached = GET_FUNC(module, "Blip_IsAttached", capi_blip_is_attached);
+    g_call_blip_attached_to = GET_FUNC(module, "Blip_AttachedTo", capi_blip_attached_to);
+    g_call_blip_attach_to = GET_FUNC(module, "Blip_AttachTo", capi_blip_attach_to);
+    g_call_blip_get_blip_type = GET_FUNC(module, "Blip_GetBlipType", capi_blip_get_blip_type);
+    g_call_blip_get_display = GET_FUNC(module, "Blip_GetDisplay", capi_blip_get_display);
+    g_call_blip_set_display = GET_FUNC(module, "Blip_SetDisplay", capi_blip_set_display);
+    g_call_blip_get_sprite = GET_FUNC(module, "Blip_GetSprite", capi_blip_get_sprite);
+    g_call_blip_get_color = GET_FUNC(module, "Blip_GetColor", capi_blip_get_color);
+    g_call_blip_get_secondary_color = GET_FUNC(module, "Blip_GetSecondaryColor", capi_blip_get_secondary_color);
+    g_call_blip_get_alpha = GET_FUNC(module, "Blip_GetAlpha", capi_blip_get_alpha);
+    g_call_blip_get_flash_timer = GET_FUNC(module, "Blip_GetFlashTimer", capi_blip_get_flash_timer);
+    g_call_blip_get_flash_interval = GET_FUNC(module, "Blip_GetFlashInterval", capi_blip_get_flash_interval);
+    g_call_blip_get_as_friendly = GET_FUNC(module, "Blip_GetAsFriendly", capi_blip_get_as_friendly);
+    g_call_blip_get_route = GET_FUNC(module, "Blip_GetRoute", capi_blip_get_route);
+    g_call_blip_get_bright = GET_FUNC(module, "Blip_GetBright", capi_blip_get_bright);
+    g_call_blip_get_number = GET_FUNC(module, "Blip_GetNumber", capi_blip_get_number);
+    g_call_blip_get_show_cone = GET_FUNC(module, "Blip_GetShowCone", capi_blip_get_show_cone);
+    g_call_blip_get_flashes = GET_FUNC(module, "Blip_GetFlashes", capi_blip_get_flashes);
+    g_call_blip_get_flashes_alternate = GET_FUNC(module, "Blip_GetFlashesAlternate", capi_blip_get_flashes_alternate);
+    g_call_blip_get_as_short_range = GET_FUNC(module, "Blip_GetAsShortRange", capi_blip_get_as_short_range);
+    g_call_blip_get_priority = GET_FUNC(module, "Blip_GetPriority", capi_blip_get_priority);
+    g_call_blip_get_rotation = GET_FUNC(module, "Blip_GetRotation", capi_blip_get_rotation);
+    g_call_blip_get_gxt_name = GET_FUNC(module, "Blip_GetGxtName", capi_blip_get_gxt_name);
+    g_call_blip_get_name = GET_FUNC(module, "Blip_GetName", capi_blip_get_name);
+    g_call_blip_get_route_color = GET_FUNC(module, "Blip_GetRouteColor", capi_blip_get_route_color);
+    g_call_blip_get_pulse = GET_FUNC(module, "Blip_GetPulse", capi_blip_get_pulse);
+    g_call_blip_get_as_mission_creator = GET_FUNC(module, "Blip_GetAsMissionCreator", capi_blip_get_as_mission_creator);
+    g_call_blip_get_tick_visible = GET_FUNC(module, "Blip_GetTickVisible", capi_blip_get_tick_visible);
+    g_call_blip_get_heading_indicator_visible = GET_FUNC(module, "Blip_GetHeadingIndicatorVisible", capi_blip_get_heading_indicator_visible);
+    g_call_blip_get_outline_indicator_visible = GET_FUNC(module, "Blip_GetOutlineIndicatorVisible", capi_blip_get_outline_indicator_visible);
+    g_call_blip_get_friend_indicator_visible = GET_FUNC(module, "Blip_GetFriendIndicatorVisible", capi_blip_get_friend_indicator_visible);
+    g_call_blip_get_crew_indicator_visible = GET_FUNC(module, "Blip_GetCrewIndicatorVisible", capi_blip_get_crew_indicator_visible);
+    g_call_blip_get_category = GET_FUNC(module, "Blip_GetCategory", capi_blip_get_category);
+    g_call_blip_get_as_high_detail = GET_FUNC(module, "Blip_GetAsHighDetail", capi_blip_get_as_high_detail);
+    g_call_blip_get_shrinked = GET_FUNC(module, "Blip_GetShrinked", capi_blip_get_shrinked);
+    g_call_blip_set_sprite = GET_FUNC(module, "Blip_SetSprite", capi_blip_set_sprite);
+    g_call_blip_set_color = GET_FUNC(module, "Blip_SetColor", capi_blip_set_color);
+    g_call_blip_set_route = GET_FUNC(module, "Blip_SetRoute", capi_blip_set_route);
+    g_call_blip_set_route_color = GET_FUNC(module, "Blip_SetRouteColor", capi_blip_set_route_color);
+    g_call_blip_set_secondary_color = GET_FUNC(module, "Blip_SetSecondaryColor", capi_blip_set_secondary_color);
+    g_call_blip_set_alpha = GET_FUNC(module, "Blip_SetAlpha", capi_blip_set_alpha);
+    g_call_blip_set_flash_timer = GET_FUNC(module, "Blip_SetFlashTimer", capi_blip_set_flash_timer);
+    g_call_blip_set_flash_interval = GET_FUNC(module, "Blip_SetFlashInterval", capi_blip_set_flash_interval);
+    g_call_blip_set_as_friendly = GET_FUNC(module, "Blip_SetAsFriendly", capi_blip_set_as_friendly);
+    g_call_blip_set_bright = GET_FUNC(module, "Blip_SetBright", capi_blip_set_bright);
+    g_call_blip_set_number = GET_FUNC(module, "Blip_SetNumber", capi_blip_set_number);
+    g_call_blip_set_show_cone = GET_FUNC(module, "Blip_SetShowCone", capi_blip_set_show_cone);
+    g_call_blip_set_flashes = GET_FUNC(module, "Blip_SetFlashes", capi_blip_set_flashes);
+    g_call_blip_set_flashes_alternate = GET_FUNC(module, "Blip_SetFlashesAlternate", capi_blip_set_flashes_alternate);
+    g_call_blip_set_as_short_range = GET_FUNC(module, "Blip_SetAsShortRange", capi_blip_set_as_short_range);
+    g_call_blip_set_priority = GET_FUNC(module, "Blip_SetPriority", capi_blip_set_priority);
+    g_call_blip_set_rotation = GET_FUNC(module, "Blip_SetRotation", capi_blip_set_rotation);
+    g_call_blip_set_gxt_name = GET_FUNC(module, "Blip_SetGxtName", capi_blip_set_gxt_name);
+    g_call_blip_set_name = GET_FUNC(module, "Blip_SetName", capi_blip_set_name);
+    g_call_blip_set_pulse = GET_FUNC(module, "Blip_SetPulse", capi_blip_set_pulse);
+    g_call_blip_set_as_mission_creator = GET_FUNC(module, "Blip_SetAsMissionCreator", capi_blip_set_as_mission_creator);
+    g_call_blip_set_tick_visible = GET_FUNC(module, "Blip_SetTickVisible", capi_blip_set_tick_visible);
+    g_call_blip_set_heading_indicator_visible = GET_FUNC(module, "Blip_SetHeadingIndicatorVisible", capi_blip_set_heading_indicator_visible);
+    g_call_blip_set_outline_indicator_visible = GET_FUNC(module, "Blip_SetOutlineIndicatorVisible", capi_blip_set_outline_indicator_visible);
+    g_call_blip_set_friend_indicator_visible = GET_FUNC(module, "Blip_SetFriendIndicatorVisible", capi_blip_set_friend_indicator_visible);
+    g_call_blip_set_crew_indicator_visible = GET_FUNC(module, "Blip_SetCrewIndicatorVisible", capi_blip_set_crew_indicator_visible);
+    g_call_blip_set_category = GET_FUNC(module, "Blip_SetCategory", capi_blip_set_category);
+    g_call_blip_set_as_high_detail = GET_FUNC(module, "Blip_SetAsHighDetail", capi_blip_set_as_high_detail);
+    g_call_blip_set_shrinked = GET_FUNC(module, "Blip_SetShrinked", capi_blip_set_shrinked);
+    g_call_blip_fade = GET_FUNC(module, "Blip_Fade", capi_blip_fade);
 
     return 1;
 }
@@ -3135,3 +3295,393 @@ int voice_channel_is_valid(void *p)
     return g_call_voice_channel_is_valid(p);
 }
 
+// Blip
+int blip_get_type(void *c)
+{
+    return g_call_blip_get_type(c);
+}
+
+int blip_has_meta_data(void *base, const char *key)
+{
+    return g_call_blip_has_meta_data(base, key);
+}
+
+MetaData blip_get_meta_data(void *base, const char *key)
+{
+    return g_call_blip_get_meta_data(base, key);
+}
+
+void blip_set_meta_data(void *base, const char *key, void *val)
+{
+    return g_call_blip_set_meta_data(base, key, val);
+}
+
+void blip_delete_meta_data(void *base, const char *key)
+{
+    return g_call_blip_delete_meta_data(base, key);
+}
+
+void blip_destroy(void *b)
+{
+    return g_call_blip_destroy(b);
+}
+
+int blip_is_valid(void *p)
+{
+    return g_call_blip_is_valid(p);
+}
+
+Position blip_get_position(void *p)
+{
+    return g_call_blip_get_position(p);
+}
+
+void blip_set_position(void *p, float x, float y, float z)
+{
+    return g_call_blip_set_position(p, x, y, z);
+}
+
+long blip_get_dimension(void *p)
+{
+    return g_call_blip_get_dimension(p);
+}
+
+void blip_set_dimension(void *p, long dimension)
+{
+    return g_call_blip_set_dimension(p, dimension);
+}
+
+int blip_is_global(void *b)
+{
+    return g_call_blip_is_global(b);
+}
+
+void * blip_get_target(void *b)
+{
+    return g_call_blip_get_target(b);
+}
+
+int blip_is_attached(void *b)
+{
+    return g_call_blip_is_attached(b);
+}
+
+Entity blip_attached_to(void *b)
+{
+    return g_call_blip_attached_to(b);
+}
+
+void blip_attach_to(void *b, void *e)
+{
+    return g_call_blip_attach_to(b, e);
+}
+
+unsigned char blip_get_blip_type(void *b)
+{
+    return g_call_blip_get_blip_type(b);
+}
+
+int blip_get_display(void *b)
+{
+    return g_call_blip_get_display(b);
+}
+
+void blip_set_display(void *b, int display)
+{
+    return g_call_blip_set_display(b, display);
+}
+
+int blip_get_sprite(void *b)
+{
+    return g_call_blip_get_sprite(b);
+}
+
+int blip_get_color(void *b)
+{
+    return g_call_blip_get_color(b);
+}
+
+RGBA blip_get_secondary_color(void *b)
+{
+    return g_call_blip_get_secondary_color(b);
+}
+
+int blip_get_alpha(void *b)
+{
+    return g_call_blip_get_alpha(b);
+}
+
+int blip_get_flash_timer(void *b)
+{
+    return g_call_blip_get_flash_timer(b);
+}
+
+int blip_get_flash_interval(void *b)
+{
+    return g_call_blip_get_flash_interval(b);
+}
+
+int blip_get_as_friendly(void *b)
+{
+    return g_call_blip_get_as_friendly(b);
+}
+
+int blip_get_route(void *b)
+{
+    return g_call_blip_get_route(b);
+}
+
+int blip_get_bright(void *b)
+{
+    return g_call_blip_get_bright(b);
+}
+
+int blip_get_number(void *b)
+{
+    return g_call_blip_get_number(b);
+}
+
+int blip_get_show_cone(void *b)
+{
+    return g_call_blip_get_show_cone(b);
+}
+
+int blip_get_flashes(void *b)
+{
+    return g_call_blip_get_flashes(b);
+}
+
+int blip_get_flashes_alternate(void *b)
+{
+    return g_call_blip_get_flashes_alternate(b);
+}
+
+int blip_get_as_short_range(void *b)
+{
+    return g_call_blip_get_as_short_range(b);
+}
+
+int blip_get_priority(void *b)
+{
+    return g_call_blip_get_priority(b);
+}
+
+float blip_get_rotation(void *b)
+{
+    return g_call_blip_get_rotation(b);
+}
+
+const char * blip_get_gxt_name(void *b)
+{
+    return g_call_blip_get_gxt_name(b);
+}
+
+const char * blip_get_name(void *b)
+{
+    return g_call_blip_get_name(b);
+}
+
+RGBA blip_get_route_color(void *b)
+{
+    return g_call_blip_get_route_color(b);
+}
+
+int blip_get_pulse(void *b)
+{
+    return g_call_blip_get_pulse(b);
+}
+
+int blip_get_as_mission_creator(void *b)
+{
+    return g_call_blip_get_as_mission_creator(b);
+}
+
+int blip_get_tick_visible(void *b)
+{
+    return g_call_blip_get_tick_visible(b);
+}
+
+int blip_get_heading_indicator_visible(void *b)
+{
+    return g_call_blip_get_heading_indicator_visible(b);
+}
+
+int blip_get_outline_indicator_visible(void *b)
+{
+    return g_call_blip_get_outline_indicator_visible(b);
+}
+
+int blip_get_friend_indicator_visible(void *b)
+{
+    return g_call_blip_get_friend_indicator_visible(b);
+}
+
+int blip_get_crew_indicator_visible(void *b)
+{
+    return g_call_blip_get_crew_indicator_visible(b);
+}
+
+int blip_get_category(void *b)
+{
+    return g_call_blip_get_category(b);
+}
+
+int blip_get_as_high_detail(void *b)
+{
+    return g_call_blip_get_as_high_detail(b);
+}
+
+int blip_get_shrinked(void *b)
+{
+    return g_call_blip_get_shrinked(b);
+}
+
+void blip_set_sprite(void *b, int sprite)
+{
+    return g_call_blip_set_sprite(b, sprite);
+}
+
+void blip_set_color(void *b, int color)
+{
+    return g_call_blip_set_color(b, color);
+}
+
+void blip_set_route(void *b, int state)
+{
+    return g_call_blip_set_route(b, state);
+}
+
+void blip_set_route_color(void *b, RGBA color)
+{
+    return g_call_blip_set_route_color(b, color);
+}
+
+void blip_set_secondary_color(void *b, RGBA color)
+{
+    return g_call_blip_set_secondary_color(b, color);
+}
+
+void blip_set_alpha(void *b, int alpha)
+{
+    return g_call_blip_set_alpha(b, alpha);
+}
+
+void blip_set_flash_timer(void *b, int timer)
+{
+    return g_call_blip_set_flash_timer(b, timer);
+}
+
+void blip_set_flash_interval(void *b, int interval)
+{
+    return g_call_blip_set_flash_interval(b, interval);
+}
+
+void blip_set_as_friendly(void *b, int friendly)
+{
+    return g_call_blip_set_as_friendly(b, friendly);
+}
+
+void blip_set_bright(void *b, int bright)
+{
+    return g_call_blip_set_bright(b, bright);
+}
+
+void blip_set_number(void *b, int number)
+{
+    return g_call_blip_set_number(b, number);
+}
+
+void blip_set_show_cone(void *b, int state)
+{
+    return g_call_blip_set_show_cone(b, state);
+}
+
+void blip_set_flashes(void *b, int state)
+{
+    return g_call_blip_set_flashes(b, state);
+}
+
+void blip_set_flashes_alternate(void *b, int state)
+{
+    return g_call_blip_set_flashes_alternate(b, state);
+}
+
+void blip_set_as_short_range(void *b, int state)
+{
+    return g_call_blip_set_as_short_range(b, state);
+}
+
+void blip_set_priority(void *b, int state)
+{
+    return g_call_blip_set_priority(b, state);
+}
+
+void blip_set_rotation(void *b, float rot)
+{
+    return g_call_blip_set_rotation(b, rot);
+}
+
+void blip_set_gxt_name(void *b, const char *name)
+{
+    return g_call_blip_set_gxt_name(b, name);
+}
+
+void blip_set_name(void *b, const char *name)
+{
+    return g_call_blip_set_name(b, name);
+}
+
+void blip_set_pulse(void *b, int val)
+{
+    return g_call_blip_set_pulse(b, val);
+}
+
+void blip_set_as_mission_creator(void *b, int val)
+{
+    return g_call_blip_set_as_mission_creator(b, val);
+}
+
+void blip_set_tick_visible(void *b, int val)
+{
+    return g_call_blip_set_tick_visible(b, val);
+}
+
+void blip_set_heading_indicator_visible(void *b, int val)
+{
+    return g_call_blip_set_heading_indicator_visible(b, val);
+}
+
+void blip_set_outline_indicator_visible(void *b, int val)
+{
+    return g_call_blip_set_outline_indicator_visible(b, val);
+}
+
+void blip_set_friend_indicator_visible(void *b, int val)
+{
+    return g_call_blip_set_friend_indicator_visible(b, val);
+}
+
+void blip_set_crew_indicator_visible(void *b, int val)
+{
+    return g_call_blip_set_crew_indicator_visible(b, val);
+}
+
+void blip_set_category(void *b, int val)
+{
+    return g_call_blip_set_category(b, val);
+}
+
+void blip_set_as_high_detail(void *b, int val)
+{
+    return g_call_blip_set_as_high_detail(b, val);
+}
+
+void blip_set_shrinked(void *b, int val)
+{
+    return g_call_blip_set_shrinked(b, val);
+}
+
+void blip_fade(void *b, unsigned int opacity, unsigned int duration)
+{
+    return g_call_blip_fade(b, opacity, duration);
+}
