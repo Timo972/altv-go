@@ -210,8 +210,7 @@ func (v MValue) GetValue() interface{} {
 			v.Value = newVoiceChannel(entity.Ptr)
 		}
 	case MValueVector2:
-		v2 := C.core_get_mvalue_vector2(v.Ptr)
-		v.Value = Vector2{X: float32(v2.x), Y: float32(v2.y)}
+		v.Value = newVector2(C.core_get_mvalue_vector2(v.Ptr))
 	case MValueVector3:
 		v3 := C.core_get_mvalue_vector3(v.Ptr)
 		v.Value = Vector3{X: float32(v3.x), Y: float32(v3.y), Z: float32(v3.z)}

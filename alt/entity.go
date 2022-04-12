@@ -13,10 +13,14 @@ type Entity struct {
 	WorldObject
 }
 
-func newEntity(e unsafe.Pointer) *Entity {
+func newEntity(e unsafe.Pointer, t BaseObjectType) *Entity {
+	if t != PlayerObject && t != VehicleObject {
+		return nil
+	}
+
 	entity := &Entity{}
 	entity.Ptr = e
-	//entity.Type = PlayerObject
+	entity.Type = t
 
 	return entity
 }

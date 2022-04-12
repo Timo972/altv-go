@@ -132,6 +132,10 @@ capi_core_create_col_shape_circle g_call_core_create_col_shape_circle;
 capi_core_create_col_shape_sphere g_call_core_create_col_shape_sphere;
 capi_core_create_checkpoint g_call_core_create_checkpoint;
 capi_core_create_voice_channel g_call_core_create_voice_channel;
+capi_core_create_point_blip_position g_call_core_create_point_blip_position;
+capi_core_create_point_blip_entity g_call_core_create_point_blip_entity;
+capi_core_create_area_blip g_call_core_create_area_blip;
+capi_core_create_radius_blip g_call_core_create_radius_blip;
 
 capi_vehicle_has_meta_data g_call_vehicle_has_meta_data;
 capi_vehicle_get_meta_data g_call_vehicle_get_meta_data;
@@ -474,6 +478,8 @@ capi_blip_get_blip_type g_call_blip_get_blip_type;
 capi_blip_get_display g_call_blip_get_display;
 capi_blip_set_display g_call_blip_set_display;
 capi_blip_get_sprite g_call_blip_get_sprite;
+capi_blip_get_scale_xy g_call_blip_get_scale_xy;
+capi_blip_set_scale_xy g_call_blip_set_scale_xy;
 capi_blip_get_color g_call_blip_get_color;
 capi_blip_get_secondary_color g_call_blip_get_secondary_color;
 capi_blip_get_alpha g_call_blip_get_alpha;
@@ -946,6 +952,10 @@ int load_module(const char *path)
     g_call_core_create_checkpoint = GET_FUNC(module, "Core_CreateCheckpoint", capi_core_create_checkpoint);
     g_call_core_create_voice_channel = GET_FUNC(module, "Core_CreateVoiceChannel", capi_core_create_voice_channel);
     g_call_core_create_vehicle = GET_FUNC(module, "Core_CreateVehicle", capi_core_create_vehicle);
+    g_call_core_create_point_blip_position = GET_FUNC(module, "Core_CreatePointBlipPosition", capi_core_create_point_blip_position);
+    g_call_core_create_point_blip_entity = GET_FUNC(module, "Core_CreatePointBlipEntity", capi_core_create_point_blip_entity);
+    g_call_core_create_area_blip = GET_FUNC(module, "Core_CreateAreaBlip", capi_core_create_area_blip);
+    g_call_core_create_radius_blip = GET_FUNC(module, "Core_CreateRadiusBlip", capi_core_create_radius_blip);
 
     // Checkpoint
     g_call_checkpoint_get_type = GET_FUNC(module, "Checkpoint_GetType", capi_checkpoint_get_type);
@@ -1015,6 +1025,8 @@ int load_module(const char *path)
     g_call_blip_get_display = GET_FUNC(module, "Blip_GetDisplay", capi_blip_get_display);
     g_call_blip_set_display = GET_FUNC(module, "Blip_SetDisplay", capi_blip_set_display);
     g_call_blip_get_sprite = GET_FUNC(module, "Blip_GetSprite", capi_blip_get_sprite);
+    g_call_blip_get_scale_xy = GET_FUNC(module, "Blip_GetScaleXY", capi_blip_get_scale_xy);
+    g_call_blip_set_scale_xy = GET_FUNC(module, "Blip_SetScaleXY", capi_blip_set_scale_xy);
     g_call_blip_get_color = GET_FUNC(module, "Blip_GetColor", capi_blip_get_color);
     g_call_blip_get_secondary_color = GET_FUNC(module, "Blip_GetSecondaryColor", capi_blip_get_secondary_color);
     g_call_blip_get_alpha = GET_FUNC(module, "Blip_GetAlpha", capi_blip_get_alpha);
@@ -1250,37 +1262,57 @@ const char * core_get_root_directory()
 
 void *core_create_col_shape_cylinder(float posX, float posY, float posZ, float radius, float height)
 {
-    g_call_core_create_col_shape_cylinder(posX, posY, posZ, radius, height);
+    return g_call_core_create_col_shape_cylinder(posX, posY, posZ, radius, height);
 }
 
 void *core_create_col_shape_cube(float posX1, float posY1, float posZ1, float posX2, float posY2, float posZ2)
 {
-    g_call_core_create_col_shape_cube(posX1, posY1, posZ1, posX2, posY2, posZ2);
+    return g_call_core_create_col_shape_cube(posX1, posY1, posZ1, posX2, posY2, posZ2);
 }
 
 void *core_create_col_shape_rectangle(float x1, float y1, float x2, float y2, float z)
 {
-    g_call_core_create_col_shape_rectangle(x1, y1, x2, y2, z);
+    return g_call_core_create_col_shape_rectangle(x1, y1, x2, y2, z);
 }
 
 void *core_create_col_shape_circle(float posX, float posY, float posZ, float radius)
 {
-    g_call_core_create_col_shape_circle(posX, posY, posZ, radius);
+    return g_call_core_create_col_shape_circle(posX, posY, posZ, radius);
 }
 
 void *core_create_col_shape_sphere(float posX, float posY, float posZ, float radius)
 {
-    g_call_core_create_col_shape_sphere(posX, posY, posZ, radius);
+    return g_call_core_create_col_shape_sphere(posX, posY, posZ, radius);
 }
 
 void *core_create_checkpoint(unsigned char type, float x, float y, float z, float radius, float height, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
-    g_call_core_create_checkpoint(type, x, y, z, radius, height, r, g, b, a);
+    return g_call_core_create_checkpoint(type, x, y, z, radius, height, r, g, b, a);
 }
 
 void *core_create_voice_channel(int spatial, float maxDistance)
 {
-    g_call_core_create_voice_channel(spatial, maxDistance);
+    return g_call_core_create_voice_channel(spatial, maxDistance);
+}
+
+void *core_create_point_blip_position(float x, float y, float z)
+{
+    return g_call_core_create_point_blip_position(x, y, z);
+}
+
+void *core_create_point_blip_entity(Entity e)
+{
+    return g_call_core_create_point_blip_entity(e);
+}
+
+void *core_create_area_blip(float x, float y, float z, float width, float height)
+{
+    return g_call_core_create_area_blip(x, y, z, width, height);
+}
+
+void *core_create_radius_blip(float x, float y, float z, float radius)
+{
+    return g_call_core_create_radius_blip(x, y, z, radius);
 }
 
 // Player
@@ -2964,7 +2996,7 @@ Entity core_get_mvalue_base_object(void *val)
     return g_call_core_get_mvalue_base_object(val);
 }
 
-Position core_get_mvalue_vector2(void *val)
+Vector2 core_get_mvalue_vector2(void *val)
 {
     return g_call_core_get_mvalue_vector2(val);
 }
@@ -2987,7 +3019,7 @@ Array core_get_mvalue_byte_array(void *val)
 void *core_create_vehicle(unsigned long model, float posX, float posY, float posZ,
                           float rotX, float rotY, float rotZ)
 {
-    g_call_core_create_vehicle(model, posX, posY, posZ, rotX, rotY, rotZ);
+    return g_call_core_create_vehicle(model, posX, posY, posZ, rotX, rotY, rotZ);
 }
 
 void core_trigger_local_event(const char *ev, CustomData *MValues, unsigned long long MValuesSize)
@@ -3408,6 +3440,16 @@ void blip_set_display(void *b, int display)
 int blip_get_sprite(void *b)
 {
     return g_call_blip_get_sprite(b);
+}
+
+Vector2 blip_get_scale_xy(void *b)
+{
+    return g_call_blip_get_scale_xy(b);
+}
+
+void blip_set_scale_xy(void *b, float x, float y)
+{
+    g_call_blip_set_scale_xy(b, x, y);
 }
 
 int blip_get_color(void *b)

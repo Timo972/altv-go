@@ -17,3 +17,12 @@ func newRGBA(cRGBA C.struct_rgba) RGBA {
 		A: uint8(cRGBA.a),
 	}
 }
+
+func newCRGBA(rgba RGBA) C.struct_rgba {
+	return C.struct_rgba{
+		r: C.uchar(rgba.R),
+		g: C.uchar(rgba.G),
+		b: C.uchar(rgba.B),
+		a: C.uchar(rgba.A),
+	}
+}
