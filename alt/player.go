@@ -284,7 +284,7 @@ func (p Player) ClearProps(component uint8) {
 	C.player_clear_props(p.Ptr, C.uint(component))
 }
 
-func (p Player) IsEntityInStreamingRange(entity *Entity) bool {
+func (p Player) IsEntityInStreamingRange(entity IEntity) bool {
 	return int(C.player_is_entity_in_streaming_range(p.Ptr, newCEntity(entity))) == 1
 }
 

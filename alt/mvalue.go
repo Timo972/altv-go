@@ -122,38 +122,43 @@ func CreateMValue(value interface{}) *MValue {
 
 		mValuePtr = C.core_create_mvalue_vector3(C.float(v3.X), C.float(v3.Y), C.float(v3.Z))
 		mValueType = MValueVector3
-	case *Player, *Vehicle, *ColShape, *Checkpoint, *VoiceChannel:
+	case *Player, *Vehicle, *ColShape, *Checkpoint, *VoiceChannel, *Blip, *Entity:
 		var ptr unsafe.Pointer
 		var _type BaseObjectType
 
-		player, ok := value.(*Player)
-		if ok {
+		if player, ok := value.(*Player); ok {
 			ptr = player.Ptr
 			_type = player.Type
 		}
 
-		vehicle, ok := value.(*Vehicle)
-		if ok {
+		if vehicle, ok := value.(*Vehicle); ok {
 			ptr = vehicle.Ptr
 			_type = vehicle.Type
 		}
 
-		colShape, ok := value.(*ColShape)
-		if ok {
+		if colShape, ok := value.(*ColShape); ok {
 			ptr = colShape.Ptr
 			_type = colShape.Type
 		}
 
-		checkpoint, ok := value.(*Checkpoint)
-		if ok {
+		if checkpoint, ok := value.(*Checkpoint); ok {
 			ptr = checkpoint.Ptr
 			_type = checkpoint.Type
 		}
 
-		voiceChannel, ok := value.(*VoiceChannel)
-		if ok {
+		if voiceChannel, ok := value.(*VoiceChannel); ok {
 			ptr = voiceChannel.Ptr
 			_type = voiceChannel.Type
+		}
+
+		if blip, ok := value.(*Blip); ok {
+			ptr = blip.Ptr
+			_type = blip.Type
+		}
+
+		if entity, ok := value.(*Entity); ok {
+			ptr = entity.Ptr
+			_type = entity.Type
 		}
 
 		if ptr == nil {
@@ -222,7 +227,7 @@ func (v MValue) GetValue() interface{} {
 		v.Value = C.GoBytes(arr.array, C.int(arr.size))
 	case MValueFunction:
 		v.Value = func(args ...interface{}) interface{} {
-			cArgPtr, cArgSize := newArgArray(args)
+			cArgPtr, cArgSize := newMValueArray(args)
 			defer C.free(unsafe.Pointer(cArgPtr))
 
 			cMeta := C.call_mvalue_function(v.Ptr, cArgPtr, cArgSize)
@@ -252,21 +257,7 @@ func altCallFunction(id C.ulonglong, cMValues unsafe.Pointer, cSize C.ulonglong)
 		return C.struct_data{mValue: mVal.Ptr, Type: C.uint(mVal.Type)}
 	}
 
-	size := uint64(cSize)
-	args := make([]interface{}, size)
-
-	cMValueStructs := (*[1 << 30]C.struct_metaData)(cMValues)[:size:size]
-
-	for i := uint64(0); i < size; i++ {
-		cMVal := cMValueStructs[i]
-		_type := uint8(cMVal.Type)
-
-		mValue := &MValue{Ptr: cMVal.Ptr, Type: _type, Value: nil}
-
-		val := mValue.GetValue()
-
-		args[i] = val
-	}
+	args := convertMValueArray(cMValues, cSize)
 
 	returnValue := listener(args...)
 	returnMValue := CreateMValue(returnValue)

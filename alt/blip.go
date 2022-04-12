@@ -40,11 +40,8 @@ func newBlip(b unsafe.Pointer) *Blip {
 func CreatePointBlip(x float32, y float32, z float32) *Blip {
 	return newBlip(C.core_create_point_blip_position(C.float(x), C.float(y), C.float(z)))
 }
-func CreateEntityBlip(entity *Entity) *Blip {
-	return newBlip(C.core_create_point_blip_entity(C.struct_entity{
-		Ptr:  entity.Ptr,
-		Type: C.uchar(entity.Type),
-	}))
+func CreateEntityBlip(entity IEntity) *Blip {
+	return newBlip(C.core_create_point_blip_entity(newCEntity(entity)))
 }
 
 func CreateRadiusBlip(x float32, y float32, z float32, radius float32) *Blip {
