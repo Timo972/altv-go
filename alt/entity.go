@@ -13,6 +13,11 @@ type Entity struct {
 	WorldObject
 }
 
+type IEntity interface {
+	getPtr() unsafe.Pointer
+	getType() BaseObjectType
+}
+
 func newEntity(e C.struct_entity) *Entity {
 	t := BaseObjectType(e.Type)
 
@@ -27,11 +32,19 @@ func newEntity(e C.struct_entity) *Entity {
 	return entity
 }
 
-func newCEntity(e *Entity) C.struct_entity {
+func newCEntity(e IEntity) C.struct_entity {
 	return C.struct_entity{
-		Ptr:  e.Ptr,
-		Type: C.uchar(e.Type),
+		Ptr:  e.getPtr(),
+		Type: C.uchar(e.getType()),
 	}
+}
+
+func (e Entity) getPtr() unsafe.Pointer {
+	return e.Ptr
+}
+
+func (e Entity) getType() BaseObjectType {
+	return e.Type
 }
 
 func (e Entity) IsPlayer() bool {
@@ -75,7 +88,7 @@ func (e Entity) Detach() {
 	}
 }
 
-func (e Entity) AttachToEntity(entity *Entity, otherBoneIndex int16, myBoneIndex int16, position Vector3, rotation Vector3, collision bool, noFixedRotation bool) {
+func (e Entity) AttachToEntity(entity IEntity, otherBoneIndex int16, myBoneIndex int16, position Vector3, rotation Vector3, collision bool, noFixedRotation bool) {
 	if e.Type == PlayerObject {
 		C.player_attach_to_entity(e.Ptr, newCEntity(entity), C.int(otherBoneIndex), C.int(myBoneIndex), newCPosition(position), newCRotation(rotation), C.int(module.Bool2int(collision)), C.int(module.Bool2int(noFixedRotation)))
 	} else if e.Type == VehicleObject {

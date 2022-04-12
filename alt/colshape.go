@@ -67,7 +67,7 @@ func (c ColShape) IsPointIn(pos Vector3) bool {
 	return false
 }
 
-func (c ColShape) IsEntityIn(entity *Entity) bool {
+func (c ColShape) IsEntityIn(entity IEntity) bool {
 	if c.Type == ColshapeObject {
 		return int(C.col_shape_is_entity_in(c.Ptr, newCEntity(entity))) == 1
 	} else if c.Type == CheckpointObject {

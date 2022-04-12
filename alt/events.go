@@ -414,26 +414,11 @@ func (e eventManager) AllClientEvents(listener allClientEventsListener) {
 	registerOnEvent(Resource.Name, clientScriptEvent)
 }
 
-// NewArgArray internally used to convert values to CMValue array
-func newArgArray(args []interface{}) (*C.struct_data, C.ulonglong) {
-	size := len(args)
-	ptr := C.malloc(C.size_t(C.sizeof_CustomData * size))
-	cArray := (*[1 << 30]C.struct_data)(ptr)
-
-	for i := 0; i < size; i++ {
-		mValue := CreateMValue(args[i])
-
-		cArray[i] = C.struct_data{mValue: mValue.Ptr, Type: C.uint(mValue.Type)}
-	}
-
-	return (*C.struct_data)(ptr), C.ulonglong(size)
-}
-
 func EmitServer(eventName string, args ...interface{}) {
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	argPtr, argSize := newArgArray(args)
+	argPtr, argSize := newMValueArray(args)
 	defer C.free(unsafe.Pointer(argPtr))
 
 	C.core_trigger_local_event(cEvent, argPtr, argSize)
@@ -443,7 +428,7 @@ func EmitClient(player *Player, eventName string, args ...interface{}) {
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	argPtr, argSize := newArgArray(args)
+	argPtr, argSize := newMValueArray(args)
 	defer C.free(unsafe.Pointer(argPtr))
 
 	C.core_trigger_client_event(player.Ptr, cEvent, argPtr, argSize)
@@ -459,7 +444,7 @@ func EmitClients(players []*Player, eventName string, args ...interface{}) {
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	argPtr, argSize := newArgArray(args)
+	argPtr, argSize := newMValueArray(args)
 	defer C.free(unsafe.Pointer(argPtr))
 
 	clientArrayPtr := C.malloc(C.size_t(clientSize) * C.size_t(8))
@@ -477,32 +462,17 @@ func EmitAllClients(eventName string, args ...interface{}) {
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	argPtr, argSize := newArgArray(args)
+	argPtr, argSize := newMValueArray(args)
 	defer C.free(unsafe.Pointer(argPtr))
 
 	C.core_trigger_client_event_for_all(cEvent, argPtr, argSize)
 }
 
 //export altServerScriptEvent
-func altServerScriptEvent(cName *C.char, cMValues unsafe.Pointer, _size C.ulonglong) {
+func altServerScriptEvent(cName *C.char, cMValues unsafe.Pointer, size C.ulonglong) {
 	name := C.GoString(cName)
 
-	size := uint64(_size)
-
-	args := make([]interface{}, 0)
-
-	cMValueStructs := (*[1 << 30]C.struct_metaData)(cMValues)[:size:size]
-
-	for i := uint64(0); i < size; i++ {
-		cMVal := cMValueStructs[i]
-		_type := uint8(cMVal.Type)
-
-		mValue := &MValue{Ptr: cMVal.Ptr, Type: _type, Value: nil}
-
-		val := mValue.GetValue()
-
-		args = append(args, val)
-	}
+	args := convertMValueArray(cMValues, size)
 
 	for _, event := range On.allServerScriptEvents {
 		event(name, args...)
@@ -514,26 +484,11 @@ func altServerScriptEvent(cName *C.char, cMValues unsafe.Pointer, _size C.ulongl
 }
 
 //export altClientScriptEvent
-func altClientScriptEvent(p unsafe.Pointer, cName *C.char, cMValues unsafe.Pointer, _size C.ulonglong) {
+func altClientScriptEvent(p unsafe.Pointer, cName *C.char, cMValues unsafe.Pointer, size C.ulonglong) {
 	name := C.GoString(cName)
 	player := newPlayer(p)
 
-	size := uint64(_size)
-
-	args := make([]interface{}, 0)
-
-	cMValueStructs := (*[1 << 30]C.struct_metaData)(cMValues)[:size:size]
-
-	for i := uint64(0); i < size; i++ {
-		cMVal := cMValueStructs[i]
-		_type := uint8(cMVal.Type)
-
-		mValue := &MValue{Ptr: cMVal.Ptr, Type: _type, Value: nil}
-
-		val := mValue.GetValue()
-
-		args = append(args, val)
-	}
+	args := convertMValueArray(cMValues, size)
 
 	for _, event := range On.allClientScriptEvents {
 		event(player, name, args...)
