@@ -213,6 +213,8 @@ func (v MValue) GetValue() interface{} {
 			v.Value = newCheckpoint(entity.Ptr)
 		} else if _type == VoiceChannelObject {
 			v.Value = newVoiceChannel(entity.Ptr)
+		} else if _type == BlipObject {
+			v.Value = newBlip(entity.Ptr)
 		}
 	case MValueVector2:
 		v.Value = newVector2(C.core_get_mvalue_vector2(v.Ptr))
