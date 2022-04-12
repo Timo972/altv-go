@@ -22,8 +22,7 @@ func newPlayer(p unsafe.Pointer) *Player {
 }
 
 func newPlayerArray(arr C.struct_array) []*Player {
-	size := int(arr.size)
-	values := (*[1 << 28]unsafe.Pointer)(arr.array)[:size:size]
+	values, size := convertArray[unsafe.Pointer](arr)
 
 	players := make([]*Player, size)
 
@@ -64,19 +63,14 @@ func (p Player) HasWeaponComponent(weapon uint32, component uint32) bool {
 }
 
 func (p Player) CurrentWeaponComponents() []uint32 {
-	cArrStruct := C.player_get_current_weapon_components(p.Ptr)
-	size := int(cArrStruct.size)
+	cComponentsStruct := C.player_get_current_weapon_components(p.Ptr)
+	cComponents, size := convertArray[C.uint](cComponentsStruct)
 
-	if size == 0 {
-		return []uint32{}
-	}
-
-	var cArr unsafe.Pointer = cArrStruct.array
-	cIntArray := (*[1 << 28]C.uint)(cArr)[:size:size]
 	comps := make([]uint32, size)
-	for i, cInt := range cIntArray {
-		comps[i] = uint32(cInt)
+	for i, comp := range cComponents {
+		comps[i] = uint32(comp)
 	}
+
 	return comps
 }
 
@@ -403,8 +397,19 @@ func (p Player) HairHighlightColor() uint8 {
 	return uint8(C.player_get_hair_highlight_color(p.Ptr))
 }
 
-// TODO:
-func (p Player) Weapons() {}
+func (p Player) Weapons() []Weapon {
+	cWeapons := C.player_get_weapons(p.Ptr)
+	values, size := convertArray[C.struct_weapon](cWeapons)
+
+	weapons := make([]Weapon, size)
+
+	for i := 0; i < size; i++ {
+		weapon := newWeapon(values[i])
+		weapons = append(weapons, weapon)
+	}
+
+	return weapons
+}
 
 func (p Player) HasLocalMetaData(key string) bool {
 	cKey := C.CString(key)

@@ -144,21 +144,7 @@ func PlayersByName(name string) []*Player {
 	defer C.free(unsafe.Pointer(cName))
 	arr := C.core_get_players_by_name(cName)
 
-	size := int(arr.size)
-	values := (*[1 << 28]unsafe.Pointer)(arr.array)[:size:size]
-
-	players := make([]*Player, size)
-
-	if size == 0 {
-		return players
-	}
-
-	for i := 0; i < size; i++ {
-		player := values[i]
-		players[i] = newPlayer(player)
-	}
-
-	return players
+	return newPlayerArray(arr)
 }
 
 func Players() []*Player {

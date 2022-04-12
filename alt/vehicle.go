@@ -189,8 +189,7 @@ func newVehicle(p unsafe.Pointer) *Vehicle {
 }
 
 func newVehicleArray(arr C.struct_array) []*Vehicle {
-	size := int(arr.size)
-	values := (*[1 << 28]unsafe.Pointer)(arr.array)[:size:size]
+	values, size := convertArray[unsafe.Pointer](arr)
 
 	vehicles := make([]*Vehicle, size)
 

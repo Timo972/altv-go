@@ -560,11 +560,9 @@ func altPlayerConnectEvent(player unsafe.Pointer) {
 }
 
 //export altConsoleCommandEvent
-func altConsoleCommandEvent(cName *C.char, cArray **C.char, cSize C.ulonglong) {
+func altConsoleCommandEvent(cName *C.char, cArray C.struct_array) {
 	name := C.GoString(cName)
-
-	size := int(cSize)
-	cStrings := (*[1 << 28]*C.char)(unsafe.Pointer(cArray))[:size:size]
+	cStrings, size := convertArray[*C.char](cArray)
 
 	array := make([]string, size)
 
@@ -800,8 +798,7 @@ func altColShapeEvent(c unsafe.Pointer, e C.struct_entity, s C.int) {
 func altFireEvent(p unsafe.Pointer, f C.struct_array) C.int {
 	player := newPlayer(p)
 
-	size := int(f.size)
-	cFireInfoStructs := (*[1 << 28]C.struct_fireInfo)(f.array)[:size:size]
+	cFireInfoStructs, size := convertArray[C.struct_fireInfo](f)
 
 	array := make([]FireInfo, size)
 
