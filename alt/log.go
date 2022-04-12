@@ -5,31 +5,42 @@ package alt
 import "C"
 import (
 	"encoding/json"
+	"strings"
 	"unsafe"
 )
 
-func stringify(args []interface{}) string {
-	str := ""
-	for i, arg := range args {
-		if i > 0 {
-			str += " "
-		}
-		msg, ok := arg.(string)
-		if ok {
-			str += msg
-			continue
-		}
-		data, err := json.Marshal(arg)
-		if err != nil {
-			str += "{}"
-		} else {
-			str += string(data)
-		}
-	}
-	return str
+type loggableStruct interface {
+	String() string
 }
 
-func LogInfo(args...interface{}) {
+func stringify(args []interface{}) string {
+	messages := make([]string, len(args))
+	for i, arg := range args {
+
+		// if the argument is a string, just append it
+		if msg, ok := arg.(string); ok {
+			messages[i] = msg
+			continue
+		}
+
+		// if the argument is a loggable struct, call its String() method
+		if loggable, ok := arg.(loggableStruct); ok {
+			messages[i] = loggable.String()
+			continue
+		}
+
+		// otherwise, serialize it to JSON
+		if data, err := json.Marshal(arg); err != nil {
+			messages[i] = err.Error()
+		} else {
+			messages[i] = string(data)
+		}
+	}
+
+	return strings.Join(messages, "")
+}
+
+func LogInfo(args ...interface{}) {
 	msg := stringify(args)
 	cstr := C.CString(msg)
 	defer C.free(unsafe.Pointer(cstr))

@@ -222,6 +222,10 @@ func CreateVehicle(model uint32, pos Vector3, rot Vector3) (*Vehicle, error) {
 	return veh, nil
 }
 
+func (v Vehicle) String() string {
+	return fmt.Sprintf("Vehicle{}")
+}
+
 func (v Vehicle) Driver() *Player {
 	cPtr := C.vehicle_get_driver(v.Ptr)
 	if cPtr == nil {

@@ -4,6 +4,7 @@ package alt
 // #include "Module.h"
 import "C"
 import (
+	"fmt"
 	"unsafe"
 
 	"github.com/shockdev04/altv-go-pkg/internal/module"
@@ -39,6 +40,10 @@ func CreateColShapeRectangle(x1 float32, y1 float32, x2 float32, y2 float32, z f
 func CreateColShapeSphere(x float32, y float32, z float32, radius float32) *ColShape {
 	ptr := C.core_create_col_shape_sphere(C.float(x), C.float(y), C.float(z), C.float(radius))
 	return newColShape(ptr)
+}
+
+func (c ColShape) String() string {
+	return fmt.Sprintf("ColShape{}")
 }
 
 func (c ColShape) IsPlayersOnly() bool {

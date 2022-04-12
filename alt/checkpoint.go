@@ -3,7 +3,10 @@ package alt
 // #include <stdlib.h>
 // #include "Module.h"
 import "C"
-import "unsafe"
+import (
+	"fmt"
+	"unsafe"
+)
 
 type Checkpoint struct {
 	ColShape
@@ -24,6 +27,10 @@ func CreateCheckpoint(checkpointType uint8, x float32, y float32, z float32, rad
 	checkpoint.Ptr = ptr
 	checkpoint.Type = CheckpointObject
 	return checkpoint
+}
+
+func (c Checkpoint) String() string {
+	return fmt.Sprintf("Checkpoint{}")
 }
 
 func (c Checkpoint) CheckpointType() uint8 {

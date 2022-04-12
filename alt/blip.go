@@ -4,6 +4,7 @@ package alt
 // #include "Module.h"
 import "C"
 import (
+	"fmt"
 	"unsafe"
 
 	"github.com/shockdev04/altv-go-pkg/internal/module"
@@ -50,6 +51,10 @@ func CreateRadiusBlip(x float32, y float32, z float32, radius float32) *Blip {
 
 func CreateAreaBlip(x float32, y float32, z float32, width float32, height float32) *Blip {
 	return newBlip(C.core_create_area_blip(C.float(x), C.float(y), C.float(z), C.float(width), C.float(height)))
+}
+
+func (b Blip) String() string {
+	return fmt.Sprintf("Blip{}")
 }
 
 func (b Blip) IsGlobal() bool {

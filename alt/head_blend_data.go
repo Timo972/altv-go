@@ -1,6 +1,7 @@
 package alt
 
 import "C"
+import "fmt"
 
 type HeadBlendData struct {
 	ShapeFirstID  uint32
@@ -26,4 +27,8 @@ func newHeadBlendData(cHBD C.struct_headBlendData) HeadBlendData {
 		SkinMix:       float32(cHBD.skinMix),
 		ThirdMix:      float32(cHBD.thirdMix),
 	}
+}
+
+func (h HeadBlendData) String() string {
+	return fmt.Sprintf("HeadBlendData{shapeFirstID: %d, shapeSecondID: %d, shapeThirdID: %d, skinFirstID: %d, skinSecondID: %d, skinThirdID: %d, shapeMix: %f, skinMix: %f, thirdMix: %f}", h.ShapeFirstID, h.ShapeSecondID, h.ShapeThirdID, h.SkinFirstID, h.SkinSecondID, h.SkinThirdID, h.ShapeMix, h.SkinMix, h.ThirdMix)
 }

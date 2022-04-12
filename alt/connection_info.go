@@ -1,6 +1,7 @@
 package alt
 
 import "C"
+import "fmt"
 
 type ConnectionInfo struct {
 	Name          string
@@ -32,4 +33,8 @@ func newConnectionInfo(cInfo C.struct_connectionInfo) ConnectionInfo {
 		DiscordUserID: C.GoString(cInfo.discordUserID),
 		PasswordHash:  uint64(cInfo.passwordHash),
 	}
+}
+
+func (c ConnectionInfo) String() string {
+	return fmt.Sprintf("ConnectionInfo{Name: %s, SocialID: %d, HwidHash: %d, HwidExHash: %d, AuthToken: %s, IsDebug: %t, Branch: %s, Build: %d, CDNUrl: %s, PasswordHash: %d, IP: %s, DiscordUserID: %s}", c.Name, c.SocialID, c.HwidHash, c.HwidExHash, c.AuthToken, c.IsDebug, c.Branch, c.Build, c.CDNUrl, c.PasswordHash, c.IP, c.DiscordUserID)
 }

@@ -26,8 +26,8 @@ const (
 )
 
 type BaseObject struct {
-	Ptr  unsafe.Pointer
-	Type BaseObjectType
+	Ptr  unsafe.Pointer `json:"ptr"`
+	Type BaseObjectType `json:"type"`
 }
 
 type Base interface {

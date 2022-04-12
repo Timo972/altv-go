@@ -5,6 +5,7 @@ package alt
 //#endif
 // #include "Module.h"
 import "C"
+import "fmt"
 
 type Weapon struct {
 	Hash       uint32
@@ -25,4 +26,8 @@ func newWeapon(w C.struct_weapon) Weapon {
 		TintIndex:  uint8(w.tintIndex),
 		Components: comps,
 	}
+}
+
+func (w Weapon) String() string {
+	return fmt.Sprintf("Weapon{Hash: %d, TintIndex: %d, Components: %v}", w.Hash, w.TintIndex, w.Components)
 }

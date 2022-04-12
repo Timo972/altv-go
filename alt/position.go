@@ -5,6 +5,7 @@ package alt
 //#endif
 // #include "Module.h"
 import "C"
+import "fmt"
 
 type Vector3 struct {
 	X float32
@@ -53,4 +54,12 @@ func newCRotation(v Vector3) C.struct_rot {
 		pitch: C.float(v.Y),
 		yaw:   C.float(v.Z),
 	}
+}
+
+func (v Vector3) String() string {
+	return fmt.Sprintf("Vector3{%f, %f, %f}", v.X, v.Y, v.Z)
+}
+
+func (v Vector2) String() string {
+	return fmt.Sprintf("Vector2{%f, %f}", v.X, v.Y)
 }

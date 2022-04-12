@@ -4,6 +4,7 @@ package alt
 // #include "Module.h"
 import "C"
 import (
+	"fmt"
 	"unsafe"
 
 	"github.com/shockdev04/altv-go-pkg/internal/module"
@@ -45,6 +46,10 @@ func (e Entity) getPtr() unsafe.Pointer {
 
 func (e Entity) getType() BaseObjectType {
 	return e.Type
+}
+
+func (e Entity) String() string {
+	return fmt.Sprintf("Entity{}")
 }
 
 func (e Entity) IsPlayer() bool {

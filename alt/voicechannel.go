@@ -4,6 +4,7 @@ package alt
 // #include "Module.h"
 import "C"
 import (
+	"fmt"
 	"github.com/shockdev04/altv-go-pkg/internal/module"
 	"unsafe"
 )
@@ -24,6 +25,10 @@ func CreateVoiceChannel(spatial bool, maxDistance float32) *VoiceChannel {
 	voiceChannel.Ptr = C.core_create_voice_channel(C.int(module.Bool2int(spatial)), C.float(maxDistance))
 	voiceChannel.Type = VoiceChannelObject
 	return voiceChannel
+}
+
+func (v VoiceChannel) String() string {
+	return fmt.Sprintf("VoiceChannel{}")
 }
 
 func (v VoiceChannel) IsSpatial() bool {

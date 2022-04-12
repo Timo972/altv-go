@@ -1,6 +1,7 @@
 package alt
 
 import "C"
+import "fmt"
 
 type RGBA struct {
 	R uint8
@@ -25,4 +26,8 @@ func newCRGBA(rgba RGBA) C.struct_rgba {
 		b: C.uchar(rgba.B),
 		a: C.uchar(rgba.A),
 	}
+}
+
+func (rgba RGBA) String() string {
+	return fmt.Sprintf("RGBA{%d, %d, %d, %d}", rgba.R, rgba.G, rgba.B, rgba.A)
 }

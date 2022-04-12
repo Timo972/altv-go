@@ -1,6 +1,7 @@
 package alt
 
 import "C"
+import "fmt"
 
 type HeadOverlay struct {
 	Index            uint8
@@ -18,4 +19,8 @@ func newHeadOverlay(cHeadOverlay C.struct_headOverlay) HeadOverlay {
 		ColorIndex:       uint8(cHeadOverlay.colorIndex),
 		SecondColorIndex: uint8(cHeadOverlay.secondColorIndex),
 	}
+}
+
+func (h HeadOverlay) String() string {
+	return fmt.Sprintf("HeadOverlay{Index: %d, Opacity: %f, ColorType: %d, ColorIndex: %d, SecondColorIndex: %d}", h.Index, h.Opacity, h.ColorType, h.ColorIndex, h.SecondColorIndex)
 }

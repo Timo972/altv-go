@@ -4,6 +4,7 @@ package alt
 // #include "Module.h"
 import "C"
 import (
+	"fmt"
 	"unsafe"
 
 	"github.com/shockdev04/altv-go-pkg/internal/module"
@@ -36,6 +37,10 @@ func newPlayerArray(arr C.struct_array) []*Player {
 	}
 
 	return players
+}
+
+func (p Player) String() string {
+	return fmt.Sprintf("Player{}")
 }
 
 func (p Player) Name() string {
