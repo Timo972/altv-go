@@ -13,16 +13,49 @@ type Entity struct {
 	WorldObject
 }
 
-func newEntity(e unsafe.Pointer, t BaseObjectType) *Entity {
+func newEntity(e C.struct_entity) *Entity {
+	t := BaseObjectType(e.Type)
+
 	if t != PlayerObject && t != VehicleObject {
 		return nil
 	}
 
 	entity := &Entity{}
-	entity.Ptr = e
+	entity.Ptr = e.Ptr
 	entity.Type = t
 
 	return entity
+}
+
+func newCEntity(e *Entity) C.struct_entity {
+	return C.struct_entity{
+		Ptr:  e.Ptr,
+		Type: C.uchar(e.Type),
+	}
+}
+
+func (e Entity) IsPlayer() bool {
+	return e.Type == PlayerObject
+}
+
+func (e Entity) IsVehicle() bool {
+	return e.Type == VehicleObject
+}
+
+func (e Entity) AsPlayer() *Player {
+	if e.Type != PlayerObject {
+		return nil
+	}
+
+	return newPlayer(e.Ptr)
+}
+
+func (e Entity) AsVehicle() *Vehicle {
+	if e.Type != VehicleObject {
+		return nil
+	}
+
+	return newVehicle(e.Ptr)
 }
 
 func (e Entity) Model() uint32 {
@@ -42,9 +75,12 @@ func (e Entity) Detach() {
 	}
 }
 
-// AttachToEntity TODO: make capi accept x, y, z instead of Position and Rotation
-func (e Entity) AttachToEntity(entity Entity, otherBoneIndex int16, myBoneIndex int16, position Vector3, rotation Vector3, collision bool, noFixedRotation bool) {
-	//C.player_attach_to_entity(p.Ptr, entity.Ptr, C.int(otherBoneIndex), C.int(myBoneIndex), )
+func (e Entity) AttachToEntity(entity *Entity, otherBoneIndex int16, myBoneIndex int16, position Vector3, rotation Vector3, collision bool, noFixedRotation bool) {
+	if e.Type == PlayerObject {
+		C.player_attach_to_entity(e.Ptr, newCEntity(entity), C.int(otherBoneIndex), C.int(myBoneIndex), newCPosition(position), newCRotation(rotation), C.int(module.Bool2int(collision)), C.int(module.Bool2int(noFixedRotation)))
+	} else if e.Type == VehicleObject {
+		C.vehicle_attach_to_entity(e.Ptr, newCEntity(entity), C.int(otherBoneIndex), C.int(myBoneIndex), newCPosition(position), newCRotation(rotation), C.int(module.Bool2int(collision)), C.int(module.Bool2int(noFixedRotation)))
+	}
 }
 
 func (e Entity) SetVisible(toggle bool) {

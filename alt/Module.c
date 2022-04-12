@@ -1536,7 +1536,7 @@ unsigned int player_get_seat(void *p)
     return g_call_player_get_seat(p);
 }
 
-void *player_get_entity_aiming_at(void *p)
+Entity player_get_entity_aiming_at(void *p)
 {
     return g_call_player_get_entity_aiming_at(p);
 }
@@ -1696,7 +1696,7 @@ void player_clear_props(void *p, unsigned int component)
     return g_call_player_clear_props(p, component);
 }
 
-int player_is_entity_in_streaming_range(void *p, void *entity)
+int player_is_entity_in_streaming_range(void *p, Entity entity)
 {
     return g_call_player_is_entity_in_streaming_range(p, entity);
 }
@@ -1716,7 +1716,7 @@ void player_detach(void *p)
     return g_call_player_detach(p);
 }
 
-void player_attach_to_entity(void *p, void *e, int otherBoneIndex, int myBoneIndex, Position position, Rotation rotation, int collision, int noFixedRotation)
+void player_attach_to_entity(void *p, Entity e, int otherBoneIndex, int myBoneIndex, Position position, Rotation rotation, int collision, int noFixedRotation)
 {
     return g_call_player_attach_to_entity(p, e, otherBoneIndex, myBoneIndex, position, rotation, collision, noFixedRotation);
 }
@@ -2025,7 +2025,7 @@ void vehicle_detach(void *v)
     return g_call_vehicle_detach(v);
 }
 
-void vehicle_attach_to_entity(void *v, void *e, int otherBoneIndex, int myBoneIndex, Position position, Rotation rotation, int collision, int noFixedRotation)
+void vehicle_attach_to_entity(void *v, Entity e, int otherBoneIndex, int myBoneIndex, Position position, Rotation rotation, int collision, int noFixedRotation)
 {
     return g_call_vehicle_attach_to_entity(v, e, otherBoneIndex, myBoneIndex, position, rotation, collision, noFixedRotation);
 }
@@ -2895,7 +2895,7 @@ void vehicle_set_boat_anchor_active(void *v, int state)
     return g_call_vehicle_set_boat_anchor_active(v, state);
 }
 
-int vehicle_set_search_light(void *v, int state, void *e)
+int vehicle_set_search_light(void *v, int state, Entity e)
 {
     return g_call_vehicle_set_search_light(v, state, e);
 }
@@ -3093,7 +3093,7 @@ int col_shape_get_col_shape_type(void *c)
     return g_call_col_shape_get_col_shape_type(c);
 }
 
-int col_shape_is_entity_in(void *c, void *e)
+int col_shape_is_entity_in(void *c, Entity e)
 {
     return g_call_col_shape_is_entity_in(c, e);
 }
@@ -3174,7 +3174,7 @@ int checkpoint_get_col_shape_type(void *c)
     return g_call_checkpoint_get_col_shape_type(c);
 }
 
-int checkpoint_is_entity_in(void *c, void *e)
+int checkpoint_is_entity_in(void *c, Entity e)
 {
     return g_call_checkpoint_is_entity_in(c, e);
 }
@@ -3417,7 +3417,7 @@ Entity blip_attached_to(void *b)
     return g_call_blip_attached_to(b);
 }
 
-void blip_attach_to(void *b, void *e)
+void blip_attach_to(void *b, Entity e)
 {
     return g_call_blip_attach_to(b, e);
 }

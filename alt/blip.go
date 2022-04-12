@@ -68,19 +68,11 @@ func (b Blip) IsAttached() bool {
 }
 
 func (b Blip) AttachedTo() *Entity {
-	cEntity := C.blip_attached_to(b.Ptr)
-
-	return newEntity(cEntity.Ptr, BaseObjectType(cEntity.Type))
+	return newEntity(C.blip_attached_to(b.Ptr))
 }
 
 func (b Blip) AttachTo(entity *Entity) {
-	/*
-		C.struct_entity{
-				Ptr:  entity.Ptr,
-				Type: C.uchar(entity.Type),
-			}
-	*/
-	C.blip_attach_to(b.Ptr, entity.Ptr)
+	C.blip_attach_to(b.Ptr, newCEntity(entity))
 }
 
 func (b Blip) BlipType() BlipType {

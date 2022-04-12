@@ -82,25 +82,25 @@ type resourceStopListener = func(resourceName string)
 type resourceErrorListener = func(resourceName string)
 
 type metaDataChangeListener = func(key string, newValue interface{}, oldValue interface{})
-type syncedMetaDataChangeListener = func(entity interface{}, key string, newValue interface{}, oldValue interface{})
-type streamSyncedMetaDataChangeListener = func(entity interface{}, key string, newValue interface{}, oldValue interface{})
+type syncedMetaDataChangeListener = func(entity *Entity, key string, newValue interface{}, oldValue interface{})
+type streamSyncedMetaDataChangeListener = func(entity *Entity, key string, newValue interface{}, oldValue interface{})
 type globalMetaDataChangeListener = func(key string, newValue interface{}, oldValue interface{})
 type globalSyncedMetaDataChangeListener func(key string, newValue interface{}, oldValue interface{})
 type localSyncedMetaDataChangeListener = func(player *Player, key string, newValue interface{}, oldValue interface{})
 
-type playerDamageListener = func(p *Player, attacker interface{}, healthDamage uint16, armourDamage uint16, weapon uint32)
-type playerDeathListener = func(p *Player, killer interface{}, weapon uint32)
+type playerDamageListener = func(p *Player, attacker *Entity, healthDamage uint16, armourDamage uint16, weapon uint32)
+type playerDeathListener = func(p *Player, killer *Entity, weapon uint32)
 type fireListener = func(player *Player, fires []FireInfo) bool
-type explosionListener = func(p *Player, t interface{}, pos Vector3, explosionType int16, explosionFX uint) bool
+type explosionListener = func(p *Player, target *Entity, pos Vector3, explosionType int16, explosionFX uint) bool
 type startProjectileListener = func(player *Player, position Vector3, direction Vector3, ammoHash uint16, weaponHash uint32) bool
 
 // TODO bodyPart ENUM
-type weaponDamageListener = func(source *Player, target interface{}, weapon uint32, damage uint16, offset Vector3, bodyPart int8) bool
+type weaponDamageListener = func(source *Player, target *Entity, weapon uint32, damage uint16, offset Vector3, bodyPart int8) bool
 type vehicleDestroyListener = func(vehicle *Vehicle)
-type vehicleDamageListener = func(vehicle *Vehicle, entity interface{}, bodyDamage uint32, additionalBodyDamage uint32, engineDamage uint32, petrolTankDamage uint32, damageWidth uint32)
+type vehicleDamageListener = func(vehicle *Vehicle, entity *Entity, bodyDamage uint32, additionalBodyDamage uint32, engineDamage uint32, petrolTankDamage uint32, damageWidth uint32)
 
-type entityEnterColShapeListener = func(colShape *ColShape, entity interface{})
-type entityLeaveColShapeListener = func(colShape *ColShape, entity interface{})
+type entityEnterColShapeListener = func(colShape *ColShape, entity *Entity)
+type entityLeaveColShapeListener = func(colShape *ColShape, entity *Entity)
 type playerEnterVehicleListener = func(p *Player, v *Vehicle, seat uint8)
 type playerEnteringVehicleListener = func(p *Player, v *Vehicle, seat uint8)
 type playerLeaveVehicleListener = func(p *Player, v *Vehicle, seat uint8)
@@ -109,9 +109,9 @@ type playerWeaponChangeListener = func(player *Player, oldWeapon uint32, newWeap
 
 type vehicleAttachListener = func(vehicle *Vehicle, attachedVehicle *Vehicle)
 type vehicleDetachListener = func(vehicle *Vehicle, detachedVehicle *Vehicle)
-type netOwnerChangeListener = func(entity interface{}, owner *Player, oldOwner *Player)
+type netOwnerChangeListener = func(entity *Entity, owner *Player, oldOwner *Player)
 
-type removeEntityListener = func(entity interface{})
+type removeEntityListener = func(entity *Entity)
 
 type consoleCommandListener = func(command string, args []string)
 
@@ -590,15 +590,7 @@ func altExplosionEvent(p unsafe.Pointer, e C.struct_entity, pos C.struct_pos, ex
 	goPos := Vector3{X: float32(pos.x), Y: float32(pos.y), Z: float32(pos.z)}
 	expType := int16(explosionType)
 	expFX := uint(explosionFX)
-
-	var entity interface{}
-	entityType := BaseObjectType(e.Type)
-
-	if entityType == PlayerObject {
-		entity = newPlayer(e.Ptr)
-	} else if entityType == VehicleObject {
-		entity = newVehicle(e.Ptr)
-	}
+	entity := newEntity(e)
 
 	cont := true
 
@@ -630,15 +622,7 @@ func altPlayerDamageEvent(p unsafe.Pointer, e C.struct_entity, healthDmg C.ushor
 	healthDamage := uint16(healthDmg)
 	armourDamage := uint16(armourDmg)
 	weapon := uint32(weap)
-
-	var entity interface{}
-	entityType := BaseObjectType(e.Type)
-
-	if entityType == PlayerObject {
-		entity = newPlayer(e.Ptr)
-	} else if entityType == VehicleObject {
-		entity = newVehicle(e.Ptr)
-	}
+	entity := newEntity(e)
 
 	for _, event := range On.playerDamageEvents {
 		event(player, entity, healthDamage, armourDamage, weapon)
@@ -649,15 +633,7 @@ func altPlayerDamageEvent(p unsafe.Pointer, e C.struct_entity, healthDmg C.ushor
 func altPlayerDeathEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong) {
 	player := newPlayer(p)
 	weapon := uint32(weap)
-
-	var entity interface{}
-	entityType := BaseObjectType(e.Type)
-
-	if entityType == PlayerObject {
-		entity = newPlayer(e.Ptr)
-	} else if entityType == VehicleObject {
-		entity = newVehicle(e.Ptr)
-	}
+	entity := newEntity(e)
 
 	for _, event := range On.playerDeathEvents {
 		event(player, entity, weapon)
@@ -688,14 +664,7 @@ func altPlayerLeaveVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.uchar) {
 
 //export altRemoveEntityEvent
 func altRemoveEntityEvent(e C.struct_entity) {
-	var entity interface{}
-	entityType := BaseObjectType(e.Type)
-
-	if entityType == PlayerObject {
-		entity = newPlayer(e.Ptr)
-	} else if entityType == VehicleObject {
-		entity = newVehicle(e.Ptr)
-	}
+	entity := newEntity(e)
 
 	for _, event := range On.removeEntityEvents {
 		event(entity)
@@ -736,15 +705,7 @@ func altWeaponDamageEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong, dmg
 	damage := uint16(dmg)
 	offset := Vector3{X: float32(ofs.x), Y: float32(ofs.y), Z: float32(ofs.z)}
 	bodyPart := int8(bPart)
-
-	var entity interface{}
-	entityType := BaseObjectType(e.Type)
-
-	if entityType == PlayerObject {
-		entity = newPlayer(e.Ptr)
-	} else if entityType == VehicleObject {
-		entity = newVehicle(e.Ptr)
-	}
+	entity := newEntity(e)
 
 	cont := false
 
@@ -773,15 +734,7 @@ func altPlayerEnteringVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.ushor
 func altColShapeEvent(c unsafe.Pointer, e C.struct_entity, s C.int) {
 	colShape := newColShape(c)
 	state := int(s) == 1
-
-	var entity interface{}
-	entityType := BaseObjectType(e.Type)
-
-	if entityType == PlayerObject {
-		entity = newPlayer(e.Ptr)
-	} else if entityType == VehicleObject {
-		entity = newVehicle(e.Ptr)
-	}
+	entity := newEntity(e)
 
 	if state {
 		for _, event := range On.entityEnterColShapeEvents {
@@ -875,15 +828,7 @@ func altMetaDataChangeEvent(cKey *C.char, cNewValue C.struct_metaData, cOldValue
 func altNetOwnerChangeEvent(e C.struct_entity, o unsafe.Pointer, oo unsafe.Pointer) {
 	owner := newPlayer(o)
 	oldOwner := newPlayer(oo)
-
-	var entity interface{}
-	entityType := BaseObjectType(e.Type)
-
-	if entityType == PlayerObject {
-		entity = newPlayer(e.Ptr)
-	} else if entityType == VehicleObject {
-		entity = newVehicle(e.Ptr)
-	}
+	entity := newEntity(e)
 
 	for _, event := range On.netOwnerChangeEvents {
 		event(entity, owner, oldOwner)
@@ -977,15 +922,7 @@ func altStreamSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.str
 	oldVal := &MValue{Ptr: oVal.Ptr, Type: uint8(oVal.Type), Value: nil}
 	oldValue := oldVal.GetValue()
 	newValue := newVal.GetValue()
-
-	var entity interface{}
-	entityType := BaseObjectType(e.Type)
-
-	if entityType == PlayerObject {
-		entity = newPlayer(e.Ptr)
-	} else if entityType == VehicleObject {
-		entity = newVehicle(e.Ptr)
-	}
+	entity := newEntity(e)
 
 	for _, event := range On.streamSyncedMetaDataChangeEvents {
 		event(entity, key, newValue, oldValue)
@@ -999,15 +936,7 @@ func altSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.struct_me
 	oldVal := &MValue{Ptr: oVal.Ptr, Type: uint8(oVal.Type), Value: nil}
 	oldValue := oldVal.GetValue()
 	newValue := newVal.GetValue()
-
-	var entity interface{}
-	entityType := BaseObjectType(e.Type)
-
-	if entityType == PlayerObject {
-		entity = newPlayer(e.Ptr)
-	} else if entityType == VehicleObject {
-		entity = newVehicle(e.Ptr)
-	}
+	entity := newEntity(e)
 
 	for _, event := range On.streamSyncedMetaDataChangeEvents {
 		event(entity, key, newValue, oldValue)
@@ -1046,16 +975,7 @@ func altVehicleDestroyEvent(v unsafe.Pointer) {
 //export altVehicleDamageEvent
 func altVehicleDamageEvent(v unsafe.Pointer, e C.struct_entity, body C.uint, additional C.uint, engine C.uint, tank C.uint, width C.uint) {
 	vehicle := newVehicle(v)
-
-	var entity interface{}
-	entityType := BaseObjectType(e.Type)
-
-	if entityType == PlayerObject {
-		entity = newPlayer(e.Ptr)
-	} else if entityType == VehicleObject {
-		entity = newVehicle(e.Ptr)
-	}
-
+	entity := newEntity(e)
 	bodyDamage := uint32(body)
 	additionalBodyDamage := uint32(additional)
 	engineDamage := uint32(engine)

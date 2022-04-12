@@ -36,29 +36,8 @@ func Hash(str string) uint32 {
 	return uint32(C.core_hash(cStr))
 }
 
-func EntityByID(id uint16) interface{} {
-	entity := C.core_get_entity_by_id(C.ushort(id))
-
-	entityType := BaseObjectType(entity.Type)
-
-	if entityType == PlayerObject {
-		p := newPlayer(entity.Ptr)
-		return p
-	} else if entityType == VehicleObject {
-		v := newVehicle(entity.Ptr)
-		return v
-	} else if entityType == ColshapeObject {
-		c := newColShape(entity.Ptr)
-		return c
-	} else if entityType == CheckpointObject {
-		c := newCheckpoint(entity.Ptr)
-		return c
-	} else if entityType == VoiceChannelObject {
-		v := newVoiceChannel(entity.Ptr)
-		return v
-	}
-
-	return nil
+func EntityByID(id uint16) *Entity {
+	return newEntity(C.core_get_entity_by_id(C.ushort(id)))
 }
 
 func HasMetaData(key string) bool {
@@ -184,3 +163,16 @@ func SDKHash() string {
 func Debug() bool {
 	return int(C.core_is_debug()) == 1
 }
+
+// TODO missing:
+// Core_GetEntities
+// Core_GetRequiredPermissions
+// Core_GetOptionalPermissions
+// Core_DestroyBaseObject
+// Core_GetNetTime
+// Core_GetAllResources
+// Core_StringToSHA256
+// Core_StopServer
+// Core_GetVehicleModelByHash
+// Core_GetServerConfig
+// Core_HashServerPassword

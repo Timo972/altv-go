@@ -149,11 +149,8 @@ func (p Player) Seat() uint8 {
 	return uint8(C.player_get_seat(p.Ptr))
 }
 
-// EntityAimingAt TODO: make proper entity struct
 func (p Player) EntityAimingAt() *Entity {
-	//cPtr := C.player_get_entity_aiming_at(p.Ptr)
-	//entity := &Entity{Ptr:cPtr}
-	return nil
+	return newEntity(C.player_get_entity_aiming_at(p.Ptr))
 }
 
 func (p Player) EntityAimOffset() Vector3 {
@@ -287,8 +284,8 @@ func (p Player) ClearProps(component uint8) {
 	C.player_clear_props(p.Ptr, C.uint(component))
 }
 
-func (p Player) IsEntityInStreamingRange(entity Entity) bool {
-	return int(C.player_is_entity_in_streaming_range(p.Ptr, entity.Ptr)) == 1
+func (p Player) IsEntityInStreamingRange(entity *Entity) bool {
+	return int(C.player_is_entity_in_streaming_range(p.Ptr, newCEntity(entity))) == 1
 }
 
 func (p Player) MaxHealth() uint16 {
