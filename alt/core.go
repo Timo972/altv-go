@@ -46,14 +46,14 @@ func HasMetaData(key string) bool {
 	return int(C.core_has_meta_data(cStr)) == 1
 }
 
-func MetaData[V any](key string) (V, bool) {
+func MetaData(key string, value interface{}) bool {
 	cStr := C.CString(key)
 	defer C.free(unsafe.Pointer(cStr))
 
 	meta := C.core_get_meta_data(cStr)
-	mValue := &MValue[V]{Ptr: meta.Ptr, Type: uint8(meta.Type)}
+	mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
 
-	return mValue.GetValue()
+	return mValue.GetValue(value)
 }
 
 func SetMetaData(key string, value interface{}) {
@@ -75,14 +75,14 @@ func HasSyncedMetaData(key string) bool {
 	return int(C.core_has_synced_meta_data(cStr)) == 1
 }
 
-func SyncedMetaData[V any](key string) (V, bool) {
+func SyncedMetaData(key string, value interface{}) bool {
 	cStr := C.CString(key)
 	defer C.free(unsafe.Pointer(cStr))
 
 	meta := C.core_get_synced_meta_data(cStr)
-	mValue := &MValue[V]{Ptr: meta.Ptr, Type: uint8(meta.Type)}
+	mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
 
-	return mValue.GetValue()
+	return mValue.GetValue(value)
 }
 
 func SetSyncedMetaData(key string, value interface{}) {

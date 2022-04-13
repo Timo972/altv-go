@@ -427,14 +427,14 @@ func (p Player) SetLocalMetaData(key string, value interface{}) {
 	C.player_set_local_meta_data(p.Ptr, cKey, meta.Ptr)
 }
 
-func (p Player) LocalMetaData(key string) (interface{}, bool) {
+func (p Player) LocalMetaData(key string, value interface{}) bool {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
 	cMeta := C.player_get_local_meta_data(p.Ptr, cKey)
-	mValue := &MValue[interface{}]{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
+	mValue := &MValue{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
 
-	return mValue.GetValue()
+	return mValue.GetValue(value)
 }
 
 func (p Player) DeleteLocalMetaData(key string) {

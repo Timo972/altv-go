@@ -28,9 +28,9 @@ func convertMValueArray(cMValues unsafe.Pointer, cSize C.ulonglong) []interface{
 		cMVal := cMValueStructs[i]
 		_type := uint8(cMVal.Type)
 
-		mValue := &MValue[interface{}]{Ptr: cMVal.Ptr, Type: _type, Value: nil}
+		mValue := &MValue{Ptr: cMVal.Ptr, Type: _type, Value: nil}
 
-		args[i], _ = mValue.GetValue()
+		mValue.GetValue(&args[i])
 	}
 
 	return args

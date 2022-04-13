@@ -6,6 +6,7 @@ package alt
 // #include "Module.h"
 import "C"
 import (
+	"errors"
 	"reflect"
 	"unsafe"
 
@@ -39,13 +40,41 @@ var (
 	mValueFunctions = make(map[uint64]reflect.Value)
 )
 
-type MValue[ValueType any] struct {
+type MValue struct {
 	Ptr   unsafe.Pointer
 	Type  MValueType
-	Value ValueType
+	Value interface{}
 }
 
-func CreateMValue[V any](value V) *MValue[V] {
+type ExternFunction struct {
+	Ptr unsafe.Pointer
+}
+
+func (e ExternFunction) String() string {
+	return "ExternFunction{}"
+}
+
+func (e ExternFunction) Call(args ...interface{}) (interface{}, error) {
+	if e.Ptr == nil {
+		return nil, errors.New("invalid extern function")
+	}
+
+	cArgPtr, cArgSize := newMValueArray(args)
+	defer C.free(unsafe.Pointer(cArgPtr))
+
+	cMeta := C.call_mvalue_function(e.Ptr, cArgPtr, cArgSize)
+	mVal := &MValue{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
+
+	var val interface{}
+	ok := mVal.GetValue(&val)
+	if !ok {
+		return val, errors.New("mvalue conversion failed")
+	}
+
+	return val, nil
+}
+
+func CreateMValue(value interface{}) *MValue {
 	var mValuePtr unsafe.Pointer
 	var mValueType MValueType
 
@@ -144,148 +173,15 @@ func CreateMValue[V any](value V) *MValue[V] {
 		mValueType = MValueNone
 	}
 
-	/*switch value.(type) {
-	case bool:
-		mValuePtr = C.core_create_mvalue_bool(C.int(module.Bool2int(value.(bool))))
-		mValueType = MValueBool
-	case int, int8, int16, int32, int64:
-		if val, ok := value.(int); ok {
-			mValuePtr = C.core_create_mvalue_int(C.longlong(val))
-		} else if val, ok := value.(int8); ok {
-			mValuePtr = C.core_create_mvalue_int(C.longlong(val))
-		} else if val, ok := value.(int16); ok {
-			mValuePtr = C.core_create_mvalue_int(C.longlong(val))
-		} else if val, ok := value.(int32); ok {
-			mValuePtr = C.core_create_mvalue_int(C.longlong(val))
-		} else if val, ok := value.(int64); ok {
-			mValuePtr = C.core_create_mvalue_int(C.longlong(val))
-		}
-		mValueType = MValueInt
-	case uint, uint8, uint16, uint32, uint64:
-		if val, ok := value.(uint); ok {
-			mValuePtr = C.core_create_mvalue_uint(C.ulonglong(val))
-		} else if val, ok := value.(uint8); ok {
-			mValuePtr = C.core_create_mvalue_uint(C.ulonglong(val))
-		} else if val, ok := value.(uint16); ok {
-			mValuePtr = C.core_create_mvalue_uint(C.ulonglong(val))
-		} else if val, ok := value.(uint32); ok {
-			mValuePtr = C.core_create_mvalue_uint(C.ulonglong(val))
-		} else if val, ok := value.(uint64); ok {
-			mValuePtr = C.core_create_mvalue_uint(C.ulonglong(val))
-		}
-		mValueType = MValueUInt
-	case float32, float64:
-		if val, ok := value.(float32); ok {
-			mValuePtr = C.core_create_mvalue_double(C.double(val))
-		} else if val, ok := value.(float64); ok {
-			mValuePtr = C.core_create_mvalue_double(C.double(val))
-		}
-		mValueType = MValueDouble
-	case string:
-		cstr := C.CString(value.(string))
-		defer C.free(unsafe.Pointer(cstr))
-
-		mValuePtr = C.core_create_mvalue_string(cstr)
-		mValueType = MValueString
-	case []interface{}, []bool, []string, []int, []int8, []int16, []int32, []int64, []uint, []uint16, []uint32, []uint64, []float32, []float64:
-		js, _ := json.Marshal(value)
-		cJson := C.CString(string(js))
-		defer C.free(unsafe.Pointer(cJson))
-		size := len(value.([]interface{}))
-
-		mValuePtr = C.core_create_mvalue_list(cJson, C.ulonglong(size))
-		mValueType = MValueList
-	case []byte:
-		data := value.([]byte)
-		size := len(data)
-		arrayPtr := C.CBytes(data)
-		defer C.free(arrayPtr)
-
-		mValuePtr = C.core_create_mvalue_byte_array((*C.uchar)(arrayPtr), C.ulonglong(size))
-		mValueType = MValueByteArray
-	case RGBA:
-		color := value.(RGBA)
-
-		mValuePtr = C.core_create_mvalue_rgba(C.uchar(color.R), C.uchar(color.G), C.uchar(color.B), C.uchar(color.A))
-		mValueType = MValueRGBA
-	case Vector2:
-		v2 := value.(Vector2)
-
-		mValuePtr = C.core_create_mvalue_vector2(C.float(v2.X), C.float(v2.Y))
-		mValueType = MValueVector3
-	case Vector3:
-		v3 := value.(Vector3)
-
-		mValuePtr = C.core_create_mvalue_vector3(C.float(v3.X), C.float(v3.Y), C.float(v3.Z))
-		mValueType = MValueVector3
-	case *Player, *Vehicle, *ColShape, *Checkpoint, *VoiceChannel, *Blip, *Entity:
-		var ptr unsafe.Pointer
-		var _type BaseObjectType
-
-		if player, ok := value.(*Player); ok {
-			ptr = player.Ptr
-			_type = player.Type
-		}
-
-		if vehicle, ok := value.(*Vehicle); ok {
-			ptr = vehicle.Ptr
-			_type = vehicle.Type
-		}
-
-		if colShape, ok := value.(*ColShape); ok {
-			ptr = colShape.Ptr
-			_type = colShape.Type
-		}
-
-		if checkpoint, ok := value.(*Checkpoint); ok {
-			ptr = checkpoint.Ptr
-			_type = checkpoint.Type
-		}
-
-		if voiceChannel, ok := value.(*VoiceChannel); ok {
-			ptr = voiceChannel.Ptr
-			_type = voiceChannel.Type
-		}
-
-		if blip, ok := value.(*Blip); ok {
-			ptr = blip.Ptr
-			_type = blip.Type
-		}
-
-		if entity, ok := value.(*Entity); ok {
-			ptr = entity.Ptr
-			_type = entity.Type
-		}
-
-		if ptr == nil {
-			mValuePtr = nil
-			mValueType = MValueNone
-			break
-		}
-
-		mValuePtr = C.core_create_mvalue_base_object(C.uchar(_type), ptr)
-		mValueType = MValueBaseObject
-	case MValueFunc:
-		mValueFunc := value.(MValueFunc)
-		mValueFuncCount++
-		id := mValueFuncCount
-		mValueFunctions[id] = mValueFunc
-
-		cResource := C.CString(Resource.Name)
-		defer C.free(unsafe.Pointer(cResource))
-
-		mValuePtr = C.create_mvalue_function(cResource, C.ulonglong(id))
-		mValueType = MValueFunction
-	default:
-		mValuePtr = nil
-		mValueType = MValueNone
-	}*/
-
-	return &MValue[V]{Ptr: mValuePtr, Type: mValueType}
+	return &MValue{Ptr: mValuePtr, Type: mValueType}
 }
 
-func (v MValue[V]) GetValue() (val V, ok bool) {
-	rv := reflect.ValueOf(val)
+func (v MValue) GetValue(val interface{}) (ok bool) {
+	if reflect.TypeOf(val).Kind() != reflect.Ptr {
+		return false
+	}
+
+	rv := reflect.ValueOf(val).Elem()
 	switch v.Type {
 	case MValueBool:
 		rv.SetBool(int(C.core_get_mvalue_bool(v.Ptr)) != 0)
@@ -300,19 +196,27 @@ func (v MValue[V]) GetValue() (val V, ok bool) {
 	case MValueBaseObject:
 		entity := C.core_get_mvalue_base_object(v.Ptr)
 		_type := uint8(entity.Type)
+
+		var ev reflect.Value
 		if _type == PlayerObject {
-			rv.Set(reflect.ValueOf(newPlayer(entity.Ptr)))
+			ev = reflect.ValueOf(newPlayer(entity.Ptr))
 		} else if _type == VehicleObject {
-			rv.Set(reflect.ValueOf(newVehicle(entity.Ptr)))
+			ev = reflect.ValueOf(newVehicle(entity.Ptr))
 		} else if _type == ColshapeObject {
-			rv.Set(reflect.ValueOf(newColShape(entity.Ptr)))
+			ev = reflect.ValueOf(newColShape(entity.Ptr))
 		} else if _type == CheckpointObject {
-			rv.Set(reflect.ValueOf(newCheckpoint(entity.Ptr)))
+			ev = reflect.ValueOf(newCheckpoint(entity.Ptr))
 		} else if _type == VoiceChannelObject {
-			rv.Set(reflect.ValueOf(newVoiceChannel(entity.Ptr)))
+			ev = reflect.ValueOf(newVoiceChannel(entity.Ptr))
 		} else if _type == BlipObject {
-			rv.Set(reflect.ValueOf(newBlip(entity.Ptr)))
+			ev = reflect.ValueOf(newBlip(entity.Ptr))
 		}
+
+		if !ev.IsValid() || ev.IsZero() || ev.IsNil() {
+			return false
+		}
+
+		rv.Set(ev.Elem())
 	case MValueVector2:
 		rv.Set(reflect.ValueOf(newVector2(C.core_get_mvalue_vector2(v.Ptr))))
 	case MValueVector3:
@@ -323,26 +227,31 @@ func (v MValue[V]) GetValue() (val V, ok bool) {
 		arr := C.core_get_mvalue_byte_array(v.Ptr)
 		rv.Set(reflect.ValueOf(C.GoBytes(arr.array, C.int(arr.size))))
 	case MValueFunction:
-		wrapper := func(args ...interface{}) (interface{}, bool) {
-			cArgPtr, cArgSize := newMValueArray(args)
-			defer C.free(unsafe.Pointer(cArgPtr))
-
-			cMeta := C.call_mvalue_function(v.Ptr, cArgPtr, cArgSize)
-			mVal := &MValue[interface{}]{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
-
-			return mVal.GetValue()
-		}
-
-		rv.Set(reflect.ValueOf(wrapper))
+		//v := reflect.ValueOf(ExternFunction{
+		//	Ptr: v.Ptr,
+		//}).Elem()
+		//
+		//rv.Set(reflect.ValueOf(f).Addr())
+	//	wrapper := func(args ...interface{}) (interface{}, bool) {
+	//		cArgPtr, cArgSize := newMValueArray(args)
+	//		defer C.free(unsafe.Pointer(cArgPtr))
+	//
+	//		cMeta := C.call_mvalue_function(v.Ptr, cArgPtr, cArgSize)
+	//		mVal := &MValue[interface{}]{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
+	//
+	//		return mVal.GetValue()
+	//	}.(V)
+	//
+	//	return wrapper, !ok
 	default:
 		ok = true
 	}
 
-	if !ok {
-		v.Value, ok = rv.Interface().(V)
-	}
+	// if !ok {
+	// 	v.Value, ok = rv.Interface().(V)
+	// }
 
-	return v.Value, !ok
+	return !ok
 }
 
 /*func (v MValue[V, B]) GetFunction() (V, bool) {
@@ -360,7 +269,7 @@ func (v MValue[V]) GetValue() (val V, ok bool) {
 	}), true
 }*/
 
-func (v MValue[V]) GetType() MValueType {
+func (v MValue) GetType() MValueType {
 	return v.Type
 }
 
@@ -387,7 +296,7 @@ func altCallFunction(id C.ulonglong, cMValues unsafe.Pointer, cSize C.ulonglong)
 		return C.struct_data{mValue: nil, Type: C.uint(MValueNone)}
 	}
 
-	mValue := CreateMValue[interface{}](resValues[0].Interface())
+	mValue := CreateMValue(resValues[0].Interface())
 	//resInterfaces := make([]interface{}, len(resValues))
 	//for i, val := range resValues {
 	//	resInterfaces[i] = val.Interface()

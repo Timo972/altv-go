@@ -178,25 +178,25 @@ func (e Entity) HasSyncedMetaData(key string) bool {
 	return false
 }
 
-func (e Entity) SyncedMetaData(key string) (interface{}, bool) {
+func (e Entity) SyncedMetaData(key string, val interface{}) bool {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
 	if e.Type == PlayerObject {
 		meta := C.player_get_synced_meta_data(e.Ptr, cKey)
-		mValue := &MValue[interface{}]{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
 
-		return mValue.GetValue()
+		return mValue.GetValue(val)
 	}
 
 	if e.Type == VehicleObject {
 		meta := C.vehicle_get_synced_meta_data(e.Ptr, cKey)
-		mValue := &MValue[interface{}]{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
 
-		return mValue.GetValue()
+		return mValue.GetValue(val)
 	}
 
-	return nil, false
+	return false
 }
 
 func (e Entity) HasStreamSyncedMetaData(key string) bool {
@@ -214,25 +214,25 @@ func (e Entity) HasStreamSyncedMetaData(key string) bool {
 	return false
 }
 
-func (e Entity) StreamSyncedMetaData(key string) (interface{}, bool) {
+func (e Entity) StreamSyncedMetaData(key string, value interface{}) bool {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
 	if e.Type == PlayerObject {
 		meta := C.player_get_stream_synced_meta_data(e.Ptr, cKey)
-		mValue := &MValue[interface{}]{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
 
-		return mValue.GetValue()
+		return mValue.GetValue(value)
 	}
 
 	if e.Type == VehicleObject {
 		meta := C.vehicle_get_stream_synced_meta_data(e.Ptr, cKey)
-		mValue := &MValue[interface{}]{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
 
-		return mValue.GetValue()
+		return mValue.GetValue(value)
 	}
 
-	return nil, false
+	return false
 }
 
 func (e Entity) SetSyncedMetaData(key string, value interface{}) {

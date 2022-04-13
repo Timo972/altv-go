@@ -85,9 +85,9 @@ func Import[ValueType any](resource string, name string) (value ValueType, _ err
 		return value, fmt.Errorf("failed to get export '%s' of resource '%s'; Make sure you set dependencies correctly", name, resource)
 	}
 
-	mVal := &MValue[ValueType]{Ptr: cMetaData.Ptr, Type: uint8(cMetaData.Type)}
+	mVal := &MValue{Ptr: cMetaData.Ptr, Type: uint8(cMetaData.Type)}
 
-	value, ok := mVal.GetValue()
+	ok := mVal.GetValue(&value)
 	if !ok {
 		return value, errors.New("invalid mvalue")
 	}
