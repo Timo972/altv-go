@@ -434,7 +434,7 @@ func (p Player) LocalMetaData(key string, value interface{}) bool {
 	cMeta := C.player_get_local_meta_data(p.Ptr, cKey)
 	mValue := &MValue{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
 
-	return mValue.GetValue(value)
+	return mValue.Value(value)
 }
 
 func (p Player) DeleteLocalMetaData(key string) {

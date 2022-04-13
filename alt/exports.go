@@ -87,7 +87,7 @@ func Import[ValueType any](resource string, name string) (value ValueType, _ err
 
 	mVal := &MValue{Ptr: cMetaData.Ptr, Type: uint8(cMetaData.Type)}
 
-	ok := mVal.GetValue(&value)
+	ok := mVal.Value(&value)
 	if !ok {
 		return value, errors.New("invalid mvalue")
 	}

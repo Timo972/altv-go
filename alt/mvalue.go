@@ -41,9 +41,9 @@ var (
 )
 
 type MValue struct {
-	Ptr   unsafe.Pointer
-	Type  MValueType
-	Value interface{}
+	Ptr  unsafe.Pointer
+	Type MValueType
+	Val  reflect.Value
 }
 
 type ExternFunction struct {
@@ -66,7 +66,7 @@ func (e ExternFunction) Call(args ...interface{}) (interface{}, error) {
 	mVal := &MValue{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
 
 	var val interface{}
-	ok := mVal.GetValue(&val)
+	ok := mVal.Value(&val)
 	if !ok {
 		return val, errors.New("mvalue conversion failed")
 	}
@@ -175,15 +175,20 @@ func CreateMValue(value interface{}) *MValue {
 		mValueType = MValueNone
 	}
 
-	return &MValue{Ptr: mValuePtr, Type: mValueType}
+	return &MValue{Ptr: mValuePtr, Type: mValueType, Val: rv}
 }
 
-func (v MValue) GetValue(val interface{}) (ok bool) {
+func (v MValue) Value(val interface{}) (ok bool) {
 	if reflect.TypeOf(val).Kind() != reflect.Ptr {
 		return false
 	}
 
 	rv := reflect.ValueOf(val).Elem()
+	if !v.Val.IsNil() && !v.Val.IsZero() && v.Val.IsValid() {
+		rv.Set(v.Val)
+		return true
+	}
+
 	switch v.Type {
 	case MValueBool:
 		rv.SetBool(int(C.core_get_mvalue_bool(v.Ptr)) != 0)

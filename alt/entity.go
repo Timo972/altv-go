@@ -184,16 +184,16 @@ func (e Entity) SyncedMetaData(key string, val interface{}) bool {
 
 	if e.Type == PlayerObject {
 		meta := C.player_get_synced_meta_data(e.Ptr, cKey)
-		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
 
-		return mValue.GetValue(val)
+		return mValue.Value(val)
 	}
 
 	if e.Type == VehicleObject {
 		meta := C.vehicle_get_synced_meta_data(e.Ptr, cKey)
-		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
 
-		return mValue.GetValue(val)
+		return mValue.Value(val)
 	}
 
 	return false
@@ -220,16 +220,16 @@ func (e Entity) StreamSyncedMetaData(key string, value interface{}) bool {
 
 	if e.Type == PlayerObject {
 		meta := C.player_get_stream_synced_meta_data(e.Ptr, cKey)
-		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
 
-		return mValue.GetValue(value)
+		return mValue.Value(value)
 	}
 
 	if e.Type == VehicleObject {
 		meta := C.vehicle_get_stream_synced_meta_data(e.Ptr, cKey)
-		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
 
-		return mValue.GetValue(value)
+		return mValue.Value(value)
 	}
 
 	return false

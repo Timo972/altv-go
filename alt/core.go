@@ -53,7 +53,7 @@ func MetaData(key string, value interface{}) bool {
 	meta := C.core_get_meta_data(cStr)
 	mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
 
-	return mValue.GetValue(value)
+	return mValue.Value(value)
 }
 
 func SetMetaData(key string, value interface{}) {
@@ -82,7 +82,7 @@ func SyncedMetaData(key string, value interface{}) bool {
 	meta := C.core_get_synced_meta_data(cStr)
 	mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
 
-	return mValue.GetValue(value)
+	return mValue.Value(value)
 }
 
 func SetSyncedMetaData(key string, value interface{}) {

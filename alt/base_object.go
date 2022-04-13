@@ -115,9 +115,9 @@ func (b BaseObject) MetaData(key string, val interface{}) bool {
 		meta = C.blip_get_meta_data(b.Ptr, cKey)
 	}
 
-	mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+	mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
 
-	return mValue.GetValue(val)
+	return mValue.Value(val)
 }
 
 func (b BaseObject) SetMetaData(key string, value interface{}) {
