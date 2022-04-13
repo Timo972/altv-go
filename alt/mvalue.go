@@ -322,16 +322,18 @@ func (v MValue[V]) GetValue() (val V, ok bool) {
 	case MValueByteArray:
 		arr := C.core_get_mvalue_byte_array(v.Ptr)
 		rv.Set(reflect.ValueOf(C.GoBytes(arr.array, C.int(arr.size))))
-	//case MValueFunction:
-	//	v.Value = V(func(args ...interface{}) (interface{}, bool) {
-	//		cArgPtr, cArgSize := newMValueArray(args)
-	//		defer C.free(unsafe.Pointer(cArgPtr))
-	//
-	//		cMeta := C.call_mvalue_function(v.Ptr, cArgPtr, cArgSize)
-	//		mVal := &MValue{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
-	//
-	//		return mVal.GetValue()
-	//	})
+	case MValueFunction:
+		wrapper := func(args ...interface{}) (interface{}, bool) {
+			cArgPtr, cArgSize := newMValueArray(args)
+			defer C.free(unsafe.Pointer(cArgPtr))
+
+			cMeta := C.call_mvalue_function(v.Ptr, cArgPtr, cArgSize)
+			mVal := &MValue[interface{}]{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
+
+			return mVal.GetValue()
+		}
+
+		rv.Set(reflect.ValueOf(wrapper))
 	default:
 		ok = true
 	}
