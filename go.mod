@@ -1,3 +1,3 @@
-module github.com/shockdev04/altv-go-pkg
+module github.com/timo972/altv-go-pkg
 
 go 1.18

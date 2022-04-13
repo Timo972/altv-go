@@ -5,7 +5,7 @@ package alt
 import "C"
 import (
 	"fmt"
-	"github.com/shockdev04/altv-go-pkg/internal/module"
+	"github.com/timo972/altv-go-pkg/internal/module"
 	"unsafe"
 )
 

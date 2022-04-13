@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/shockdev04/altv-go-pkg/internal/module"
+	"github.com/timo972/altv-go-pkg/internal/module"
 )
 
 type Entity struct {
@@ -178,25 +178,25 @@ func (e Entity) HasSyncedMetaData(key string) bool {
 	return false
 }
 
-func (e Entity) GetSyncedMetaData(key string) interface{} {
+func (e Entity) SyncedMetaData(key string) (interface{}, bool) {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
 	if e.Type == PlayerObject {
 		meta := C.player_get_synced_meta_data(e.Ptr, cKey)
-		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+		mValue := &MValue[interface{}]{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
 
 		return mValue.GetValue()
 	}
 
 	if e.Type == VehicleObject {
 		meta := C.vehicle_get_synced_meta_data(e.Ptr, cKey)
-		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+		mValue := &MValue[interface{}]{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
 
 		return mValue.GetValue()
 	}
 
-	return nil
+	return nil, false
 }
 
 func (e Entity) HasStreamSyncedMetaData(key string) bool {
@@ -214,25 +214,25 @@ func (e Entity) HasStreamSyncedMetaData(key string) bool {
 	return false
 }
 
-func (e Entity) GetStreamSyncedMetaData(key string) interface{} {
+func (e Entity) StreamSyncedMetaData(key string) (interface{}, bool) {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
 	if e.Type == PlayerObject {
 		meta := C.player_get_stream_synced_meta_data(e.Ptr, cKey)
-		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+		mValue := &MValue[interface{}]{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
 
 		return mValue.GetValue()
 	}
 
 	if e.Type == VehicleObject {
 		meta := C.vehicle_get_stream_synced_meta_data(e.Ptr, cKey)
-		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+		mValue := &MValue[interface{}]{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
 
 		return mValue.GetValue()
 	}
 
-	return nil
+	return nil, false
 }
 
 func (e Entity) SetSyncedMetaData(key string, value interface{}) {

@@ -1,4 +1,4 @@
-# altv-go-pkg [![Build test](https://github.com/shockdev04/altv-go-pkg/actions/workflows/test-changes.yml/badge.svg)](https://github.com/shockdev04/altv-go-pkg/actions/workflows/test-changes.yml)
+# altv-go-pkg [![Build test](https://github.com/timo972/altv-go-pkg/actions/workflows/test-changes.yml/badge.svg)](https://github.com/timo972/altv-go-pkg/actions/workflows/test-changes.yml)
 Go package for alt:V Multiplayer.
 Runtime can be found [here](https://github.com/shockdev04/altv-go-module).
 
@@ -13,7 +13,7 @@ Do not try to initialize stuff inside as it won't get called.
 package main
 
 import "C"
-import "github.com/shockdev04/altv-go-pkg/alt"
+import "github.com/timo972/altv-go-pkg/alt"
 
 func main() { }
 

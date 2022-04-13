@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/shockdev04/altv-go-pkg/internal/module"
+	"github.com/timo972/altv-go-pkg/internal/module"
 )
 
 type Player struct {
@@ -427,12 +427,12 @@ func (p Player) SetLocalMetaData(key string, value interface{}) {
 	C.player_set_local_meta_data(p.Ptr, cKey, meta.Ptr)
 }
 
-func (p Player) LocalMetaData(key string) interface{} {
+func (p Player) LocalMetaData(key string) (interface{}, bool) {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
 	cMeta := C.player_get_local_meta_data(p.Ptr, cKey)
-	mValue := &MValue{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type), Value: nil}
+	mValue := &MValue[interface{}]{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
 
 	return mValue.GetValue()
 }

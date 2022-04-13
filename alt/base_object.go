@@ -32,7 +32,7 @@ type BaseObject struct {
 
 type Base interface {
 	HasMetaData(key string) bool
-	GetMetaData(key string) interface{}
+	MetaData(key string) interface{}
 	SetMetaData(key string, value interface{})
 	DeleteMetaData(key string)
 }
@@ -96,7 +96,7 @@ func (b BaseObject) HasMetaData(key string) bool {
 	return false
 }
 
-func (b BaseObject) GetMetaData(key string) interface{} {
+func (b BaseObject) MetaData(key string) (interface{}, bool) {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
@@ -115,7 +115,7 @@ func (b BaseObject) GetMetaData(key string) interface{} {
 		meta = C.blip_get_meta_data(b.Ptr, cKey)
 	}
 
-	mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+	mValue := &MValue[interface{}]{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
 
 	return mValue.GetValue()
 }

@@ -1,7 +1,7 @@
 package utils
 
 import "time"
-import "github.com/shockdev04/altv-go-pkg/alt"
+import "github.com/timo972/altv-go-pkg/alt"
 
 type Benchmark struct {
 	Name    string

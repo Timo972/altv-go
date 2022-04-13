@@ -6,7 +6,7 @@ package alt
 // #include "Module.h"
 import "C"
 import (
-	"github.com/shockdev04/altv-go-pkg/internal/module"
+	"github.com/timo972/altv-go-pkg/internal/module"
 	"unsafe"
 )
 
@@ -729,10 +729,10 @@ func altFireEvent(p unsafe.Pointer, f C.struct_array) C.int {
 //export altGlobalMetaDataChangeEvent
 func altGlobalMetaDataChangeEvent(k *C.char, nVal C.struct_metaData, oVal C.struct_metaData) {
 	key := C.GoString(k)
-	newVal := &MValue{Ptr: nVal.Ptr, Type: uint8(nVal.Type), Value: nil}
-	oldVal := &MValue{Ptr: oVal.Ptr, Type: uint8(oVal.Type), Value: nil}
-	oldValue := oldVal.GetValue()
-	newValue := newVal.GetValue()
+	newVal := &MValue[interface{}]{Ptr: nVal.Ptr, Type: uint8(nVal.Type), Value: nil}
+	oldVal := &MValue[interface{}]{Ptr: oVal.Ptr, Type: uint8(oVal.Type), Value: nil}
+	oldValue, _ := oldVal.GetValue()
+	newValue, _ := newVal.GetValue()
 
 	for _, event := range On.globalMetaDataChangeEvents {
 		event(key, newValue, oldValue)
@@ -742,10 +742,10 @@ func altGlobalMetaDataChangeEvent(k *C.char, nVal C.struct_metaData, oVal C.stru
 //export altGlobalSyncedMetaDataChangeEvent
 func altGlobalSyncedMetaDataChangeEvent(k *C.char, nVal C.struct_metaData, oVal C.struct_metaData) {
 	key := C.GoString(k)
-	newVal := &MValue{Ptr: nVal.Ptr, Type: uint8(nVal.Type), Value: nil}
-	oldVal := &MValue{Ptr: oVal.Ptr, Type: uint8(oVal.Type), Value: nil}
-	oldValue := oldVal.GetValue()
-	newValue := newVal.GetValue()
+	newVal := &MValue[interface{}]{Ptr: nVal.Ptr, Type: uint8(nVal.Type), Value: nil}
+	oldVal := &MValue[interface{}]{Ptr: oVal.Ptr, Type: uint8(oVal.Type), Value: nil}
+	oldValue, _ := oldVal.GetValue()
+	newValue, _ := newVal.GetValue()
 
 	for _, event := range On.globalSyncedMetaDataChangeEvents {
 		event(key, newValue, oldValue)
@@ -756,10 +756,10 @@ func altGlobalSyncedMetaDataChangeEvent(k *C.char, nVal C.struct_metaData, oVal 
 func altLocalSyncedMetaDataChangeEvent(p unsafe.Pointer, cKey *C.char, cNewValue C.struct_metaData, cOldValue C.struct_metaData) {
 	player := newPlayer(p)
 	key := C.GoString(cKey)
-	newVal := &MValue{Ptr: cNewValue.Ptr, Type: uint8(cNewValue.Type), Value: nil}
-	oldVal := &MValue{Ptr: cOldValue.Ptr, Type: uint8(cOldValue.Type), Value: nil}
-	oldValue := oldVal.GetValue()
-	newValue := newVal.GetValue()
+	newVal := &MValue[interface{}]{Ptr: cNewValue.Ptr, Type: uint8(cNewValue.Type), Value: nil}
+	oldVal := &MValue[interface{}]{Ptr: cOldValue.Ptr, Type: uint8(cOldValue.Type), Value: nil}
+	oldValue, _ := oldVal.GetValue()
+	newValue, _ := newVal.GetValue()
 
 	for _, event := range On.localSyncedMetaDataChangeEvents {
 		event(player, key, newValue, oldValue)
@@ -769,10 +769,10 @@ func altLocalSyncedMetaDataChangeEvent(p unsafe.Pointer, cKey *C.char, cNewValue
 //export altMetaDataChangeEvent
 func altMetaDataChangeEvent(cKey *C.char, cNewValue C.struct_metaData, cOldValue C.struct_metaData) {
 	key := C.GoString(cKey)
-	newVal := &MValue{Ptr: cNewValue.Ptr, Type: uint8(cNewValue.Type), Value: nil}
-	oldVal := &MValue{Ptr: cOldValue.Ptr, Type: uint8(cOldValue.Type), Value: nil}
-	oldValue := oldVal.GetValue()
-	newValue := newVal.GetValue()
+	newVal := &MValue[interface{}]{Ptr: cNewValue.Ptr, Type: uint8(cNewValue.Type), Value: nil}
+	oldVal := &MValue[interface{}]{Ptr: cOldValue.Ptr, Type: uint8(cOldValue.Type), Value: nil}
+	oldValue, _ := oldVal.GetValue()
+	newValue, _ := newVal.GetValue()
 
 	for _, event := range On.metaDataChangeEvents {
 		event(key, newValue, oldValue)
@@ -873,10 +873,10 @@ func altStartProjectileEvent(p unsafe.Pointer, pos C.struct_pos, dir C.struct_po
 //export altStreamSyncedMetaDataChangeEvent
 func altStreamSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.struct_metaData, oVal C.struct_metaData) {
 	key := C.GoString(k)
-	newVal := &MValue{Ptr: nVal.Ptr, Type: uint8(nVal.Type), Value: nil}
-	oldVal := &MValue{Ptr: oVal.Ptr, Type: uint8(oVal.Type), Value: nil}
-	oldValue := oldVal.GetValue()
-	newValue := newVal.GetValue()
+	newVal := &MValue[interface{}]{Ptr: nVal.Ptr, Type: uint8(nVal.Type), Value: nil}
+	oldVal := &MValue[interface{}]{Ptr: oVal.Ptr, Type: uint8(oVal.Type), Value: nil}
+	oldValue, _ := oldVal.GetValue()
+	newValue, _ := newVal.GetValue()
 	entity := newEntity(e)
 
 	for _, event := range On.streamSyncedMetaDataChangeEvents {
@@ -887,10 +887,10 @@ func altStreamSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.str
 //export altSyncedMetaDataChangeEvent
 func altSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.struct_metaData, oVal C.struct_metaData) {
 	key := C.GoString(k)
-	newVal := &MValue{Ptr: nVal.Ptr, Type: uint8(nVal.Type), Value: nil}
-	oldVal := &MValue{Ptr: oVal.Ptr, Type: uint8(oVal.Type), Value: nil}
-	oldValue := oldVal.GetValue()
-	newValue := newVal.GetValue()
+	newVal := &MValue[interface{}]{Ptr: nVal.Ptr, Type: uint8(nVal.Type), Value: nil}
+	oldVal := &MValue[interface{}]{Ptr: oVal.Ptr, Type: uint8(oVal.Type), Value: nil}
+	oldValue, _ := oldVal.GetValue()
+	newValue, _ := newVal.GetValue()
 	entity := newEntity(e)
 
 	for _, event := range On.streamSyncedMetaDataChangeEvents {
