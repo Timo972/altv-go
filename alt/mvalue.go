@@ -184,7 +184,7 @@ func (v MValue) Value(val interface{}) (ok bool) {
 	}
 
 	rv := reflect.ValueOf(val).Elem()
-	if !v.Val.IsNil() && !v.Val.IsZero() && v.Val.IsValid() {
+	if v.Val.IsValid() && !v.Val.IsNil() && !v.Val.IsZero() {
 		rv.Set(v.Val)
 		return true
 	}
