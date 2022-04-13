@@ -17,11 +17,11 @@ func Export(name string, export interface{}) bool {
 	cExport := C.CString(name)
 	//defer C.free(unsafe.Pointer(cExport)) not freeing it because module needs it while whole runtime
 
-	exported := int(C.register_alt_export(cResource, cExport, C.struct_data{mValue:mValue.Ptr, Type:C.uint(mValue.Type)})) == 1
+	exported := int(C.register_alt_export(cResource, cExport, C.struct_data{mValue: mValue.Ptr, Type: C.uint(mValue.Type)})) == 1
 	return exported
 }
 
-func Import(resource string, name string) interface {} {
+func Import[ValueType any](resource string, name string) ValueType {
 	cTargetResource := C.CString(resource)
 	defer C.free(unsafe.Pointer(cTargetResource))
 	cExport := C.CString(name)
@@ -32,5 +32,5 @@ func Import(resource string, name string) interface {} {
 
 	value := mVal.GetValue()
 
-	return value
+	return value.(ValueType)
 }
