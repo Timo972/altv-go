@@ -227,11 +227,11 @@ func (v MValue) GetValue(val interface{}) (ok bool) {
 		arr := C.core_get_mvalue_byte_array(v.Ptr)
 		rv.Set(reflect.ValueOf(C.GoBytes(arr.array, C.int(arr.size))))
 	case MValueFunction:
-		//v := reflect.ValueOf(ExternFunction{
-		//	Ptr: v.Ptr,
-		//}).Elem()
-		//
-		//rv.Set(reflect.ValueOf(f).Addr())
+		ev := reflect.ValueOf(ExternFunction{
+			Ptr: v.Ptr,
+		})
+
+		rv.Set(ev)
 	//	wrapper := func(args ...interface{}) (interface{}, bool) {
 	//		cArgPtr, cArgSize := newMValueArray(args)
 	//		defer C.free(unsafe.Pointer(cArgPtr))
