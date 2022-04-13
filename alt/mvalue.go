@@ -123,6 +123,8 @@ func CreateMValue(value interface{}) *MValue {
 
 		mValuePtr = C.create_mvalue_function(cResource, C.ulonglong(id))
 		mValueType = MValueFunction
+
+		LogInfo("created mvalue function:", id)
 	// integers
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		mValuePtr = C.core_create_mvalue_int(C.longlong(rv.Int()))
@@ -232,63 +234,32 @@ func (v MValue) GetValue(val interface{}) (ok bool) {
 		})
 
 		rv.Set(ev)
-	//	wrapper := func(args ...interface{}) (interface{}, bool) {
-	//		cArgPtr, cArgSize := newMValueArray(args)
-	//		defer C.free(unsafe.Pointer(cArgPtr))
-	//
-	//		cMeta := C.call_mvalue_function(v.Ptr, cArgPtr, cArgSize)
-	//		mVal := &MValue[interface{}]{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
-	//
-	//		return mVal.GetValue()
-	//	}.(V)
-	//
-	//	return wrapper, !ok
 	default:
 		ok = true
 	}
-
-	// if !ok {
-	// 	v.Value, ok = rv.Interface().(V)
-	// }
-
 	return !ok
 }
 
-/*func (v MValue[V, B]) GetFunction() (V, bool) {
-	if v.Type != MValueFunction {
-		return V{}, false
-	}
-
-	return V(func(args ...interface{}) (B, bool) {
-		cArgPtr, cArgSize := newMValueArray(args)
-		defer C.free(unsafe.Pointer(cArgPtr))
-
-		cMeta := C.call_mvalue_function(v.Ptr, cArgPtr, cArgSize)
-		mVal := &MValue[B]{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
-		return mVal.GetValue()
-	}), true
-}*/
-
-func (v MValue) GetType() MValueType {
-	return v.Type
+func (v MValue) CStruct() C.struct_data {
+	return C.struct_data{mValue: v.Ptr, Type: C.uint(v.Type)}
 }
 
 //export altCallFunction
 func altCallFunction(id C.ulonglong, cMValues unsafe.Pointer, cSize C.ulonglong) C.struct_data {
-	listener := mValueFunctions[uint64(id)]
-
-	//if listener == nil {
-	//	mVal := CreateMValue(nil)
-	//	return C.struct_data{mValue: mVal.Ptr, Type: C.uint(mVal.Type)}
-	//}
+	exportedFunc := mValueFunctions[uint64(id)]
 
 	args := convertMValueArray(cMValues, cSize)
 	rvArgs := make([]reflect.Value, len(args))
 	for i, arg := range args {
+		if arg == nil {
+			LogError("exported function called with nil argument")
+			return C.struct_data{mValue: nil, Type: C.uint(MValueNone)}
+		}
 		rvArgs[i] = reflect.ValueOf(arg)
 	}
 
-	resValues := listener.Call(rvArgs)
+	resValues := exportedFunc.Call(rvArgs)
+
 	size := len(resValues)
 	if size > 1 {
 		LogWarning("exported function returned more than 1 argument, which is currently not supported (dropping overflow)")
@@ -297,12 +268,6 @@ func altCallFunction(id C.ulonglong, cMValues unsafe.Pointer, cSize C.ulonglong)
 	}
 
 	mValue := CreateMValue(resValues[0].Interface())
-	//resInterfaces := make([]interface{}, len(resValues))
-	//for i, val := range resValues {
-	//	resInterfaces[i] = val.Interface()
-	//}
-	//
-	//newMValueArray(resInterfaces)
 
-	return C.struct_data{mValue: mValue.Ptr, Type: C.uint(mValue.Type)}
+	return mValue.CStruct()
 }
