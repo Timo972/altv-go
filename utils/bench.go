@@ -26,7 +26,14 @@ func (b *Benchmark) Stop() {
 	b.Elapsed = b.End.Sub(b.Begin)
 }
 
+// Print prints the benchmark to the console in milliseconds
 func (b *Benchmark) Print() {
 	ms := b.Elapsed.Milliseconds()
 	alt.LogColored("~ly~[BENCH] ", b.Name, " took: ", ms, "ms")
+}
+
+// PrintMS prints the benchmark to the console in microseconds
+func (b *Benchmark) PrintMS() {
+	ms := b.Elapsed.Microseconds()
+	alt.LogColored("~ly~[BENCH] ", b.Name, " took: ", ms, "microseconds")
 }
