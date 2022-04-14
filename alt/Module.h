@@ -154,6 +154,12 @@ typedef struct vector2 {
     float y;
 } Vector2;
 
+typedef struct mValueDict {
+    void *keys;
+    MetaData *values;
+    unsigned long long size;
+} MValueDict;
+
 typedef void (*capi_log)(const char *message);
 
 typedef void (*capi_register_alt_event)(const char *resourceName, unsigned short eventType);
@@ -495,7 +501,8 @@ typedef void *(*capi_core_create_mvalue_vector2)(float x, float y);
 typedef void *(*capi_core_create_mvalue_vector3)(float x, float y, float z);
 typedef void *(*capi_core_create_mvalue_rgba)(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 typedef void *(*capi_core_create_mvalue_byte_array)(unsigned char *data, unsigned long long size);
-typedef void *(*capi_core_create_mvalue_list)(const char *json, unsigned long long size);
+typedef void *(*capi_core_create_mvalue_list)(void **values, unsigned long long size);
+typedef void *(*capi_core_create_mvalue_dict)(const char **keys, void **values, unsigned long long size);
 typedef void *(*capi_create_mvalue_function)(const char *resourceName, unsigned long long id);
 typedef MetaData (*capi_call_mvalue_function)(void *ptr, CustomData *mValues, unsigned long long size);
 
@@ -509,6 +516,8 @@ typedef Vector2 (*capi_core_get_mvalue_vector2)(void *val);
 typedef Position (*capi_core_get_mvalue_vector3)(void *val);
 typedef RGBA (*capi_core_get_mvalue_rgba)(void *val);
 typedef Array (*capi_core_get_mvalue_byte_array)(void *val);
+typedef Array (*capi_core_get_mvalue_list)(void *val);
+typedef MValueDict (*capi_core_get_mvalue_dict)(void *val);
 
 typedef void *(*capi_core_create_vehicle)(unsigned long model, float posX, float posY, float posZ,
                                           float rotX, float rotY, float rotZ);
@@ -1074,7 +1083,8 @@ void *core_create_mvalue_vector2(float x, float y);
 void *core_create_mvalue_vector3(float x, float y, float z);
 void *core_create_mvalue_rgba(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 void *core_create_mvalue_byte_array(unsigned char *data, unsigned long long size);
-void *core_create_mvalue_list(const char *json, unsigned long long size);
+void *core_create_mvalue_list(void **values, unsigned long long size);
+void *core_create_mvalue_dict(const char **keys, void **values, unsigned long long size);
 void *create_mvalue_function(const char *resourceName, unsigned long long id);
 MetaData call_mvalue_function(void *ptr, CustomData *mValues, unsigned long long size);
 
@@ -1088,6 +1098,8 @@ Vector2 core_get_mvalue_vector2(void *val);
 Position core_get_mvalue_vector3(void *val);
 RGBA core_get_mvalue_rgba(void *val);
 Array core_get_mvalue_byte_array(void *val);
+Array core_get_mvalue_list(void *val);
+MValueDict core_get_mvalue_dict(void *val);
 
 void *core_create_vehicle(unsigned long model, float posX, float posY, float posZ,
                           float rotX, float rotY, float rotZ);

@@ -379,6 +379,7 @@ capi_core_create_mvalue_vector3 g_call_core_create_mvalue_vector3;
 capi_core_create_mvalue_rgba g_call_core_create_mvalue_rgba;
 capi_core_create_mvalue_byte_array g_call_core_create_mvalue_byte_array;
 capi_core_create_mvalue_list g_call_core_create_mvalue_list;
+capi_core_create_mvalue_dict g_call_core_create_mvalue_dict;
 capi_create_mvalue_function g_call_create_mvalue_function;
 capi_call_mvalue_function g_call_call_mvalue_function;
 capi_core_get_mvalue_bool g_call_core_get_mvalue_bool;
@@ -391,6 +392,8 @@ capi_core_get_mvalue_vector2 g_call_core_get_mvalue_vector2;
 capi_core_get_mvalue_vector3 g_call_core_get_mvalue_vector3;
 capi_core_get_mvalue_rgba g_call_core_get_mvalue_rgba;
 capi_core_get_mvalue_byte_array g_call_core_get_mvalue_byte_array;
+capi_core_get_mvalue_list g_call_core_get_mvalue_list;
+capi_core_get_mvalue_dict g_call_core_get_mvalue_dict;
 
 // Colshape
 capi_col_shape_get_type g_call_col_shape_get_type;
@@ -913,6 +916,7 @@ int load_module(const char *path)
     g_call_core_create_mvalue_rgba = GET_FUNC(module, "Core_CreateMValueRGBA", capi_core_create_mvalue_rgba);
     g_call_core_create_mvalue_byte_array = GET_FUNC(module, "Core_CreateMValueByteArray", capi_core_create_mvalue_byte_array);
     g_call_core_create_mvalue_list = GET_FUNC(module, "Core_CreateMValueList", capi_core_create_mvalue_list);
+    g_call_core_create_mvalue_dict = GET_FUNC(module, "Core_CreateMValueDict", capi_core_create_mvalue_dict);
     g_call_create_mvalue_function = GET_FUNC(module, "CreateMValueFunction", capi_create_mvalue_function);
     g_call_call_mvalue_function = GET_FUNC(module, "CallMValueFunction", capi_call_mvalue_function);
     g_call_core_get_mvalue_bool = GET_FUNC(module, "Core_GetMValueBool", capi_core_get_mvalue_bool);
@@ -925,6 +929,8 @@ int load_module(const char *path)
     g_call_core_get_mvalue_vector3 = GET_FUNC(module, "Core_GetMValueVector3", capi_core_get_mvalue_vector3);
     g_call_core_get_mvalue_rgba = GET_FUNC(module, "Core_GetMValueRGBA", capi_core_get_mvalue_rgba);
     g_call_core_get_mvalue_byte_array = GET_FUNC(module, "Core_GetMValueByteArray", capi_core_get_mvalue_byte_array);
+    g_call_core_get_mvalue_list = GET_FUNC(module, "Core_GetMValueList", capi_core_get_mvalue_list);
+    g_call_core_get_mvalue_dict = GET_FUNC(module, "Core_GetMValueDict", capi_core_get_mvalue_dict);
 
     // ColShape
     g_call_col_shape_get_type = GET_FUNC(module, "ColShape_GetType", capi_col_shape_get_type);
@@ -2951,9 +2957,14 @@ void *core_create_mvalue_byte_array(unsigned char *data, unsigned long long size
     return g_call_core_create_mvalue_byte_array(data, size);
 }
 
-void *core_create_mvalue_list(const char *json, unsigned long long size)
+void *core_create_mvalue_list(void **values, unsigned long long size)
 {
-    return g_call_core_create_mvalue_list(json, size);
+    return g_call_core_create_mvalue_list(values, size);
+}
+
+void *core_create_mvalue_dict(const char **keys, void **values, unsigned long long size)
+{
+    return g_call_core_create_mvalue_dict(keys, values, size);
 }
 
 void *create_mvalue_function(const char *resourceName, unsigned long long id)
@@ -3014,6 +3025,16 @@ RGBA core_get_mvalue_rgba(void *val)
 Array core_get_mvalue_byte_array(void *val)
 {
     return g_call_core_get_mvalue_byte_array(val);
+}
+
+Array core_get_mvalue_list(void *val)
+{
+    return g_call_core_get_mvalue_list(val);
+}
+
+MValueDict core_get_mvalue_dict(void *val)
+{
+    return g_call_core_get_mvalue_dict(val);
 }
 
 void *core_create_vehicle(unsigned long model, float posX, float posY, float posZ,

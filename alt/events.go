@@ -6,8 +6,9 @@ package alt
 // #include "Module.h"
 import "C"
 import (
-	"github.com/timo972/altv-go-pkg/internal/module"
 	"unsafe"
+
+	"github.com/timo972/altv-go-pkg/internal/module"
 )
 
 type eventType = uint16
@@ -414,7 +415,7 @@ func (e eventManager) AllClientEvents(listener allClientEventsListener) {
 	registerOnEvent(Resource.Name, clientScriptEvent)
 }
 
-func EmitServer(eventName string, args ...interface{}) {
+func Emit(eventName string, args ...interface{}) {
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
@@ -507,9 +508,9 @@ func altServerStartedEvent() {
 }
 
 //export altPlayerConnectEvent
-func altPlayerConnectEvent(player unsafe.Pointer) {
+func altPlayerConnectEvent(p unsafe.Pointer) {
+	player := newPlayer(p)
 	for _, event := range On.playerConnectEvents {
-		player := newPlayer(player)
 		event(player)
 	}
 }
@@ -517,13 +518,14 @@ func altPlayerConnectEvent(player unsafe.Pointer) {
 //export altConsoleCommandEvent
 func altConsoleCommandEvent(cName *C.char, cArray C.struct_array) {
 	name := C.GoString(cName)
-	cStrings, size := convertArray[*C.char](cArray)
+	//cStrings, size := convertArray[*C.char](cArray)
 
-	array := make([]string, size)
+	// array := make([]string, 0)
 
-	for i, cString := range cStrings {
-		array[i] = C.GoString(cString)
-	}
+	//for i, cString := range cStrings {
+	//	array[i] = C.GoString(cString)
+	//}
+	array := newStringArray(cArray.array, int(cArray.size))
 
 	for _, event := range On.consoleCommandEvents {
 		event(name, array)

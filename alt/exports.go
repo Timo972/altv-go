@@ -12,7 +12,7 @@ import (
 	"unsafe"
 )
 
-func getExortName(t reflect.StructField) string {
+func getFieldName(t reflect.StructField) string {
 	var name string
 
 	name, ok := t.Tag.Lookup("alt")
@@ -40,7 +40,7 @@ func Export(export interface{}) (err error) {
 		field := rv.Field(i)
 		fieldType := rt.Field(i)
 
-		exportName := getExortName(fieldType)
+		exportName := getFieldName(fieldType)
 		cExportName := C.CString(exportName)
 		//defer C.free(unsafe.Pointer(cExportName)) not freeing it because module needs it while whole runtime
 
@@ -93,16 +93,4 @@ func Import[ValueType any](resource string, name string) (value ValueType, _ err
 	}
 
 	return value, nil
-}
-
-type ChatRegisterCmd = func(cmd string, description string, callback func(player *Player, args ...[]string))
-
-func test() {
-	registerCmd, err := Import[ChatRegisterCmd]("chat", "registerCmd")
-	if err != nil {
-		panic(err)
-	}
-	registerCmd("/test", "", func(p *Player, args ...[]string) {
-		LogInfo("test")
-	})
 }

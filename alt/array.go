@@ -3,7 +3,9 @@ package alt
 //#include <stdlib.h>
 //#include "Module.h"
 import "C"
-import "unsafe"
+import (
+	"unsafe"
+)
 
 // array converts an array struct to C Value slice
 // pointer is free'd afterwards
@@ -30,7 +32,7 @@ func convertMValueArray(cMValues unsafe.Pointer, cSize C.ulonglong) []interface{
 
 		mValue := &MValue{Ptr: cMVal.Ptr, Type: _type}
 
-		mValue.Value(&args[i])
+		args[i] = mValue.ReflectValue().Interface()
 	}
 
 	return args
@@ -49,4 +51,19 @@ func newMValueArray(args []interface{}) (*C.struct_data, C.ulonglong) {
 	}
 
 	return (*C.struct_data)(ptr), C.ulonglong(size)
+}
+
+func newStringArray(ptr unsafe.Pointer, size int) []string {
+	strings := make([]string, size)
+	cStrings := (*[1 << 28]*C.char)(ptr)[:size:size]
+
+	// for i := 0; i < size; i++ {
+	// 	strings[i] = C.GoString(cStrings[i])
+	// }
+
+	for i, cString := range cStrings {
+		strings[i] = C.GoString(cString)
+	}
+
+	return strings
 }

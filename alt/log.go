@@ -37,7 +37,7 @@ func stringify(args []interface{}) string {
 		}
 	}
 
-	return strings.Join(messages, "")
+	return strings.Join(messages, " ")
 }
 
 func LogInfo(args ...interface{}) {

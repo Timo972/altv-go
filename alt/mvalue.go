@@ -74,6 +74,92 @@ func (e ExternFunction) Call(args ...interface{}) (interface{}, error) {
 	return val, nil
 }
 
+func newStructMValue(rt reflect.Type, rv reflect.Value) (unsafe.Pointer, MValueType) {
+	var mValuePtr unsafe.Pointer
+	var mValueType MValueType
+
+	structName := rt.Name()
+
+	if structName == "RGBA" {
+		r := rv.FieldByName("R").Uint()
+		g := rv.FieldByName("G").Uint()
+		b := rv.FieldByName("B").Uint()
+		a := rv.FieldByName("A").Uint()
+
+		mValuePtr = C.core_create_mvalue_rgba(C.uchar(r), C.uchar(g), C.uchar(b), C.uchar(a))
+		mValueType = MValueRGBA
+	} else if structName == "Vector2" {
+		x := rv.FieldByName("X").Float()
+		y := rv.FieldByName("Y").Float()
+
+		mValuePtr = C.core_create_mvalue_vector2(C.float(x), C.float(y))
+		mValueType = MValueVector2
+	} else if structName == "Vector3" {
+		x := rv.FieldByName("X").Float()
+		y := rv.FieldByName("Y").Float()
+		z := rv.FieldByName("Z").Float()
+
+		mValuePtr = C.core_create_mvalue_vector3(C.float(x), C.float(y), C.float(z))
+		mValueType = MValueVector3
+	} else {
+		// user struct
+
+		fieldCount := rv.NumField()
+		allCount := fieldCount + rv.NumMethod()
+
+		keysPtr := C.malloc(C.size_t(allCount) * C.size_t(unsafe.Sizeof(uintptr(0))))
+		cKeys := (*[1 << 30]*C.char)(keysPtr)
+
+		mValuesPtr := C.malloc(C.size_t(C.sizeof_MetaData * allCount))
+		cMValues := (*[1 << 30]unsafe.Pointer)(mValuesPtr)
+
+		// export data
+		for i := 0; i < fieldCount; i++ {
+			field := rv.Field(i)
+			fieldType := rt.Field(i)
+
+			fieldName := getFieldName(fieldType)
+			cKeys[i] = C.CString(fieldName)
+			mValue := CreateMValue(field.Interface())
+			cMValues[i] = mValue.Ptr //mValue.CStruct()
+		}
+
+		// export methods
+		for i := fieldCount; i < allCount; i++ {
+			method := rt.Method(i)
+			// this enabled means you can not export methods in camelCase - only PascalCase
+			// if !method.IsExported() {
+			// 	continue
+			// }
+			methodName := method.Type.Name()
+			cKeys[i] = C.CString(methodName)
+			mValue := CreateMValue(method.Func.Interface())
+			cMValues[i] = mValue.Ptr //mValue.CStruct()
+		}
+
+		mValuePtr = C.core_create_mvalue_dict((**C.char)(keysPtr), (*unsafe.Pointer)(mValuesPtr), C.ulonglong(allCount))
+		mValueType = MValueDict
+	}
+
+	return mValuePtr, mValueType
+}
+
+func newSliceMValue(rv reflect.Value) (unsafe.Pointer, MValueType) {
+	LogWarning("[MValue] Creating list")
+	size := rv.Len()
+	mValuesPtr := C.malloc(C.size_t(C.sizeof_MetaData) * C.size_t(size))
+	cMValues := (*[1 << 30]unsafe.Pointer)(mValuesPtr)
+
+	for i := 0; i < size; i++ {
+		item := rv.Index(i)
+		mValue := CreateMValue(item.Interface())
+		cMValues[i] = mValue.Ptr //mValue.CStruct()
+	}
+
+	mValuePtr := C.core_create_mvalue_list((*unsafe.Pointer)(mValuesPtr), C.ulonglong(size))
+	return mValuePtr, MValueList
+}
+
 func CreateMValue(value interface{}) *MValue {
 	var mValuePtr unsafe.Pointer
 	var mValueType MValueType
@@ -84,19 +170,25 @@ func CreateMValue(value interface{}) *MValue {
 
 	switch kind {
 	case reflect.Ptr:
-		structName := rt.Elem().Name()
-		if structName != "Player" && structName != "Vehicle" && structName != "Entity" && structName != "ColShape" && structName != "Checkpoint" && structName != "VoiceChannel" && structName != "Blip" {
-			mValueType = MValueNil
+		rt = rt.Elem()
+		rv = rv.Elem()
 
-			break
+		structName := rt.Name()
+
+		if structName == "Player" || structName == "Vehicle" || structName == "Entity" || structName == "ColShape" || structName == "Checkpoint" || structName == "VoiceChannel" || structName == "Blip" {
+			// BaseObject
+			ptr := rv.FieldByName("Ptr").UnsafePointer()
+			t := rv.FieldByName("Type").Uint()
+
+			mValuePtr = C.core_create_mvalue_base_object(C.uchar(t), ptr)
+			mValueType = MValueBaseObject
+		} else if structName != "" {
+			// struct pointer
+			mValuePtr, mValueType = newStructMValue(rt, rv)
+		} else {
+			// slice / array pointer
+			mValuePtr, mValueType = newSliceMValue(rv)
 		}
-
-		// BaseObject
-		ptr := rv.FieldByName("Ptr").UnsafePointer()
-		t := rv.FieldByName("Type").Uint()
-
-		mValuePtr = C.core_create_mvalue_base_object(C.uchar(t), ptr)
-		mValueType = MValueBaseObject
 	case reflect.String:
 		// string
 		cstr := C.CString(rv.String())
@@ -123,8 +215,6 @@ func CreateMValue(value interface{}) *MValue {
 
 		mValuePtr = C.create_mvalue_function(cResource, C.ulonglong(id))
 		mValueType = MValueFunction
-
-		LogInfo("created mvalue function:", id)
 	// integers
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		mValuePtr = C.core_create_mvalue_int(C.longlong(rv.Int()))
@@ -144,33 +234,13 @@ func CreateMValue(value interface{}) *MValue {
 
 			mValuePtr = C.core_create_mvalue_byte_array((*C.uchar)(arrayPtr), C.ulonglong(len(bytes)))
 			mValueType = MValueByteArray
+		} else {
+			// every other types
+			mValuePtr, mValueType = newSliceMValue(rv)
 		}
 	case reflect.Struct:
 		// vector3, rgba, vector2
-		structName := rt.Name()
-
-		if structName == "RGBA" {
-			r := rv.FieldByName("R").Uint()
-			g := rv.FieldByName("G").Uint()
-			b := rv.FieldByName("B").Uint()
-			a := rv.FieldByName("A").Uint()
-
-			mValuePtr = C.core_create_mvalue_rgba(C.uchar(r), C.uchar(g), C.uchar(b), C.uchar(a))
-			mValueType = MValueRGBA
-		} else if structName == "Vector2" {
-			x := rv.FieldByName("X").Float()
-			y := rv.FieldByName("Y").Float()
-
-			mValuePtr = C.core_create_mvalue_vector2(C.float(x), C.float(y))
-			mValueType = MValueVector2
-		} else if structName == "Vector3" {
-			x := rv.FieldByName("X").Float()
-			y := rv.FieldByName("Y").Float()
-			z := rv.FieldByName("Z").Float()
-
-			mValuePtr = C.core_create_mvalue_vector3(C.float(x), C.float(y), C.float(z))
-			mValueType = MValueVector3
-		}
+		mValuePtr, mValueType = newStructMValue(rt, rv)
 	default:
 		mValueType = MValueNone
 	}
@@ -178,11 +248,88 @@ func CreateMValue(value interface{}) *MValue {
 	return &MValue{Ptr: mValuePtr, Type: mValueType, Val: rv}
 }
 
+func (v MValue) ReflectValue() reflect.Value {
+	if v.Val.IsValid() && !v.Val.IsNil() && !v.Val.IsZero() {
+		return v.Val
+	}
+
+	switch v.Type {
+	case MValueBool:
+		v.Val = reflect.ValueOf(int(C.core_get_mvalue_bool(v.Ptr)) != 0)
+	case MValueInt:
+		v.Val = reflect.ValueOf(int64(C.core_get_mvalue_int(v.Ptr)))
+	case MValueUInt:
+		v.Val = reflect.ValueOf(uint64(C.core_get_mvalue_uint(v.Ptr)))
+	case MValueDouble:
+		v.Val = reflect.ValueOf(float64(C.core_get_mvalue_double(v.Ptr)))
+	case MValueString:
+		v.Val = reflect.ValueOf(C.GoString(C.core_get_mvalue_string(v.Ptr)))
+	case MValueBaseObject:
+		entity := C.core_get_mvalue_base_object(v.Ptr)
+		_type := uint8(entity.Type)
+
+		var ev reflect.Value
+		if _type == PlayerObject {
+			ev = reflect.ValueOf(newPlayer(entity.Ptr))
+		} else if _type == VehicleObject {
+			ev = reflect.ValueOf(newVehicle(entity.Ptr))
+		} else if _type == ColshapeObject {
+			ev = reflect.ValueOf(newColShape(entity.Ptr))
+		} else if _type == CheckpointObject {
+			ev = reflect.ValueOf(newCheckpoint(entity.Ptr))
+		} else if _type == VoiceChannelObject {
+			ev = reflect.ValueOf(newVoiceChannel(entity.Ptr))
+		} else if _type == BlipObject {
+			ev = reflect.ValueOf(newBlip(entity.Ptr))
+		}
+
+		v.Val = ev //ev.Elem()
+	case MValueVector2:
+		v.Val = reflect.ValueOf(newVector2(C.core_get_mvalue_vector2(v.Ptr)))
+	case MValueVector3:
+		v.Val = reflect.ValueOf(newVector3(C.core_get_mvalue_vector3(v.Ptr)))
+	case MValueRGBA:
+		v.Val = reflect.ValueOf(newRGBA(C.core_get_mvalue_rgba(v.Ptr)))
+	case MValueByteArray:
+		arr := C.core_get_mvalue_byte_array(v.Ptr)
+		v.Val = reflect.ValueOf(C.GoBytes(arr.array, C.int(arr.size)))
+	case MValueFunction:
+		v.Val = reflect.ValueOf(ExternFunction{
+			Ptr: v.Ptr,
+		})
+	case MValueList:
+		LogWarning("[MValue] Parsing list (reflect)")
+		arr := C.core_get_mvalue_list(v.Ptr)
+
+		size := uint64(arr.size)
+
+		args := make([]reflect.Value, size)
+
+		cMValueStructs := (*[1 << 30]C.struct_metaData)(arr.array)[:size:size]
+		for i := uint64(0); i < size; i++ {
+			cMVal := cMValueStructs[i]
+			_type := uint8(cMVal.Type)
+
+			mValue := &MValue{Ptr: cMVal.Ptr, Type: _type}
+
+			args[i] = mValue.ReflectValue()
+		}
+
+		v.Val = reflect.ValueOf(args)
+	case MValueDict:
+	default:
+	}
+
+	return v.Val
+}
+
 func (v MValue) Value(val interface{}) (ok bool) {
-	if reflect.TypeOf(val).Kind() != reflect.Ptr {
+	rt := reflect.TypeOf(val)
+	if rt.Kind() != reflect.Ptr {
 		return false
 	}
 
+	rt = rt.Elem()
 	rv := reflect.ValueOf(val).Elem()
 	if v.Val.IsValid() && !v.Val.IsNil() && !v.Val.IsZero() {
 		rv.Set(v.Val)
@@ -223,7 +370,7 @@ func (v MValue) Value(val interface{}) (ok bool) {
 			return false
 		}
 
-		rv.Set(ev.Elem())
+		rv.Set(ev)
 	case MValueVector2:
 		rv.Set(reflect.ValueOf(newVector2(C.core_get_mvalue_vector2(v.Ptr))))
 	case MValueVector3:
@@ -239,6 +386,74 @@ func (v MValue) Value(val interface{}) (ok bool) {
 		})
 
 		rv.Set(ev)
+	case MValueList:
+		if rt.Kind() != reflect.Slice && rt.Kind() != reflect.Array {
+			return false
+		}
+
+		LogWarning("[MValue] Parsing list")
+		arr := C.core_get_mvalue_list(v.Ptr)
+
+		size := int(arr.size)
+
+		args := reflect.MakeSlice(rt, size, size)
+
+		cValues := (*[1 << 30]C.struct_metaData)(arr.array)[:size:size]
+
+		for i := 0; i < size; i++ {
+			cValue := cValues[i]
+			mValue := &MValue{Ptr: cValue.Ptr, Type: uint8(cValue.Type)}
+
+			args.Index(i).Set(mValue.ReflectValue())
+			// C.free(cValue.Ptr)
+		}
+
+		// C.free(arr.array)
+
+		rv.Set(args)
+	case MValueDict:
+		if rt.Kind() != reflect.Struct {
+			return false
+		}
+
+		LogWarning("[MValue] Parsing dict")
+		cDict := C.core_get_mvalue_dict(v.Ptr)
+
+		size := int(cDict.size)
+
+		keys := newStringArray(cDict.keys, size)
+		LogInfo("[MValue] Keys:", keys)
+
+		valuesPtr := unsafe.Pointer(cDict.values)
+		cValues := (*[1 << 30]C.struct_metaData)(valuesPtr)[:size:size]
+
+		for i := 0; i < rv.NumField(); i++ {
+			fieldKey := getFieldName(rt.Field(i))
+
+			for j, key := range keys {
+				if key != fieldKey {
+					LogInfo("[MValue] Skipping field", fieldKey, key, i)
+					continue
+				}
+
+				cValue := cValues[j]
+				mValue := &MValue{Ptr: cValue.Ptr, Type: uint8(cValue.Type)}
+				refVal := mValue.ReflectValue()
+
+				field := rv.Field(i)
+				if refVal.Type().Kind() != field.Kind() {
+					LogWarning("[MValue] Missmatch! Field:", fieldKey, "Index:", i, "Type:", field.Type(), "Value:", refVal.Interface(), "Index:", j)
+					continue
+				}
+
+				LogInfo("[MValue] Field:", fieldKey, "Index:", i, "Type:", field.Type(), "Value:", refVal.Interface(), "Index:", j)
+				field.Set(refVal)
+
+				//C.free(cValue.Ptr)
+			}
+		}
+
+		//C.free(valuesPtr)
 	default:
 		ok = true
 	}
