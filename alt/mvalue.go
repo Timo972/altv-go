@@ -145,7 +145,6 @@ func newStructMValue(rt reflect.Type, rv reflect.Value) (unsafe.Pointer, MValueT
 }
 
 func newSliceMValue(rv reflect.Value) (unsafe.Pointer, MValueType) {
-	LogWarning("[MValue] Creating list")
 	size := rv.Len()
 	mValuesPtr := C.malloc(C.size_t(C.sizeof_MetaData) * C.size_t(size))
 	cMValues := (*[1 << 30]unsafe.Pointer)(mValuesPtr)
@@ -158,6 +157,111 @@ func newSliceMValue(rv reflect.Value) (unsafe.Pointer, MValueType) {
 
 	mValuePtr := C.core_create_mvalue_list((*unsafe.Pointer)(mValuesPtr), C.ulonglong(size))
 	return mValuePtr, MValueList
+}
+
+func newMapMValue(rv reflect.Value) (unsafe.Pointer, MValueType) {
+	keys := rv.MapKeys()
+	size := len(keys)
+
+	keysPtr := C.malloc(C.size_t(size) * C.size_t(unsafe.Sizeof(uintptr(0))))
+	cKeys := (*[1 << 30]*C.char)(keysPtr)
+
+	mValuesPtr := C.malloc(C.size_t(C.sizeof_MetaData * size))
+	cMValues := (*[1 << 30]unsafe.Pointer)(mValuesPtr)
+
+	for i, key := range keys {
+		cKeys[i] = C.CString(key.String())
+		mValue := CreateMValue(rv.MapIndex(key).Interface())
+		cMValues[i] = mValue.Ptr
+	}
+
+	mValuePtr := C.core_create_mvalue_dict((**C.char)(keysPtr), (*unsafe.Pointer)(mValuesPtr), C.ulonglong(size))
+	return mValuePtr, MValueDict
+}
+
+func parseMValueList(v *MValue, rt reflect.Type) reflect.Value {
+	arr := C.core_get_mvalue_list(v.Ptr)
+
+	size := int(arr.size)
+
+	args := reflect.MakeSlice(rt, size, size)
+
+	cValues := (*[1 << 30]C.struct_metaData)(arr.array)[:size:size]
+
+	for i := 0; i < size; i++ {
+		cValue := cValues[i]
+		mValue := &MValue{Ptr: cValue.Ptr, Type: uint8(cValue.Type)}
+		args.Index(i).Set(mValue.ReflectValue())
+		// C.free(cValue.Ptr)
+	}
+
+	// C.free(arr.array)
+	return args
+}
+
+func parseMValueDict(v *MValue, rt reflect.Type, rv reflect.Value) {
+	if rt.Kind() != reflect.Struct && rt.Kind() != reflect.Map {
+		return
+	}
+
+	cDict := C.core_get_mvalue_dict(v.Ptr)
+	size := int(cDict.size)
+	keys := newStringArray(cDict.keys, size)
+
+	valuesPtr := unsafe.Pointer(cDict.values)
+	cValues := (*[1 << 30]C.struct_metaData)(valuesPtr)[:size:size]
+
+	if rt.Kind() == reflect.Struct {
+		for i := 0; i < rv.NumField(); i++ {
+			fieldKey := getFieldName(rt.Field(i))
+
+			for j, key := range keys {
+				if key != fieldKey {
+					continue
+				}
+
+				field := rv.Field(i)
+
+				cValue := cValues[j]
+				mValue := &MValue{Ptr: cValue.Ptr, Type: uint8(cValue.Type), Val: field}
+				refVal := mValue.ReflectValue()
+
+				if !refVal.IsValid() {
+					break
+				}
+
+				if refVal.Type().Kind() != field.Kind() {
+					LogWarning("[MValue] Missmatch! Field:", fieldKey, "Index:", i, "Type:", field.Type(), "Value Type:", refVal.Type(), "Value:", refVal.Interface(), "Index:", j)
+					break
+				}
+
+				field.Set(refVal)
+
+				break
+				//C.free(cValue.Ptr)
+			}
+		}
+	} else if rt.Kind() == reflect.Map {
+		et := rt.Elem()
+		for i, key := range keys {
+			kv := reflect.ValueOf(key)
+
+			cValue := cValues[i]
+			mValue := &MValue{Ptr: cValue.Ptr, Type: uint8(cValue.Type)}
+			refVal := mValue.ReflectValue()
+
+			if !refVal.IsValid() {
+				continue
+			}
+
+			if refVal.Type().Kind() != et.Kind() {
+				LogWarning("[MValue] Missmatch! Field:", key, "Type:", et, "Value Type:", refVal.Type(), "Value:", refVal.Interface())
+				continue
+			}
+
+			rv.SetMapIndex(kv, refVal)
+		}
+	}
 }
 
 func CreateMValue(value interface{}) *MValue {
@@ -182,12 +286,14 @@ func CreateMValue(value interface{}) *MValue {
 
 			mValuePtr = C.core_create_mvalue_base_object(C.uchar(t), ptr)
 			mValueType = MValueBaseObject
-		} else if structName != "" {
+		} else if rt.Kind() == reflect.Struct {
 			// struct pointer
 			mValuePtr, mValueType = newStructMValue(rt, rv)
-		} else {
+		} else if rt.Kind() == reflect.Slice || rt.Kind() == reflect.Array {
 			// slice / array pointer
 			mValuePtr, mValueType = newSliceMValue(rv)
+		} else if rt.Kind() == reflect.Map {
+			mValuePtr, mValueType = newMapMValue(rv)
 		}
 	case reflect.String:
 		// string
@@ -241,6 +347,9 @@ func CreateMValue(value interface{}) *MValue {
 	case reflect.Struct:
 		// vector3, rgba, vector2
 		mValuePtr, mValueType = newStructMValue(rt, rv)
+	case reflect.Map:
+		// map
+		mValuePtr, mValueType = newMapMValue(rv)
 	default:
 		mValueType = MValueNone
 	}
@@ -249,7 +358,7 @@ func CreateMValue(value interface{}) *MValue {
 }
 
 func (v MValue) ReflectValue() reflect.Value {
-	if v.Val.IsValid() && !v.Val.IsNil() && !v.Val.IsZero() {
+	if v.Val.IsValid() && !v.Val.IsZero() {
 		return v.Val
 	}
 
@@ -298,25 +407,18 @@ func (v MValue) ReflectValue() reflect.Value {
 			Ptr: v.Ptr,
 		})
 	case MValueList:
-		LogWarning("[MValue] Parsing list (reflect)")
-		arr := C.core_get_mvalue_list(v.Ptr)
-
-		size := uint64(arr.size)
-
-		args := make([]reflect.Value, size)
-
-		cMValueStructs := (*[1 << 30]C.struct_metaData)(arr.array)[:size:size]
-		for i := uint64(0); i < size; i++ {
-			cMVal := cMValueStructs[i]
-			_type := uint8(cMVal.Type)
-
-			mValue := &MValue{Ptr: cMVal.Ptr, Type: _type}
-
-			args[i] = mValue.ReflectValue()
+		if v.Val.IsValid() {
+			v.Val = parseMValueList(&v, v.Val.Type())
+		} else {
+			LogError("[MValue] can not parse nested maps")
 		}
-
-		v.Val = reflect.ValueOf(args)
+		// C.free(arr.array)
 	case MValueDict:
+		if v.Val.IsValid() {
+			parseMValueDict(&v, v.Val.Type(), v.Val)
+		} else {
+			LogError("[MValue] can not parse nested maps")
+		}
 	default:
 	}
 
@@ -391,69 +493,15 @@ func (v MValue) Value(val interface{}) (ok bool) {
 			return false
 		}
 
-		LogWarning("[MValue] Parsing list")
-		arr := C.core_get_mvalue_list(v.Ptr)
-
-		size := int(arr.size)
-
-		args := reflect.MakeSlice(rt, size, size)
-
-		cValues := (*[1 << 30]C.struct_metaData)(arr.array)[:size:size]
-
-		for i := 0; i < size; i++ {
-			cValue := cValues[i]
-			mValue := &MValue{Ptr: cValue.Ptr, Type: uint8(cValue.Type)}
-
-			args.Index(i).Set(mValue.ReflectValue())
-			// C.free(cValue.Ptr)
-		}
-
-		// C.free(arr.array)
+		args := parseMValueList(&v, rt)
 
 		rv.Set(args)
 	case MValueDict:
-		if rt.Kind() != reflect.Struct {
+		if rt.Kind() != reflect.Struct && rt.Kind() != reflect.Map {
 			return false
 		}
 
-		LogWarning("[MValue] Parsing dict")
-		cDict := C.core_get_mvalue_dict(v.Ptr)
-
-		size := int(cDict.size)
-
-		keys := newStringArray(cDict.keys, size)
-		LogInfo("[MValue] Keys:", keys)
-
-		valuesPtr := unsafe.Pointer(cDict.values)
-		cValues := (*[1 << 30]C.struct_metaData)(valuesPtr)[:size:size]
-
-		for i := 0; i < rv.NumField(); i++ {
-			fieldKey := getFieldName(rt.Field(i))
-
-			for j, key := range keys {
-				if key != fieldKey {
-					LogInfo("[MValue] Skipping field", fieldKey, key, i)
-					continue
-				}
-
-				cValue := cValues[j]
-				mValue := &MValue{Ptr: cValue.Ptr, Type: uint8(cValue.Type)}
-				refVal := mValue.ReflectValue()
-
-				field := rv.Field(i)
-				if refVal.Type().Kind() != field.Kind() {
-					LogWarning("[MValue] Missmatch! Field:", fieldKey, "Index:", i, "Type:", field.Type(), "Value:", refVal.Interface(), "Index:", j)
-					continue
-				}
-
-				LogInfo("[MValue] Field:", fieldKey, "Index:", i, "Type:", field.Type(), "Value:", refVal.Interface(), "Index:", j)
-				field.Set(refVal)
-
-				//C.free(cValue.Ptr)
-			}
-		}
-
-		//C.free(valuesPtr)
+		parseMValueDict(&v, rt, rv)
 	default:
 		ok = true
 	}
