@@ -236,7 +236,7 @@ func (e Entity) StreamSyncedMetaData(key string, value interface{}) bool {
 }
 
 func (e Entity) SetSyncedMetaData(key string, value interface{}) {
-	mValue := CreateMValue(value)
+	mValue := createMValue(value)
 
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
@@ -264,7 +264,7 @@ func (e Entity) DeleteSyncedMetaData(key string) {
 }
 
 func (e Entity) SetStreamSyncedMetaData(key string, value interface{}) {
-	mValue := CreateMValue(value)
+	mValue := createMValue(value)
 
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))

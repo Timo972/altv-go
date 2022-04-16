@@ -420,7 +420,7 @@ func (p Player) HasLocalMetaData(key string) bool {
 }
 
 func (p Player) SetLocalMetaData(key string, value interface{}) {
-	meta := CreateMValue(value)
+	meta := createMValue(value)
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 

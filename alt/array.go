@@ -32,7 +32,7 @@ func convertMValueArray(cMValues unsafe.Pointer, cSize C.ulonglong) []interface{
 
 		mValue := &MValue{Ptr: cMVal.Ptr, Type: _type}
 
-		args[i] = mValue.ReflectValue().Interface()
+		args[i] = mValue.ReflectValue(nil).Interface()
 	}
 
 	return args
@@ -45,7 +45,7 @@ func newMValueArray(args []interface{}) (*C.struct_data, C.ulonglong) {
 	cArray := (*[1 << 30]C.struct_data)(ptr)
 
 	for i := 0; i < size; i++ {
-		mValue := CreateMValue(args[i])
+		mValue := createMValue(args[i])
 
 		cArray[i] = C.struct_data{mValue: mValue.Ptr, Type: C.uint(mValue.Type)}
 	}

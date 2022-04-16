@@ -44,7 +44,7 @@ func Export(export interface{}) (err error) {
 		cExportName := C.CString(exportName)
 		//defer C.free(unsafe.Pointer(cExportName)) not freeing it because module needs it while whole runtime
 
-		mValue := CreateMValue(field.Interface())
+		mValue := createMValue(field.Interface())
 
 		exported := int(C.register_alt_export(cResource, cExportName, C.struct_data{mValue: mValue.Ptr, Type: C.uint(mValue.Type)})) == 1
 		if !exported {
@@ -63,7 +63,7 @@ func Export(export interface{}) (err error) {
 		exportName := method.Type.Name()
 		cExportName := C.CString(exportName)
 
-		mValue := CreateMValue(method.Func.Interface())
+		mValue := createMValue(method.Func.Interface())
 
 		exported := int(C.register_alt_export(cResource, cExportName, C.struct_data{mValue: mValue.Ptr, Type: C.uint(mValue.Type)})) == 1
 		if !exported {

@@ -121,7 +121,7 @@ func (b BaseObject) MetaData(key string, val interface{}) bool {
 }
 
 func (b BaseObject) SetMetaData(key string, value interface{}) {
-	mValue := CreateMValue(value)
+	mValue := createMValue(value)
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
