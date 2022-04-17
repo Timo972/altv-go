@@ -1,0 +1,55 @@
+syntax = "proto3";
+package mvalue;
+
+option go_package = "/pb";
+
+message BaseObject {
+  uint32 type = 1;
+  string ptr = 2;
+}
+
+message Vector3 {
+  float x = 1;
+  float y = 2;
+  float z = 3;
+}
+
+message Vector2 {
+  float x = 1;
+  float y = 2;
+}
+
+message Function {
+  string resourceName = 1;
+  uint64 id = 2;
+}
+
+message RGBA {
+  uint32 r = 1;
+  uint32 g = 2;
+  uint32 b = 3;
+  uint32 a = 4;
+}
+
+message MValue {
+  // default values
+  optional bool noneValue = 1;
+  optional bool nilValue = 2;
+  optional bool boolValue = 3;
+  optional int64 intValue = 4;
+  optional uint64 uintValue = 5;
+  optional double doubleValue = 6;
+  optional string stringValue = 7;
+
+  // nested values
+  repeated MValue list = 8;
+  repeated string dict = 9;
+
+  // special values
+  optional BaseObject baseObjectValue = 10;
+  optional Function functionValue = 11;
+  optional Vector3 vector3Value = 12;
+  optional RGBA rgbaValue = 13;
+  optional bytes bytesValue = 14;
+  optional Vector2 vector2Value = 15;
+}
