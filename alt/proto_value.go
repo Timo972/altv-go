@@ -1,31 +1,20 @@
 package alt
 
+//#ifndef _WIN32
+//#include <stdlib.h>
+//#endif
+// #include "Module.h"
 import "C"
 import (
+	"fmt"
 	"reflect"
 
 	"github.com/timo972/altv-go-pkg/pb"
 	"google.golang.org/protobuf/proto"
 )
 
-type ProtoValue struct {
-}
-
-func sliceToProto(rt reflect.Type, rv reflect.Value) pb.MValue {
-	return pb.MValue{}
-}
-
-func structToProto(rt reflect.Type, rv reflect.Value) pb.MValue {
-	return pb.MValue{}
-}
-
-func mapToProto(rt reflect.Type, rv reflect.Value) pb.MValue {
-	return pb.MValue{}
-}
-
-func createProtoMValue(value interface{}) (*pb.MValue, error) {
-	//var mValuePtr unsafe.Pointer
-	//var mValueType MValueType
+func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
+	var mValueType MValueType
 	var protoValue *pb.MValue
 
 	rt := reflect.TypeOf(value)
@@ -42,41 +31,38 @@ func createProtoMValue(value interface{}) (*pb.MValue, error) {
 
 		if structName == "Player" || structName == "Vehicle" || structName == "Entity" || structName == "ColShape" || structName == "Checkpoint" || structName == "VoiceChannel" || structName == "Blip" {
 			// BaseObject
-			//ptr := rv.FieldByName("Ptr").UnsafePointer()
-			//t := rv.FieldByName("Type").Uint()
-			//
-			//mValuePtr = C.core_create_mvalue_base_object(C.uchar(t), ptr)
-			//mValueType = MValueBaseObject
 			protoValue = &pb.MValue{
 				BaseObjectValue: &pb.BaseObject{
 					Type: uint32(rv.FieldByName("Type").Uint()),
-					Ptr:  "",
+					Ptr:  fmt.Sprintf("%v", rv.FieldByName("Ptr").UnsafePointer()),
 				},
 			}
+			mValueType = MValueBaseObject
 		} else if kind == reflect.Struct {
 			// struct pointer
-			//mValuePtr, mValueType = serializeStruct(rt, rv)
-			protoValue = structToProto(rt, rv)
+			protoValue, mValueType = structToProto(rt, rv)
 		} else if kind == reflect.Slice || kind == reflect.Array {
 			// slice / array pointer
-			//mValuePtr, mValueType = serializeSlice(rv)
-			protoValue = sliceToProto(rt, rv)
+			protoValue, mValueType = sliceToProto(rt, rv)
 		} else if kind == reflect.Map {
-			protoValue = mapToProto(rt, rv)
-			//mValuePtr, mValueType = serializeMap(rv)
+			// map pointer
+			protoValue, mValueType = mapToProto(rt, rv)
 		}
 	case reflect.String:
 		protoValue = &pb.MValue{
 			StringValue: proto.String(rv.String()),
 		}
+		mValueType = MValueString
 	case reflect.Bool:
 		protoValue = &pb.MValue{
 			BoolValue: proto.Bool(rv.Bool()),
 		}
+		mValueType = MValueBool
 	case reflect.Float32, reflect.Float64:
 		protoValue = &pb.MValue{
 			DoubleValue: proto.Float64(rv.Float()),
 		}
+		mValueType = MValueDouble
 	case reflect.Func:
 		// function
 		mValueFuncCount++
@@ -85,21 +71,22 @@ func createProtoMValue(value interface{}) (*pb.MValue, error) {
 
 		protoValue = &pb.MValue{
 			FunctionValue: &pb.Function{
-				Id:           id,
-				ResourceName: Resource.Name,
+				Id: id,
+				//ResourceName: alt.Resource.Name,
+				ResourceName: "go",
 			},
 		}
+		mValueType = MValueFunction
 	// integers
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		// mValuePtr = C.core_create_mvalue_int(C.longlong(rv.Int()))
-		// mValueType = MValueInt
-
+		mValueType = MValueInt
 		protoValue = &pb.MValue{
 			IntValue: proto.Int64(rv.Int()),
 		}
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 		// mValuePtr = C.core_create_mvalue_uint(C.ulonglong(rv.Uint()))
-		// mValueType = MValueUInt
+		mValueType = MValueUInt
 		protoValue = &pb.MValue{
 			UintValue: proto.Uint64(rv.Uint()),
 		}
@@ -119,31 +106,38 @@ func createProtoMValue(value interface{}) (*pb.MValue, error) {
 		//	// every other types
 		//	mValuePtr, mValueType = serializeSlice(rv)
 		//}
-		sliceToProto(rt, rv)
+		protoValue, mValueType = sliceToProto(rt, rv)
 	case reflect.Struct:
 		// vector3, rgba, vector2
 		//mValuePtr, mValueType = serializeStruct(rt, rv)
-		protoValue = structToProto(rt, rv)
+		protoValue, mValueType = structToProto(rt, rv)
 	case reflect.Map:
 		// map
 		//mValuePtr, mValueType = serializeMap(rv)
-		protoValue = mapToProto(rt, rv)
+		protoValue, mValueType = mapToProto(rt, rv)
 	default:
 		//mValueType = MValueNone
 		protoValue = &pb.MValue{
 			NoneValue: proto.Bool(true),
 		}
+		mValueType = MValueNone
 	}
 
-	out, err := proto.Marshal(protoValue)
-	if err != nil {
-		return nil, err
-	}
+	return protoValue, mValueType
+}
 
-	arrayPtr := C.CBytes(out)
+func serializeProtoMValue(protoValue *pb.MValue) ([]byte, error) {
+
+	return proto.Marshal(protoValue)
+}
+
+func createProtoMValue(data []byte, mValueType MValueType) *MValue {
+	arrayPtr := C.CBytes(data)
 	defer C.free(arrayPtr)
+	mValuePtr := C.core_create_mvalue((*C.uchar)(arrayPtr), C.ulonglong(len(data)))
 
-	C.core_create_mvalue((*C.uchar)(arrayPtr), C.ulonglong(len(out)))
-
-	return protoValue, nil
+	return &MValue{
+		Ptr:  mValuePtr,
+		Type: mValueType,
+	}
 }

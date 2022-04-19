@@ -12,17 +12,6 @@ import (
 	"unsafe"
 )
 
-func getFieldName(t reflect.StructField) string {
-	var name string
-
-	name, ok := t.Tag.Lookup("alt")
-	if !ok {
-		name = t.Name
-	}
-
-	return name
-}
-
 // Export exports a struct
 func Export(export interface{}) (err error) {
 	cResource := C.CString(Resource.Name)
@@ -37,38 +26,38 @@ func Export(export interface{}) (err error) {
 
 	// export data
 	for i := 0; i < rv.NumField(); i++ {
-		field := rv.Field(i)
-		fieldType := rt.Field(i)
+		// field := rv.Field(i)
+		// fieldType := rt.Field(i)
+		//
+		// exportName := getFieldName(fieldType)
+		// cExportName := C.CString(exportName)
+		// //defer C.free(unsafe.Pointer(cExportName)) not freeing it because module needs it while whole runtime
 
-		exportName := getFieldName(fieldType)
-		cExportName := C.CString(exportName)
-		//defer C.free(unsafe.Pointer(cExportName)) not freeing it because module needs it while whole runtime
-
-		mValue := createMValue(field.Interface())
-
-		exported := int(C.register_alt_export(cResource, cExportName, C.struct_data{mValue: mValue.Ptr, Type: C.uint(mValue.Type)})) == 1
-		if !exported {
-			err = fmt.Errorf("failed to export %s", exportName)
-		}
+		// mValue := createMValue(field.Interface())
+		//
+		// exported := int(C.register_alt_export(cResource, cExportName, C.struct_data{mValue: mValue.Ptr, Type: C.uint(mValue.Type)})) == 1
+		// if !exported {
+		// 	err = fmt.Errorf("failed to export %s", exportName)
+		// }
 	}
 
 	// export methods
 	for i := 0; i < rv.NumMethod(); i++ {
-		method := rt.Method(i)
-		// this enabled means you can not export methods in camelCase - only PascalCase
-		// if !method.IsExported() {
-		// 	continue
-		// }
-
-		exportName := method.Type.Name()
-		cExportName := C.CString(exportName)
-
-		mValue := createMValue(method.Func.Interface())
-
-		exported := int(C.register_alt_export(cResource, cExportName, C.struct_data{mValue: mValue.Ptr, Type: C.uint(mValue.Type)})) == 1
-		if !exported {
-			err = fmt.Errorf("failed to export %s", exportName)
-		}
+		//method := rt.Method(i)
+		//// this enabled means you can not export methods in camelCase - only PascalCase
+		//// if !method.IsExported() {
+		//// 	continue
+		//// }
+		//
+		//exportName := method.Type.Name()
+		//cExportName := C.CString(exportName)
+		//
+		//mValue := createMValue(method.Func.Interface())
+		//
+		//exported := int(C.register_alt_export(cResource, cExportName, C.struct_data{mValue: mValue.Ptr, Type: C.uint(mValue.Type)})) == 1
+		//if !exported {
+		//	err = fmt.Errorf("failed to export %s", exportName)
+		//}
 	}
 
 	return err

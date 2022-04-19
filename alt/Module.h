@@ -503,8 +503,9 @@ typedef void *(*capi_core_create_mvalue_rgba)(unsigned char r, unsigned char g, 
 typedef void *(*capi_core_create_mvalue_byte_array)(unsigned char *data, unsigned long long size);
 typedef void *(*capi_core_create_mvalue_list)(void **values, unsigned long long size);
 typedef void *(*capi_core_create_mvalue_dict)(const char **keys, void **values, unsigned long long size);
-typedef void *(*capi_create_mvalue_function)(const char *resourceName, unsigned long long id);
-typedef MetaData (*capi_call_mvalue_function)(void *ptr, CustomData *mValues, unsigned long long size);
+typedef void *(*capi_core_create_mvalue_function)(const char *resourceName, unsigned long long id);
+typedef MetaData (*capi_core_call_mvalue_function)(void *ptr, CustomData *mValues, unsigned long long size);
+typedef void *(*capi_core_create_mvalue)(unsigned char *data, unsigned long long size);
 
 typedef int (*capi_core_get_mvalue_bool)(void *val);
 typedef long long (*capi_core_get_mvalue_int)(void *val);
@@ -1085,8 +1086,9 @@ void *core_create_mvalue_rgba(unsigned char r, unsigned char g, unsigned char b,
 void *core_create_mvalue_byte_array(unsigned char *data, unsigned long long size);
 void *core_create_mvalue_list(void **values, unsigned long long size);
 void *core_create_mvalue_dict(const char **keys, void **values, unsigned long long size);
-void *create_mvalue_function(const char *resourceName, unsigned long long id);
-MetaData call_mvalue_function(void *ptr, CustomData *mValues, unsigned long long size);
+void *core_create_mvalue_function(const char *resourceName, unsigned long long id);
+MetaData core_call_mvalue_function(void *ptr, CustomData *mValues, unsigned long long size);
+void *core_create_mvalue(unsigned char *data, unsigned long long size);
 
 int core_get_mvalue_bool(void *val);
 long long core_get_mvalue_int(void *val);

@@ -380,8 +380,9 @@ capi_core_create_mvalue_rgba g_call_core_create_mvalue_rgba;
 capi_core_create_mvalue_byte_array g_call_core_create_mvalue_byte_array;
 capi_core_create_mvalue_list g_call_core_create_mvalue_list;
 capi_core_create_mvalue_dict g_call_core_create_mvalue_dict;
-capi_create_mvalue_function g_call_create_mvalue_function;
-capi_call_mvalue_function g_call_call_mvalue_function;
+capi_core_create_mvalue_function g_call_core_create_mvalue_function;
+capi_core_call_mvalue_function g_call_core_call_mvalue_function;
+capi_core_create_mvalue g_call_core_create_mvalue;
 capi_core_get_mvalue_bool g_call_core_get_mvalue_bool;
 capi_core_get_mvalue_double g_call_core_get_mvalue_double;
 capi_core_get_mvalue_int g_call_core_get_mvalue_int;
@@ -917,8 +918,9 @@ int load_module(const char *path)
     g_call_core_create_mvalue_byte_array = GET_FUNC(module, "Core_CreateMValueByteArray", capi_core_create_mvalue_byte_array);
     g_call_core_create_mvalue_list = GET_FUNC(module, "Core_CreateMValueList", capi_core_create_mvalue_list);
     g_call_core_create_mvalue_dict = GET_FUNC(module, "Core_CreateMValueDict", capi_core_create_mvalue_dict);
-    g_call_create_mvalue_function = GET_FUNC(module, "CreateMValueFunction", capi_create_mvalue_function);
-    g_call_call_mvalue_function = GET_FUNC(module, "CallMValueFunction", capi_call_mvalue_function);
+    g_call_core_create_mvalue_function = GET_FUNC(module, "CreateMValueFunction", capi_core_create_mvalue_function);
+    g_call_core_create_mvalue = GET_FUNC(module, "Core_CreateMValue", capi_core_create_mvalue);
+    g_call_core_call_mvalue_function = GET_FUNC(module, "CallMValueFunction", capi_core_call_mvalue_function);
     g_call_core_get_mvalue_bool = GET_FUNC(module, "Core_GetMValueBool", capi_core_get_mvalue_bool);
     g_call_core_get_mvalue_double = GET_FUNC(module, "Core_GetMValueDouble", capi_core_get_mvalue_double);
     g_call_core_get_mvalue_int = GET_FUNC(module, "Core_GetMValueInt", capi_core_get_mvalue_int);
@@ -2967,14 +2969,19 @@ void *core_create_mvalue_dict(const char **keys, void **values, unsigned long lo
     return g_call_core_create_mvalue_dict(keys, values, size);
 }
 
-void *create_mvalue_function(const char *resourceName, unsigned long long id)
+void *core_create_mvalue_function(const char *resourceName, unsigned long long id)
 {
-    return g_call_create_mvalue_function(resourceName, id);
+    return g_call_core_create_mvalue_function(resourceName, id);
 }
 
-MetaData call_mvalue_function(void *ptr, CustomData *mValues, unsigned long long size)
+void *core_create_mvalue(unsigned char *data, unsigned long long size)
 {
-    return g_call_call_mvalue_function(ptr, mValues, size);
+    return g_call_core_create_mvalue(data, size);
+}
+
+MetaData core_call_mvalue_function(void *ptr, CustomData *mValues, unsigned long long size)
+{
+    return g_call_core_call_mvalue_function(ptr, mValues, size);
 }
 
 int core_get_mvalue_bool(void *val)

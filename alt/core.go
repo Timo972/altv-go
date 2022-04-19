@@ -57,10 +57,10 @@ func MetaData(key string, value interface{}) bool {
 }
 
 func SetMetaData(key string, value interface{}) {
-	mValue := createMValue(value)
-	cKey := C.CString(key)
-	defer C.free(unsafe.Pointer(cKey))
-	C.core_set_meta_data(cKey, mValue.Ptr)
+	// mValue := createMValue(value)
+	// cKey := C.CString(key)
+	// defer C.free(unsafe.Pointer(cKey))
+	// C.core_set_meta_data(cKey, mValue.Ptr)
 }
 
 func DeleteMetaData(key string) {
@@ -86,10 +86,10 @@ func SyncedMetaData(key string, value interface{}) bool {
 }
 
 func SetSyncedMetaData(key string, value interface{}) {
-	mValue := createMValue(value)
-	cKey := C.CString(key)
-	defer C.free(unsafe.Pointer(cKey))
-	C.core_set_synced_meta_data(cKey, mValue.Ptr)
+	// mValue := createMValue(value)
+	// cKey := C.CString(key)
+	// defer C.free(unsafe.Pointer(cKey))
+	// C.core_set_synced_meta_data(cKey, mValue.Ptr)
 }
 
 func DeleteSyncedMetaData(key string) {

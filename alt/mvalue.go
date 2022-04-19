@@ -9,8 +9,6 @@ import (
 	"errors"
 	"reflect"
 	"unsafe"
-
-	"github.com/timo972/altv-go-pkg/internal/module"
 )
 
 type MValueType = uint8
@@ -63,7 +61,7 @@ func (e ExternFunction) Call(args ...interface{}) (interface{}, error) {
 	cArgPtr, cArgSize := newMValueArray(args)
 	defer C.free(unsafe.Pointer(cArgPtr))
 
-	cMeta := C.call_mvalue_function(e.Ptr, cArgPtr, cArgSize)
+	cMeta := C.core_call_mvalue_function(e.Ptr, cArgPtr, cArgSize)
 	mVal := &MValue{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
 
 	var val interface{}
@@ -75,202 +73,15 @@ func (e ExternFunction) Call(args ...interface{}) (interface{}, error) {
 	return val, nil
 }
 
-func serializeStruct(rt reflect.Type, rv reflect.Value) (unsafe.Pointer, MValueType) {
-	var mValuePtr unsafe.Pointer
-	var mValueType MValueType
+func createMValue(value interface{}) (*MValue, error) {
+	protoValue, mValueType := newProtoMValue(value)
 
-	structName := rt.Name()
-
-	if structName == "RGBA" {
-		r := rv.FieldByName("R").Uint()
-		g := rv.FieldByName("G").Uint()
-		b := rv.FieldByName("B").Uint()
-		a := rv.FieldByName("A").Uint()
-
-		mValuePtr = C.core_create_mvalue_rgba(C.uchar(r), C.uchar(g), C.uchar(b), C.uchar(a))
-		mValueType = MValueRGBA
-	} else if structName == "Vector2" {
-		x := rv.FieldByName("X").Float()
-		y := rv.FieldByName("Y").Float()
-
-		mValuePtr = C.core_create_mvalue_vector2(C.float(x), C.float(y))
-		mValueType = MValueVector2
-	} else if structName == "Vector3" {
-		x := rv.FieldByName("X").Float()
-		y := rv.FieldByName("Y").Float()
-		z := rv.FieldByName("Z").Float()
-
-		mValuePtr = C.core_create_mvalue_vector3(C.float(x), C.float(y), C.float(z))
-		mValueType = MValueVector3
-	} else {
-		// user struct
-
-		fieldCount := rv.NumField()
-		allCount := fieldCount + rv.NumMethod()
-
-		keysPtr := C.malloc(C.size_t(allCount) * C.size_t(unsafe.Sizeof(uintptr(0))))
-		cKeys := (*[1 << 30]*C.char)(keysPtr)
-
-		mValuesPtr := C.malloc(C.size_t(C.sizeof_MetaData * allCount))
-		cMValues := (*[1 << 30]unsafe.Pointer)(mValuesPtr)
-
-		// export data
-		for i := 0; i < fieldCount; i++ {
-			field := rv.Field(i)
-			fieldType := rt.Field(i)
-
-			fieldName := getFieldName(fieldType)
-			cKeys[i] = C.CString(fieldName)
-			mValue := createMValue(field.Interface())
-			cMValues[i] = mValue.Ptr //mValue.CStruct()
-		}
-
-		// export methods
-		for i := fieldCount; i < allCount; i++ {
-			method := rt.Method(i)
-			// this enabled means you can not export methods in camelCase - only PascalCase
-			// if !method.IsExported() {
-			// 	continue
-			// }
-			methodName := method.Type.Name()
-			cKeys[i] = C.CString(methodName)
-			mValue := createMValue(method.Func.Interface())
-			cMValues[i] = mValue.Ptr //mValue.CStruct()
-		}
-
-		mValuePtr = C.core_create_mvalue_dict((**C.char)(keysPtr), (*unsafe.Pointer)(mValuesPtr), C.ulonglong(allCount))
-		mValueType = MValueDict
+	out, err := serializeProtoMValue(protoValue)
+	if err != nil {
+		return nil, err
 	}
 
-	return mValuePtr, mValueType
-}
-
-func serializeSlice(rv reflect.Value) (unsafe.Pointer, MValueType) {
-	size := rv.Len()
-	mValuesPtr := C.malloc(C.size_t(C.sizeof_MetaData) * C.size_t(size))
-	cMValues := (*[1 << 30]unsafe.Pointer)(mValuesPtr)
-
-	for i := 0; i < size; i++ {
-		item := rv.Index(i)
-		mValue := createMValue(item.Interface())
-		cMValues[i] = mValue.Ptr //mValue.CStruct()
-	}
-
-	mValuePtr := C.core_create_mvalue_list((*unsafe.Pointer)(mValuesPtr), C.ulonglong(size))
-	return mValuePtr, MValueList
-}
-
-func serializeMap(rv reflect.Value) (unsafe.Pointer, MValueType) {
-	keys := rv.MapKeys()
-	size := len(keys)
-
-	keysPtr := C.malloc(C.size_t(size) * C.size_t(unsafe.Sizeof(uintptr(0))))
-	cKeys := (*[1 << 30]*C.char)(keysPtr)
-
-	mValuesPtr := C.malloc(C.size_t(C.sizeof_MetaData * size))
-	cMValues := (*[1 << 30]unsafe.Pointer)(mValuesPtr)
-
-	for i, key := range keys {
-		cKeys[i] = C.CString(key.String())
-		mValue := createMValue(rv.MapIndex(key).Interface())
-		cMValues[i] = mValue.Ptr
-	}
-
-	mValuePtr := C.core_create_mvalue_dict((**C.char)(keysPtr), (*unsafe.Pointer)(mValuesPtr), C.ulonglong(size))
-	return mValuePtr, MValueDict
-}
-
-func createMValue(value interface{}) *MValue {
-	var mValuePtr unsafe.Pointer
-	var mValueType MValueType
-
-	rt := reflect.TypeOf(value)
-	rv := reflect.ValueOf(value)
-	kind := rt.Kind()
-
-	switch kind {
-	case reflect.Ptr:
-		rt = rt.Elem()
-		rv = rv.Elem()
-
-		structName := rt.Name()
-
-		if structName == "Player" || structName == "Vehicle" || structName == "Entity" || structName == "ColShape" || structName == "Checkpoint" || structName == "VoiceChannel" || structName == "Blip" {
-			// BaseObject
-			ptr := rv.FieldByName("Ptr").UnsafePointer()
-			t := rv.FieldByName("Type").Uint()
-
-			mValuePtr = C.core_create_mvalue_base_object(C.uchar(t), ptr)
-			mValueType = MValueBaseObject
-		} else if rt.Kind() == reflect.Struct {
-			// struct pointer
-			mValuePtr, mValueType = serializeStruct(rt, rv)
-		} else if rt.Kind() == reflect.Slice || rt.Kind() == reflect.Array {
-			// slice / array pointer
-			mValuePtr, mValueType = serializeSlice(rv)
-		} else if rt.Kind() == reflect.Map {
-			mValuePtr, mValueType = serializeMap(rv)
-		}
-	case reflect.String:
-		// string
-		cstr := C.CString(rv.String())
-		defer C.free(unsafe.Pointer(cstr))
-
-		mValuePtr = C.core_create_mvalue_string(cstr)
-		mValueType = MValueString
-	case reflect.Bool:
-		// bool
-		mValuePtr = C.core_create_mvalue_bool(C.int(module.Bool2int(rv.Bool())))
-		mValueType = MValueBool
-	case reflect.Float32, reflect.Float64:
-		// double
-		mValuePtr = C.core_create_mvalue_double(C.double(rv.Float()))
-		mValueType = MValueDouble
-	case reflect.Func:
-		// function
-		mValueFuncCount++
-		id := mValueFuncCount
-		mValueFunctions[id] = rv
-
-		cResource := C.CString(Resource.Name)
-		defer C.free(unsafe.Pointer(cResource))
-
-		mValuePtr = C.create_mvalue_function(cResource, C.ulonglong(id))
-		mValueType = MValueFunction
-	// integers
-	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		mValuePtr = C.core_create_mvalue_int(C.longlong(rv.Int()))
-		mValueType = MValueInt
-	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		mValuePtr = C.core_create_mvalue_uint(C.ulonglong(rv.Uint()))
-		mValueType = MValueUInt
-	case reflect.Array, reflect.Slice:
-		// list
-		sliceName := rt.Elem().Name()
-
-		// byte array
-		if sliceName == "uint8" {
-			bytes := rv.Bytes()
-			arrayPtr := C.CBytes(bytes)
-			defer C.free(arrayPtr)
-
-			mValuePtr = C.core_create_mvalue_byte_array((*C.uchar)(arrayPtr), C.ulonglong(len(bytes)))
-			mValueType = MValueByteArray
-		} else {
-			// every other types
-			mValuePtr, mValueType = serializeSlice(rv)
-		}
-	case reflect.Struct:
-		// vector3, rgba, vector2
-		mValuePtr, mValueType = serializeStruct(rt, rv)
-	case reflect.Map:
-		// map
-		mValuePtr, mValueType = serializeMap(rv)
-	default:
-		mValueType = MValueNone
-	}
-
-	return &MValue{Ptr: mValuePtr, Type: mValueType, Val: rv}
+	return createProtoMValue(out, mValueType), nil
 }
 
 func parseMValueList(v *MValue, rt reflect.Type) reflect.Value {
@@ -285,7 +96,7 @@ func parseMValueList(v *MValue, rt reflect.Type) reflect.Value {
 	for i := 0; i < size; i++ {
 		cValue := cValues[i]
 		mValue := &MValue{Ptr: cValue.Ptr, Type: uint8(cValue.Type)}
-		args.Index(i).Set(mValue.ReflectValue(nil))
+		args.Index(i).Set(mValue.ReflectValue())
 		// C.free(cValue.Ptr)
 	}
 
@@ -318,7 +129,7 @@ func parseMValueDict(v *MValue, rt reflect.Type, rv reflect.Value) {
 
 				cValue := cValues[j]
 				mValue := &MValue{Ptr: cValue.Ptr, Type: uint8(cValue.Type)}
-				refVal := mValue.ReflectValue(field.Type())
+				refVal := mValue.ReflectValue()
 
 				if !refVal.IsValid() {
 					break
@@ -342,7 +153,7 @@ func parseMValueDict(v *MValue, rt reflect.Type, rv reflect.Value) {
 
 			cValue := cValues[i]
 			mValue := &MValue{Ptr: cValue.Ptr, Type: uint8(cValue.Type)}
-			refVal := mValue.ReflectValue(et)
+			refVal := mValue.ReflectValue()
 
 			if !refVal.IsValid() {
 				continue
@@ -358,7 +169,7 @@ func parseMValueDict(v *MValue, rt reflect.Type, rv reflect.Value) {
 	}
 }
 
-func (v MValue) ReflectValue(rt reflect.Type) reflect.Value {
+func (v MValue) ReflectValue() reflect.Value {
 	if v.Val.IsValid() && !v.Val.IsZero() {
 		return v.Val
 	}
@@ -405,18 +216,18 @@ func (v MValue) ReflectValue(rt reflect.Type) reflect.Value {
 			Ptr: v.Ptr,
 		})
 	case MValueList:
-		if rt != nil {
-			v.Val = parseMValueList(&v, rt)
-		} else {
-			LogError("[MValue] can not parse nested maps")
-		}
+		// if rt != nil {
+		// 	v.Val = parseMValueList(&v, rt)
+		// } else {
+		// 	LogError("[MValue] can not parse nested maps")
+		// }
 		// C.free(arr.array)
 	case MValueDict:
-		if rt != nil {
-			parseMValueDict(&v, rt, v.Val)
-		} else {
-			LogError("[MValue] can not parse nested maps")
-		}
+		// if rt != nil {
+		// 	parseMValueDict(&v, rt, v.Val)
+		// } else {
+		// 	LogError("[MValue] can not parse nested maps")
+		// }
 	default:
 	}
 
@@ -533,7 +344,7 @@ func altCallFunction(id C.ulonglong, cMValues unsafe.Pointer, cSize C.ulonglong)
 		return C.struct_data{mValue: nil, Type: C.uint(MValueNone)}
 	}
 
-	mValue := createMValue(resValues[0].Interface())
+	mValue, _ := createMValue(resValues[0].Interface())
 
 	return mValue.CStruct()
 }

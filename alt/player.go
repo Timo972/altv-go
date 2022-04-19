@@ -420,11 +420,11 @@ func (p Player) HasLocalMetaData(key string) bool {
 }
 
 func (p Player) SetLocalMetaData(key string, value interface{}) {
-	meta := createMValue(value)
-	cKey := C.CString(key)
-	defer C.free(unsafe.Pointer(cKey))
-
-	C.player_set_local_meta_data(p.Ptr, cKey, meta.Ptr)
+	// meta := createMValue(value)
+	// cKey := C.CString(key)
+	// defer C.free(unsafe.Pointer(cKey))
+	//
+	// C.player_set_local_meta_data(p.Ptr, cKey, meta.Ptr)
 }
 
 func (p Player) LocalMetaData(key string, value interface{}) bool {

@@ -236,18 +236,18 @@ func (e Entity) StreamSyncedMetaData(key string, value interface{}) bool {
 }
 
 func (e Entity) SetSyncedMetaData(key string, value interface{}) {
-	mValue := createMValue(value)
-
-	cKey := C.CString(key)
-	defer C.free(unsafe.Pointer(cKey))
-
-	if e.Type == PlayerObject {
-		C.player_set_synced_meta_data(e.Ptr, cKey, mValue.Ptr)
-	}
-
-	if e.Type == VehicleObject {
-		C.vehicle_set_synced_meta_data(e.Ptr, cKey, mValue.Ptr)
-	}
+	// mValue := createMValue(value)
+	//
+	// cKey := C.CString(key)
+	// defer C.free(unsafe.Pointer(cKey))
+	//
+	// if e.Type == PlayerObject {
+	// 	C.player_set_synced_meta_data(e.Ptr, cKey, mValue.Ptr)
+	// }
+	//
+	// if e.Type == VehicleObject {
+	// 	C.vehicle_set_synced_meta_data(e.Ptr, cKey, mValue.Ptr)
+	// }
 }
 
 func (e Entity) DeleteSyncedMetaData(key string) {
@@ -264,18 +264,18 @@ func (e Entity) DeleteSyncedMetaData(key string) {
 }
 
 func (e Entity) SetStreamSyncedMetaData(key string, value interface{}) {
-	mValue := createMValue(value)
-
-	cKey := C.CString(key)
-	defer C.free(unsafe.Pointer(cKey))
-
-	if e.Type == PlayerObject {
-		C.player_set_stream_synced_meta_data(e.Ptr, cKey, mValue.Ptr)
-	}
-
-	if e.Type == VehicleObject {
-		C.vehicle_set_stream_synced_meta_data(e.Ptr, cKey, mValue.Ptr)
-	}
+	// mValue := createMValue(value)
+	//
+	// cKey := C.CString(key)
+	// defer C.free(unsafe.Pointer(cKey))
+	//
+	// if e.Type == PlayerObject {
+	// 	C.player_set_stream_synced_meta_data(e.Ptr, cKey, mValue.Ptr)
+	// }
+	//
+	// if e.Type == VehicleObject {
+	// 	C.vehicle_set_stream_synced_meta_data(e.Ptr, cKey, mValue.Ptr)
+	// }
 }
 
 func (e Entity) DeleteStreamSyncedMetaData(key string) {
