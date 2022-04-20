@@ -127,17 +127,5 @@ func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
 }
 
 func serializeProtoMValue(protoValue *pb.MValue) ([]byte, error) {
-
 	return proto.Marshal(protoValue)
 }
-
-/*func createProtoMValue(data []byte, mValueType MValueType) *MValue {
-	arrayPtr := C.CBytes(data)
-	defer C.free(arrayPtr)
-	mValuePtr := C.core_create_mvalue((*C.uchar)(arrayPtr), C.ulonglong(len(data)))
-
-	return &MValue{
-		Ptr:  mValuePtr,
-		Type: mValueType,
-	}
-}*/

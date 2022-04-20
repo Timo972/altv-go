@@ -58,7 +58,7 @@ func (e ExternFunction) Call(args ...interface{}) (interface{}, error) {
 		return nil, errors.New("invalid extern function")
 	}
 
-	cArgPtr, cArgSize := newMValueArray(args)
+	/*cArgPtr, cArgSize := newMValueArray(args)
 	defer C.free(unsafe.Pointer(cArgPtr))
 
 	cMeta := C.runtime_call_m_value_function(e.Ptr, cArgPtr, cArgSize)
@@ -70,18 +70,8 @@ func (e ExternFunction) Call(args ...interface{}) (interface{}, error) {
 		return val, errors.New("mvalue conversion failed")
 	}
 
-	return val, nil
-}
-
-func createMValue(value interface{}) (*MValue, error) {
-	protoValue, mValueType := newProtoMValue(value)
-
-	out, err := serializeProtoMValue(protoValue)
-	if err != nil {
-		return nil, err
-	}
-
-	return createProtoMValue(out, mValueType), nil
+	return val, nil*/
+	return nil, nil
 }
 
 func parseMValueList(v *MValue, rt reflect.Type) reflect.Value {
@@ -322,7 +312,7 @@ func (v MValue) CStruct() C.struct_data {
 }
 
 //export altCallFunction
-func altCallFunction(id C.ulonglong, cMValues unsafe.Pointer, cSize C.ulonglong) C.struct_data {
+func altCallFunction(id C.ulonglong, cMValues unsafe.Pointer, cSize C.ulonglong) C.struct_array {
 	exportedFunc := mValueFunctions[uint64(id)]
 
 	args := convertMValueArray(cMValues, cSize)
@@ -330,7 +320,7 @@ func altCallFunction(id C.ulonglong, cMValues unsafe.Pointer, cSize C.ulonglong)
 	for i, arg := range args {
 		if arg == nil {
 			LogError("exported function called with nil argument")
-			return C.struct_data{mValue: nil, Type: C.uint(MValueNone)}
+			return C.struct_array{array: nil, size: C.ulonglong(0)}
 		}
 		rvArgs[i] = reflect.ValueOf(arg)
 	}
@@ -341,10 +331,17 @@ func altCallFunction(id C.ulonglong, cMValues unsafe.Pointer, cSize C.ulonglong)
 	if size > 1 {
 		LogWarning("exported function returned more than 1 argument, which is currently not supported (dropping overflow)")
 	} else if size == 0 {
-		return C.struct_data{mValue: nil, Type: C.uint(MValueNone)}
+		return C.struct_array{array: nil, size: C.ulonglong(0)}
 	}
 
-	mValue, _ := createMValue(resValues[0].Interface())
+	protoValue, _ := newProtoMValue(resValues[0].Interface())
+	out, err := serializeProtoMValue(protoValue)
+	if err != nil {
+		return C.struct_array{array: nil, size: C.ulonglong(0)}
+	}
 
-	return mValue.CStruct()
+	arrayPtr := C.CBytes(out)
+	bSize := C.ulonglong(len(out))
+
+	return C.struct_array{array: arrayPtr, size: bSize}
 }

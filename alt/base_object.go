@@ -97,47 +97,60 @@ func (b BaseObject) HasMetaData(key string) bool {
 }
 
 func (b BaseObject) MetaData(key string, val interface{}) bool {
+	/*cKey := C.CString(key)
+	defer C.free(unsafe.Pointer(cKey))
+
+	var arr C.struct_array
+	if b.Type == PlayerObject {
+		arr = C.player_get_meta_data(b.Ptr, cKey)
+	} else if b.Type == VoiceChannelObject {
+		arr = C.voice_channel_get_meta_data(b.Ptr, cKey)
+	} else if b.Type == CheckpointObject {
+		arr = C.checkpoint_get_meta_data(b.Ptr, cKey)
+	} else if b.Type == ColshapeObject {
+		arr = C.col_shape_get_meta_data(b.Ptr, cKey)
+	} else if b.Type == VehicleObject {
+		arr = C.vehicle_get_meta_data(b.Ptr, cKey)
+	} else if b.Type == BlipObject {
+		arr = C.blip_get_meta_data(b.Ptr, cKey)
+	}*/
+
+	// mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
+
+	//return mValue.Value(val)
+	return true
+}
+
+func (b BaseObject) SetMetaData(key string, value interface{}) bool {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
-	var meta C.struct_metaData
-	if b.Type == PlayerObject {
-		meta = C.player_get_meta_data(b.Ptr, cKey)
-	} else if b.Type == VoiceChannelObject {
-		meta = C.voice_channel_get_meta_data(b.Ptr, cKey)
-	} else if b.Type == CheckpointObject {
-		meta = C.checkpoint_get_meta_data(b.Ptr, cKey)
-	} else if b.Type == ColshapeObject {
-		meta = C.col_shape_get_meta_data(b.Ptr, cKey)
-	} else if b.Type == VehicleObject {
-		meta = C.vehicle_get_meta_data(b.Ptr, cKey)
-	} else if b.Type == BlipObject {
-		meta = C.blip_get_meta_data(b.Ptr, cKey)
+	protoValue, _ := newProtoMValue(value)
+	out, err := serializeProtoMValue(protoValue)
+	if err != nil {
+		return false
 	}
 
-	mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
+	arrayPtr := C.CBytes(out)
+	defer C.free(arrayPtr)
 
-	return mValue.Value(val)
-}
+	bytes := (*C.uchar)(arrayPtr)
+	size := C.ulonglong(len(out))
+	if b.Type == PlayerObject {
+		C.player_set_meta_data(b.Ptr, cKey, bytes, size)
+	} else if b.Type == VoiceChannelObject {
+		C.voice_channel_set_meta_data(b.Ptr, cKey, bytes, size)
+	} else if b.Type == CheckpointObject {
+		C.checkpoint_set_meta_data(b.Ptr, cKey, bytes, size)
+	} else if b.Type == ColshapeObject {
+		C.col_shape_set_meta_data(b.Ptr, cKey, bytes, size)
+	} else if b.Type == VehicleObject {
+		C.vehicle_set_meta_data(b.Ptr, cKey, bytes, size)
+	} else if b.Type == BlipObject {
+		C.blip_set_meta_data(b.Ptr, cKey, bytes, size)
+	}
 
-func (b BaseObject) SetMetaData(key string, value interface{}) {
-	// mValue := createMValue(value)
-	// cKey := C.CString(key)
-	// defer C.free(unsafe.Pointer(cKey))
-
-	// if b.Type == PlayerObject {
-	// 	C.player_set_meta_data(b.Ptr, cKey, mValue.Ptr)
-	// } else if b.Type == VoiceChannelObject {
-	// 	C.voice_channel_set_meta_data(b.Ptr, cKey, mValue.Ptr)
-	// } else if b.Type == CheckpointObject {
-	// 	C.checkpoint_set_meta_data(b.Ptr, cKey, mValue.Ptr)
-	// } else if b.Type == ColshapeObject {
-	// 	C.col_shape_set_meta_data(b.Ptr, cKey, mValue.Ptr)
-	// } else if b.Type == VehicleObject {
-	// 	C.vehicle_set_meta_data(b.Ptr, cKey, mValue.Ptr)
-	// } else if b.Type == BlipObject {
-	// 	C.blip_set_meta_data(b.Ptr, cKey, mValue.Ptr)
-	// }
+	return true
 }
 
 func (b BaseObject) DeleteMetaData(key string) {

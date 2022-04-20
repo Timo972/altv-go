@@ -3328,14 +3328,14 @@ int voice_channel_has_meta_data(void* base, const char *key)
     return g_call_voice_channel_has_meta_data(base, key);
 }
 
-MetaData voice_channel_get_meta_data(void* base, const char *key)
+Array voice_channel_get_meta_data(void* base, const char *key)
 {
     return g_call_voice_channel_get_meta_data(base, key);
 }
 
-void voice_channel_set_meta_data(void *base, const char *key, void *val)
+void voice_channel_set_meta_data(void *base, const char *key, unsigned char *data, unsigned long long size)
 {
-    return g_call_voice_channel_set_meta_data(base, key, val);
+    return g_call_voice_channel_set_meta_data(base, key, data, size);
 }
 
 void voice_channel_delete_meta_data(void *base, const char *key)

@@ -135,10 +135,10 @@ func StopResource(name string) {
 	C.core_stop_resource(cName)
 }
 
-func RestartResource(name string) bool {
+func RestartResource(name string) {
 	cName := C.CString(name)
 	defer C.free(unsafe.Pointer(cName))
-	return int(C.core_restart_resource(cName)) == 1
+	C.core_restart_resource(cName)
 }
 
 func PlayersByName(name string) []*Player {

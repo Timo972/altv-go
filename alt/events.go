@@ -416,27 +416,27 @@ func (e eventManager) AllClientEvents(listener allClientEventsListener) {
 }
 
 func Emit(eventName string, args ...interface{}) {
-	cEvent := C.CString(eventName)
+	/*cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
 	argPtr, argSize := newMValueArray(args)
 	defer C.free(unsafe.Pointer(argPtr))
 
-	C.core_trigger_local_event(cEvent, argPtr, argSize)
+	C.core_trigger_local_event(cEvent, argPtr, argSize)*/
 }
 
 func EmitClient(player *Player, eventName string, args ...interface{}) {
-	cEvent := C.CString(eventName)
+	/*cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
 	argPtr, argSize := newMValueArray(args)
 	defer C.free(unsafe.Pointer(argPtr))
 
-	C.core_trigger_client_event(player.Ptr, cEvent, argPtr, argSize)
+	C.core_trigger_client_event(player.Ptr, cEvent, argPtr, argSize)*/
 }
 
 func EmitClients(players []*Player, eventName string, args ...interface{}) {
-	clientSize := uint64(len(players))
+	/*clientSize := uint64(len(players))
 
 	if clientSize < 1 {
 		return
@@ -456,17 +456,17 @@ func EmitClients(players []*Player, eventName string, args ...interface{}) {
 		clientArray[i] = players[i].Ptr
 	}
 
-	C.core_trigger_client_event_for((*unsafe.Pointer)(clientArrayPtr), C.ulonglong(clientSize), cEvent, argPtr, argSize)
+	C.core_trigger_client_event_for((*unsafe.Pointer)(clientArrayPtr), C.ulonglong(clientSize), cEvent, argPtr, argSize)*/
 }
 
 func EmitAllClients(eventName string, args ...interface{}) {
-	cEvent := C.CString(eventName)
+	/*cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
 	argPtr, argSize := newMValueArray(args)
 	defer C.free(unsafe.Pointer(argPtr))
 
-	C.core_trigger_client_event_for_all(cEvent, argPtr, argSize)
+	C.core_trigger_client_event_for_all(cEvent, argPtr, argSize)*/
 }
 
 //export altServerScriptEvent
