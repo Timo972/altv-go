@@ -61,7 +61,7 @@ func (e ExternFunction) Call(args ...interface{}) (interface{}, error) {
 	cArgPtr, cArgSize := newMValueArray(args)
 	defer C.free(unsafe.Pointer(cArgPtr))
 
-	cMeta := C.core_call_mvalue_function(e.Ptr, cArgPtr, cArgSize)
+	cMeta := C.runtime_call_m_value_function(e.Ptr, cArgPtr, cArgSize)
 	mVal := &MValue{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
 
 	var val interface{}
@@ -85,7 +85,7 @@ func createMValue(value interface{}) (*MValue, error) {
 }
 
 func parseMValueList(v *MValue, rt reflect.Type) reflect.Value {
-	arr := C.core_get_mvalue_list(v.Ptr)
+	arr := C.core_get_m_value_list(v.Ptr)
 
 	size := int(arr.size)
 
@@ -109,7 +109,7 @@ func parseMValueDict(v *MValue, rt reflect.Type, rv reflect.Value) {
 		return
 	}
 
-	cDict := C.core_get_mvalue_dict(v.Ptr)
+	cDict := C.core_get_m_value_dict(v.Ptr)
 	size := int(cDict.size)
 	keys := newStringArray(cDict.keys, size)
 
@@ -176,17 +176,17 @@ func (v MValue) ReflectValue() reflect.Value {
 
 	switch v.Type {
 	case MValueBool:
-		v.Val = reflect.ValueOf(int(C.core_get_mvalue_bool(v.Ptr)) != 0)
+		v.Val = reflect.ValueOf(int(C.core_get_m_value_bool(v.Ptr)) != 0)
 	case MValueInt:
-		v.Val = reflect.ValueOf(int64(C.core_get_mvalue_int(v.Ptr)))
+		v.Val = reflect.ValueOf(int64(C.core_get_m_value_int(v.Ptr)))
 	case MValueUInt:
-		v.Val = reflect.ValueOf(uint64(C.core_get_mvalue_uint(v.Ptr)))
+		v.Val = reflect.ValueOf(uint64(C.core_get_m_value_u_int(v.Ptr)))
 	case MValueDouble:
-		v.Val = reflect.ValueOf(float64(C.core_get_mvalue_double(v.Ptr)))
+		v.Val = reflect.ValueOf(float64(C.core_get_m_value_double(v.Ptr)))
 	case MValueString:
-		v.Val = reflect.ValueOf(C.GoString(C.core_get_mvalue_string(v.Ptr)))
+		v.Val = reflect.ValueOf(C.GoString(C.core_get_m_value_string(v.Ptr)))
 	case MValueBaseObject:
-		entity := C.core_get_mvalue_base_object(v.Ptr)
+		entity := C.core_get_m_value_base_object(v.Ptr)
 		_type := uint8(entity.Type)
 
 		if _type == PlayerObject {
@@ -203,13 +203,13 @@ func (v MValue) ReflectValue() reflect.Value {
 			v.Val = reflect.ValueOf(newBlip(entity.Ptr))
 		}
 	case MValueVector2:
-		v.Val = reflect.ValueOf(newVector2(C.core_get_mvalue_vector2(v.Ptr)))
+		v.Val = reflect.ValueOf(newVector2(C.core_get_m_value_vector2(v.Ptr)))
 	case MValueVector3:
-		v.Val = reflect.ValueOf(newVector3(C.core_get_mvalue_vector3(v.Ptr)))
+		v.Val = reflect.ValueOf(newVector3(C.core_get_m_value_vector3(v.Ptr)))
 	case MValueRGBA:
-		v.Val = reflect.ValueOf(newRGBA(C.core_get_mvalue_rgba(v.Ptr)))
+		v.Val = reflect.ValueOf(newRGBA(C.core_get_m_value_r_g_b_a(v.Ptr)))
 	case MValueByteArray:
-		arr := C.core_get_mvalue_byte_array(v.Ptr)
+		arr := C.core_get_m_value_byte_array(v.Ptr)
 		v.Val = reflect.ValueOf(C.GoBytes(arr.array, C.int(arr.size)))
 	case MValueFunction:
 		v.Val = reflect.ValueOf(ExternFunction{
@@ -249,17 +249,17 @@ func (v MValue) Value(val interface{}) (ok bool) {
 
 	switch v.Type {
 	case MValueBool:
-		rv.SetBool(int(C.core_get_mvalue_bool(v.Ptr)) != 0)
+		rv.SetBool(int(C.core_get_m_value_bool(v.Ptr)) != 0)
 	case MValueInt:
-		rv.SetInt(int64(C.core_get_mvalue_int(v.Ptr)))
+		rv.SetInt(int64(C.core_get_m_value_int(v.Ptr)))
 	case MValueUInt:
-		rv.SetUint(uint64(C.core_get_mvalue_uint(v.Ptr)))
+		rv.SetUint(uint64(C.core_get_m_value_u_int(v.Ptr)))
 	case MValueDouble:
-		rv.SetFloat(float64(C.core_get_mvalue_double(v.Ptr)))
+		rv.SetFloat(float64(C.core_get_m_value_double(v.Ptr)))
 	case MValueString:
-		rv.SetString(C.GoString(C.core_get_mvalue_string(v.Ptr)))
+		rv.SetString(C.GoString(C.core_get_m_value_string(v.Ptr)))
 	case MValueBaseObject:
-		entity := C.core_get_mvalue_base_object(v.Ptr)
+		entity := C.core_get_m_value_base_object(v.Ptr)
 		_type := uint8(entity.Type)
 
 		var ev reflect.Value
@@ -283,13 +283,13 @@ func (v MValue) Value(val interface{}) (ok bool) {
 
 		rv.Set(ev)
 	case MValueVector2:
-		rv.Set(reflect.ValueOf(newVector2(C.core_get_mvalue_vector2(v.Ptr))))
+		rv.Set(reflect.ValueOf(newVector2(C.core_get_m_value_vector2(v.Ptr))))
 	case MValueVector3:
-		rv.Set(reflect.ValueOf(newVector3(C.core_get_mvalue_vector3(v.Ptr))))
+		rv.Set(reflect.ValueOf(newVector3(C.core_get_m_value_vector3(v.Ptr))))
 	case MValueRGBA:
-		rv.Set(reflect.ValueOf(newRGBA(C.core_get_mvalue_rgba(v.Ptr))))
+		rv.Set(reflect.ValueOf(newRGBA(C.core_get_m_value_r_g_b_a(v.Ptr))))
 	case MValueByteArray:
-		arr := C.core_get_mvalue_byte_array(v.Ptr)
+		arr := C.core_get_m_value_byte_array(v.Ptr)
 		rv.Set(reflect.ValueOf(C.GoBytes(arr.array, C.int(arr.size))))
 	case MValueFunction:
 		ev := reflect.ValueOf(ExternFunction{

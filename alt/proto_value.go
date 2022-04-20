@@ -33,8 +33,8 @@ func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
 			// BaseObject
 			protoValue = &pb.MValue{
 				BaseObjectValue: &pb.BaseObject{
-					Type: uint32(rv.FieldByName("Type").Uint()),
-					Ptr:  fmt.Sprintf("%v", rv.FieldByName("Ptr").UnsafePointer()),
+					Type: proto.Uint32(uint32(rv.FieldByName("Type").Uint())),
+					Ptr:  proto.String(fmt.Sprintf("%v", rv.FieldByName("Ptr").UnsafePointer())),
 				},
 			}
 			mValueType = MValueBaseObject
@@ -71,9 +71,9 @@ func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
 
 		protoValue = &pb.MValue{
 			FunctionValue: &pb.Function{
-				Id: id,
+				Id: proto.Uint64(id),
 				//ResourceName: alt.Resource.Name,
-				ResourceName: "go",
+				ResourceName: proto.String(Resource.Name),
 			},
 		}
 		mValueType = MValueFunction
@@ -131,7 +131,7 @@ func serializeProtoMValue(protoValue *pb.MValue) ([]byte, error) {
 	return proto.Marshal(protoValue)
 }
 
-func createProtoMValue(data []byte, mValueType MValueType) *MValue {
+/*func createProtoMValue(data []byte, mValueType MValueType) *MValue {
 	arrayPtr := C.CBytes(data)
 	defer C.free(arrayPtr)
 	mValuePtr := C.core_create_mvalue((*C.uchar)(arrayPtr), C.ulonglong(len(data)))
@@ -140,4 +140,4 @@ func createProtoMValue(data []byte, mValueType MValueType) *MValue {
 		Ptr:  mValuePtr,
 		Type: mValueType,
 	}
-}
+}*/

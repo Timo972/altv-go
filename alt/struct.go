@@ -4,6 +4,7 @@ import (
 	"reflect"
 
 	"github.com/timo972/altv-go-pkg/pb"
+	"google.golang.org/protobuf/proto"
 )
 
 func getFieldName(t reflect.StructField) string {
@@ -26,27 +27,27 @@ func structToProto(rt reflect.Type, rv reflect.Value) (*pb.MValue, MValueType) {
 	if structName == "RGBA" {
 		protoValue = &pb.MValue{
 			RgbaValue: &pb.RGBA{
-				R: uint32(rv.FieldByName("R").Uint()),
-				G: uint32(rv.FieldByName("G").Uint()),
-				B: uint32(rv.FieldByName("B").Uint()),
-				A: uint32(rv.FieldByName("A").Uint()),
+				R: proto.Uint32(uint32(rv.FieldByName("R").Uint())),
+				G: proto.Uint32(uint32(rv.FieldByName("G").Uint())),
+				B: proto.Uint32(uint32(rv.FieldByName("B").Uint())),
+				A: proto.Uint32(uint32(rv.FieldByName("A").Uint())),
 			},
 		}
 		mValueType = MValueRGBA
 	} else if structName == "Vector2" {
 		protoValue = &pb.MValue{
 			Vector2Value: &pb.Vector2{
-				X: float32(rv.FieldByName("X").Float()),
-				Y: float32(rv.FieldByName("Y").Float()),
+				X: proto.Float32(float32(rv.FieldByName("X").Float())),
+				Y: proto.Float32(float32(rv.FieldByName("Y").Float())),
 			},
 		}
 		mValueType = MValueVector2
 	} else if structName == "Vector3" {
 		protoValue = &pb.MValue{
 			Vector3Value: &pb.Vector3{
-				X: float32(rv.FieldByName("X").Float()),
-				Y: float32(rv.FieldByName("Y").Float()),
-				Z: float32(rv.FieldByName("Z").Float()),
+				X: proto.Float32(float32(rv.FieldByName("X").Float())),
+				Y: proto.Float32(float32(rv.FieldByName("Y").Float())),
+				Z: proto.Float32(float32(rv.FieldByName("Z").Float())),
 			},
 		}
 		mValueType = MValueVector3

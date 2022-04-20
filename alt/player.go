@@ -176,11 +176,11 @@ func (p Player) Ping() uint32 {
 }
 
 func (p Player) IP() string {
-	return C.GoString(C.player_get_ip(p.Ptr))
+	return C.GoString(C.player_get_i_p(p.Ptr))
 }
 
 func (p Player) SocialID() uint64 {
-	return uint64(C.player_get_social_id(p.Ptr))
+	return uint64(C.player_get_social_i_d(p.Ptr))
 }
 
 func (p Player) HwidHash() uint64 {

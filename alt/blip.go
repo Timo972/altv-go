@@ -82,11 +82,11 @@ func (b Blip) BlipType() BlipType {
 }
 
 func (b Blip) Scale() Vector2 {
-	return newVector2(C.blip_get_scale_xy(b.Ptr))
+	return newVector2(C.blip_get_scale_x_y(b.Ptr))
 }
 
 func (b Blip) SetScale(x float32, y float32) {
-	C.blip_set_scale_xy(b.Ptr, C.float(x), C.float(y))
+	C.blip_set_scale_x_y(b.Ptr, C.float(x), C.float(y))
 }
 
 func (b Blip) Display() bool {

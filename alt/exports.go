@@ -69,7 +69,7 @@ func Import[ValueType any](resource string, name string) (value ValueType, _ err
 	cExport := C.CString(name)
 	defer C.free(unsafe.Pointer(cExport))
 
-	cMetaData := C.get_alt_export(cTargetResource, cExport)
+	cMetaData := C.runtime_get_alt_export(cTargetResource, cExport)
 	if cMetaData.Ptr == nil {
 		return value, fmt.Errorf("failed to get export '%s' of resource '%s'; Make sure you set dependencies correctly", name, resource)
 	}

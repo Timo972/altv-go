@@ -37,7 +37,7 @@ func Hash(str string) uint32 {
 }
 
 func EntityByID(id uint16) *Entity {
-	return newEntity(C.core_get_entity_by_id(C.ushort(id)))
+	return newEntity(C.core_get_entity_by_i_d(C.ushort(id)))
 }
 
 func HasMetaData(key string) bool {
@@ -50,17 +50,30 @@ func MetaData(key string, value interface{}) bool {
 	cStr := C.CString(key)
 	defer C.free(unsafe.Pointer(cStr))
 
-	meta := C.core_get_meta_data(cStr)
-	mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
+	//meta := C.core_get_meta_data(cStr)
+	//mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
 
-	return mValue.Value(value)
+	//return mValue.Value(value)
+	return false
 }
 
-func SetMetaData(key string, value interface{}) {
+func SetMetaData(key string, value interface{}) bool {
 	// mValue := createMValue(value)
-	// cKey := C.CString(key)
-	// defer C.free(unsafe.Pointer(cKey))
+	cKey := C.CString(key)
+	defer C.free(unsafe.Pointer(cKey))
 	// C.core_set_meta_data(cKey, mValue.Ptr)
+
+	protoValue, _ := newProtoMValue(value)
+	out, err := serializeProtoMValue(protoValue)
+	if err != nil {
+		return false
+	}
+
+	arrayPtr := C.CBytes(out)
+	defer C.free(arrayPtr)
+
+	C.core_set_meta_data(cKey, (*C.uchar)(arrayPtr), C.ulonglong(len(out)))
+	return true
 }
 
 func DeleteMetaData(key string) {
@@ -79,17 +92,29 @@ func SyncedMetaData(key string, value interface{}) bool {
 	cStr := C.CString(key)
 	defer C.free(unsafe.Pointer(cStr))
 
-	meta := C.core_get_synced_meta_data(cStr)
-	mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
+	//meta := C.core_get_synced_meta_data(cStr)
+	//mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
 
-	return mValue.Value(value)
+	//return mValue.Value(value)
+	return false
 }
 
-func SetSyncedMetaData(key string, value interface{}) {
+func SetSyncedMetaData(key string, value interface{}) bool {
 	// mValue := createMValue(value)
-	// cKey := C.CString(key)
-	// defer C.free(unsafe.Pointer(cKey))
+	cKey := C.CString(key)
+	defer C.free(unsafe.Pointer(cKey))
 	// C.core_set_synced_meta_data(cKey, mValue.Ptr)
+	protoValue, _ := newProtoMValue(value)
+	out, err := serializeProtoMValue(protoValue)
+	if err != nil {
+		return false
+	}
+
+	arrayPtr := C.CBytes(out)
+	defer C.free(arrayPtr)
+
+	C.core_set_synced_meta_data(cKey, (*C.uchar)(arrayPtr), C.ulonglong(len(out)))
+	return true
 }
 
 func DeleteSyncedMetaData(key string) {
@@ -155,7 +180,7 @@ func RootDir() string {
 }
 
 func SDKHash() string {
-	return C.GoString(C.core_get_sdk_hash())
+	return C.GoString(C.core_get_s_d_k_hash())
 }
 
 func Debug() bool {

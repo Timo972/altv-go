@@ -120,9 +120,9 @@ func (e Entity) Visible() bool {
 
 func (e Entity) ID() uint16 {
 	if e.Type == PlayerObject {
-		return uint16(C.player_get_id(e.Ptr))
+		return uint16(C.player_get_i_d(e.Ptr))
 	} else if e.Type == VehicleObject {
-		return uint16(C.vehicle_get_id(e.Ptr))
+		return uint16(C.vehicle_get_i_d(e.Ptr))
 	}
 	return 0
 }

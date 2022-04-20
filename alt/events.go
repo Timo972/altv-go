@@ -211,7 +211,7 @@ func registerOnEvent(resource string, event uint16) {
 	cresource := C.CString(resource)
 	defer C.free(unsafe.Pointer(cresource))
 
-	C.register_alt_event(cresource, C.ushort(event))
+	C.runtime_register_alt_event(cresource, C.ushort(event))
 }
 
 func (e eventManager) ServerStarted(listener serverStartedListener) {
