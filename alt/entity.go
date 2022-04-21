@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/shockdev04/altv-go-pkg/internal/module"
+	"github.com/timo972/altv-go-pkg/internal/module"
 )
 
 type Entity struct {
@@ -120,9 +120,9 @@ func (e Entity) Visible() bool {
 
 func (e Entity) ID() uint16 {
 	if e.Type == PlayerObject {
-		return uint16(C.player_get_id(e.Ptr))
+		return uint16(C.player_get_i_d(e.Ptr))
 	} else if e.Type == VehicleObject {
-		return uint16(C.vehicle_get_id(e.Ptr))
+		return uint16(C.vehicle_get_i_d(e.Ptr))
 	}
 	return 0
 }
@@ -178,25 +178,25 @@ func (e Entity) HasSyncedMetaData(key string) bool {
 	return false
 }
 
-func (e Entity) GetSyncedMetaData(key string) interface{} {
-	cKey := C.CString(key)
+func (e Entity) SyncedMetaData(key string, val interface{}) bool {
+	/*cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
 	if e.Type == PlayerObject {
 		meta := C.player_get_synced_meta_data(e.Ptr, cKey)
-		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
 
-		return mValue.GetValue()
+		return mValue.Value(val)
 	}
 
 	if e.Type == VehicleObject {
 		meta := C.vehicle_get_synced_meta_data(e.Ptr, cKey)
-		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
 
-		return mValue.GetValue()
-	}
+		return mValue.Value(val)
+	}*/
 
-	return nil
+	return false
 }
 
 func (e Entity) HasStreamSyncedMetaData(key string) bool {
@@ -214,40 +214,50 @@ func (e Entity) HasStreamSyncedMetaData(key string) bool {
 	return false
 }
 
-func (e Entity) GetStreamSyncedMetaData(key string) interface{} {
-	cKey := C.CString(key)
+func (e Entity) StreamSyncedMetaData(key string, value interface{}) bool {
+	/*cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
 	if e.Type == PlayerObject {
 		meta := C.player_get_stream_synced_meta_data(e.Ptr, cKey)
-		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
 
-		return mValue.GetValue()
+		return mValue.Value(value)
 	}
 
 	if e.Type == VehicleObject {
 		meta := C.vehicle_get_stream_synced_meta_data(e.Ptr, cKey)
-		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+		mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
 
-		return mValue.GetValue()
-	}
+		return mValue.Value(value)
+	}*/
 
-	return nil
+	return false
 }
 
-func (e Entity) SetSyncedMetaData(key string, value interface{}) {
-	mValue := CreateMValue(value)
-
+func (e Entity) SetSyncedMetaData(key string, value interface{}) bool {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
-	if e.Type == PlayerObject {
-		C.player_set_synced_meta_data(e.Ptr, cKey, mValue.Ptr)
+	protoValue, _ := newProtoMValue(value)
+	out, err := serializeProtoMValue(protoValue)
+	if err != nil {
+		return false
 	}
 
-	if e.Type == VehicleObject {
-		C.vehicle_set_synced_meta_data(e.Ptr, cKey, mValue.Ptr)
+	arrayPtr := C.CBytes(out)
+	defer C.free(arrayPtr)
+
+	bytes := (*C.uchar)(arrayPtr)
+	size := C.ulonglong(len(out))
+
+	if e.Type == PlayerObject {
+		C.player_set_synced_meta_data(e.Ptr, cKey, bytes, size)
+	} else if e.Type == VehicleObject {
+		C.vehicle_set_synced_meta_data(e.Ptr, cKey, bytes, size)
 	}
+
+	return true
 }
 
 func (e Entity) DeleteSyncedMetaData(key string) {
@@ -263,19 +273,29 @@ func (e Entity) DeleteSyncedMetaData(key string) {
 	}
 }
 
-func (e Entity) SetStreamSyncedMetaData(key string, value interface{}) {
-	mValue := CreateMValue(value)
-
+func (e Entity) SetStreamSyncedMetaData(key string, value interface{}) bool {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
-	if e.Type == PlayerObject {
-		C.player_set_stream_synced_meta_data(e.Ptr, cKey, mValue.Ptr)
+	protoValue, _ := newProtoMValue(value)
+	out, err := serializeProtoMValue(protoValue)
+	if err != nil {
+		return false
 	}
 
-	if e.Type == VehicleObject {
-		C.vehicle_set_stream_synced_meta_data(e.Ptr, cKey, mValue.Ptr)
+	arrayPtr := C.CBytes(out)
+	defer C.free(arrayPtr)
+
+	bytes := (*C.uchar)(arrayPtr)
+	size := C.ulonglong(len(out))
+
+	if e.Type == PlayerObject {
+		C.player_set_stream_synced_meta_data(e.Ptr, cKey, bytes, size)
+	} else if e.Type == VehicleObject {
+		C.vehicle_set_stream_synced_meta_data(e.Ptr, cKey, bytes, size)
 	}
+
+	return true
 }
 
 func (e Entity) DeleteStreamSyncedMetaData(key string) {

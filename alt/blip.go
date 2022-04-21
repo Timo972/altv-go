@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/shockdev04/altv-go-pkg/internal/module"
+	"github.com/timo972/altv-go-pkg/internal/module"
 )
 
 type BlipType uint8
@@ -82,11 +82,11 @@ func (b Blip) BlipType() BlipType {
 }
 
 func (b Blip) Scale() Vector2 {
-	return newVector2(C.blip_get_scale_xy(b.Ptr))
+	return newVector2(C.blip_get_scale_x_y(b.Ptr))
 }
 
-func (b Blip) SetScale(x float32, y float32) {
-	C.blip_set_scale_xy(b.Ptr, C.float(x), C.float(y))
+func (b Blip) SetScale(v Vector2) {
+	C.blip_set_scale_x_y(b.Ptr, newCVector2(v))
 }
 
 func (b Blip) Display() bool {

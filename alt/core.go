@@ -37,7 +37,7 @@ func Hash(str string) uint32 {
 }
 
 func EntityByID(id uint16) *Entity {
-	return newEntity(C.core_get_entity_by_id(C.ushort(id)))
+	return newEntity(C.core_get_entity_by_i_d(C.ushort(id)))
 }
 
 func HasMetaData(key string) bool {
@@ -46,22 +46,34 @@ func HasMetaData(key string) bool {
 	return int(C.core_has_meta_data(cStr)) == 1
 }
 
-func GetMetaData(key string) interface{} {
+func MetaData(key string, value interface{}) bool {
 	cStr := C.CString(key)
 	defer C.free(unsafe.Pointer(cStr))
-	var mValue *MValue
 
-	meta := C.core_get_meta_data(cStr)
-	mValue = &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+	//meta := C.core_get_meta_data(cStr)
+	//mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
 
-	return mValue.GetValue()
+	//return mValue.Value(value)
+	return false
 }
 
-func SetMetaData(key string, value interface{}) {
-	mValue := CreateMValue(value)
+func SetMetaData(key string, value interface{}) bool {
+	// mValue := createMValue(value)
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
-	C.core_set_meta_data(cKey, mValue.Ptr)
+	// C.core_set_meta_data(cKey, mValue.Ptr)
+
+	protoValue, _ := newProtoMValue(value)
+	out, err := serializeProtoMValue(protoValue)
+	if err != nil {
+		return false
+	}
+
+	arrayPtr := C.CBytes(out)
+	defer C.free(arrayPtr)
+
+	C.core_set_meta_data(cKey, (*C.uchar)(arrayPtr), C.ulonglong(len(out)))
+	return true
 }
 
 func DeleteMetaData(key string) {
@@ -76,22 +88,33 @@ func HasSyncedMetaData(key string) bool {
 	return int(C.core_has_synced_meta_data(cStr)) == 1
 }
 
-func GetSyncedMetaData(key string) interface{} {
+func SyncedMetaData(key string, value interface{}) bool {
 	cStr := C.CString(key)
 	defer C.free(unsafe.Pointer(cStr))
-	var mValue *MValue
 
-	meta := C.core_get_synced_meta_data(cStr)
-	mValue = &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type), Value: nil}
+	//meta := C.core_get_synced_meta_data(cStr)
+	//mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
 
-	return mValue.GetValue()
+	//return mValue.Value(value)
+	return false
 }
 
-func SetSyncedMetaData(key string, value interface{}) {
-	mValue := CreateMValue(value)
+func SetSyncedMetaData(key string, value interface{}) bool {
+	// mValue := createMValue(value)
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
-	C.core_set_synced_meta_data(cKey, mValue.Ptr)
+	// C.core_set_synced_meta_data(cKey, mValue.Ptr)
+	protoValue, _ := newProtoMValue(value)
+	out, err := serializeProtoMValue(protoValue)
+	if err != nil {
+		return false
+	}
+
+	arrayPtr := C.CBytes(out)
+	defer C.free(arrayPtr)
+
+	C.core_set_synced_meta_data(cKey, (*C.uchar)(arrayPtr), C.ulonglong(len(out)))
+	return true
 }
 
 func DeleteSyncedMetaData(key string) {
@@ -112,10 +135,10 @@ func StopResource(name string) {
 	C.core_stop_resource(cName)
 }
 
-func RestartResource(name string) bool {
+func RestartResource(name string) {
 	cName := C.CString(name)
 	defer C.free(unsafe.Pointer(cName))
-	return int(C.core_restart_resource(cName)) == 1
+	C.core_restart_resource(cName)
 }
 
 func PlayersByName(name string) []*Player {
@@ -157,7 +180,7 @@ func RootDir() string {
 }
 
 func SDKHash() string {
-	return C.GoString(C.core_get_sdk_hash())
+	return C.GoString(C.core_get_s_d_k_hash())
 }
 
 func Debug() bool {

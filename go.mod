@@ -1,3 +1,5 @@
-module github.com/shockdev04/altv-go-pkg
+module github.com/timo972/altv-go-pkg
 
 go 1.18
+
+require google.golang.org/protobuf v1.28.0 // indirect

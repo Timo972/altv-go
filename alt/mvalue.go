@@ -6,14 +6,14 @@ package alt
 // #include "Module.h"
 import "C"
 import (
-	"encoding/json"
+	"errors"
+	"reflect"
 	"unsafe"
-
-	"github.com/shockdev04/altv-go-pkg/internal/module"
 )
 
 type MValueType = uint8
-type MValueFunc = func(args ...interface{}) interface{}
+
+// type MValueFunc = func(args ...interface{}) interface{}
 
 const (
 	MValueNone MValueType = iota
@@ -35,234 +35,313 @@ const (
 
 var (
 	mValueFuncCount = uint64(0)
-	mValueFunctions = make(map[uint64]MValueFunc)
+	mValueFunctions = make(map[uint64]reflect.Value)
 )
 
 type MValue struct {
-	Ptr   unsafe.Pointer
-	Type  MValueType
-	Value interface{}
+	Ptr  unsafe.Pointer
+	Type MValueType
+	Val  reflect.Value
+	Typ  reflect.Type
 }
 
-func CreateMValue(value interface{}) *MValue {
-	var mValuePtr unsafe.Pointer
-	var mValueType MValueType
+type ExternFunction struct {
+	Ptr unsafe.Pointer
+}
 
-	switch value.(type) {
-	case bool:
-		mValuePtr = C.core_create_mvalue_bool(C.int(module.Bool2int(value.(bool))))
-		mValueType = MValueBool
-	case int, int8, int16, int32, int64:
-		if val, ok := value.(int); ok {
-			mValuePtr = C.core_create_mvalue_int(C.longlong(val))
-		} else if val, ok := value.(int8); ok {
-			mValuePtr = C.core_create_mvalue_int(C.longlong(val))
-		} else if val, ok := value.(int16); ok {
-			mValuePtr = C.core_create_mvalue_int(C.longlong(val))
-		} else if val, ok := value.(int32); ok {
-			mValuePtr = C.core_create_mvalue_int(C.longlong(val))
-		} else if val, ok := value.(int64); ok {
-			mValuePtr = C.core_create_mvalue_int(C.longlong(val))
-		}
-		mValueType = MValueInt
-	case uint, uint8, uint16, uint32, uint64:
-		if val, ok := value.(uint); ok {
-			mValuePtr = C.core_create_mvalue_uint(C.ulonglong(val))
-		} else if val, ok := value.(uint8); ok {
-			mValuePtr = C.core_create_mvalue_uint(C.ulonglong(val))
-		} else if val, ok := value.(uint16); ok {
-			mValuePtr = C.core_create_mvalue_uint(C.ulonglong(val))
-		} else if val, ok := value.(uint32); ok {
-			mValuePtr = C.core_create_mvalue_uint(C.ulonglong(val))
-		} else if val, ok := value.(uint64); ok {
-			mValuePtr = C.core_create_mvalue_uint(C.ulonglong(val))
-		}
-		mValueType = MValueUInt
-	case float32, float64:
-		if val, ok := value.(float32); ok {
-			mValuePtr = C.core_create_mvalue_double(C.double(val))
-		} else if val, ok := value.(float64); ok {
-			mValuePtr = C.core_create_mvalue_double(C.double(val))
-		}
-		mValueType = MValueDouble
-	case string:
-		cstr := C.CString(value.(string))
-		defer C.free(unsafe.Pointer(cstr))
+func (e ExternFunction) String() string {
+	return "ExternFunction{}"
+}
 
-		mValuePtr = C.core_create_mvalue_string(cstr)
-		mValueType = MValueString
-	case []interface{}, []bool, []string, []int, []int8, []int16, []int32, []int64, []uint, []uint16, []uint32, []uint64, []float32, []float64:
-		js, _ := json.Marshal(value)
-		cJson := C.CString(string(js))
-		defer C.free(unsafe.Pointer(cJson))
-		size := len(value.([]interface{}))
-
-		mValuePtr = C.core_create_mvalue_list(cJson, C.ulonglong(size))
-		mValueType = MValueList
-	case []byte:
-		data := value.([]byte)
-		size := len(data)
-		arrayPtr := C.CBytes(data)
-		defer C.free(arrayPtr)
-
-		mValuePtr = C.core_create_mvalue_byte_array((*C.uchar)(arrayPtr), C.ulonglong(size))
-		mValueType = MValueByteArray
-	case RGBA:
-		color := value.(RGBA)
-
-		mValuePtr = C.core_create_mvalue_rgba(C.uchar(color.R), C.uchar(color.G), C.uchar(color.B), C.uchar(color.A))
-		mValueType = MValueRGBA
-	case Vector2:
-		v2 := value.(Vector2)
-
-		mValuePtr = C.core_create_mvalue_vector2(C.float(v2.X), C.float(v2.Y))
-		mValueType = MValueVector3
-	case Vector3:
-		v3 := value.(Vector3)
-
-		mValuePtr = C.core_create_mvalue_vector3(C.float(v3.X), C.float(v3.Y), C.float(v3.Z))
-		mValueType = MValueVector3
-	case *Player, *Vehicle, *ColShape, *Checkpoint, *VoiceChannel, *Blip, *Entity:
-		var ptr unsafe.Pointer
-		var _type BaseObjectType
-
-		if player, ok := value.(*Player); ok {
-			ptr = player.Ptr
-			_type = player.Type
-		}
-
-		if vehicle, ok := value.(*Vehicle); ok {
-			ptr = vehicle.Ptr
-			_type = vehicle.Type
-		}
-
-		if colShape, ok := value.(*ColShape); ok {
-			ptr = colShape.Ptr
-			_type = colShape.Type
-		}
-
-		if checkpoint, ok := value.(*Checkpoint); ok {
-			ptr = checkpoint.Ptr
-			_type = checkpoint.Type
-		}
-
-		if voiceChannel, ok := value.(*VoiceChannel); ok {
-			ptr = voiceChannel.Ptr
-			_type = voiceChannel.Type
-		}
-
-		if blip, ok := value.(*Blip); ok {
-			ptr = blip.Ptr
-			_type = blip.Type
-		}
-
-		if entity, ok := value.(*Entity); ok {
-			ptr = entity.Ptr
-			_type = entity.Type
-		}
-
-		if ptr == nil {
-			mValuePtr = nil
-			mValueType = MValueNone
-			break
-		}
-
-		mValuePtr = C.core_create_mvalue_base_object(C.uchar(_type), ptr)
-		mValueType = MValueBaseObject
-	case MValueFunc:
-		mValueFunc := value.(MValueFunc)
-		mValueFuncCount++
-		id := mValueFuncCount
-		mValueFunctions[id] = mValueFunc
-
-		cResource := C.CString(Resource.Name)
-		defer C.free(unsafe.Pointer(cResource))
-
-		mValuePtr = C.create_mvalue_function(cResource, C.ulonglong(id))
-		mValueType = MValueFunction
-	default:
-		mValuePtr = nil
-		mValueType = MValueNone
+func (e ExternFunction) Call(args ...interface{}) (interface{}, error) {
+	if e.Ptr == nil {
+		return nil, errors.New("invalid extern function")
 	}
 
-	return &MValue{Ptr: mValuePtr, Type: mValueType, Value: nil}
+	/*cArgPtr, cArgSize := newMValueArray(args)
+	defer C.free(unsafe.Pointer(cArgPtr))
+
+	cMeta := C.runtime_call_m_value_function(e.Ptr, cArgPtr, cArgSize)
+	mVal := &MValue{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
+
+	var val interface{}
+	ok := mVal.Value(&val)
+	if !ok {
+		return val, errors.New("mvalue conversion failed")
+	}
+
+	return val, nil*/
+	return nil, nil
 }
 
-func (v MValue) GetValue() interface{} {
+func parseMValueList(v *MValue, rt reflect.Type) reflect.Value {
+	arr := C.core_get_m_value_list(v.Ptr)
+
+	size := int(arr.size)
+
+	args := reflect.MakeSlice(rt, size, size)
+
+	cValues := (*[1 << 30]C.struct_metaData)(arr.array)[:size:size]
+
+	for i := 0; i < size; i++ {
+		cValue := cValues[i]
+		mValue := &MValue{Ptr: cValue.Ptr, Type: uint8(cValue.Type)}
+		args.Index(i).Set(mValue.ReflectValue())
+		// C.free(cValue.Ptr)
+	}
+
+	// C.free(arr.array)
+	return args
+}
+
+func parseMValueDict(v *MValue, rt reflect.Type, rv reflect.Value) {
+	if rt.Kind() != reflect.Struct && rt.Kind() != reflect.Map {
+		return
+	}
+
+	cDict := C.core_get_m_value_dict(v.Ptr)
+	size := int(cDict.size)
+	keys := newStringArray(cDict.keys, size)
+
+	valuesPtr := unsafe.Pointer(cDict.values)
+	cValues := (*[1 << 30]C.struct_metaData)(valuesPtr)[:size:size]
+
+	if rt.Kind() == reflect.Struct {
+		for i := 0; i < rv.NumField(); i++ {
+			fieldKey := getFieldName(rt.Field(i))
+
+			for j, key := range keys {
+				if key != fieldKey {
+					continue
+				}
+
+				field := rv.Field(i)
+
+				cValue := cValues[j]
+				mValue := &MValue{Ptr: cValue.Ptr, Type: uint8(cValue.Type)}
+				refVal := mValue.ReflectValue()
+
+				if !refVal.IsValid() {
+					break
+				}
+
+				if refVal.Type().Kind() != field.Kind() {
+					LogWarning("[MValue] Missmatch! Field:", fieldKey, "Index:", i, "Type:", field.Type(), "Value Type:", refVal.Type(), "Value:", refVal.Interface(), "Index:", j)
+					break
+				}
+
+				field.Set(refVal)
+
+				break
+				//C.free(cValue.Ptr)
+			}
+		}
+	} else if rt.Kind() == reflect.Map {
+		et := rt.Elem()
+		for i, key := range keys {
+			kv := reflect.ValueOf(key)
+
+			cValue := cValues[i]
+			mValue := &MValue{Ptr: cValue.Ptr, Type: uint8(cValue.Type)}
+			refVal := mValue.ReflectValue()
+
+			if !refVal.IsValid() {
+				continue
+			}
+
+			if refVal.Type().Kind() != et.Kind() {
+				LogWarning("[MValue] Missmatch! Field:", key, "Type:", et, "Value Type:", refVal.Type(), "Value:", refVal.Interface())
+				continue
+			}
+
+			rv.SetMapIndex(kv, refVal)
+		}
+	}
+}
+
+func (v MValue) ReflectValue() reflect.Value {
+	if v.Val.IsValid() && !v.Val.IsZero() {
+		return v.Val
+	}
+
 	switch v.Type {
 	case MValueBool:
-		v.Value = int(C.core_get_mvalue_bool(v.Ptr)) != 0
+		v.Val = reflect.ValueOf(int(C.core_get_m_value_bool(v.Ptr)) != 0)
 	case MValueInt:
-		v.Value = int64(C.core_get_mvalue_int(v.Ptr))
+		v.Val = reflect.ValueOf(int64(C.core_get_m_value_int(v.Ptr)))
 	case MValueUInt:
-		v.Value = uint64(C.core_get_mvalue_uint(v.Ptr))
+		v.Val = reflect.ValueOf(uint64(C.core_get_m_value_u_int(v.Ptr)))
 	case MValueDouble:
-		v.Value = float64(C.core_get_mvalue_double(v.Ptr))
+		v.Val = reflect.ValueOf(float64(C.core_get_m_value_double(v.Ptr)))
 	case MValueString:
-		v.Value = C.GoString(C.core_get_mvalue_string(v.Ptr))
+		v.Val = reflect.ValueOf(C.GoString(C.core_get_m_value_string(v.Ptr)))
 	case MValueBaseObject:
-		entity := C.core_get_mvalue_base_object(v.Ptr)
+		entity := C.core_get_m_value_base_object(v.Ptr)
 		_type := uint8(entity.Type)
+
 		if _type == PlayerObject {
-			v.Value = newPlayer(entity.Ptr)
+			v.Val = reflect.ValueOf(newPlayer(entity.Ptr))
 		} else if _type == VehicleObject {
-			v.Value = newVehicle(entity.Ptr)
+			v.Val = reflect.ValueOf(newVehicle(entity.Ptr))
 		} else if _type == ColshapeObject {
-			v.Value = newColShape(entity.Ptr)
+			v.Val = reflect.ValueOf(newColShape(entity.Ptr))
 		} else if _type == CheckpointObject {
-			v.Value = newCheckpoint(entity.Ptr)
+			v.Val = reflect.ValueOf(newCheckpoint(entity.Ptr))
 		} else if _type == VoiceChannelObject {
-			v.Value = newVoiceChannel(entity.Ptr)
+			v.Val = reflect.ValueOf(newVoiceChannel(entity.Ptr))
 		} else if _type == BlipObject {
-			v.Value = newBlip(entity.Ptr)
+			v.Val = reflect.ValueOf(newBlip(entity.Ptr))
 		}
 	case MValueVector2:
-		v.Value = newVector2(C.core_get_mvalue_vector2(v.Ptr))
+		v.Val = reflect.ValueOf(newVector2(C.core_get_m_value_vector2(v.Ptr)))
 	case MValueVector3:
-		v3 := C.core_get_mvalue_vector3(v.Ptr)
-		v.Value = Vector3{X: float32(v3.x), Y: float32(v3.y), Z: float32(v3.z)}
+		v.Val = reflect.ValueOf(newVector3(C.core_get_m_value_vector3(v.Ptr)))
 	case MValueRGBA:
-		color := C.core_get_mvalue_rgba(v.Ptr)
-		v.Value = RGBA{R: uint8(color.r), G: uint8(color.g), B: uint8(color.g), A: uint8(color.a)}
+		v.Val = reflect.ValueOf(newRGBA(C.core_get_m_value_r_g_b_a(v.Ptr)))
 	case MValueByteArray:
-		arr := C.core_get_mvalue_byte_array(v.Ptr)
-		v.Value = C.GoBytes(arr.array, C.int(arr.size))
+		arr := C.core_get_m_value_byte_array(v.Ptr)
+		v.Val = reflect.ValueOf(C.GoBytes(arr.array, C.int(arr.size)))
 	case MValueFunction:
-		v.Value = func(args ...interface{}) interface{} {
-			cArgPtr, cArgSize := newMValueArray(args)
-			defer C.free(unsafe.Pointer(cArgPtr))
-
-			cMeta := C.call_mvalue_function(v.Ptr, cArgPtr, cArgSize)
-			mVal := &MValue{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
-
-			value := mVal.GetValue()
-
-			return value
-		}
+		v.Val = reflect.ValueOf(ExternFunction{
+			Ptr: v.Ptr,
+		})
+	case MValueList:
+		// if rt != nil {
+		// 	v.Val = parseMValueList(&v, rt)
+		// } else {
+		// 	LogError("[MValue] can not parse nested maps")
+		// }
+		// C.free(arr.array)
+	case MValueDict:
+		// if rt != nil {
+		// 	parseMValueDict(&v, rt, v.Val)
+		// } else {
+		// 	LogError("[MValue] can not parse nested maps")
+		// }
 	default:
-		v.Value = nil
 	}
 
-	return v.Value
+	return v.Val
 }
 
-func (v MValue) GetType() MValueType {
-	return v.Type
+func (v MValue) Value(val interface{}) (ok bool) {
+	rt := reflect.TypeOf(val)
+	if rt.Kind() != reflect.Ptr {
+		return false
+	}
+
+	rt = rt.Elem()
+	rv := reflect.ValueOf(val).Elem()
+	if v.Val.IsValid() && !v.Val.IsNil() && !v.Val.IsZero() {
+		rv.Set(v.Val)
+		return true
+	}
+
+	switch v.Type {
+	case MValueBool:
+		rv.SetBool(int(C.core_get_m_value_bool(v.Ptr)) != 0)
+	case MValueInt:
+		rv.SetInt(int64(C.core_get_m_value_int(v.Ptr)))
+	case MValueUInt:
+		rv.SetUint(uint64(C.core_get_m_value_u_int(v.Ptr)))
+	case MValueDouble:
+		rv.SetFloat(float64(C.core_get_m_value_double(v.Ptr)))
+	case MValueString:
+		rv.SetString(C.GoString(C.core_get_m_value_string(v.Ptr)))
+	case MValueBaseObject:
+		entity := C.core_get_m_value_base_object(v.Ptr)
+		_type := uint8(entity.Type)
+
+		var ev reflect.Value
+		if _type == PlayerObject {
+			ev = reflect.ValueOf(newPlayer(entity.Ptr))
+		} else if _type == VehicleObject {
+			ev = reflect.ValueOf(newVehicle(entity.Ptr))
+		} else if _type == ColshapeObject {
+			ev = reflect.ValueOf(newColShape(entity.Ptr))
+		} else if _type == CheckpointObject {
+			ev = reflect.ValueOf(newCheckpoint(entity.Ptr))
+		} else if _type == VoiceChannelObject {
+			ev = reflect.ValueOf(newVoiceChannel(entity.Ptr))
+		} else if _type == BlipObject {
+			ev = reflect.ValueOf(newBlip(entity.Ptr))
+		}
+
+		if !ev.IsValid() || ev.IsZero() || ev.IsNil() {
+			return false
+		}
+
+		rv.Set(ev)
+	case MValueVector2:
+		rv.Set(reflect.ValueOf(newVector2(C.core_get_m_value_vector2(v.Ptr))))
+	case MValueVector3:
+		rv.Set(reflect.ValueOf(newVector3(C.core_get_m_value_vector3(v.Ptr))))
+	case MValueRGBA:
+		rv.Set(reflect.ValueOf(newRGBA(C.core_get_m_value_r_g_b_a(v.Ptr))))
+	case MValueByteArray:
+		arr := C.core_get_m_value_byte_array(v.Ptr)
+		rv.Set(reflect.ValueOf(C.GoBytes(arr.array, C.int(arr.size))))
+	case MValueFunction:
+		ev := reflect.ValueOf(ExternFunction{
+			Ptr: v.Ptr,
+		})
+
+		rv.Set(ev)
+	case MValueList:
+		if rt.Kind() != reflect.Slice && rt.Kind() != reflect.Array {
+			return false
+		}
+
+		args := parseMValueList(&v, rt)
+
+		rv.Set(args)
+	case MValueDict:
+		if rt.Kind() != reflect.Struct && rt.Kind() != reflect.Map {
+			return false
+		}
+
+		parseMValueDict(&v, rt, rv)
+	default:
+		ok = true
+	}
+	return !ok
+}
+
+func (v MValue) CStruct() C.struct_data {
+	return C.struct_data{mValue: v.Ptr, Type: C.uint(v.Type)}
 }
 
 //export altCallFunction
-func altCallFunction(id C.ulonglong, cMValues unsafe.Pointer, cSize C.ulonglong) C.struct_data {
-	listener := mValueFunctions[uint64(id)]
-
-	if listener == nil {
-		mVal := CreateMValue(nil)
-		return C.struct_data{mValue: mVal.Ptr, Type: C.uint(mVal.Type)}
-	}
+func altCallFunction(id C.ulonglong, cMValues unsafe.Pointer, cSize C.ulonglong) C.struct_array {
+	exportedFunc := mValueFunctions[uint64(id)]
 
 	args := convertMValueArray(cMValues, cSize)
+	rvArgs := make([]reflect.Value, len(args))
+	for i, arg := range args {
+		if arg == nil {
+			LogError("exported function called with nil argument")
+			return C.struct_array{array: nil, size: C.ulonglong(0)}
+		}
+		rvArgs[i] = reflect.ValueOf(arg)
+	}
 
-	returnValue := listener(args...)
-	returnMValue := CreateMValue(returnValue)
+	resValues := exportedFunc.Call(rvArgs)
 
-	return C.struct_data{mValue: returnMValue.Ptr, Type: C.uint(returnMValue.Type)}
+	size := len(resValues)
+	if size > 1 {
+		LogWarning("exported function returned more than 1 argument, which is currently not supported (dropping overflow)")
+	} else if size == 0 {
+		return C.struct_array{array: nil, size: C.ulonglong(0)}
+	}
+
+	protoValue, _ := newProtoMValue(resValues[0].Interface())
+	out, err := serializeProtoMValue(protoValue)
+	if err != nil {
+		return C.struct_array{array: nil, size: C.ulonglong(0)}
+	}
+
+	arrayPtr := C.CBytes(out)
+	bSize := C.ulonglong(len(out))
+
+	return C.struct_array{array: arrayPtr, size: bSize}
 }

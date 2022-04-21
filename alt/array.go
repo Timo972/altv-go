@@ -3,7 +3,9 @@ package alt
 //#include <stdlib.h>
 //#include "Module.h"
 import "C"
-import "unsafe"
+import (
+	"unsafe"
+)
 
 // array converts an array struct to C Value slice
 // pointer is free'd afterwards
@@ -28,25 +30,25 @@ func convertMValueArray(cMValues unsafe.Pointer, cSize C.ulonglong) []interface{
 		cMVal := cMValueStructs[i]
 		_type := uint8(cMVal.Type)
 
-		mValue := &MValue{Ptr: cMVal.Ptr, Type: _type, Value: nil}
+		mValue := &MValue{Ptr: cMVal.Ptr, Type: _type}
 
-		args[i] = mValue.GetValue()
+		args[i] = mValue.ReflectValue().Interface()
 	}
 
 	return args
 }
 
-// newMValueArray internally used to convert values to CMValue array
-func newMValueArray(args []interface{}) (*C.struct_data, C.ulonglong) {
-	size := len(args)
-	ptr := C.malloc(C.size_t(C.sizeof_CustomData * size))
-	cArray := (*[1 << 30]C.struct_data)(ptr)
+func newStringArray(ptr unsafe.Pointer, size int) []string {
+	strings := make([]string, size)
+	cStrings := (*[1 << 28]*C.char)(ptr)[:size:size]
 
-	for i := 0; i < size; i++ {
-		mValue := CreateMValue(args[i])
+	// for i := 0; i < size; i++ {
+	// 	strings[i] = C.GoString(cStrings[i])
+	// }
 
-		cArray[i] = C.struct_data{mValue: mValue.Ptr, Type: C.uint(mValue.Type)}
+	for i, cString := range cStrings {
+		strings[i] = C.GoString(cString)
 	}
 
-	return (*C.struct_data)(ptr), C.ulonglong(size)
+	return strings
 }

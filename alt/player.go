@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/shockdev04/altv-go-pkg/internal/module"
+	"github.com/timo972/altv-go-pkg/internal/module"
 )
 
 type Player struct {
@@ -176,11 +176,11 @@ func (p Player) Ping() uint32 {
 }
 
 func (p Player) IP() string {
-	return C.GoString(C.player_get_ip(p.Ptr))
+	return C.GoString(C.player_get_i_p(p.Ptr))
 }
 
 func (p Player) SocialID() uint64 {
-	return uint64(C.player_get_social_id(p.Ptr))
+	return uint64(C.player_get_social_i_d(p.Ptr))
 }
 
 func (p Player) HwidHash() uint64 {
@@ -419,22 +419,36 @@ func (p Player) HasLocalMetaData(key string) bool {
 	return int(C.player_has_local_meta_data(p.Ptr, cKey)) == 1
 }
 
-func (p Player) SetLocalMetaData(key string, value interface{}) {
-	meta := CreateMValue(value)
+func (p Player) SetLocalMetaData(key string, value interface{}) bool {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
-	C.player_set_local_meta_data(p.Ptr, cKey, meta.Ptr)
+	protoValue, _ := newProtoMValue(value)
+	out, err := serializeProtoMValue(protoValue)
+	if err != nil {
+		return false
+	}
+
+	arrayPtr := C.CBytes(out)
+	defer C.free(arrayPtr)
+
+	bytes := (*C.uchar)(arrayPtr)
+	size := C.ulonglong(len(out))
+
+	C.player_set_local_meta_data(p.Ptr, cKey, bytes, size)
+
+	return true
 }
 
-func (p Player) LocalMetaData(key string) interface{} {
-	cKey := C.CString(key)
+func (p Player) LocalMetaData(key string, value interface{}) bool {
+	/*cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
 	cMeta := C.player_get_local_meta_data(p.Ptr, cKey)
-	mValue := &MValue{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type), Value: nil}
+	mValue := &MValue{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
 
-	return mValue.GetValue()
+	return mValue.Value(value)*/
+	return false
 }
 
 func (p Player) DeleteLocalMetaData(key string) {

@@ -29,7 +29,7 @@ jobs:
       #    package main
       #
       #    import "C"
-      #    import "github.com/shockdev04/altv-go-pkg/alt"
+      #    import "github.com/timo972/altv-go-pkg/alt"
       #
       #    func main() { }
       #
@@ -69,7 +69,7 @@ jobs:
       #      package main
       #
       #      import "C"
-      #      import "github.com/shockdev04/altv-go-pkg/alt"
+      #      import "github.com/timo972/altv-go-pkg/alt"
       #
       #      func main() { }
       #

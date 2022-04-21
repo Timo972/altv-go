@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/shockdev04/altv-go-pkg/internal/module"
+	"github.com/timo972/altv-go-pkg/internal/module"
 )
 
 type VehicleModCategory = uint8
@@ -670,11 +670,11 @@ func (v Vehicle) SetLightsMultiplier(multiplier float32) {
 }
 
 func (v Vehicle) SetEngineHealth(health int32) {
-	C.vehicle_set_engine_health(v.Ptr, C.long(health))
+	C.vehicle_set_engine_health(v.Ptr, C.ulong(health))
 }
 
 func (v Vehicle) SetPetrolTankHealth(health int32) {
-	C.vehicle_set_petrol_tank_health(v.Ptr, C.long(health))
+	C.vehicle_set_petrol_tank_health(v.Ptr, C.ulong(health))
 }
 
 func (v Vehicle) SetWheelBurst(wheelId uint8, state bool) {
