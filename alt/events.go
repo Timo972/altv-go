@@ -470,33 +470,29 @@ func EmitAllClients(eventName string, args ...interface{}) {
 }
 
 //export altServerScriptEvent
-func altServerScriptEvent(cName *C.char, cMValues unsafe.Pointer, size C.ulonglong) {
+func altServerScriptEvent(cName *C.char, arr C.struct_array) {
 	name := C.GoString(cName)
 
-	args := convertMValueArray(cMValues, size)
-
 	for _, event := range On.allServerScriptEvents {
-		event(name, args...)
+		event(name)
 	}
 
 	for _, event := range On.serverScriptEvents[name] {
-		event(args...)
+		event()
 	}
 }
 
 //export altClientScriptEvent
-func altClientScriptEvent(p unsafe.Pointer, cName *C.char, cMValues unsafe.Pointer, size C.ulonglong) {
+func altClientScriptEvent(p unsafe.Pointer, cName *C.char, arr C.struct_array) {
 	name := C.GoString(cName)
 	player := newPlayer(p)
 
-	args := convertMValueArray(cMValues, size)
-
 	for _, event := range On.allClientScriptEvents {
-		event(player, name, args...)
+		event(player, name)
 	}
 
 	for _, event := range On.clientScriptEvents[name] {
-		event(player, args...)
+		event(player)
 	}
 }
 
@@ -729,15 +725,10 @@ func altFireEvent(p unsafe.Pointer, f C.struct_array) C.int {
 }
 
 //export altGlobalMetaDataChangeEvent
-func altGlobalMetaDataChangeEvent(k *C.char, nVal C.struct_metaData, oVal C.struct_metaData) {
+func altGlobalMetaDataChangeEvent(k *C.char, nVal C.struct_array, oVal C.struct_array) {
 	key := C.GoString(k)
-	newVal := &MValue{Ptr: nVal.Ptr, Type: uint8(nVal.Type)}
-	oldVal := &MValue{Ptr: oVal.Ptr, Type: uint8(oVal.Type)}
 	var oldValue interface{}
 	var newValue interface{}
-
-	oldVal.Value(&oldValue)
-	newVal.Value(&newValue)
 
 	for _, event := range On.globalMetaDataChangeEvents {
 		event(key, newValue, oldValue)
@@ -745,16 +736,11 @@ func altGlobalMetaDataChangeEvent(k *C.char, nVal C.struct_metaData, oVal C.stru
 }
 
 //export altGlobalSyncedMetaDataChangeEvent
-func altGlobalSyncedMetaDataChangeEvent(k *C.char, nVal C.struct_metaData, oVal C.struct_metaData) {
+func altGlobalSyncedMetaDataChangeEvent(k *C.char, nVal C.struct_array, oVal C.struct_array) {
 	key := C.GoString(k)
-	newVal := &MValue{Ptr: nVal.Ptr, Type: uint8(nVal.Type)}
-	oldVal := &MValue{Ptr: oVal.Ptr, Type: uint8(oVal.Type)}
 
 	var oldValue interface{}
 	var newValue interface{}
-
-	oldVal.Value(&oldValue)
-	newVal.Value(&newValue)
 
 	for _, event := range On.globalSyncedMetaDataChangeEvents {
 		event(key, newValue, oldValue)
@@ -762,17 +748,12 @@ func altGlobalSyncedMetaDataChangeEvent(k *C.char, nVal C.struct_metaData, oVal 
 }
 
 //export altLocalSyncedMetaDataChangeEvent
-func altLocalSyncedMetaDataChangeEvent(p unsafe.Pointer, cKey *C.char, cNewValue C.struct_metaData, cOldValue C.struct_metaData) {
+func altLocalSyncedMetaDataChangeEvent(p unsafe.Pointer, cKey *C.char, cNewValue C.struct_array, cOldValue C.struct_array) {
 	player := newPlayer(p)
 	key := C.GoString(cKey)
-	newVal := &MValue{Ptr: cNewValue.Ptr, Type: uint8(cNewValue.Type)}
-	oldVal := &MValue{Ptr: cOldValue.Ptr, Type: uint8(cOldValue.Type)}
 
 	var oldValue interface{}
 	var newValue interface{}
-
-	oldVal.Value(&oldValue)
-	newVal.Value(&newValue)
 
 	for _, event := range On.localSyncedMetaDataChangeEvents {
 		event(player, key, newValue, oldValue)
@@ -780,16 +761,11 @@ func altLocalSyncedMetaDataChangeEvent(p unsafe.Pointer, cKey *C.char, cNewValue
 }
 
 //export altMetaDataChangeEvent
-func altMetaDataChangeEvent(cKey *C.char, cNewValue C.struct_metaData, cOldValue C.struct_metaData) {
+func altMetaDataChangeEvent(cKey *C.char, cNewValue C.struct_array, cOldValue C.struct_array) {
 	key := C.GoString(cKey)
-	newVal := &MValue{Ptr: cNewValue.Ptr, Type: uint8(cNewValue.Type)}
-	oldVal := &MValue{Ptr: cOldValue.Ptr, Type: uint8(cOldValue.Type)}
 
 	var oldValue interface{}
 	var newValue interface{}
-
-	oldVal.Value(&oldValue)
-	newVal.Value(&newValue)
 
 	for _, event := range On.metaDataChangeEvents {
 		event(key, newValue, oldValue)
@@ -888,16 +864,11 @@ func altStartProjectileEvent(p unsafe.Pointer, pos C.struct_pos, dir C.struct_po
 }
 
 //export altStreamSyncedMetaDataChangeEvent
-func altStreamSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.struct_metaData, oVal C.struct_metaData) {
+func altStreamSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.struct_array, oVal C.struct_array) {
 	key := C.GoString(k)
-	newVal := &MValue{Ptr: nVal.Ptr, Type: uint8(nVal.Type)}
-	oldVal := &MValue{Ptr: oVal.Ptr, Type: uint8(oVal.Type)}
 
 	var oldValue interface{}
 	var newValue interface{}
-
-	oldVal.Value(&oldValue)
-	newVal.Value(&newValue)
 
 	entity := newEntity(e)
 
@@ -907,16 +878,11 @@ func altStreamSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.str
 }
 
 //export altSyncedMetaDataChangeEvent
-func altSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.struct_metaData, oVal C.struct_metaData) {
+func altSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.struct_array, oVal C.struct_array) {
 	key := C.GoString(k)
-	newVal := &MValue{Ptr: nVal.Ptr, Type: uint8(nVal.Type)}
-	oldVal := &MValue{Ptr: oVal.Ptr, Type: uint8(oVal.Type)}
 
 	var oldValue interface{}
 	var newValue interface{}
-
-	oldVal.Value(&oldValue)
-	newVal.Value(&newValue)
 
 	entity := newEntity(e)
 

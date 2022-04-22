@@ -21,25 +21,6 @@ func convertArray[V any](a C.struct_array) ([]V, int) {
 	return cArray, size
 }
 
-func convertMValueArray(cMValues unsafe.Pointer, cSize C.ulonglong) []interface{} {
-	size := uint64(cSize)
-
-	args := make([]interface{}, size)
-
-	cMValueStructs := (*[1 << 30]C.struct_metaData)(cMValues)[:size:size]
-
-	for i := uint64(0); i < size; i++ {
-		cMVal := cMValueStructs[i]
-		_type := uint8(cMVal.Type)
-
-		mValue := &MValue{Ptr: cMVal.Ptr, Type: _type}
-
-		args[i] = mValue.ReflectValue().Interface()
-	}
-
-	return args
-}
-
 func newStringArray(ptr unsafe.Pointer, size int) []string {
 	strings := make([]string, size)
 	cStrings := (*[1 << 28]*C.char)(ptr)[:size:size]

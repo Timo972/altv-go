@@ -7,7 +7,6 @@ package alt
 import "C"
 import (
 	"errors"
-	"fmt"
 	"reflect"
 	"unsafe"
 )
@@ -69,17 +68,10 @@ func Import[ValueType any](resource string, name string) (value ValueType, _ err
 	cExport := C.CString(name)
 	defer C.free(unsafe.Pointer(cExport))
 
-	cMetaData := C.runtime_get_alt_export(cTargetResource, cExport)
-	if cMetaData.Ptr == nil {
-		return value, fmt.Errorf("failed to get export '%s' of resource '%s'; Make sure you set dependencies correctly", name, resource)
-	}
-
-	mVal := &MValue{Ptr: cMetaData.Ptr, Type: uint8(cMetaData.Type)}
-
-	ok := mVal.Value(&value)
-	if !ok {
-		return value, errors.New("invalid mvalue")
-	}
+	// cProtoArray := C.runtime_get_alt_export(cTargetResource, cExport)
+	//if cMetaData.Ptr == nil {
+	//	return value, fmt.Errorf("failed to get export '%s' of resource '%s'; Make sure you set dependencies correctly", name, resource)
+	//}
 
 	return value, nil
 }
