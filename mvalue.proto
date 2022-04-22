@@ -1,5 +1,5 @@
 syntax = "proto2";
-package mvalue;
+package MValue;
 
 option go_package = "/pb";
 
@@ -19,9 +19,15 @@ message Vector2 {
   required float y = 2;
 }
 
-message Function {
+// used when function is exported from go (Go::Runtime::ProtoToMValue)
+message InternFunction {
   required string resourceName = 1;
   required uint64 id = 2;
+}
+
+// used when function is imported to go (Go::Runtime::MValueToProto(Bytes))
+message ExternFunction {
+  required string ptr = 1;
 }
 
 message RGBA {
@@ -47,9 +53,10 @@ message MValue {
 
   // special values
   optional BaseObject baseObjectValue = 10;
-  optional Function functionValue = 11;
-  optional Vector3 vector3Value = 12;
-  optional RGBA rgbaValue = 13;
-  optional bytes bytesValue = 14;
-  optional Vector2 vector2Value = 15;
+  optional InternFunction internFunctionValue = 11;
+  optional ExternFunction externFunctionValue = 12;
+  optional Vector3 vector3Value = 13;
+  optional RGBA rgbaValue = 14;
+  optional bytes bytesValue = 15;
+  optional Vector2 vector2Value = 16;
 }

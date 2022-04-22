@@ -70,7 +70,7 @@ func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
 		mValueFunctions[id] = rv
 
 		protoValue = &pb.MValue{
-			FunctionValue: &pb.Function{
+			InternFunctionValue: &pb.InternFunction{
 				Id: proto.Uint64(id),
 				//ResourceName: alt.Resource.Name,
 				ResourceName: proto.String(Resource.Name),
