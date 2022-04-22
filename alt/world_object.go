@@ -1,6 +1,9 @@
 package alt
 
-// #include "Module.h"
+// #cgo CFLAGS: -I../c-api/build/Release
+// #cgo LDFLAGS: -L../c-api/build/Release -lcapi
+// #include <stdlib.h>
+// #include "../c-api/capi.h"
 import "C"
 import "math"
 

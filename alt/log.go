@@ -1,7 +1,9 @@
 package alt
 
+// #cgo CFLAGS: -I../c-api/build/Release
+// #cgo LDFLAGS: -L../c-api/build/Release -lcapi
 // #include <stdlib.h>
-// #include "Module.h"
+// #include "../c-api/capi.h"
 import "C"
 import (
 	"encoding/json"
