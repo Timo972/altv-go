@@ -89,14 +89,11 @@ func altCallFunction(id C.ulonglong, cByteArray C.struct_array) C.struct_array {
 		return C.struct_array{array: nil, size: C.ulonglong(0)}
 	}
 
-	protoValue, _ := newProtoMValue(resValues[0].Interface())
-	out, err := serializeProtoMValue(protoValue)
+	cBytes, err := encode(resValues[0].Interface())
 	if err != nil {
+		LogError("exported function returned invalid value: %s", err.Error())
 		return C.struct_array{array: nil, size: C.ulonglong(0)}
 	}
 
-	arrayPtr := C.CBytes(out)
-	bSize := C.ulonglong(len(out))
-
-	return C.struct_array{array: arrayPtr, size: bSize}
+	return cBytes
 }

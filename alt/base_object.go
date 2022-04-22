@@ -97,7 +97,7 @@ func (b BaseObject) HasMetaData(key string) bool {
 }
 
 func (b BaseObject) MetaData(key string, val interface{}) bool {
-	/*cKey := C.CString(key)
+	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
 	var arr C.struct_array
@@ -113,11 +113,13 @@ func (b BaseObject) MetaData(key string, val interface{}) bool {
 		arr = C.vehicle_get_meta_data(b.Ptr, cKey)
 	} else if b.Type == BlipObject {
 		arr = C.blip_get_meta_data(b.Ptr, cKey)
-	}*/
+	}
 
-	// mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
+	err := decode(arr, val)
+	if err != nil {
+		return false
+	}
 
-	//return mValue.Value(val)
 	return true
 }
 
@@ -125,29 +127,25 @@ func (b BaseObject) SetMetaData(key string, value interface{}) bool {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
-	protoValue, _ := newProtoMValue(value)
-	out, err := serializeProtoMValue(protoValue)
+	arr, err := encode(value)
 	if err != nil {
 		return false
 	}
+	defer C.free(arr.array)
 
-	arrayPtr := C.CBytes(out)
-	defer C.free(arrayPtr)
-
-	bytes := (*C.uchar)(arrayPtr)
-	size := C.ulonglong(len(out))
+	bytes := (*C.uchar)(arr.array)
 	if b.Type == PlayerObject {
-		C.player_set_meta_data(b.Ptr, cKey, bytes, size)
+		C.player_set_meta_data(b.Ptr, cKey, bytes, arr.size)
 	} else if b.Type == VoiceChannelObject {
-		C.voice_channel_set_meta_data(b.Ptr, cKey, bytes, size)
+		C.voice_channel_set_meta_data(b.Ptr, cKey, bytes, arr.size)
 	} else if b.Type == CheckpointObject {
-		C.checkpoint_set_meta_data(b.Ptr, cKey, bytes, size)
+		C.checkpoint_set_meta_data(b.Ptr, cKey, bytes, arr.size)
 	} else if b.Type == ColshapeObject {
-		C.col_shape_set_meta_data(b.Ptr, cKey, bytes, size)
+		C.col_shape_set_meta_data(b.Ptr, cKey, bytes, arr.size)
 	} else if b.Type == VehicleObject {
-		C.vehicle_set_meta_data(b.Ptr, cKey, bytes, size)
+		C.vehicle_set_meta_data(b.Ptr, cKey, bytes, arr.size)
 	} else if b.Type == BlipObject {
-		C.blip_set_meta_data(b.Ptr, cKey, bytes, size)
+		C.blip_set_meta_data(b.Ptr, cKey, bytes, arr.size)
 	}
 
 	return true

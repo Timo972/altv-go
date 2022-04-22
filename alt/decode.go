@@ -1,5 +1,10 @@
 package alt
 
+// #cgo CFLAGS: -I../c-api/build/Release
+// #cgo LDFLAGS: -L../c-api/build/Release -lcapi
+// #include <stdlib.h>
+// #include "../c-api/capi.h"
+import "C"
 import (
 	"fmt"
 	"reflect"
@@ -18,10 +23,17 @@ type Decoder struct {
 	MValue    *pb.MValue
 }
 
-func NewDecoder(data []byte) *Decoder {
+func newDecoder(data []byte) *Decoder {
 	return &Decoder{
 		Buffer: data,
 	}
+}
+
+func decode(arr C.struct_array, v interface{}) error {
+	bytes := C.GoBytes(arr.array, C.int(arr.size))
+
+	d := newDecoder(bytes)
+	return d.Decode(v)
 }
 
 func parsePointer(ptrStr string) (unsafe.Pointer, error) {
@@ -58,13 +70,13 @@ func (d *Decoder) decode() error {
 
 		if kind == reflect.Struct {
 			// struct pointer
-			d.decodeStruct(rt, rv)
+			return d.decodeStruct(rt, rv)
 		} else if kind == reflect.Slice || kind == reflect.Array {
 			// slice / array pointer
-			d.decodeSlice(rt, rv)
+			return d.decodeSlice(rt, rv)
 		} else if kind == reflect.Map {
 			// map pointer
-			d.decodeMap(rt, rv)
+			return d.decodeMap(rt, rv)
 		}
 	case reflect.String:
 		d.RootValue.SetString(d.MValue.GetStringValue())
@@ -89,13 +101,13 @@ func (d *Decoder) decode() error {
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 		d.RootValue.SetUint(d.MValue.GetUintValue())
 	case reflect.Array, reflect.Slice:
-		d.decodeSlice(d.RootType, d.RootValue)
+		return d.decodeSlice(d.RootType, d.RootValue)
 	case reflect.Struct:
 		// vector3, rgba, vector2
-		d.decodeStruct(d.RootType, d.RootValue)
+		return d.decodeStruct(d.RootType, d.RootValue)
 	case reflect.Map:
 		// map
-		d.decodeMap(d.RootType, d.RootValue)
+		return d.decodeMap(d.RootType, d.RootValue)
 	default:
 		return fmt.Errorf("unsupported type: %s", d.RootType.Kind())
 	}

@@ -425,32 +425,30 @@ func (p Player) SetLocalMetaData(key string, value interface{}) bool {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
-	protoValue, _ := newProtoMValue(value)
-	out, err := serializeProtoMValue(protoValue)
+	arr, err := encode(value)
 	if err != nil {
 		return false
 	}
+	defer C.free(arr.array)
 
-	arrayPtr := C.CBytes(out)
-	defer C.free(arrayPtr)
+	bytes := (*C.uchar)(arr.array)
 
-	bytes := (*C.uchar)(arrayPtr)
-	size := C.ulonglong(len(out))
-
-	C.player_set_local_meta_data(p.Ptr, cKey, bytes, size)
+	C.player_set_local_meta_data(p.Ptr, cKey, bytes, arr.size)
 
 	return true
 }
 
 func (p Player) LocalMetaData(key string, value interface{}) bool {
-	/*cKey := C.CString(key)
+	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
 	cMeta := C.player_get_local_meta_data(p.Ptr, cKey)
-	mValue := &MValue{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
+	err := decode(cMeta, value)
+	if err != nil {
+		return false
+	}
 
-	return mValue.Value(value)*/
-	return false
+	return true
 }
 
 func (p Player) DeleteLocalMetaData(key string) {

@@ -52,29 +52,26 @@ func MetaData(key string, value interface{}) bool {
 	cStr := C.CString(key)
 	defer C.free(unsafe.Pointer(cStr))
 
-	//meta := C.core_get_meta_data(cStr)
-	//mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
-
-	//return mValue.Value(value)
-	return false
-}
-
-func SetMetaData(key string, value interface{}) bool {
-	// mValue := createMValue(value)
-	cKey := C.CString(key)
-	defer C.free(unsafe.Pointer(cKey))
-	// C.core_set_meta_data(cKey, mValue.Ptr)
-
-	protoValue, _ := newProtoMValue(value)
-	out, err := serializeProtoMValue(protoValue)
+	meta := C.core_get_meta_data(cStr)
+	err := decode(meta, value)
 	if err != nil {
 		return false
 	}
 
-	arrayPtr := C.CBytes(out)
-	defer C.free(arrayPtr)
+	return true
+}
 
-	C.core_set_meta_data(cKey, (*C.uchar)(arrayPtr), C.ulonglong(len(out)))
+func SetMetaData(key string, value interface{}) bool {
+	cKey := C.CString(key)
+	defer C.free(unsafe.Pointer(cKey))
+
+	arr, err := encode(value)
+	if err != nil {
+		return false
+	}
+	defer C.free(arr.array)
+
+	C.core_set_meta_data(cKey, (*C.uchar)(arr.array), arr.size)
 	return true
 }
 
@@ -94,28 +91,27 @@ func SyncedMetaData(key string, value interface{}) bool {
 	cStr := C.CString(key)
 	defer C.free(unsafe.Pointer(cStr))
 
-	//meta := C.core_get_synced_meta_data(cStr)
-	//mValue := &MValue{Ptr: meta.Ptr, Type: uint8(meta.Type)}
+	meta := C.core_get_synced_meta_data(cStr)
+	err := decode(meta, value)
+	if err != nil {
+		return false
+	}
 
-	//return mValue.Value(value)
-	return false
+	return true
 }
 
 func SetSyncedMetaData(key string, value interface{}) bool {
 	// mValue := createMValue(value)
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
-	// C.core_set_synced_meta_data(cKey, mValue.Ptr)
-	protoValue, _ := newProtoMValue(value)
-	out, err := serializeProtoMValue(protoValue)
+
+	arr, err := encode(value)
 	if err != nil {
 		return false
 	}
+	defer C.free(arr.array)
 
-	arrayPtr := C.CBytes(out)
-	defer C.free(arrayPtr)
-
-	C.core_set_synced_meta_data(cKey, (*C.uchar)(arrayPtr), C.ulonglong(len(out)))
+	C.core_set_synced_meta_data(cKey, (*C.uchar)(arr.array), arr.size)
 	return true
 }
 

@@ -91,21 +91,7 @@ func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
 			UintValue: proto.Uint64(rv.Uint()),
 		}
 	case reflect.Array, reflect.Slice:
-		//// list
-		//sliceName := rt.Elem().Name()
-		//
-		//// byte array
-		//if sliceName == "uint8" {
-		//	bytes := rv.Bytes()
-		//	arrayPtr := C.CBytes(bytes)
-		//	defer C.free(arrayPtr)
-		//
-		//	mValuePtr = C.core_create_mvalue_byte_array((*C.uchar)(arrayPtr), C.ulonglong(len(bytes)))
-		//	mValueType = MValueByteArray
-		//} else {
-		//	// every other types
-		//	mValuePtr, mValueType = serializeSlice(rv)
-		//}
+		// list
 		protoValue, mValueType = sliceToProto(rt, rv)
 	case reflect.Struct:
 		// vector3, rgba, vector2
@@ -128,4 +114,18 @@ func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
 
 func serializeProtoMValue(protoValue *pb.MValue) ([]byte, error) {
 	return proto.Marshal(protoValue)
+}
+
+func encode(v interface{}) (C.struct_array, error) {
+	pbv, _ := newProtoMValue(v)
+	bytes, err := serializeProtoMValue(pbv)
+	if err != nil {
+		return C.struct_array{}, err
+	}
+
+	ptr := C.CBytes(bytes)
+	return C.struct_array{
+		array: ptr,
+		size:  C.ulonglong(len(bytes)),
+	}, nil
 }
