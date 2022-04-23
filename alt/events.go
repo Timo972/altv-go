@@ -6,6 +6,7 @@ package alt
 // #include "../c-api/capi.h"
 import "C"
 import (
+	"errors"
 	"unsafe"
 
 	"github.com/timo972/altv-go-pkg/internal/module"
@@ -415,38 +416,50 @@ func (e eventManager) AllClientEvents(listener allClientEventsListener) {
 	registerOnEvent(Resource.Name, clientScriptEvent)
 }
 
-func Emit(eventName string, args ...interface{}) {
-	/*cEvent := C.CString(eventName)
+func Emit(eventName string, args ...interface{}) error {
+	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	argPtr, argSize := newMValueArray(args)
-	defer C.free(unsafe.Pointer(argPtr))
+	arr, err := encodeArgs(args)
+	// TODO: for C.free
+	if err != nil {
+		return err
+	}
 
-	C.core_trigger_local_event(cEvent, argPtr, argSize)*/
+	C.core_trigger_local_event(cEvent, arr)
+
+	return nil
 }
 
-func EmitClient(player *Player, eventName string, args ...interface{}) {
-	/*cEvent := C.CString(eventName)
+func EmitClient(player *Player, eventName string, args ...interface{}) error {
+	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	argPtr, argSize := newMValueArray(args)
-	defer C.free(unsafe.Pointer(argPtr))
+	arr, err := encodeArgs(args)
+	// TODO: for C.free
+	if err != nil {
+		return err
+	}
 
-	C.core_trigger_client_event(player.Ptr, cEvent, argPtr, argSize)*/
+	C.core_trigger_client_event(player.Ptr, cEvent, arr)
+	return nil
 }
 
-func EmitClients(players []*Player, eventName string, args ...interface{}) {
-	/*clientSize := uint64(len(players))
+func EmitClients(players []*Player, eventName string, args ...interface{}) error {
+	clientSize := uint64(len(players))
 
 	if clientSize < 1 {
-		return
+		return errors.New("no players to emit to")
 	}
 
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	argPtr, argSize := newMValueArray(args)
-	defer C.free(unsafe.Pointer(argPtr))
+	arr, err := encodeArgs(args)
+	// TODO: for C.free
+	if err != nil {
+		return err
+	}
 
 	clientArrayPtr := C.malloc(C.size_t(clientSize) * C.size_t(8))
 	clientArray := (*[1 << 30]unsafe.Pointer)(clientArrayPtr)
@@ -456,17 +469,26 @@ func EmitClients(players []*Player, eventName string, args ...interface{}) {
 		clientArray[i] = players[i].Ptr
 	}
 
-	C.core_trigger_client_event_for((*unsafe.Pointer)(clientArrayPtr), C.ulonglong(clientSize), cEvent, argPtr, argSize)*/
+	C.core_trigger_client_event_for(C.struct_array{
+		array: clientArrayPtr,
+		size:  C.ulonglong(clientSize),
+	}, cEvent, arr)
+
+	return nil
 }
 
-func EmitAllClients(eventName string, args ...interface{}) {
-	/*cEvent := C.CString(eventName)
+func EmitAllClients(eventName string, args ...interface{}) error {
+	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	argPtr, argSize := newMValueArray(args)
-	defer C.free(unsafe.Pointer(argPtr))
+	arr, err := encodeArgs(args)
+	// TODO: for C.free
+	if err != nil {
+		return err
+	}
 
-	C.core_trigger_client_event_for_all(cEvent, argPtr, argSize)*/
+	C.core_trigger_client_event_for_all(cEvent, arr)
+	return nil
 }
 
 //export altServerScriptEvent
