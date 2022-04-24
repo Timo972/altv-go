@@ -7,9 +7,10 @@ package alt
 import "C"
 import (
 	"fmt"
+	"reflect"
+
 	"github.com/timo972/altv-go-pkg/pb"
 	"google.golang.org/protobuf/proto"
-	"reflect"
 )
 
 func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
@@ -129,16 +130,26 @@ func encode(v interface{}) (C.struct_array, error) {
 	}, nil
 }
 
-func encodeArgs(v ...interface{}) (C.struct_array, error) {
+func encodeArgs(v []interface{}) (C.struct_array, error) {
 	size := len(v)
-	
-	ptr := C.malloc(C.size_t(size) * C.size_t(8))
+
+	if size == 0 {
+		return C.struct_array{
+			array: nil,
+			size:  0,
+		}, nil
+	}
+
+	ptr := C.malloc(C.size_t(size) * C.size_t(C.sizeof_Array))
 	bytesArray := (*[1 << 30]C.struct_array)(ptr)
 
 	for i, arg := range v {
 		arr, err := encode(arg)
 		if err != nil {
-			return C.struct_array{}, err
+			return C.struct_array{
+				array: nil,
+				size:  0,
+			}, err
 		}
 
 		bytesArray[i] = arr
