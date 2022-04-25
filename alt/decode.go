@@ -254,11 +254,8 @@ func (d *Decoder) decodeStruct(rt reflect.Type, rv reflect.Value) error {
 			i := slices.Index(keys, name)
 			if i < 0 || i >= len(values) {
 				// field is not set
-				fmt.Println(fmt.Sprintf("field %s (index: %v) is not set", name, i))
 				continue
 			}
-
-			fmt.Println(fmt.Sprintf("field %s value index: %d actual value: %v", name, i, values[i]))
 
 			valueDecoder := &Decoder{
 				MValue:    values[i],
