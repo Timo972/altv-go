@@ -18,7 +18,9 @@ func sliceToProto(rt reflect.Type, rv reflect.Value) (*pb.MValue, MValueType) {
 		bytes := rv.Bytes()
 
 		protoValue = &pb.MValue{
-			BytesValue: bytes,
+			Value: &pb.MValue_BytesValue{
+				BytesValue: bytes,
+			},
 		}
 		mValueType = MValueByteArray
 	} else {

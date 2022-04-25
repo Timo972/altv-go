@@ -38,25 +38,28 @@ message RGBA {
 }
 
 message MValue {
-  // default values
-  optional bool noneValue = 1;
-  optional bool nilValue = 2;
-  optional bool boolValue = 3;
-  optional int64 intValue = 4;
-  optional uint64 uintValue = 5;
-  optional double doubleValue = 6;
-  optional string stringValue = 7;
+  oneof value {
+    // default values
+
+    bool noneValue = 1;
+    bool nilValue = 2;
+    bool boolValue = 3;
+    int64 intValue = 4;
+    uint64 uintValue = 5;
+    double doubleValue = 6;
+    string stringValue = 7;
+
+    // special values
+    BaseObject baseObjectValue = 10;
+    InternFunction internFunctionValue = 11;
+    ExternFunction externFunctionValue = 12;
+    Vector3 vector3Value = 13;
+    RGBA rgbaValue = 14;
+    bytes bytesValue = 15;
+    Vector2 vector2Value = 16;
+  }
 
   // nested values
   repeated MValue list = 8;
   repeated string dict = 9;
-
-  // special values
-  optional BaseObject baseObjectValue = 10;
-  optional InternFunction internFunctionValue = 11;
-  optional ExternFunction externFunctionValue = 12;
-  optional Vector3 vector3Value = 13;
-  optional RGBA rgbaValue = 14;
-  optional bytes bytesValue = 15;
-  optional Vector2 vector2Value = 16;
 }

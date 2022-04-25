@@ -1,13 +1,5 @@
 package alt
 
-import "C"
-import (
-	"fmt"
-	"reflect"
-	"strconv"
-	"unsafe"
-)
-
 // #cgo CFLAGS: -I../c-api/build/Release
 // #cgo LDFLAGS: -L../c-api/build/Release -lcapi
 // #include <stdlib.h>
@@ -15,10 +7,19 @@ import (
 // #include "../c-api/capi.h"
 import "C"
 import (
+	"fmt"
+	"reflect"
+	"strconv"
+	"unsafe"
+
 	"github.com/timo972/altv-go-pkg/pb"
 	"golang.org/x/exp/slices"
 	"google.golang.org/protobuf/proto"
 )
+
+// type IDecoder interface {
+// 	Decode(v interface{}) error
+// }
 
 type Decoder struct {
 	Buffer    []byte
@@ -40,6 +41,30 @@ func decode(arr C.struct_array, v interface{}) error {
 	return d.Decode(v)
 }
 
+func decodeArgs(arr C.struct_array) ([]reflect.Value, error) {
+	size := int(arr.size)
+	if size == 0 {
+		return nil, nil
+	}
+
+	data := make([]reflect.Value, size)
+
+	cBytesArray := (*[1 << 30]C.struct_array)(arr.array)
+	for i := 0; i < size; i++ {
+		bytes := C.GoBytes(cBytesArray[i].array, C.int(cBytesArray[i].size))
+		d := newReflectDecoder(bytes)
+
+		val, err := d.Decode()
+		if err != nil {
+			return nil, err
+		}
+
+		data[i] = val
+	}
+
+	return data, nil
+}
+
 func parsePointer(ptrStr string) (unsafe.Pointer, error) {
 	ptrUint, err := strconv.ParseUint(ptrStr, 10, 64)
 	if err != nil {
@@ -57,19 +82,25 @@ func parsePointer(ptrStr string) (unsafe.Pointer, error) {
 	//return ptr, err
 }
 
+func (d *Decoder) unmarshalBytes() error {
+	if d.MValue == nil && len(d.Buffer) > 0 {
+		d.MValue = &pb.MValue{}
+		return proto.Unmarshal(d.Buffer, d.MValue)
+	} else if d.MValue == nil && len(d.Buffer) == 0 {
+		return fmt.Errorf("no data to decode")
+	}
+
+	return nil
+}
+
 func (d *Decoder) Decode(v interface{}) error {
 	if reflect.TypeOf(v).Kind() != reflect.Ptr {
 		return fmt.Errorf("root type must be a pointer")
 	}
 
-	if d.MValue == nil && len(d.Buffer) > 0 {
-		d.MValue = &pb.MValue{}
-		err := proto.Unmarshal(d.Buffer, d.MValue)
-		if err != nil {
-			return err
-		}
-	} else if d.MValue == nil {
-		return fmt.Errorf("no data to decode")
+	err := d.unmarshalBytes()
+	if err != nil {
+		return err
 	}
 
 	d.RootValue = reflect.ValueOf(v).Elem()
@@ -132,6 +163,47 @@ func (d *Decoder) decode() error {
 	return nil
 }
 
+func baseObjectToReflectValue(base *pb.BaseObject, isEntity bool) (reflect.Value, error) {
+	t := BaseObjectType(base.GetType())
+	ptr, err := parsePointer(base.GetPtr())
+	var v reflect.Value
+
+	if err != nil {
+		return v, err
+	}
+
+	switch t {
+	case PlayerObject:
+		if isEntity {
+			e := &Entity{}
+			e.Ptr = ptr
+			e.Type = t
+			v = reflect.ValueOf(e)
+		} else {
+			v = reflect.ValueOf(newPlayer(ptr))
+		}
+	case VehicleObject:
+		if isEntity {
+			e := &Entity{}
+			e.Ptr = ptr
+			e.Type = t
+			v = reflect.ValueOf(e)
+		} else {
+			v = reflect.ValueOf(newVehicle(ptr))
+		}
+	case ColshapeObject:
+		v = reflect.ValueOf(newColShape(ptr))
+	case CheckpointObject:
+		v = reflect.ValueOf(newCheckpoint(ptr))
+	case VoiceChannelObject:
+		v = reflect.ValueOf(newVoiceChannel(ptr))
+	case BlipObject:
+		v = reflect.ValueOf(newBlip(ptr))
+	}
+
+	return v, nil
+}
+
 func (d *Decoder) decodeStruct(rt reflect.Type, rv reflect.Value) error {
 	structName := rt.Name()
 
@@ -161,41 +233,10 @@ func (d *Decoder) decodeStruct(rt reflect.Type, rv reflect.Value) error {
 		}))
 	} else if structName == "Player" || structName == "Entity" || structName == "Vehicle" || structName == "ColShape" || structName == "Checkpoint" || structName == "VoiceChannel" || structName == "Blip" {
 		base := d.MValue.GetBaseObjectValue()
-		t := BaseObjectType(base.GetType())
-		ptr, err := parsePointer(base.GetPtr())
+
+		v, err := baseObjectToReflectValue(base, structName == "Entity")
 		if err != nil {
 			return err
-		}
-
-		var v reflect.Value
-
-		switch t {
-		case PlayerObject:
-			if structName == "Entity" {
-				e := &Entity{}
-				e.Ptr = ptr
-				e.Type = t
-				v = reflect.ValueOf(e)
-			} else {
-				v = reflect.ValueOf(newPlayer(ptr))
-			}
-		case VehicleObject:
-			if structName == "Entity" {
-				e := &Entity{}
-				e.Ptr = ptr
-				e.Type = t
-				v = reflect.ValueOf(e)
-			} else {
-				v = reflect.ValueOf(newVehicle(ptr))
-			}
-		case ColshapeObject:
-			v = reflect.ValueOf(newColShape(ptr))
-		case CheckpointObject:
-			v = reflect.ValueOf(newCheckpoint(ptr))
-		case VoiceChannelObject:
-			v = reflect.ValueOf(newVoiceChannel(ptr))
-		case BlipObject:
-			v = reflect.ValueOf(newBlip(ptr))
 		}
 
 		rv.Set(v)
@@ -204,8 +245,6 @@ func (d *Decoder) decodeStruct(rt reflect.Type, rv reflect.Value) error {
 		values := d.MValue.GetList()
 
 		fieldCount := rv.NumField()
-
-		LogInfo("field count:", fieldCount)
 
 		for i := 0; i < fieldCount; i++ {
 			field := rv.Field(i)
@@ -269,6 +308,8 @@ func (d *Decoder) decodeSlice(rt reflect.Type, rv reflect.Value) error {
 	size := len(values)
 	l := reflect.MakeSlice(rt, size, size)
 	elemType := rt.Elem()
+
+	// TODO: support byte array
 
 	for i, pbVal := range values {
 		valueDecoder := &Decoder{

@@ -26,28 +26,34 @@ func structToProto(rt reflect.Type, rv reflect.Value) (*pb.MValue, MValueType) {
 
 	if structName == "RGBA" {
 		protoValue = &pb.MValue{
-			RgbaValue: &pb.RGBA{
-				R: proto.Uint32(uint32(rv.FieldByName("R").Uint())),
-				G: proto.Uint32(uint32(rv.FieldByName("G").Uint())),
-				B: proto.Uint32(uint32(rv.FieldByName("B").Uint())),
-				A: proto.Uint32(uint32(rv.FieldByName("A").Uint())),
+			Value: &pb.MValue_RgbaValue{
+				RgbaValue: &pb.RGBA{
+					R: proto.Uint32(uint32(rv.FieldByName("R").Uint())),
+					G: proto.Uint32(uint32(rv.FieldByName("G").Uint())),
+					B: proto.Uint32(uint32(rv.FieldByName("B").Uint())),
+					A: proto.Uint32(uint32(rv.FieldByName("A").Uint())),
+				},
 			},
 		}
 		mValueType = MValueRGBA
 	} else if structName == "Vector2" {
 		protoValue = &pb.MValue{
-			Vector2Value: &pb.Vector2{
-				X: proto.Float32(float32(rv.FieldByName("X").Float())),
-				Y: proto.Float32(float32(rv.FieldByName("Y").Float())),
+			Value: &pb.MValue_Vector2Value{
+				Vector2Value: &pb.Vector2{
+					X: proto.Float32(float32(rv.FieldByName("X").Float())),
+					Y: proto.Float32(float32(rv.FieldByName("Y").Float())),
+				},
 			},
 		}
 		mValueType = MValueVector2
 	} else if structName == "Vector3" {
 		protoValue = &pb.MValue{
-			Vector3Value: &pb.Vector3{
-				X: proto.Float32(float32(rv.FieldByName("X").Float())),
-				Y: proto.Float32(float32(rv.FieldByName("Y").Float())),
-				Z: proto.Float32(float32(rv.FieldByName("Z").Float())),
+			Value: &pb.MValue_Vector3Value{
+				Vector3Value: &pb.Vector3{
+					X: proto.Float32(float32(rv.FieldByName("X").Float())),
+					Y: proto.Float32(float32(rv.FieldByName("Y").Float())),
+					Z: proto.Float32(float32(rv.FieldByName("Z").Float())),
+				},
 			},
 		}
 		mValueType = MValueVector3

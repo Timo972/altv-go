@@ -7,6 +7,7 @@ package alt
 import "C"
 import (
 	"errors"
+	"reflect"
 	"unsafe"
 
 	"github.com/timo972/altv-go-pkg/internal/module"
@@ -117,10 +118,12 @@ type removeEntityListener = func(entity *Entity)
 
 type consoleCommandListener = func(command string, args []string)
 
-type allServerEventsListener = func(eventName string, args ...interface{})
-type serverEventListener = func(args ...interface{})
-type allClientEventsListener = func(player *Player, eventName string, args ...interface{})
-type clientEventListener = func(player *Player, args ...interface{})
+// type allServerEventsListener = func(eventName string, args ...interface{})
+// type serverEventListener = func(args ...interface{})
+// type allClientEventsListener = func(player *Player, eventName string, args ...interface{})
+// type clientEventListener = func(player *Player, args ...interface{})
+
+type scriptEventListener = interface{}
 
 type eventManager struct {
 	serverStartedEvents              []serverStartedListener
@@ -158,10 +161,10 @@ type eventManager struct {
 	vehicleDetachEvents              []vehicleDetachListener
 	vehicleDestroyEvents             []vehicleDestroyListener
 	vehicleDamageEvents              []vehicleDamageListener
-	serverScriptEvents               map[string][]serverEventListener
-	clientScriptEvents               map[string][]clientEventListener
-	allServerScriptEvents            []allServerEventsListener
-	allClientScriptEvents            []allClientEventsListener
+	serverScriptEvents               map[string][]reflect.Value
+	clientScriptEvents               map[string][]reflect.Value
+	allServerScriptEvents            []reflect.Value
+	allClientScriptEvents            []reflect.Value
 }
 
 type listener interface {
@@ -200,10 +203,10 @@ type listener interface {
 	VehicleDetach(listener vehicleDetachListener)
 	VehicleDestroy(listener vehicleDestroyListener)
 	VehicleDamage(listener vehicleDamageListener)
-	AllServerEvents(listener allServerEventsListener)
-	ServerEvent(eventName string, listener serverEventListener)
-	AllClientEvents(listener allClientEventsListener)
-	ClientEvent(eventName string, listener clientEventListener)
+	AllServerEvents(listener scriptEventListener)
+	ServerEvent(eventName string, listener scriptEventListener)
+	AllClientEvents(listener scriptEventListener)
+	ClientEvent(eventName string, listener scriptEventListener)
 }
 
 var On = &eventManager{}
@@ -390,29 +393,29 @@ func (e eventManager) VehicleDamage(listener vehicleDamageListener) {
 	registerOnEvent(Resource.Name, vehicleDamage)
 }
 
-func (e eventManager) ServerEvent(eventName string, listener serverEventListener) {
+func (e eventManager) ServerEvent(eventName string, listener scriptEventListener) {
 	if On.serverScriptEvents == nil {
-		On.serverScriptEvents = make(map[string][]serverEventListener)
+		On.serverScriptEvents = make(map[string][]reflect.Value)
 	}
-	On.serverScriptEvents[eventName] = append(On.serverScriptEvents[eventName], listener)
+	On.serverScriptEvents[eventName] = append(On.serverScriptEvents[eventName], reflect.ValueOf(listener))
 	registerOnEvent(Resource.Name, serverScriptEvent)
 }
 
-func (e eventManager) AllServerEvents(listener allServerEventsListener) {
-	On.allServerScriptEvents = append(On.allServerScriptEvents, listener)
+func (e eventManager) AllServerEvents(listener scriptEventListener) {
+	On.allServerScriptEvents = append(On.allServerScriptEvents, reflect.ValueOf(listener))
 	registerOnEvent(Resource.Name, serverScriptEvent)
 }
 
-func (e eventManager) ClientEvent(eventName string, listener clientEventListener) {
+func (e eventManager) ClientEvent(eventName string, listener scriptEventListener) {
 	if On.clientScriptEvents == nil {
-		On.clientScriptEvents = make(map[string][]clientEventListener)
+		On.clientScriptEvents = make(map[string][]reflect.Value)
 	}
-	On.clientScriptEvents[eventName] = append(On.clientScriptEvents[eventName], listener)
+	On.clientScriptEvents[eventName] = append(On.clientScriptEvents[eventName], reflect.ValueOf(listener))
 	registerOnEvent(Resource.Name, clientScriptEvent)
 }
 
-func (e eventManager) AllClientEvents(listener allClientEventsListener) {
-	On.allClientScriptEvents = append(On.allClientScriptEvents, listener)
+func (e eventManager) AllClientEvents(listener scriptEventListener) {
+	On.allClientScriptEvents = append(On.allClientScriptEvents, reflect.ValueOf(listener))
 	registerOnEvent(Resource.Name, clientScriptEvent)
 }
 
@@ -494,27 +497,39 @@ func EmitAllClients(eventName string, args ...interface{}) error {
 //export altServerScriptEvent
 func altServerScriptEvent(cName *C.char, arr C.struct_array) {
 	name := C.GoString(cName)
+	eventName := reflect.ValueOf(name)
+
+	args, err := decodeArgs(arr)
+	if err != nil {
+		LogError("ServerScriptEvent error:", err.Error())
+	}
 
 	for _, event := range On.allServerScriptEvents {
-		event(name)
+		event.Call(append([]reflect.Value{eventName}, args...))
 	}
 
 	for _, event := range On.serverScriptEvents[name] {
-		event()
+		event.Call(args)
 	}
 }
 
 //export altClientScriptEvent
 func altClientScriptEvent(p unsafe.Pointer, cName *C.char, arr C.struct_array) {
 	name := C.GoString(cName)
-	player := newPlayer(p)
+	eventName := reflect.ValueOf(name)
+	target := reflect.ValueOf(newPlayer(p))
+
+	args, err := decodeArgs(arr)
+	if err != nil {
+		LogError("ClientScriptEvent error:", err.Error())
+	}
 
 	for _, event := range On.allClientScriptEvents {
-		event(player, name)
+		event.Call(append([]reflect.Value{target, eventName}, args...))
 	}
 
 	for _, event := range On.clientScriptEvents[name] {
-		event(player)
+		event.Call(append([]reflect.Value{target}, args...))
 	}
 }
 

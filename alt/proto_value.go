@@ -32,9 +32,11 @@ func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
 		if structName == "Player" || structName == "Vehicle" || structName == "Entity" || structName == "ColShape" || structName == "Checkpoint" || structName == "VoiceChannel" || structName == "Blip" {
 			// BaseObject
 			protoValue = &pb.MValue{
-				BaseObjectValue: &pb.BaseObject{
-					Type: proto.Uint32(uint32(rv.FieldByName("Type").Uint())),
-					Ptr:  proto.String(fmt.Sprintf("%v", rv.FieldByName("Ptr").UnsafePointer())),
+				Value: &pb.MValue_BaseObjectValue{
+					BaseObjectValue: &pb.BaseObject{
+						Type: proto.Uint32(uint32(rv.FieldByName("Type").Uint())),
+						Ptr:  proto.String(fmt.Sprintf("%v", rv.FieldByName("Ptr").UnsafePointer())),
+					},
 				},
 			}
 			mValueType = MValueBaseObject
@@ -50,17 +52,23 @@ func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
 		}
 	case reflect.String:
 		protoValue = &pb.MValue{
-			StringValue: proto.String(rv.String()),
+			Value: &pb.MValue_StringValue{
+				StringValue: rv.String(),
+			},
 		}
 		mValueType = MValueString
 	case reflect.Bool:
 		protoValue = &pb.MValue{
-			BoolValue: proto.Bool(rv.Bool()),
+			Value: &pb.MValue_BoolValue{
+				BoolValue: rv.Bool(),
+			},
 		}
 		mValueType = MValueBool
 	case reflect.Float32, reflect.Float64:
 		protoValue = &pb.MValue{
-			DoubleValue: proto.Float64(rv.Float()),
+			Value: &pb.MValue_DoubleValue{
+				DoubleValue: rv.Float(),
+			},
 		}
 		mValueType = MValueDouble
 	case reflect.Func:
@@ -70,10 +78,12 @@ func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
 		mValueFunctions[id] = rv
 
 		protoValue = &pb.MValue{
-			InternFunctionValue: &pb.InternFunction{
-				Id: proto.Uint64(id),
-				//ResourceName: alt.Resource.Name,
-				ResourceName: proto.String(Resource.Name),
+			Value: &pb.MValue_InternFunctionValue{
+				InternFunctionValue: &pb.InternFunction{
+					Id: proto.Uint64(id),
+					//ResourceName: alt.Resource.Name,
+					ResourceName: proto.String(Resource.Name),
+				},
 			},
 		}
 		mValueType = MValueFunction
@@ -82,13 +92,17 @@ func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
 		// mValuePtr = C.core_create_mvalue_int(C.longlong(rv.Int()))
 		mValueType = MValueInt
 		protoValue = &pb.MValue{
-			IntValue: proto.Int64(rv.Int()),
+			Value: &pb.MValue_IntValue{
+				IntValue: rv.Int(),
+			},
 		}
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 		// mValuePtr = C.core_create_mvalue_uint(C.ulonglong(rv.Uint()))
 		mValueType = MValueUInt
 		protoValue = &pb.MValue{
-			UintValue: proto.Uint64(rv.Uint()),
+			Value: &pb.MValue_UintValue{
+				UintValue: rv.Uint(),
+			},
 		}
 	case reflect.Array, reflect.Slice:
 		// list
@@ -104,7 +118,9 @@ func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
 	default:
 		//mValueType = MValueNone
 		protoValue = &pb.MValue{
-			NoneValue: proto.Bool(true),
+			Value: &pb.MValue_NoneValue{
+				NoneValue: true,
+			},
 		}
 		mValueType = MValueNone
 	}

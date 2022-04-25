@@ -42,19 +42,23 @@ func (b BaseObject) Valid() bool {
 	if b.Ptr == nil {
 		return false
 	}
+
+	cName := C.CString(Resource.Name)
+	defer C.free(unsafe.Pointer(cName))
+
 	// if so add for other base object extenders
 	if b.Type == PlayerObject {
-		return int(C.player_is_valid(b.Ptr)) == 1
+		return int(C.player_is_valid(cName, b.Ptr)) == 1
 	} else if b.Type == VoiceChannelObject {
-		return int(C.voice_channel_is_valid(b.Ptr)) == 1
+		return int(C.voice_channel_is_valid(cName, b.Ptr)) == 1
 	} else if b.Type == CheckpointObject {
-		return int(C.checkpoint_is_valid(b.Ptr)) == 1
+		return int(C.checkpoint_is_valid(cName, b.Ptr)) == 1
 	} else if b.Type == ColshapeObject {
-		return int(C.col_shape_is_valid(b.Ptr)) == 1
+		return int(C.col_shape_is_valid(cName, b.Ptr)) == 1
 	} else if b.Type == VehicleObject {
-		return int(C.vehicle_is_valid(b.Ptr)) == 1
+		return int(C.vehicle_is_valid(cName, b.Ptr)) == 1
 	} else if b.Type == BlipObject {
-		return int(C.blip_is_valid(b.Ptr)) == 1
+		return int(C.blip_is_valid(cName, b.Ptr)) == 1
 	}
 	return false
 }

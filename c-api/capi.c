@@ -127,9 +127,9 @@ void blip_destroy(void *b)
     g_call_blip_destroy(b);
 }
 
-int blip_is_valid(void *p)
+int blip_is_valid(const char *resourceName, void *p)
 {
-    return g_call_blip_is_valid(p);
+    return g_call_blip_is_valid(resourceName, p);
 }
 
 Position blip_get_position(void *p)
@@ -560,9 +560,9 @@ void checkpoint_destroy(void *b)
     g_call_checkpoint_destroy(b);
 }
 
-int checkpoint_is_valid(void *p)
+int checkpoint_is_valid(const char* resourceName, void *p)
 {
-    return g_call_checkpoint_is_valid(p);
+    return g_call_checkpoint_is_valid(resourceName, p);
 }
 
 Position checkpoint_get_position(void *p)
@@ -713,9 +713,9 @@ void col_shape_destroy(void *b)
     g_call_col_shape_destroy(b);
 }
 
-int col_shape_is_valid(void *p)
+int col_shape_is_valid(const char* resourceName, void *p)
 {
-    return g_call_col_shape_is_valid(p);
+    return g_call_col_shape_is_valid(resourceName, p);
 }
 
 Position col_shape_get_position(void *p)
@@ -1684,9 +1684,9 @@ void player_destroy(void *p)
     g_call_player_destroy(p);
 }
 
-int player_is_valid(void *p)
+int player_is_valid(const char* resourceName, void *p)
 {
-    return g_call_player_is_valid(p);
+    return g_call_player_is_valid(resourceName, p);
 }
 
 int player_get_streamed(void *p)
@@ -2905,9 +2905,9 @@ void vehicle_destroy(void *v)
     g_call_vehicle_destroy(v);
 }
 
-int vehicle_is_valid(void *p)
+int vehicle_is_valid(const char *resourceName, void *p)
 {
-    return g_call_vehicle_is_valid(p);
+    return g_call_vehicle_is_valid(resourceName, p);
 }
 
 int vehicle_get_streamed(void *v)
@@ -3169,9 +3169,9 @@ capi_voice_channel_get_players g_call_voice_channel_get_players;
 
 // src\capi\VoiceChannel.h  Module.c
 
-int voice_channel_is_valid(void *p)
+int voice_channel_is_valid(const char* resourceName, void *p)
 {
-    return g_call_voice_channel_is_valid(p);
+    return g_call_voice_channel_is_valid(resourceName, p);
 }
 
 int voice_channel_get_type(void *c)
