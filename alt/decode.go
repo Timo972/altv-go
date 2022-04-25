@@ -1,16 +1,20 @@
 package alt
 
-// #cgo CFLAGS: -I../c-api/build/Release
-// #cgo LDFLAGS: -L../c-api/build/Release -lcapi
-// #include <stdlib.h>
-// #include "../c-api/capi.h"
 import "C"
 import (
 	"fmt"
 	"reflect"
 	"strconv"
 	"unsafe"
+)
 
+// #cgo CFLAGS: -I../c-api/build/Release
+// #cgo LDFLAGS: -L../c-api/build/Release -lcapi
+// #include <stdlib.h>
+// #include <stdio.h>
+// #include "../c-api/capi.h"
+import "C"
+import (
 	"github.com/timo972/altv-go-pkg/pb"
 	"golang.org/x/exp/slices"
 	"google.golang.org/protobuf/proto"
@@ -43,10 +47,23 @@ func parsePointer(ptrStr string) (unsafe.Pointer, error) {
 	}
 
 	return unsafe.Pointer(uintptr(ptrUint)), nil
+
+	//str := C.CString(ptrStr)
+	//defer C.free(unsafe.Pointer(str))
+	//var ptr unsafe.Pointer
+	//C.sscanf(str, "%p", &ptr)
+	//_, err := fmt.Sscanf(ptrStr, "%p", &ptr)
+
+	//return ptr, err
 }
 
 func (d *Decoder) Decode(v interface{}) error {
+	if reflect.TypeOf(v).Kind() != reflect.Ptr {
+		return fmt.Errorf("root type must be a pointer")
+	}
+
 	if d.MValue == nil && len(d.Buffer) > 0 {
+		d.MValue = &pb.MValue{}
 		err := proto.Unmarshal(d.Buffer, d.MValue)
 		if err != nil {
 			return err
@@ -55,7 +72,7 @@ func (d *Decoder) Decode(v interface{}) error {
 		return fmt.Errorf("no data to decode")
 	}
 
-	d.RootValue = reflect.ValueOf(v)
+	d.RootValue = reflect.ValueOf(v).Elem()
 	d.RootType = d.RootValue.Type()
 
 	return d.decode()
@@ -65,7 +82,7 @@ func (d *Decoder) decode() error {
 	switch d.RootType.Kind() {
 	case reflect.Ptr:
 		rt := d.RootType.Elem()
-		rv := d.RootValue.Elem()
+		rv := d.RootValue //.Elem()
 		kind := rt.Kind()
 
 		if kind == reflect.Struct {
@@ -188,16 +205,21 @@ func (d *Decoder) decodeStruct(rt reflect.Type, rv reflect.Value) error {
 
 		fieldCount := rv.NumField()
 
+		LogInfo("field count:", fieldCount)
+
 		for i := 0; i < fieldCount; i++ {
 			field := rv.Field(i)
 			fieldType := rt.Field(i)
 			name := getFieldName(fieldType)
 
 			i := slices.Index(keys, name)
-			if i < 0 {
+			if i < 0 || i >= len(values) {
 				// field is not set
+				fmt.Println(fmt.Sprintf("field %s (index: %v) is not set", name, i))
 				continue
 			}
+
+			fmt.Println(fmt.Sprintf("field %s value index: %d actual value: %v", name, i, values[i]))
 
 			valueDecoder := &Decoder{
 				MValue:    values[i],
@@ -260,6 +282,8 @@ func (d *Decoder) decodeSlice(rt reflect.Type, rv reflect.Value) error {
 			return err
 		}
 	}
+
+	rv.Set(l)
 
 	return nil
 }

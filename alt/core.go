@@ -55,6 +55,7 @@ func MetaData(key string, value interface{}) bool {
 	meta := C.core_get_meta_data(cStr)
 	err := decode(meta, value)
 	if err != nil {
+		LogError(err.Error())
 		return false
 	}
 
