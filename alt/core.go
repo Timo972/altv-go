@@ -189,12 +189,31 @@ func Debug() bool {
 }
 
 // TODO missing:
-// Core_GetEntities
-// Core_GetRequiredPermissions
-// Core_GetOptionalPermissions
 // Core_DestroyBaseObject
-// Core_GetNetTime
-// Core_GetAllResources
+
+func RequiredPermissions() []Permission {
+	arr := C.core_get_required_permissions()
+	return newPermissionArray(arr)
+}
+
+func OptionalPermissions() []Permission {
+	arr := C.core_get_optional_permissions()
+	return newPermissionArray(arr)
+}
+
+func NetTime() uint32 {
+	return uint32(C.core_get_net_time())
+}
+
+func Entities() []*Entity {
+	arr := C.core_get_entities()
+	return newEntityArray(arr)
+}
+
+func AllResources() {
+	// TODO:
+	//arr := C.core_get_all_resources()
+}
 
 func ServerConfig(v interface{}) error {
 	arr := C.core_get_server_config()

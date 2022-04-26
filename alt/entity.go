@@ -37,6 +37,27 @@ func newEntity(e C.struct_entity) *Entity {
 	return entity
 }
 
+func newEntityArray(arr C.struct_array) []*Entity {
+	size := int(arr.size)
+	// FIXME: may causes a crash because it frees to early
+	defer C.free(unsafe.Pointer(arr.array))
+
+	cArray := (*[1 << 28]C.struct_entity)(arr.array)[:size:size]
+
+	entities := make([]*Entity, size)
+
+	if size == 0 {
+		return entities
+	}
+
+	for i := 0; i < size; i++ {
+		p := cArray[i]
+		entities[i] = newEntity(p)
+	}
+
+	return entities
+}
+
 func newCEntity(e IEntity) C.struct_entity {
 	return C.struct_entity{
 		Ptr:  e.getPtr(),

@@ -48,10 +48,12 @@ type VehicleModelInfo struct {
 	DefaultExtras uint16
 }
 
+// TODO:
 func (v *VehicleModelInfo) DoesExtraExist(extraId uint8) bool {
 	return true
 }
 
+// TODO:
 func (v *VehicleModelInfo) DoesExtraDefault(extraId uint8) bool {
 	return true
 }
