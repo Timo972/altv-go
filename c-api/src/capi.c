@@ -1110,7 +1110,7 @@ VehicleModelInfo core_get_vehicle_model_by_hash(unsigned int hash)
     return g_call_core_get_vehicle_model_by_hash(hash);
 }
 
-const char * core_get_server_config()
+Array core_get_server_config()
 {
     return g_call_core_get_server_config();
 }

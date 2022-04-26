@@ -476,7 +476,7 @@ typedef Array (*capi_core_get_all_resources)();
 typedef const char * (*capi_core_string_to_s_h_a256)(const char *str);
 typedef void (*capi_core_stop_server)();
 typedef VehicleModelInfo (*capi_core_get_vehicle_model_by_hash)(unsigned int hash);
-typedef const char * (*capi_core_get_server_config)();
+typedef Array (*capi_core_get_server_config)();
 typedef unsigned long long (*capi_core_hash_server_password)(const char *password);
 
 
@@ -539,7 +539,7 @@ Array core_get_all_resources();
 const char * core_string_to_s_h_a256(const char *str);
 void core_stop_server();
 VehicleModelInfo core_get_vehicle_model_by_hash(unsigned int hash);
-const char * core_get_server_config();
+Array core_get_server_config();
 unsigned long long core_hash_server_password(const char *password);
 
 // src\capi\Player.h Module.h

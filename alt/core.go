@@ -195,8 +195,29 @@ func Debug() bool {
 // Core_DestroyBaseObject
 // Core_GetNetTime
 // Core_GetAllResources
-// Core_StringToSHA256
-// Core_StopServer
-// Core_GetVehicleModelByHash
-// Core_GetServerConfig
-// Core_HashServerPassword
+
+func ServerConfig(v interface{}) error {
+	arr := C.core_get_server_config()
+	return decode(arr, v)
+}
+
+func HashPassword(password string) uint64 {
+	cPassword := C.CString(password)
+	defer C.free(unsafe.Pointer(cPassword))
+	return uint64(C.core_hash_server_password(cPassword))
+}
+
+func VehicleModelByHash(hash uint32) VehicleModelInfo {
+	// return (*VehicleModelInfo)(C.core_get_vehicle_model_info(C.uint(hash)))
+	return newVehicleModelInfo(C.core_get_vehicle_model_by_hash(C.uint(hash)))
+}
+
+func StopServer() {
+	C.core_stop_server()
+}
+
+func HashSHA256(str string) string {
+	cStr := C.CString(str)
+	defer C.free(unsafe.Pointer(cStr))
+	return C.GoString(C.core_string_to_s_h_a256(cStr))
+}
