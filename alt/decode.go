@@ -66,6 +66,11 @@ func decodeArgs(arr C.struct_array) ([]reflect.Value, error) {
 }
 
 func parsePointer(ptrStr string) (unsafe.Pointer, error) {
+	if ptrStr == "" {
+		// return nil pointer
+		return nil, nil
+	}
+
 	ptrUint, err := strconv.ParseUint(ptrStr, 10, 64)
 	if err != nil {
 		return nil, err
@@ -87,7 +92,11 @@ func (d *Decoder) unmarshalBytes() error {
 		d.MValue = &pb.MValue{}
 		return proto.Unmarshal(d.Buffer, d.MValue)
 	} else if d.MValue == nil && len(d.Buffer) == 0 {
-		return fmt.Errorf("no data to decode")
+		d.MValue = &pb.MValue{
+			Value: &pb.MValue_NoneValue{
+				NoneValue: true,
+			},
+		}
 	}
 
 	return nil
@@ -98,13 +107,24 @@ func (d *Decoder) Decode(v interface{}) error {
 		return fmt.Errorf("root type must be a pointer")
 	}
 
+	d.RootValue = reflect.ValueOf(v).Elem()
+	d.RootType = d.RootValue.Type()
+
+	/*if d.MValue == nil && len(d.Buffer) == 0 {
+		kind := d.RootType.Kind()
+		fmt.Println("empty:", kind)
+		if kind == reflect.Slice || kind == reflect.Array {
+			d.RootValue.Set(reflect.MakeSlice(d.RootType, 0, 0))
+		} else {
+			d.RootValue.Set(reflect.ValueOf(nil))
+		}
+		return nil
+	}*/
+
 	err := d.unmarshalBytes()
 	if err != nil {
 		return err
 	}
-
-	d.RootValue = reflect.ValueOf(v).Elem()
-	d.RootType = d.RootValue.Type()
 
 	return d.decode()
 }

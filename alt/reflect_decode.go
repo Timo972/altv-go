@@ -20,7 +20,17 @@ func newReflectDecoder(data []byte) *ReflectDecoder {
 	}
 }
 
+func decodeReflect(arr C.struct_array) (reflect.Value, error) {
+	bytes := C.GoBytes(arr.array, C.int(arr.size))
+	d := newReflectDecoder(bytes)
+	return d.Decode()
+}
+
 func (d *ReflectDecoder) Decode() (reflect.Value, error) {
+	if d.MValue == nil && len(d.Buffer) == 0 {
+		return reflect.ValueOf(nil), nil
+	}
+
 	err := d.unmarshalBytes()
 	if err != nil {
 		return reflect.Value{}, err
@@ -33,8 +43,6 @@ func (d *ReflectDecoder) unmarshalBytes() error {
 	if d.MValue == nil && len(d.Buffer) > 0 {
 		d.MValue = &pb.MValue{}
 		return proto.Unmarshal(d.Buffer, d.MValue)
-	} else if d.MValue == nil && len(d.Buffer) == 0 {
-		return fmt.Errorf("no data to decode")
 	}
 
 	return nil
@@ -47,12 +55,11 @@ func (d *ReflectDecoder) decode() (reflect.Value, error) {
 
 	raw := d.MValue.GetValue()
 
-	/*if v, ok := raw.(*pb.MValue_NoneValue); ok {
-
-	} else if v, ok := raw.(*pb.MValue_NilValue); ok {
-
-	} else*/
-	if v, ok := raw.(*pb.MValue_BoolValue); ok {
+	if _, ok := raw.(*pb.MValue_NoneValue); ok {
+		LogWarning("MValue_NoneValue will not be decoded")
+	} else if _, ok := raw.(*pb.MValue_NilValue); ok {
+		rv = reflect.ValueOf(nil)
+	} else if v, ok := raw.(*pb.MValue_BoolValue); ok {
 		rv = reflect.ValueOf(v.BoolValue)
 	} else if v, ok := raw.(*pb.MValue_IntValue); ok {
 		rv = reflect.ValueOf(v.IntValue)
