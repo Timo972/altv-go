@@ -4,7 +4,16 @@
 cmake_minimum_required (VERSION 3.8)
 project(altv-go-capi)
 
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
+
+MESSAGE(STATUS "Compiling altv-go-capi:" ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+
 # Aggiungere l'origine all'eseguibile di questo progetto.
-add_library (altv-capi-golang STATIC "capi.c" "capi.h")
+add_library (capi STATIC "src/capi.c" "src/capi.h")
+
+if ( MSVC )
+    set_target_properties(capi PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} )
+    set_target_properties(capi PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} )
+endif ( MSVC )
 
 # TODO: Aggiungere i test e, se necessario, installare le destinazioni.

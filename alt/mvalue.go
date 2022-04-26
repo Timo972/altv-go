@@ -1,9 +1,9 @@
 package alt
 
-// #cgo CFLAGS: -I../c-api/build/Release
-// #cgo LDFLAGS: -L../c-api/build/Release -lcapi
+// #cgo CFLAGS: -I../c-api/lib
+// #cgo LDFLAGS: -L../c-api/lib -lcapi
 // #include <stdlib.h>
-// #include "../c-api/capi.h"
+// #include "../c-api/src/capi.h"
 import "C"
 import (
 	"errors"
