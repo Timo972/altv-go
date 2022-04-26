@@ -1,7 +1,9 @@
 package alt
 
-// #cgo CFLAGS: -I../c-api/lib
-// #cgo LDFLAGS: -L../c-api/lib -lcapi
+// #cgo windows CFLAGS: -I../c-api/lib/win32
+// #cgo windows LDFLAGS: -L../c-api/lib/win32 -lcapi
+// #cgo linux CFLAGS: -I../c-api/lib/linux
+// #cgo linux LDFLAGS: -L../c-api/lib/linux -lcapi
 // #include <stdlib.h>
 // #include "../c-api/src/capi.h"
 import "C"

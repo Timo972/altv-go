@@ -4,8 +4,11 @@
 cmake_minimum_required (VERSION 3.8)
 project(altv-go-capi)
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
-
+if(WIN32)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib/win32")
+else()
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib/linux")
+endif()
 MESSAGE(STATUS "Compiling altv-go-capi:" ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
 # Aggiungere l'origine all'eseguibile di questo progetto.
