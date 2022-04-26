@@ -92,7 +92,7 @@ jobs:
       - name: Test
         run: |
           cd alt
-          export CGO_LDFLAGS="-g -ldl"
+          export CGO_LDFLAGS="-g -Wl,--no-as-needed -ldl"
           go test
 
       # export CGO_LDFLAGS="-g -02 -ldl"
