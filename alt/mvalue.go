@@ -73,49 +73,16 @@ func (e ExternFunction) Call(args ...interface{}) (interface{}, error) {
 //export altCallFunction
 func altCallFunction(id C.ulonglong, cMValueArgs C.struct_array) C.struct_array {
 	exportedFunc := mValueFunctions[uint64(id)]
-
-	var err error
-
-	argsSize := int(cMValueArgs.size)
-	mValueArgs := (*[1 << 30]C.struct_array)(cMValueArgs.array)
-
 	funcType := exportedFunc.Type()
-	argCount := funcType.NumIn()
-	args := make([]reflect.Value, argCount)
 
-	if argsSize != argCount {
-		LogError("failed to call exported function: argument count mismatch")
+	args, err := decodeArgsExpensive(funcType, cMValueArgs)
+	if err != nil {
+		LogError("failed to call exported function:", err.Error())
 		return C.struct_array{array: nil, size: C.ulonglong(0)}
 	}
 
-	for i := 0; i < argCount; i++ {
-		argType := funcType.In(i)
-		out := reflect.New(argType)
-
-		bytes := C.GoBytes(mValueArgs[i].array, C.int(mValueArgs[i].size))
-
-		d := &Decoder{
-			Buffer:    bytes,
-			RootType:  argType,
-			RootValue: out.Elem(),
-		}
-		err = d.unmarshalBytes()
-		if err != nil {
-			LogError("failed to call exported function:", err.Error())
-			return C.struct_array{array: nil, size: C.ulonglong(0)}
-		}
-
-		err = d.decode()
-		if err != nil {
-			LogError("failed to call exported function:", err.Error())
-			return C.struct_array{array: nil, size: C.ulonglong(0)}
-		}
-
-		args[i] = d.RootValue
-	}
-
-	if len(args) != argCount {
-		LogError(fmt.Sprintf("failed to call exported function: argument count mismatch (required: %v, got: %v) - dont pass nil / none values", argCount, len(args)))
+	if len(args) != funcType.NumIn() {
+		LogError(fmt.Sprintf("failed to call exported function: argument count mismatch (required: %v, got: %v) - dont pass nil / none values", funcType.NumIn(), len(args)))
 		return C.struct_array{array: nil, size: C.ulonglong(0)}
 	}
 
@@ -142,7 +109,7 @@ func altCallFunction(id C.ulonglong, cMValueArgs C.struct_array) C.struct_array 
 
 	cBytes, err := encode(returnValue)
 	if err != nil {
-		LogError("exported function returned invalid value: %s", err.Error())
+		LogError("exported function returned invalid value:", err.Error())
 		return C.struct_array{array: nil, size: C.ulonglong(0)}
 	}
 

@@ -9,6 +9,7 @@ package alt
 // #include "../c-api/src/capi.h"
 import "C"
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"strconv"
@@ -65,6 +66,46 @@ func decodeArgs(arr C.struct_array) ([]reflect.Value, error) {
 	}
 
 	return data, nil
+}
+
+func decodeArgsExpensive(funcType reflect.Type, arr C.struct_array) ([]reflect.Value, error) {
+	var err error
+
+	argsSize := int(arr.size)
+	mValueArgs := (*[1 << 30]C.struct_array)(arr.array)
+
+	argCount := funcType.NumIn()
+	args := make([]reflect.Value, argCount)
+
+	if argsSize != argCount {
+		return nil, errors.New("argument count mismatch")
+	}
+
+	for i := 0; i < argCount; i++ {
+		argType := funcType.In(i)
+		out := reflect.New(argType)
+
+		bytes := C.GoBytes(mValueArgs[i].array, C.int(mValueArgs[i].size))
+
+		d := &Decoder{
+			Buffer:    bytes,
+			RootType:  argType,
+			RootValue: out.Elem(),
+		}
+		err = d.unmarshalBytes()
+		if err != nil {
+			return nil, err
+		}
+
+		err = d.decode()
+		if err != nil {
+			return nil, err
+		}
+
+		args[i] = d.RootValue
+	}
+
+	return args, nil
 }
 
 func parsePointer(ptrStr string) (unsafe.Pointer, error) {
