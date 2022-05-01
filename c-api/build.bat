@@ -9,5 +9,5 @@ IF NOT EXIST lib\ (
 
 pushd build
 cmake -G"MinGW Makefiles" ..
-cmake --build .
+cmake --build . --config=Release
 popd

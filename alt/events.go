@@ -76,11 +76,11 @@ const (
 type serverStartedListener = func()
 
 type playerConnectListener = func(p *Player)
-type playerBeforeConnectListener = func(connectionInfo ConnectionInfo, reason string) string
+type playerBeforeConnectListener = func(connectionInfo ConnectionInfo, reason string)
 type playerDisconnectListener = func(p *Player, reason string)
 
-type connectionQueueAddListener = func(connectionInfo ConnectionInfo) string
-type connectionQueueRemoveListener = func(connectionInfo ConnectionInfo)
+type connectionQueueAddListener = func(connectionInfo ConnectionInfo) bool
+type connectionQueueRemoveListener = func(connectionInfo ConnectionInfo) bool
 
 type resourceStartListener = func(resourceName string)
 type resourceStopListener = func(resourceName string)
@@ -441,7 +441,7 @@ func EmitClient(player *Player, eventName string, args ...interface{}) error {
 	defer C.free(unsafe.Pointer(cEvent))
 
 	arr, err := encodeArgs(args)
-	// TODO: for C.free
+	defer C.free(unsafe.Pointer(arr.array))
 	if err != nil {
 		return err
 	}
@@ -461,7 +461,7 @@ func EmitClients(players []*Player, eventName string, args ...interface{}) error
 	defer C.free(unsafe.Pointer(cEvent))
 
 	arr, err := encodeArgs(args)
-	// TODO: for C.free
+	defer C.free(unsafe.Pointer(arr.array))
 	if err != nil {
 		return err
 	}
@@ -487,7 +487,7 @@ func EmitAllClients(eventName string, args ...interface{}) error {
 	defer C.free(unsafe.Pointer(cEvent))
 
 	arr, err := encodeArgs(args)
-	// TODO: for C.free
+	defer C.free(unsafe.Pointer(arr.array))
 	if err != nil {
 		return err
 	}
@@ -841,45 +841,41 @@ func altPlayerWeaponChangeEvent(p unsafe.Pointer, oWeap C.ulong, nWeap C.ulong) 
 }
 
 //export altPlayerBeforeConnectEvent
-func altPlayerBeforeConnectEvent(cInfo C.struct_connectionInfo, cReason *C.char) *C.char {
-	info := newConnectionInfo(cInfo)
+func altPlayerBeforeConnectEvent(cHandle unsafe.Pointer, cInfo C.struct_connectionInfo, cReason *C.char) {
+	info := newConnectionInfo(cHandle, cInfo)
 	reason := C.GoString(cReason)
 
-	// FIXME: C.CString memory leak?
-
 	for _, event := range On.playerBeforeConnectEvents {
-		r := event(info, reason)
-		if r != "" {
-			return C.CString(r)
-		}
+		event(info, reason)
 	}
-
-	return C.CString("")
 }
 
 //export altConnectionQueueAddEvent
-func altConnectionQueueAddEvent(cInfo C.struct_connectionInfo) *C.char {
-	info := newConnectionInfo(cInfo)
-
-	// FIXME: C.CString memory leak?
+func altConnectionQueueAddEvent(cHandle unsafe.Pointer, cInfo C.struct_connectionInfo) C.int {
+	info := newConnectionInfo(cHandle, cInfo)
 
 	for _, event := range On.connectionQueueAddEvents {
-		r := event(info)
-		if r != "" {
-			return C.CString(r)
+		ok := event(info)
+		if !ok {
+			return C.int(0)
 		}
 	}
 
-	return C.CString("")
+	return C.int(1)
 }
 
 //export altConnectionQueueRemoveEvent
-func altConnectionQueueRemoveEvent(cInfo C.struct_connectionInfo) {
-	info := newConnectionInfo(cInfo)
+func altConnectionQueueRemoveEvent(cHandle unsafe.Pointer, cInfo C.struct_connectionInfo) C.int {
+	info := newConnectionInfo(cHandle, cInfo)
 
 	for _, event := range On.connectionQueueRemoveEvents {
-		event(info)
+		ok := event(info)
+		if !ok {
+			return C.int(0)
+		}
 	}
+
+	return C.int(1)
 }
 
 //export altStartProjectileEvent

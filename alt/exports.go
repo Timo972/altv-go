@@ -32,7 +32,7 @@ func Export(export interface{}) (err error) {
 		fieldType := rt.Field(i)
 		exportName := getFieldName(fieldType)
 		cExportName := C.CString(exportName)
-		//defer C.free(unsafe.Pointer(cExportName)) not freeing it because module needs it while whole runtime
+
 		cArr, err := encode(field.Interface())
 		if err != nil {
 			return err
@@ -42,6 +42,8 @@ func Export(export interface{}) (err error) {
 		if !exported {
 			err = fmt.Errorf("failed to export %s", exportName)
 		}
+
+		C.free(unsafe.Pointer(cExportName)) // not freeing it because module needs it while whole runtime
 	}
 
 	// export methods
@@ -64,6 +66,8 @@ func Export(export interface{}) (err error) {
 		if !exported {
 			err = fmt.Errorf("failed to export %s", exportName)
 		}
+
+		C.free(unsafe.Pointer(cExportName)) // not freeing it because module needs it while whole runtime
 	}
 
 	return err

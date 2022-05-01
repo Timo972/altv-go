@@ -141,6 +141,8 @@ typedef struct vehicleModelInfo {
    unsigned char wheelsCount;
    // bool
    unsigned char hasArmoredWindows;
+   unsigned char hasAutoAttachTrailer;
+
    unsigned char primaryColor;
    unsigned char secondaryColor;
    unsigned char pearlColor;
@@ -804,6 +806,9 @@ typedef int (*capi_runtime_register_alt_export)(const char *resourceName, const 
 typedef Array (*capi_runtime_get_alt_export)(const char *targetResourceName, const char *exportName);
 typedef void * (*capi_runtime_create_m_value_function)(const char *resourceName, unsigned long long id);
 typedef Array (*capi_runtime_call_m_value_function)(void *ptr, Array args);
+typedef void (*capi_connection_accept)(void *handle);
+typedef void (*capi_connection_decline)(void *handle, const char *reason);
+typedef int (*capi_connection_is_accepted)(void *handle);
 
 
 // src\capi\Runtime.h Module.h
@@ -813,6 +818,9 @@ int runtime_register_alt_export(const char *resourceName, const char *exportName
 Array runtime_get_alt_export(const char *targetResourceName, const char *exportName);
 void * runtime_create_m_value_function(const char *resourceName, unsigned long long id);
 Array runtime_call_m_value_function(void *ptr, Array args);
+void connection_accept(void *handle);
+void connection_decline(void *handle, const char *reason);
+int connection_is_accepted(void *handle);
 
 // src\capi\Vehicle.h Module.h
 typedef int (*capi_vehicle_has_meta_data)(void *base, const char *key);

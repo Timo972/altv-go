@@ -764,3 +764,210 @@ func (v Vehicle) AttachedTo() *Vehicle {
 	}
 	return newVehicle(ptr)
 }
+
+func (v Vehicle) LoadDamageDataFromBase64(base64 string) {
+	data := C.CString(base64)
+	defer C.free(unsafe.Pointer(data))
+
+	C.vehicle_load_damage_data_from_base64(v.Ptr, data)
+}
+
+func (v Vehicle) LoadScriptDataFromBase64(base64 string) {
+	data := C.CString(base64)
+	defer C.free(unsafe.Pointer(data))
+
+	C.vehicle_load_script_data_from_base64(v.Ptr, data)
+}
+
+func (v Vehicle) LoadGameStateFromBase64(base64 string) {
+	data := C.CString(base64)
+	defer C.free(unsafe.Pointer(data))
+
+	C.vehicle_load_game_state_from_base64(v.Ptr, data)
+}
+
+func (v Vehicle) LoadHealthDataFromBase64(base64 string) {
+	data := C.CString(base64)
+	defer C.free(unsafe.Pointer(data))
+
+	C.vehicle_load_health_data_from_base64(v.Ptr, data)
+}
+
+func (v Vehicle) DriftMode() bool {
+	return int(C.vehicle_is_drift_mode(v.Ptr)) == 1
+}
+
+func (v Vehicle) SetDriftMode(enabled bool) {
+	C.vehicle_set_drift_mode(v.Ptr, C.int(module.Bool2int(enabled)))
+}
+
+func (v Vehicle) MissionTrain() bool {
+	return int(C.vehicle_is_train_mission_train(v.Ptr)) == 1
+}
+
+func (v Vehicle) SetMissionTrain(enabled bool) {
+	C.vehicle_set_train_mission_train(v.Ptr, C.int(module.Bool2int(enabled)))
+}
+
+func (v Vehicle) TrainTrackId() int8 {
+	return int8(C.vehicle_get_train_track_id(v.Ptr))
+}
+
+func (v Vehicle) SetTrainTrackId(trackId int8) {
+	C.vehicle_set_train_track_id(v.Ptr, C.char(trackId))
+}
+
+func (v Vehicle) TrainEngine() *Vehicle {
+	ptr := C.vehicle_get_train_engine_id(v.Ptr)
+	if ptr == nil {
+		return nil
+	}
+
+	return newVehicle(ptr)
+}
+
+func (v Vehicle) SetTrainEngine(engine *Vehicle) {
+	C.vehicle_set_train_engine_id(v.Ptr, engine.Ptr)
+}
+
+func (v Vehicle) TrainConfigIndex() int8 {
+	return int8(C.vehicle_get_train_config_index(v.Ptr))
+}
+
+func (v Vehicle) SetTrainConfigIndex(configIndex int8) {
+	C.vehicle_set_train_config_index(v.Ptr, C.char(configIndex))
+}
+
+func (v Vehicle) TrainDistanceFromEngine() float32 {
+	return float32(C.vehicle_get_train_distance_from_engine(v.Ptr))
+}
+
+func (v Vehicle) SetTrainDistanceFromEngine(distance float32) {
+	C.vehicle_set_train_distance_from_engine(v.Ptr, C.float(distance))
+}
+
+func (v Vehicle) IsTrainEngine() bool {
+	return int(C.vehicle_is_train_engine(v.Ptr)) == 1
+}
+
+func (v Vehicle) SetTrainIsEngine(isEngine bool) {
+	C.vehicle_set_train_is_engine(v.Ptr, C.int(module.Bool2int(isEngine)))
+}
+
+func (v Vehicle) IsTrainCaboose() bool {
+	return int(C.vehicle_is_train_caboose(v.Ptr)) == 1
+}
+
+func (v Vehicle) SetTrainIsCaboose(isCaboose bool) {
+	C.vehicle_set_train_is_caboose(v.Ptr, C.int(module.Bool2int(isCaboose)))
+}
+
+func (v Vehicle) TrainDirection() bool {
+	return int(C.vehicle_get_train_direction(v.Ptr)) == 1
+}
+
+func (v Vehicle) SetTrainDirection(direction bool) {
+	C.vehicle_set_train_direction(v.Ptr, C.int(module.Bool2int(direction)))
+}
+
+func (v Vehicle) HasTrainPassengerCarriages() bool {
+	return int(C.vehicle_has_train_passenger_carriages(v.Ptr)) == 1
+}
+
+func (v Vehicle) SetTrainHasPassengerCarriages(hasPassengerCarriages bool) {
+	C.vehicle_set_train_has_passenger_carriages(v.Ptr, C.int(module.Bool2int(hasPassengerCarriages)))
+}
+
+func (v Vehicle) TrainRenderDerailed() bool {
+	return int(C.vehicle_get_train_render_derailed(v.Ptr)) == 1
+}
+
+func (v Vehicle) SetTrainRenderDerailed(renderDerailed bool) {
+	C.vehicle_set_train_render_derailed(v.Ptr, C.int(module.Bool2int(renderDerailed)))
+}
+
+func (v Vehicle) TrainForceDoorsOpen() bool {
+	return int(C.vehicle_get_train_force_doors_open(v.Ptr)) == 1
+}
+
+func (v Vehicle) SetTrainForceDoorsOpen(forceDoorsOpen bool) {
+	C.vehicle_set_train_force_doors_open(v.Ptr, C.int(module.Bool2int(forceDoorsOpen)))
+}
+
+func (v Vehicle) TrainCruiseSpeed() float32 {
+	return float32(C.vehicle_get_train_cruise_speed(v.Ptr))
+}
+
+func (v Vehicle) SetTrainCruiseSpeed(speed float32) {
+	C.vehicle_set_train_cruise_speed(v.Ptr, C.float(speed))
+}
+
+func (v Vehicle) TrainCarriageConfigIndex() int8 {
+	return int8(C.vehicle_get_train_carriage_config_index(v.Ptr))
+}
+
+func (v Vehicle) SetTrainCarriageConfigIndex(configIndex int8) {
+	C.vehicle_set_train_carriage_config_index(v.Ptr, C.char(configIndex))
+}
+
+func (v Vehicle) TrainLinkedToBackward() *Vehicle {
+	ptr := C.vehicle_get_train_linked_to_backward_id(v.Ptr)
+	if ptr == nil {
+		return nil
+	}
+
+	return newVehicle(ptr)
+}
+
+func (v Vehicle) SetTrainLinkedToBackward(linkedToBackward *Vehicle) {
+	C.vehicle_set_train_linked_to_backward_id(v.Ptr, linkedToBackward.Ptr)
+}
+
+func (v Vehicle) TrainLinkedToForward() *Vehicle {
+	ptr := C.vehicle_get_train_linked_to_forward_id(v.Ptr)
+	if ptr == nil {
+		return nil
+	}
+
+	return newVehicle(ptr)
+}
+
+func (v Vehicle) SetTrainLinkedToForward(linkedToForward *Vehicle) {
+	C.vehicle_set_train_linked_to_forward_id(v.Ptr, linkedToForward.Ptr)
+}
+
+func (v Vehicle) SetTrainUnk1(unk1 bool) {
+	C.vehicle_set_train_unk1(v.Ptr, C.int(module.Bool2int(unk1)))
+}
+
+func (v Vehicle) SetTrainUnk2(unk2 bool) {
+	C.vehicle_set_train_unk2(v.Ptr, C.int(module.Bool2int(unk2)))
+}
+
+func (v Vehicle) SetTrainUnk3(unk3 bool) {
+	C.vehicle_set_train_unk3(v.Ptr, C.int(module.Bool2int(unk3)))
+}
+
+func (v Vehicle) TrainUnk1() bool {
+	return int(C.vehicle_get_train_unk1(v.Ptr)) == 1
+}
+
+func (v Vehicle) TrainUnk2() bool {
+	return int(C.vehicle_get_train_unk2(v.Ptr)) == 1
+}
+
+func (v Vehicle) TrainUnk3() bool {
+	return int(C.vehicle_get_train_unk3(v.Ptr)) == 1
+}
+
+func (v Vehicle) BoatAnchorActive() bool {
+	return int(C.vehicle_is_boat_anchor_active(v.Ptr)) == 1
+}
+
+func (v Vehicle) SetBoatAnchorActive(active bool) {
+	C.vehicle_set_boat_anchor_active(v.Ptr, C.int(module.Bool2int(active)))
+}
+
+func (v Vehicle) SetSearchLight(state bool, entity *Entity) bool {
+	return int(C.vehicle_set_search_light(v.Ptr, C.int(module.Bool2int(state)), newCEntity(entity))) == 1
+}

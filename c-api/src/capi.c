@@ -1859,6 +1859,9 @@ capi_runtime_register_alt_export g_call_runtime_register_alt_export;
 capi_runtime_get_alt_export g_call_runtime_get_alt_export;
 capi_runtime_create_m_value_function g_call_runtime_create_m_value_function;
 capi_runtime_call_m_value_function g_call_runtime_call_m_value_function;
+capi_connection_accept g_call_connection_accept;
+capi_connection_decline g_call_connection_decline;
+capi_connection_is_accepted g_call_connection_is_accepted;
 
 
 
@@ -1893,6 +1896,21 @@ void * runtime_create_m_value_function(const char *resourceName, unsigned long l
 Array runtime_call_m_value_function(void *ptr, Array args)
 {
     return g_call_runtime_call_m_value_function(ptr, args);
+}
+
+void connection_accept(void *handle)
+{
+    g_call_connection_accept(handle);
+}
+
+void connection_decline(void *handle, const char *reason)
+{
+    g_call_connection_decline(handle, reason);
+}
+
+int connection_is_accepted(void *handle)
+{
+    return g_call_connection_is_accepted(handle);
 }
 
 // src\capi\Vehicle.h Module.c
@@ -3584,6 +3602,9 @@ g_call_runtime_register_alt_export = GET_FUNC(module, "Runtime_RegisterAltExport
 g_call_runtime_get_alt_export = GET_FUNC(module, "Runtime_GetAltExport", capi_runtime_get_alt_export);
 g_call_runtime_create_m_value_function = GET_FUNC(module, "Runtime_CreateMValueFunction", capi_runtime_create_m_value_function);
 g_call_runtime_call_m_value_function = GET_FUNC(module, "Runtime_CallMValueFunction", capi_runtime_call_m_value_function);
+g_call_connection_accept = GET_FUNC(module, "Connection_Accept", capi_connection_accept);
+g_call_connection_decline = GET_FUNC(module, "Connection_Decline", capi_connection_decline);
+g_call_connection_is_accepted = GET_FUNC(module, "Connection_IsAccepted", capi_connection_is_accepted);
 
 // src\capi\Vehicle.h int load_module(const char *path);
 g_call_vehicle_has_meta_data = GET_FUNC(module, "Vehicle_HasMetaData", capi_vehicle_has_meta_data);

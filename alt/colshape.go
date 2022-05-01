@@ -46,6 +46,27 @@ func CreateColShapeSphere(x float32, y float32, z float32, radius float32) *ColS
 	return newColShape(ptr)
 }
 
+func CreateColShapePolygon(minZ float32, maxZ float32, points []Vector2) *ColShape {
+	size := len(points)
+	cPoints := C.malloc(C.size_t(size) * C.size_t(C.sizeof_Vector2))
+	v2Array := (*[1 << 30]C.struct_vector2)(cPoints)
+	defer C.free(cPoints)
+
+	for i := 0; i < size; i++ {
+		v2Array[i] = C.struct_vector2{
+			x: C.float(points[i].X),
+			y: C.float(points[i].Y),
+		}
+	}
+
+	ptr := C.core_create_col_shape_polygon(C.float(minZ), C.float(maxZ), C.struct_array{
+		size:  C.ulonglong(size),
+		array: cPoints,
+	})
+
+	return newColShape(ptr)
+}
+
 func (c ColShape) String() string {
 	return fmt.Sprintf("ColShape{}")
 }

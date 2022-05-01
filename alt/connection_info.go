@@ -1,9 +1,19 @@
 package alt
 
+// #cgo windows CFLAGS: -I../c-api/lib/win32
+// #cgo windows LDFLAGS: -L../c-api/lib/win32 -lcapi
+// #cgo linux CFLAGS: -I../c-api/lib/linux
+// #cgo linux LDFLAGS: -L../c-api/lib/linux -lcapi
+// #include <stdlib.h>
+// #include "../c-api/src/capi.h"
 import "C"
-import "fmt"
+import (
+	"fmt"
+	"unsafe"
+)
 
 type ConnectionInfo struct {
+	ptr           unsafe.Pointer
 	Name          string
 	SocialID      uint64
 	HwidHash      uint64
@@ -18,8 +28,9 @@ type ConnectionInfo struct {
 	DiscordUserID string
 }
 
-func newConnectionInfo(cInfo C.struct_connectionInfo) ConnectionInfo {
+func newConnectionInfo(cHandle unsafe.Pointer, cInfo C.struct_connectionInfo) ConnectionInfo {
 	return ConnectionInfo{
+		ptr:           cHandle,
 		Branch:        C.GoString(cInfo.branch),
 		Name:          C.GoString(cInfo.name),
 		AuthToken:     C.GoString(cInfo.authToken),
@@ -33,6 +44,20 @@ func newConnectionInfo(cInfo C.struct_connectionInfo) ConnectionInfo {
 		DiscordUserID: C.GoString(cInfo.discordUserID),
 		PasswordHash:  uint64(cInfo.passwordHash),
 	}
+}
+
+func (c ConnectionInfo) Accept() {
+	C.connection_accept(c.ptr)
+}
+
+func (c ConnectionInfo) Decline(reason string) {
+	r := C.CString(reason)
+	defer C.free(unsafe.Pointer(r))
+	C.connection_decline(c.ptr, r)
+}
+
+func (c ConnectionInfo) Accepted() bool {
+	return int(C.connection_is_accepted(c.ptr)) == 1
 }
 
 func (c ConnectionInfo) String() string {
