@@ -219,6 +219,16 @@ func (d *Decoder) decode() error {
 	case reflect.Map:
 		// map
 		return d.decodeMap(d.RootType, d.RootValue)
+	case reflect.Interface:
+		// interface
+		rd := ReflectDecoder{
+			MValue: d.MValue,
+		}
+
+		rv, err := rd.decode()
+		d.RootValue.Set(rv)
+
+		return err
 	default:
 		return fmt.Errorf("unsupported type: %s", d.RootType.Kind())
 	}

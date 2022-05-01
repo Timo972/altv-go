@@ -16,7 +16,7 @@ import (
 func convertArray[V any](a C.struct_array) ([]V, int) {
 	size := int(a.size)
 	// FIXME: may causes a crash because it frees to early
-	defer C.free(unsafe.Pointer(a.array))
+	// defer C.free(unsafe.Pointer(a.array))
 
 	cArray := (*[1 << 28]V)(a.array)[:size:size]
 

@@ -28,6 +28,7 @@ func newPlayer(p unsafe.Pointer) *Player {
 
 func newPlayerArray(arr C.struct_array) []*Player {
 	values, size := convertArray[unsafe.Pointer](arr)
+	//defer C.free(unsafe.Pointer(arr.array))
 
 	players := make([]*Player, size)
 
