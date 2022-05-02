@@ -111,6 +111,7 @@ type playerEnteringVehicleListener = func(p *Player, v *Vehicle, seat uint8)
 type playerLeaveVehicleListener = func(p *Player, v *Vehicle, seat uint8)
 type playerChangeVehicleSeatListener = func(p *Player, v *Vehicle, oldSeat uint8, newSeat uint8)
 type playerWeaponChangeListener = func(player *Player, oldWeapon uint32, newWeapon uint32) bool
+type playerRequestControlListener = func(player *Player, target *Entity) bool
 
 type vehicleAttachListener = func(vehicle *Vehicle, attachedVehicle *Vehicle)
 type vehicleDetachListener = func(vehicle *Vehicle, detachedVehicle *Vehicle)
@@ -154,6 +155,7 @@ type eventManager struct {
 	metaDataChangeEvents             []metaDataChangeListener
 	netOwnerChangeEvents             []netOwnerChangeListener
 	playerWeaponChangeEvents         []playerWeaponChangeListener
+	playerRequestControlEvents       []playerRequestControlListener
 	resourceErrorEvents              []resourceErrorListener
 	resourceStopEvents               []resourceStopListener
 	startProjectileEvents            []startProjectileListener
@@ -196,6 +198,7 @@ type listener interface {
 	MetaChange(listener metaDataChangeListener)
 	NetOwnerChange(listener netOwnerChangeListener)
 	PlayerWeaponChange(listener playerWeaponChangeListener)
+	PlayerRequestControl(listener playerRequestControlListener)
 	ResourceError(listener resourceErrorListener)
 	ResourceStop(listener resourceStopListener)
 	StartProjectile(listener startProjectileListener)
@@ -348,6 +351,11 @@ func (e eventManager) NetOwnerChange(listener netOwnerChangeListener) {
 func (e eventManager) PlayerWeaponChange(listener playerWeaponChangeListener) {
 	On.playerWeaponChangeEvents = append(On.playerWeaponChangeEvents, listener)
 	registerOnEvent(Resource.Name, playerWeaponChange)
+}
+
+func (e eventManager) PlayerRequestControl(listener playerRequestControlListener) {
+	On.playerRequestControlEvents = append(On.playerRequestControlEvents, listener)
+	registerOnEvent(Resource.Name, playerRequestControl)
 }
 
 func (e eventManager) ResourceError(listener resourceErrorListener) {
@@ -838,6 +846,23 @@ func altPlayerWeaponChangeEvent(p unsafe.Pointer, oWeap C.ulong, nWeap C.ulong) 
 	}
 
 	return C.int(module.Bool2int(cont))
+}
+
+//export altPlayerRequestControlEvent
+func altPlayerRequestControlEvent(p unsafe.Pointer, e C.struct_entity) C.int {
+	player := newPlayer(p)
+	entity := newEntity(e)
+
+	ok := true
+
+	for _, event := range On.playerRequestControlEvents {
+		c := event(player, entity)
+		if !c {
+			ok = c
+		}
+	}
+
+	return C.int(module.Bool2int(ok))
 }
 
 //export altPlayerBeforeConnectEvent

@@ -21,6 +21,7 @@ type Entity struct {
 type IEntity interface {
 	getPtr() unsafe.Pointer
 	getType() BaseObjectType
+	AltEntity()
 }
 
 func newEntity(e C.struct_entity) *Entity {
@@ -64,6 +65,9 @@ func newCEntity(e IEntity) C.struct_entity {
 		Type: C.uchar(e.getType()),
 	}
 }
+
+// AltEntity empty function to satisfy IEntity interface
+func (e Entity) AltEntity() {}
 
 func (e Entity) getPtr() unsafe.Pointer {
 	return e.Ptr
