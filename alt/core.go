@@ -8,6 +8,8 @@ package alt
 // #include "../c-api/src/capi.h"
 import "C"
 import (
+	"crypto/sha256"
+	"strings"
 	"unsafe"
 )
 
@@ -34,11 +36,11 @@ func (f *fileApi) Read(path string) string {
 	return C.GoString(cContent)
 }
 
-func Hash(str string) uint32 {
+/*func Hash(str string) uint32 {
 	cStr := C.CString(str)
 	defer C.free(unsafe.Pointer(cStr))
 	return uint32(C.core_hash(cStr))
-}
+}*/
 
 func EntityByID(id uint16) *Entity {
 	return newEntity(C.core_get_entity_by_i_d(C.ushort(id)))
@@ -235,14 +237,18 @@ func StopServer() {
 	C.core_stop_server()
 }
 
-func HashSHA256(str string) string {
+/*func HashSHA256(str string) string {
 	cStr := C.CString(str)
 	defer C.free(unsafe.Pointer(cStr))
 	return C.GoString(C.core_string_to_s_h_a256(cStr))
+}*/
+
+func HashSHA256(str string) string {
+	h := sha256.New()
+	return string(h.Sum([]byte(str)))
 }
 
-// Faster Hash function
-/*func Joaat(str string) uint32 {
+func Hash(str string) uint32 {
 	chars := []rune(strings.ToLower(str))
 	hash := uint32(0)
 
@@ -257,4 +263,4 @@ func HashSHA256(str string) string {
 	hash += hash << 15
 
 	return hash
-}*/
+}
