@@ -12,17 +12,61 @@ import (
 	"unsafe"
 )
 
-type resource struct {
+/*type resource struct {
 	Ptr  unsafe.Pointer
 	Name string
 	Path string
+}*/
+
+type publicResource struct {
+	Ptr unsafe.Pointer
+	/*IsStarted           bool
+	Type                string
+	Name                string
+	Main                string
+	Exports             map[string]interface{}
+	Dependencies        []string
+	Dependants          []string
+	RequiredPermissions []Permission
+	OptionalPermissions []Permission
+
+	Path   string
+	Config map[string]interface{}*/
 }
 
-var Resource *resource
+type localResource struct {
+	publicResource
+	name string
+	path string
+}
+
+type IResource interface {
+	IsStarted() bool
+	Type() string
+	Name() string
+	Main() string
+	Exports(out interface{}) error
+	ExportsInterface() (interface{}, error)
+	Dependencies() []string
+	Dependants() []string
+	RequiredPermissions() []Permission
+	OptionalPermissions() []Permission
+	Path() string
+	Config(out interface{}) error
+	ConfigInterface() (interface{}, error)
+}
+
+var CurrentResource IResource
 
 //export initGoResource
 func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char) {
-	Resource = &resource{Ptr: ptr, Name: C.GoString(name), Path: C.GoString(path)}
+	CurrentResource = &localResource{
+		name: C.GoString(name),
+		path: C.GoString(path),
+		publicResource: publicResource{
+			Ptr: ptr,
+		},
+	}
 
 	cstr := C.CString("go-module")
 	defer C.free(unsafe.Pointer(cstr))
@@ -33,4 +77,109 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char) {
 	if moduleLoaded == 0 {
 		log.Fatal("Couldn't locate go-module library.")
 	}
+}
+
+func ResourceByName(name string) IResource {
+	str := C.CString(name)
+	defer C.free(unsafe.Pointer(str))
+
+	ptr := C.core_get_resource_by_name(str)
+
+	return &publicResource{
+		Ptr: ptr,
+	}
+}
+
+func AllResources() []IResource {
+	arr := C.core_get_all_resources()
+	size := int(arr.size)
+	ptrs := (*[1 << 28]unsafe.Pointer)(arr.array)[:size:size]
+
+	resources := make([]IResource, size)
+
+	for i, ptr := range ptrs {
+		resources[i] = &publicResource{Ptr: ptr}
+	}
+
+	return resources
+}
+
+func (r publicResource) IsStarted() bool {
+	return uint8(C.resource_is_started(r.Ptr)) == 1
+}
+
+func (r localResource) IsStarted() bool {
+	return true
+}
+
+func (r publicResource) Type() string {
+	return C.GoString(C.resource_get_type(r.Ptr))
+}
+
+func (r localResource) Type() string {
+	return "go"
+}
+
+func (r publicResource) Name() string {
+	return C.GoString(C.resource_get_name(r.Ptr))
+}
+
+func (r localResource) Name() string {
+	return r.name
+}
+
+func (r publicResource) Main() string {
+	return C.GoString(C.resource_get_main(r.Ptr))
+}
+
+func (r publicResource) Exports(out interface{}) error {
+	data := C.resource_get_exports(r.Ptr)
+
+	return decode(data, out)
+}
+
+func (r publicResource) ExportsInterface() (interface{}, error) {
+	data := C.resource_get_exports(r.Ptr)
+
+	return decodeReflect(data)
+}
+
+func (r publicResource) Dependencies() []string {
+	cDeps := C.resource_get_dependencies(r.Ptr)
+
+	return newStringArray(unsafe.Pointer(cDeps.array), int(cDeps.size))
+}
+
+func (r publicResource) Dependants() []string {
+	cDeps := C.resource_get_dependants(r.Ptr)
+
+	return newStringArray(unsafe.Pointer(cDeps.array), int(cDeps.size))
+}
+
+func (r publicResource) RequiredPermissions() []Permission {
+	data := C.resource_get_required_permissions(r.Ptr)
+	return newPermissionArray(data)
+}
+
+func (r publicResource) OptionalPermissions() []Permission {
+	data := C.resource_get_optional_permissions(r.Ptr)
+	return newPermissionArray(data)
+}
+
+func (r publicResource) Path() string {
+	return C.GoString(C.resource_get_path(r.Ptr))
+}
+
+func (r localResource) Path() string {
+	return r.path
+}
+
+func (r publicResource) Config(out interface{}) error {
+	data := C.resource_get_config(r.Ptr)
+	return decode(data, out)
+}
+
+func (r publicResource) ConfigInterface() (interface{}, error) {
+	data := C.resource_get_config(r.Ptr)
+	return decodeReflect(data)
 }

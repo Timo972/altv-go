@@ -82,9 +82,8 @@ func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
 		protoValue = &pb.MValue{
 			Value: &pb.MValue_InternFunctionValue{
 				InternFunctionValue: &pb.InternFunction{
-					Id: proto.Uint64(id),
-					//ResourceName: alt.Resource.Name,
-					ResourceName: proto.String(Resource.Name),
+					Id:           proto.Uint64(id),
+					ResourceName: proto.String(CurrentResource.Name()),
 				},
 			},
 		}

@@ -155,6 +155,22 @@ typedef struct vehicleModelInfo {
    unsigned short defaultExtras;
 } VehicleModelInfo;
 
+typedef struct resourceInfo {
+    void *ptr;
+    unsigned char isStarted;
+    const char *type;
+    const char *name;
+    const char *main;
+    Array exports;
+    Array dependencies;
+    Array dependants;
+    Array requiredPermissions;
+    Array optionalPermissions;
+
+    const char *path;
+    Array config;
+} ResourceInfo;
+
 // src\capi\BaseObject.h Module.h
 
 
@@ -480,6 +496,7 @@ typedef void (*capi_core_stop_server)();
 typedef VehicleModelInfo (*capi_core_get_vehicle_model_by_hash)(unsigned int hash);
 typedef Array (*capi_core_get_server_config)();
 typedef unsigned long long (*capi_core_hash_server_password)(const char *password);
+typedef void* (*capi_core_get_resource_by_name)(const char *resourceName);
 
 
 // src\capi\Core.h Module.h
@@ -543,6 +560,7 @@ void core_stop_server();
 VehicleModelInfo core_get_vehicle_model_by_hash(unsigned int hash);
 Array core_get_server_config();
 unsigned long long core_hash_server_password(const char *password);
+void* core_get_resource_by_name(const char *resourceName);
 
 // src\capi\Player.h Module.h
 typedef const char * (*capi_player_get_name)(void *p);
@@ -798,6 +816,33 @@ int player_has_local_meta_data(void *p, const char *key);
 void player_set_local_meta_data(void *p, const char *key, unsigned char* data, unsigned long long size);
 Array player_get_local_meta_data(void *p, const char *key);
 void player_delete_local_meta_data(void *p, const char *key);
+
+// src\capi\Resource.h Module.h
+typedef unsigned char (*capi_resource_is_started)(void *r);
+typedef const char * (*capi_resource_get_type)(void *r);
+typedef const char * (*capi_resource_get_name)(void* r);
+typedef const char * (*capi_resource_get_main)(void *r);
+typedef Array (*capi_resource_get_config)(void *r);
+typedef Array (*capi_resource_get_exports)(void *r);
+typedef Array (*capi_resource_get_dependencies)(void *r);
+typedef Array (*capi_resource_get_dependants)(void *r);
+typedef Array (*capi_resource_get_required_permissions)(void *r);
+typedef Array (*capi_resource_get_optional_permissions)(void *r);
+typedef const char * (*capi_resource_get_path)(void *r);
+
+
+// src\capi\Resource.h Module.h
+unsigned char resource_is_started(void *r);
+const char * resource_get_type(void *r);
+const char * resource_get_name(void* r);
+const char * resource_get_main(void *r);
+Array resource_get_config(void *r);
+Array resource_get_exports(void *r);
+Array resource_get_dependencies(void *r);
+Array resource_get_dependants(void *r);
+Array resource_get_required_permissions(void *r);
+Array resource_get_optional_permissions(void *r);
+const char * resource_get_path(void *r);
 
 // src\capi\Runtime.h Module.h
 typedef int (*capi_runtime_register_alt_event)(const char *resourceName, unsigned short eventType);

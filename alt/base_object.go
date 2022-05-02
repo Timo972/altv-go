@@ -45,7 +45,7 @@ func (b BaseObject) Valid() bool {
 		return false
 	}
 
-	cName := C.CString(Resource.Name)
+	cName := C.CString(CurrentResource.Name())
 	defer C.free(unsafe.Pointer(cName))
 
 	// if so add for other base object extenders

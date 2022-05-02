@@ -212,11 +212,6 @@ func Entities() []*Entity {
 	return newEntityArray(arr)
 }
 
-func AllResources() {
-	// TODO:
-	//arr := C.core_get_all_resources()
-}
-
 func ServerConfig(v interface{}) error {
 	arr := C.core_get_server_config()
 	return decode(arr, v)

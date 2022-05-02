@@ -249,182 +249,182 @@ func removeIndex[V any](slice []V, index int) []V {
 
 func (e *eventManager) ServerStarted(listener serverStartedListener) {
 	e.serverStartedEvents = append(e.serverStartedEvents, listener)
-	registerOnEvent(Resource.Name, serverStarted)
+	registerOnEvent(CurrentResource.Name(), serverStarted)
 }
 
 func (e *eventManager) PlayerConnect(listener playerConnectListener) {
 	e.playerConnectEvents = append(e.playerConnectEvents, listener)
-	registerOnEvent(Resource.Name, playerConnect)
+	registerOnEvent(CurrentResource.Name(), playerConnect)
 }
 
 func (e *eventManager) PlayerBeforeConnect(listener playerBeforeConnectListener) {
 	e.playerBeforeConnectEvents = append(e.playerBeforeConnectEvents, listener)
-	registerOnEvent(Resource.Name, playerBeforeConnect)
+	registerOnEvent(CurrentResource.Name(), playerBeforeConnect)
 }
 
 func (e *eventManager) ConnectionQueueAdd(listener connectionQueueAddListener) {
 	e.connectionQueueAddEvents = append(e.connectionQueueAddEvents, listener)
-	registerOnEvent(Resource.Name, connectionQueueAdd)
+	registerOnEvent(CurrentResource.Name(), connectionQueueAdd)
 }
 
 func (e *eventManager) ConnectionQueueRemove(listener connectionQueueRemoveListener) {
 	e.connectionQueueRemoveEvents = append(e.connectionQueueRemoveEvents, listener)
-	registerOnEvent(Resource.Name, connectionQueueRemove)
+	registerOnEvent(CurrentResource.Name(), connectionQueueRemove)
 }
 
 func (e *eventManager) ConsoleCommand(listener consoleCommandListener) {
 	e.consoleCommandEvents = append(e.consoleCommandEvents, listener)
-	registerOnEvent(Resource.Name, consoleCommandEvent)
+	registerOnEvent(CurrentResource.Name(), consoleCommandEvent)
 }
 
 func (e *eventManager) PlayerDisconnect(listener playerDisconnectListener) {
 	e.playerDisconnectEvents = append(e.playerDisconnectEvents, listener)
-	registerOnEvent(Resource.Name, playerDisconnect)
+	registerOnEvent(CurrentResource.Name(), playerDisconnect)
 }
 
 func (e *eventManager) Explosion(listener explosionListener) {
 	e.explosionEvents = append(e.explosionEvents, listener)
-	registerOnEvent(Resource.Name, explosionEvent)
+	registerOnEvent(CurrentResource.Name(), explosionEvent)
 }
 
 func (e *eventManager) PlayerChangeVehicleSeat(listener playerChangeVehicleSeatListener) {
 	e.playerChangeVehicleSeatEvents = append(e.playerChangeVehicleSeatEvents, listener)
-	registerOnEvent(Resource.Name, playerChangeVehicleSeat)
+	registerOnEvent(CurrentResource.Name(), playerChangeVehicleSeat)
 }
 
 func (e *eventManager) PlayerDamage(listener playerDamageListener) {
 	e.playerDamageEvents = append(e.playerDamageEvents, listener)
-	registerOnEvent(Resource.Name, playerDamage)
+	registerOnEvent(CurrentResource.Name(), playerDamage)
 }
 
 func (e *eventManager) PlayerDeath(listener playerDeathListener) {
 	e.playerDeathEvents = append(e.playerDeathEvents, listener)
-	registerOnEvent(Resource.Name, playerDeath)
+	registerOnEvent(CurrentResource.Name(), playerDeath)
 }
 
 func (e *eventManager) PlayerEnterVehicle(listener playerEnterVehicleListener) {
 	e.playerEnterVehicleEvents = append(e.playerEnterVehicleEvents, listener)
-	registerOnEvent(Resource.Name, playerEnterVehicle)
+	registerOnEvent(CurrentResource.Name(), playerEnterVehicle)
 }
 
 func (e *eventManager) PlayerLeaveVehicle(listener playerLeaveVehicleListener) {
 	e.playerLeaveVehicleEvents = append(e.playerLeaveVehicleEvents, listener)
-	registerOnEvent(Resource.Name, playerLeaveVehicle)
+	registerOnEvent(CurrentResource.Name(), playerLeaveVehicle)
 }
 
 func (e *eventManager) RemoveEntity(listener removeEntityListener) {
 	e.removeEntityEvents = append(e.removeEntityEvents, listener)
-	registerOnEvent(Resource.Name, removeEntityEvent)
+	registerOnEvent(CurrentResource.Name(), removeEntityEvent)
 }
 
 func (e *eventManager) ResourceStart(listener resourceStartListener) {
 	e.resourceStartEvents = append(e.resourceStartEvents, listener)
-	registerOnEvent(Resource.Name, resourceStart)
+	registerOnEvent(CurrentResource.Name(), resourceStart)
 }
 
 func (e *eventManager) WeaponDamage(listener weaponDamageListener) {
 	e.weaponDamageEvents = append(e.weaponDamageEvents, listener)
-	registerOnEvent(Resource.Name, weaponDamageEvent)
+	registerOnEvent(CurrentResource.Name(), weaponDamageEvent)
 }
 
 func (e *eventManager) PlayerEnteringVehicle(listener playerEnteringVehicleListener) {
 	e.playerEnteringVehicleEvents = append(e.playerEnteringVehicleEvents, listener)
-	registerOnEvent(Resource.Name, playerEnteringVehicle)
+	registerOnEvent(CurrentResource.Name(), playerEnteringVehicle)
 }
 
 func (e *eventManager) EntityEnterColShape(listener entityEnterColShapeListener) {
 	e.entityEnterColShapeEvents = append(e.entityEnterColShapeEvents, listener)
-	registerOnEvent(Resource.Name, colshapeEvent)
+	registerOnEvent(CurrentResource.Name(), colshapeEvent)
 }
 
 func (e *eventManager) EntityLeaveColShape(listener entityLeaveColShapeListener) {
 	e.entityLeaveColShapeEvents = append(e.entityLeaveColShapeEvents, listener)
-	registerOnEvent(Resource.Name, colshapeEvent)
+	registerOnEvent(CurrentResource.Name(), colshapeEvent)
 }
 
 func (e *eventManager) StartFire(listener fireListener) {
 	e.fireEvents = append(e.fireEvents, listener)
-	registerOnEvent(Resource.Name, fireEvent)
+	registerOnEvent(CurrentResource.Name(), fireEvent)
 }
 
 func (e *eventManager) GlobalMetaChange(listener globalMetaDataChangeListener) {
 	e.globalMetaDataChangeEvents = append(e.globalMetaDataChangeEvents, listener)
-	registerOnEvent(Resource.Name, globalMetaChange)
+	registerOnEvent(CurrentResource.Name(), globalMetaChange)
 }
 
 func (e *eventManager) GlobalSyncedMetaChange(listener globalSyncedMetaDataChangeListener) {
 	e.globalSyncedMetaDataChangeEvents = append(e.globalSyncedMetaDataChangeEvents, listener)
-	registerOnEvent(Resource.Name, globalSyncedMetaChange)
+	registerOnEvent(CurrentResource.Name(), globalSyncedMetaChange)
 }
 
 func (e *eventManager) MetaChange(listener metaDataChangeListener) {
 	e.metaDataChangeEvents = append(e.metaDataChangeEvents, listener)
-	registerOnEvent(Resource.Name, metaChange)
+	registerOnEvent(CurrentResource.Name(), metaChange)
 }
 
 func (e *eventManager) LocalSyncedMetaChange(listener localSyncedMetaDataChangeListener) {
 	e.localSyncedMetaDataChangeEvents = append(e.localSyncedMetaDataChangeEvents, listener)
-	registerOnEvent(Resource.Name, localSyncedMetaChange)
+	registerOnEvent(CurrentResource.Name(), localSyncedMetaChange)
 }
 
 func (e *eventManager) NetOwnerChange(listener netOwnerChangeListener) {
 	e.netOwnerChangeEvents = append(e.netOwnerChangeEvents, listener)
-	registerOnEvent(Resource.Name, netOwnerChange)
+	registerOnEvent(CurrentResource.Name(), netOwnerChange)
 }
 
 func (e *eventManager) PlayerWeaponChange(listener playerWeaponChangeListener) {
 	e.playerWeaponChangeEvents = append(e.playerWeaponChangeEvents, listener)
-	registerOnEvent(Resource.Name, playerWeaponChange)
+	registerOnEvent(CurrentResource.Name(), playerWeaponChange)
 }
 
 func (e *eventManager) PlayerRequestControl(listener playerRequestControlListener) {
 	e.playerRequestControlEvents = append(e.playerRequestControlEvents, listener)
-	registerOnEvent(Resource.Name, playerRequestControl)
+	registerOnEvent(CurrentResource.Name(), playerRequestControl)
 }
 
 func (e *eventManager) ResourceError(listener resourceErrorListener) {
 	e.resourceErrorEvents = append(e.resourceErrorEvents, listener)
-	registerOnEvent(Resource.Name, resourceError)
+	registerOnEvent(CurrentResource.Name(), resourceError)
 }
 
 func (e *eventManager) ResourceStop(listener resourceStopListener) {
 	e.resourceStopEvents = append(e.resourceStopEvents, listener)
-	registerOnEvent(Resource.Name, resourceStop)
+	registerOnEvent(CurrentResource.Name(), resourceStop)
 }
 
 func (e *eventManager) StartProjectile(listener startProjectileListener) {
 	e.startProjectileEvents = append(e.startProjectileEvents, listener)
-	registerOnEvent(Resource.Name, startProjectileEvent)
+	registerOnEvent(CurrentResource.Name(), startProjectileEvent)
 }
 
 func (e *eventManager) StreamSyncedMetaChange(listener streamSyncedMetaDataChangeListener) {
 	e.streamSyncedMetaDataChangeEvents = append(e.streamSyncedMetaDataChangeEvents, listener)
-	registerOnEvent(Resource.Name, streamSyncedMetaChange)
+	registerOnEvent(CurrentResource.Name(), streamSyncedMetaChange)
 }
 
 func (e *eventManager) SyncedMetaChange(listener syncedMetaDataChangeListener) {
 	e.syncedMetaDataChangeEvents = append(e.syncedMetaDataChangeEvents, listener)
-	registerOnEvent(Resource.Name, syncedMetaChange)
+	registerOnEvent(CurrentResource.Name(), syncedMetaChange)
 }
 
 func (e *eventManager) VehicleAttach(listener vehicleAttachListener) {
 	e.vehicleAttachEvents = append(e.vehicleAttachEvents, listener)
-	registerOnEvent(Resource.Name, vehicleAttach)
+	registerOnEvent(CurrentResource.Name(), vehicleAttach)
 }
 
 func (e *eventManager) VehicleDetach(listener vehicleDetachListener) {
 	e.vehicleDetachEvents = append(e.vehicleDetachEvents, listener)
-	registerOnEvent(Resource.Name, vehicleDetach)
+	registerOnEvent(CurrentResource.Name(), vehicleDetach)
 }
 
 func (e *eventManager) VehicleDestroy(listener vehicleDestroyListener) {
 	e.vehicleDestroyEvents = append(e.vehicleDestroyEvents, listener)
-	registerOnEvent(Resource.Name, vehicleDestroy)
+	registerOnEvent(CurrentResource.Name(), vehicleDestroy)
 }
 
 func (e *eventManager) VehicleDamage(listener vehicleDamageListener) {
 	e.vehicleDamageEvents = append(e.vehicleDamageEvents, listener)
-	registerOnEvent(Resource.Name, vehicleDamage)
+	registerOnEvent(CurrentResource.Name(), vehicleDamage)
 }
 
 func (e *eventManager) ServerEvent(eventName string, listener scriptEventListener) {
@@ -432,12 +432,12 @@ func (e *eventManager) ServerEvent(eventName string, listener scriptEventListene
 		e.serverScriptEvents = make(map[string][]reflect.Value)
 	}
 	e.serverScriptEvents[eventName] = append(e.serverScriptEvents[eventName], reflect.ValueOf(listener))
-	registerOnEvent(Resource.Name, serverScriptEvent)
+	registerOnEvent(CurrentResource.Name(), serverScriptEvent)
 }
 
 func (e *eventManager) AllServerEvents(listener scriptEventListener) {
 	e.allServerScriptEvents = append(e.allServerScriptEvents, reflect.ValueOf(listener))
-	registerOnEvent(Resource.Name, serverScriptEvent)
+	registerOnEvent(CurrentResource.Name(), serverScriptEvent)
 }
 
 func (e *eventManager) ClientEvent(eventName string, listener scriptEventListener) {
@@ -445,12 +445,12 @@ func (e *eventManager) ClientEvent(eventName string, listener scriptEventListene
 		e.clientScriptEvents = make(map[string][]reflect.Value)
 	}
 	e.clientScriptEvents[eventName] = append(e.clientScriptEvents[eventName], reflect.ValueOf(listener))
-	registerOnEvent(Resource.Name, clientScriptEvent)
+	registerOnEvent(CurrentResource.Name(), clientScriptEvent)
 }
 
 func (e *eventManager) AllClientEvents(listener scriptEventListener) {
 	e.allClientScriptEvents = append(e.allClientScriptEvents, reflect.ValueOf(listener))
-	registerOnEvent(Resource.Name, clientScriptEvent)
+	registerOnEvent(CurrentResource.Name(), clientScriptEvent)
 }
 
 func Emit(eventName string, args ...interface{}) error {
@@ -605,7 +605,7 @@ func altServerStartedEvent() {
 
 	re := len(Once.serverStartedEvents) + len(On.serverStartedEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, serverStarted)
+		unregisterOnEvent(CurrentResource.Name(), serverStarted)
 	}
 }
 
@@ -624,7 +624,7 @@ func altPlayerConnectEvent(p unsafe.Pointer) {
 
 	re := len(Once.playerConnectEvents) + len(On.playerConnectEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, playerConnect)
+		unregisterOnEvent(CurrentResource.Name(), playerConnect)
 	}
 }
 
@@ -644,7 +644,7 @@ func altConsoleCommandEvent(cName *C.char, cArray C.struct_array) {
 
 	re := len(Once.consoleCommandEvents) + len(On.consoleCommandEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, consoleCommandEvent)
+		unregisterOnEvent(CurrentResource.Name(), consoleCommandEvent)
 	}
 }
 
@@ -664,7 +664,7 @@ func altPlayerDisconnectEvent(p unsafe.Pointer, cReason *C.char) {
 
 	re := len(Once.playerDisconnectEvents) + len(On.playerDisconnectEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, playerDisconnect)
+		unregisterOnEvent(CurrentResource.Name(), playerDisconnect)
 	}
 }
 
@@ -695,7 +695,7 @@ func altExplosionEvent(p unsafe.Pointer, e C.struct_entity, pos C.struct_pos, ex
 
 	re := len(Once.explosionEvents) + len(On.explosionEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, explosionEvent)
+		unregisterOnEvent(CurrentResource.Name(), explosionEvent)
 	}
 
 	return C.int(module.Bool2int(cont))
@@ -719,7 +719,7 @@ func altPlayerChangeVehicleSeatEvent(p unsafe.Pointer, v unsafe.Pointer, old C.u
 
 	re := len(Once.playerChangeVehicleSeatEvents) + len(On.playerChangeVehicleSeatEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, playerChangeVehicleSeat)
+		unregisterOnEvent(CurrentResource.Name(), playerChangeVehicleSeat)
 	}
 }
 
@@ -742,7 +742,7 @@ func altPlayerDamageEvent(p unsafe.Pointer, e C.struct_entity, healthDmg C.ushor
 
 	re := len(Once.playerDamageEvents) + len(On.playerDamageEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, playerDamage)
+		unregisterOnEvent(CurrentResource.Name(), playerDamage)
 	}
 }
 
@@ -763,7 +763,7 @@ func altPlayerDeathEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong) {
 
 	re := len(Once.playerDeathEvents) + len(On.playerDeathEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, playerDeath)
+		unregisterOnEvent(CurrentResource.Name(), playerDeath)
 	}
 }
 
@@ -784,7 +784,7 @@ func altPlayerEnterVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.uchar) {
 
 	re := len(Once.playerEnterVehicleEvents) + len(On.playerEnterVehicleEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, playerEnterVehicle)
+		unregisterOnEvent(CurrentResource.Name(), playerEnterVehicle)
 	}
 }
 
@@ -805,7 +805,7 @@ func altPlayerLeaveVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.uchar) {
 
 	re := len(Once.playerLeaveVehicleEvents) + len(On.playerLeaveVehicleEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, playerLeaveVehicle)
+		unregisterOnEvent(CurrentResource.Name(), playerLeaveVehicle)
 	}
 }
 
@@ -824,7 +824,7 @@ func altRemoveEntityEvent(e C.struct_entity) {
 
 	re := len(Once.removeEntityEvents) + len(On.removeEntityEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, removeEntityEvent)
+		unregisterOnEvent(CurrentResource.Name(), removeEntityEvent)
 	}
 }
 
@@ -843,7 +843,7 @@ func altResourceStartEvent(n *C.char) {
 
 	re := len(Once.resourceStartEvents) + len(On.resourceStartEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, resourceStart)
+		unregisterOnEvent(CurrentResource.Name(), resourceStart)
 	}
 }
 
@@ -862,7 +862,7 @@ func altResourceStopEvent(n *C.char) {
 
 	re := len(Once.resourceStopEvents) + len(On.resourceStopEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, resourceStop)
+		unregisterOnEvent(CurrentResource.Name(), resourceStop)
 	}
 }
 
@@ -881,7 +881,7 @@ func altResourceErrorEvent(n *C.char) {
 
 	re := len(Once.resourceErrorEvents) + len(On.resourceErrorEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, resourceError)
+		unregisterOnEvent(CurrentResource.Name(), resourceError)
 	}
 }
 
@@ -913,7 +913,7 @@ func altWeaponDamageEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong, dmg
 
 	re := len(Once.weaponDamageEvents) + len(On.weaponDamageEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, weaponDamageEvent)
+		unregisterOnEvent(CurrentResource.Name(), weaponDamageEvent)
 	}
 
 	return C.int(module.Bool2int(!cont))
@@ -936,7 +936,7 @@ func altPlayerEnteringVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.ushor
 
 	re := len(Once.playerEnteringVehicleEvents) + len(On.playerEnteringVehicleEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, playerEnteringVehicle)
+		unregisterOnEvent(CurrentResource.Name(), playerEnteringVehicle)
 	}
 }
 
@@ -968,7 +968,7 @@ func altColShapeEvent(c unsafe.Pointer, e C.struct_entity, s C.int) {
 
 	re := len(Once.entityEnterColShapeEvents) + len(On.entityEnterColShapeEvents) + len(Once.entityLeaveColShapeEvents) + len(On.entityLeaveColShapeEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, colshapeEvent)
+		unregisterOnEvent(CurrentResource.Name(), colshapeEvent)
 	}
 }
 
@@ -1003,7 +1003,7 @@ func altFireEvent(p unsafe.Pointer, f C.struct_array) C.int {
 
 	re := len(Once.fireEvents) + len(On.fireEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, fireEvent)
+		unregisterOnEvent(CurrentResource.Name(), fireEvent)
 	}
 
 	return C.int(module.Bool2int(cont))
@@ -1036,7 +1036,7 @@ func altGlobalMetaDataChangeEvent(k *C.char, nVal C.struct_array, oVal C.struct_
 
 	re := len(Once.globalMetaDataChangeEvents) + len(On.globalMetaDataChangeEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, globalMetaChange)
+		unregisterOnEvent(CurrentResource.Name(), globalMetaChange)
 	}
 }
 
@@ -1059,7 +1059,7 @@ func altGlobalSyncedMetaDataChangeEvent(k *C.char, nVal C.struct_array, oVal C.s
 
 	re := len(Once.globalSyncedMetaDataChangeEvents) + len(On.globalSyncedMetaDataChangeEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, globalSyncedMetaChange)
+		unregisterOnEvent(CurrentResource.Name(), globalSyncedMetaChange)
 	}
 }
 
@@ -1083,7 +1083,7 @@ func altLocalSyncedMetaDataChangeEvent(p unsafe.Pointer, cKey *C.char, cNewValue
 
 	re := len(Once.localSyncedMetaDataChangeEvents) + len(On.localSyncedMetaDataChangeEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, localSyncedMetaChange)
+		unregisterOnEvent(CurrentResource.Name(), localSyncedMetaChange)
 	}
 }
 
@@ -1106,7 +1106,7 @@ func altMetaDataChangeEvent(cKey *C.char, cNewValue C.struct_array, cOldValue C.
 
 	re := len(Once.metaDataChangeEvents) + len(On.metaDataChangeEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, metaChange)
+		unregisterOnEvent(CurrentResource.Name(), metaChange)
 	}
 }
 
@@ -1127,7 +1127,7 @@ func altNetOwnerChangeEvent(e C.struct_entity, o unsafe.Pointer, oo unsafe.Point
 
 	re := len(Once.netOwnerChangeEvents) + len(On.netOwnerChangeEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, netOwnerChange)
+		unregisterOnEvent(CurrentResource.Name(), netOwnerChange)
 	}
 }
 
@@ -1156,7 +1156,7 @@ func altPlayerWeaponChangeEvent(p unsafe.Pointer, oWeap C.ulong, nWeap C.ulong) 
 
 	re := len(Once.playerWeaponChangeEvents) + len(On.playerWeaponChangeEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, playerWeaponChange)
+		unregisterOnEvent(CurrentResource.Name(), playerWeaponChange)
 	}
 
 	return C.int(module.Bool2int(cont))
@@ -1186,7 +1186,7 @@ func altPlayerRequestControlEvent(p unsafe.Pointer, e C.struct_entity) C.int {
 
 	re := len(Once.playerRequestControlEvents) + len(On.playerRequestControlEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, playerRequestControl)
+		unregisterOnEvent(CurrentResource.Name(), playerRequestControl)
 	}
 
 	return C.int(module.Bool2int(ok))
@@ -1208,7 +1208,7 @@ func altPlayerBeforeConnectEvent(cHandle unsafe.Pointer, cInfo C.struct_connecti
 
 	re := len(Once.playerBeforeConnectEvents) + len(On.playerBeforeConnectEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, playerBeforeConnect)
+		unregisterOnEvent(CurrentResource.Name(), playerBeforeConnect)
 	}
 }
 
@@ -1227,7 +1227,7 @@ func altConnectionQueueAddEvent(cHandle unsafe.Pointer, cInfo C.struct_connectio
 
 	re := len(Once.connectionQueueAddEvents) + len(On.connectionQueueAddEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, connectionQueueAdd)
+		unregisterOnEvent(CurrentResource.Name(), connectionQueueAdd)
 	}
 }
 
@@ -1246,7 +1246,7 @@ func altConnectionQueueRemoveEvent(cHandle unsafe.Pointer, cInfo C.struct_connec
 
 	re := len(Once.connectionQueueRemoveEvents) + len(On.connectionQueueRemoveEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, globalMetaChange)
+		unregisterOnEvent(CurrentResource.Name(), globalMetaChange)
 	}
 }
 
@@ -1277,7 +1277,7 @@ func altStartProjectileEvent(p unsafe.Pointer, pos C.struct_pos, dir C.struct_po
 
 	re := len(Once.startProjectileEvents) + len(On.startProjectileEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, startProjectileEvent)
+		unregisterOnEvent(CurrentResource.Name(), startProjectileEvent)
 	}
 
 	return C.int(module.Bool2int(cont))
@@ -1304,7 +1304,7 @@ func altStreamSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.str
 
 	re := len(Once.streamSyncedMetaDataChangeEvents) + len(On.streamSyncedMetaDataChangeEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, streamSyncedMetaChange)
+		unregisterOnEvent(CurrentResource.Name(), streamSyncedMetaChange)
 	}
 }
 
@@ -1329,7 +1329,7 @@ func altSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.struct_ar
 
 	re := len(Once.syncedMetaDataChangeEvents) + len(On.syncedMetaDataChangeEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, syncedMetaChange)
+		unregisterOnEvent(CurrentResource.Name(), syncedMetaChange)
 	}
 }
 
@@ -1349,7 +1349,7 @@ func altVehicleAttachEvent(v unsafe.Pointer, a unsafe.Pointer) {
 
 	re := len(Once.vehicleAttachEvents) + len(On.vehicleAttachEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, vehicleAttach)
+		unregisterOnEvent(CurrentResource.Name(), vehicleAttach)
 	}
 }
 
@@ -1369,7 +1369,7 @@ func altVehicleDetachEvent(v unsafe.Pointer, a unsafe.Pointer) {
 
 	re := len(Once.vehicleDetachEvents) + len(On.vehicleDetachEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, vehicleDetach)
+		unregisterOnEvent(CurrentResource.Name(), vehicleDetach)
 	}
 }
 
@@ -1388,7 +1388,7 @@ func altVehicleDestroyEvent(v unsafe.Pointer) {
 
 	re := len(Once.vehicleDestroyEvents) + len(On.vehicleDestroyEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, vehicleDestroy)
+		unregisterOnEvent(CurrentResource.Name(), vehicleDestroy)
 	}
 }
 
@@ -1413,6 +1413,6 @@ func altVehicleDamageEvent(v unsafe.Pointer, e C.struct_entity, body C.uint, add
 
 	re := len(Once.vehicleDamageEvents) + len(On.vehicleDamageEvents)
 	if re < 1 {
-		unregisterOnEvent(Resource.Name, vehicleDamage)
+		unregisterOnEvent(CurrentResource.Name(), vehicleDamage)
 	}
 }

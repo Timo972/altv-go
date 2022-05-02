@@ -822,6 +822,7 @@ capi_core_stop_server g_call_core_stop_server;
 capi_core_get_vehicle_model_by_hash g_call_core_get_vehicle_model_by_hash;
 capi_core_get_server_config g_call_core_get_server_config;
 capi_core_hash_server_password g_call_core_hash_server_password;
+capi_core_get_resource_by_name g_call_core_get_resource_by_name;
 
 
 
@@ -1118,6 +1119,11 @@ Array core_get_server_config()
 unsigned long long core_hash_server_password(const char *password)
 {
     return g_call_core_hash_server_password(password);
+}
+
+void* core_get_resource_by_name(const char *resourceName)
+{
+    return g_call_core_get_resource_by_name(resourceName);
 }
 
 // src\capi\Player.h Module.c
@@ -1850,6 +1856,79 @@ Array player_get_local_meta_data(void *p, const char *key)
 void player_delete_local_meta_data(void *p, const char *key)
 {
     g_call_player_delete_local_meta_data(p, key);
+}
+
+// src\capi\Resource.h Module.c
+capi_resource_is_started g_call_resource_is_started;
+capi_resource_get_type g_call_resource_get_type;
+capi_resource_get_name g_call_resource_get_name;
+capi_resource_get_main g_call_resource_get_main;
+capi_resource_get_config g_call_resource_get_config;
+capi_resource_get_exports g_call_resource_get_exports;
+capi_resource_get_dependencies g_call_resource_get_dependencies;
+capi_resource_get_dependants g_call_resource_get_dependants;
+capi_resource_get_required_permissions g_call_resource_get_required_permissions;
+capi_resource_get_optional_permissions g_call_resource_get_optional_permissions;
+capi_resource_get_path g_call_resource_get_path;
+
+
+
+
+// src\capi\Resource.h  Module.c
+
+unsigned char resource_is_started(void *r)
+{
+    return g_call_resource_is_started(r);
+}
+
+const char * resource_get_type(void *r)
+{
+    return g_call_resource_get_type(r);
+}
+
+const char * resource_get_name(void* r)
+{
+    return g_call_resource_get_name(r);
+}
+
+const char * resource_get_main(void *r)
+{
+    return g_call_resource_get_main(r);
+}
+
+Array resource_get_config(void *r)
+{
+    return g_call_resource_get_config(r);
+}
+
+Array resource_get_exports(void *r)
+{
+    return g_call_resource_get_exports(r);
+}
+
+Array resource_get_dependencies(void *r)
+{
+    return g_call_resource_get_dependencies(r);
+}
+
+Array resource_get_dependants(void *r)
+{
+    return g_call_resource_get_dependants(r);
+}
+
+Array resource_get_required_permissions(void *r)
+{
+    return g_call_resource_get_required_permissions(r);
+}
+
+Array resource_get_optional_permissions(void *r)
+{
+    return g_call_resource_get_optional_permissions(r);
+}
+
+const char * resource_get_path(void *r)
+{
+    return g_call_resource_get_path(r);
 }
 
 // src\capi\Runtime.h Module.c
@@ -3472,6 +3551,7 @@ g_call_core_stop_server = GET_FUNC(module, "Core_StopServer", capi_core_stop_ser
 g_call_core_get_vehicle_model_by_hash = GET_FUNC(module, "Core_GetVehicleModelByHash", capi_core_get_vehicle_model_by_hash);
 g_call_core_get_server_config = GET_FUNC(module, "Core_GetServerConfig", capi_core_get_server_config);
 g_call_core_hash_server_password = GET_FUNC(module, "Core_HashServerPassword", capi_core_hash_server_password);
+g_call_core_get_resource_by_name = GET_FUNC(module, "Core_GetResourceByName", capi_core_get_resource_by_name);
 
 // src\capi\Player.h int load_module(const char *path);
 g_call_player_get_name = GET_FUNC(module, "Player_GetName", capi_player_get_name);
@@ -3594,6 +3674,19 @@ g_call_player_has_local_meta_data = GET_FUNC(module, "Player_HasLocalMetaData", 
 g_call_player_set_local_meta_data = GET_FUNC(module, "Player_SetLocalMetaData", capi_player_set_local_meta_data);
 g_call_player_get_local_meta_data = GET_FUNC(module, "Player_GetLocalMetaData", capi_player_get_local_meta_data);
 g_call_player_delete_local_meta_data = GET_FUNC(module, "Player_DeleteLocalMetaData", capi_player_delete_local_meta_data);
+
+// src\capi\Resource.h int load_module(const char *path);
+g_call_resource_is_started = GET_FUNC(module, "Resource_IsStarted", capi_resource_is_started);
+g_call_resource_get_type = GET_FUNC(module, "Resource_GetType", capi_resource_get_type);
+g_call_resource_get_name = GET_FUNC(module, "Resource_GetName", capi_resource_get_name);
+g_call_resource_get_main = GET_FUNC(module, "Resource_GetMain", capi_resource_get_main);
+g_call_resource_get_config = GET_FUNC(module, "Resource_GetConfig", capi_resource_get_config);
+g_call_resource_get_exports = GET_FUNC(module, "Resource_GetExports", capi_resource_get_exports);
+g_call_resource_get_dependencies = GET_FUNC(module, "Resource_GetDependencies", capi_resource_get_dependencies);
+g_call_resource_get_dependants = GET_FUNC(module, "Resource_GetDependants", capi_resource_get_dependants);
+g_call_resource_get_required_permissions = GET_FUNC(module, "Resource_GetRequiredPermissions", capi_resource_get_required_permissions);
+g_call_resource_get_optional_permissions = GET_FUNC(module, "Resource_GetOptionalPermissions", capi_resource_get_optional_permissions);
+g_call_resource_get_path = GET_FUNC(module, "Resource_GetPath", capi_resource_get_path);
 
 // src\capi\Runtime.h int load_module(const char *path);
 g_call_runtime_register_alt_event = GET_FUNC(module, "Runtime_RegisterAltEvent", capi_runtime_register_alt_event);

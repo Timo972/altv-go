@@ -16,7 +16,7 @@ import (
 
 // Export exports a struct
 func Export(export interface{}) (err error) {
-	cResource := C.CString(Resource.Name)
+	cResource := C.CString(CurrentResource.Name())
 	defer C.free(unsafe.Pointer(cResource))
 
 	rv := reflect.ValueOf(export)
