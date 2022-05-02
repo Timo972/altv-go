@@ -1,0 +1,21 @@
+###############
+#    folder   #
+###############
+/**/DROP/
+/**/TEMP/
+/**/packages/
+/**/bin/
+/**/obj/
+_site
+# Build results
+_site/
+api/**
+!api/**.md
+[Oo]bj/
+**.zip
+common.ps1
+
+# Others
+docfx/
+plugins/
+templates/

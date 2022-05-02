@@ -9,6 +9,7 @@ type Cmd interface {
 	Execute(p *Player)
 }
 
+//Register console command
 func (i Invoker) RegisterCmd(c Cmd) {
 	_, exists := i.commands[c.Name()]
 

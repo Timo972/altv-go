@@ -1,3 +1,4 @@
+//Package alt provide bindings to alt:V API
 package alt
 
 // #cgo windows CFLAGS: -I../c-api/lib/win32
@@ -39,6 +40,7 @@ type Base interface {
 	DeleteMetaData(key string)
 }
 
+// Check if BaseObject is valid
 func (b BaseObject) Valid() bool {
 	// TODO check if it works with player
 	if b.Ptr == nil {
@@ -65,6 +67,7 @@ func (b BaseObject) Valid() bool {
 	return false
 }
 
+// Destroy BaseObject
 func (b BaseObject) Destroy() {
 	if b.Type == PlayerObject {
 		C.player_destroy(b.Ptr)
@@ -81,6 +84,7 @@ func (b BaseObject) Destroy() {
 	}
 }
 
+// Check if BaseObject has meta data
 func (b BaseObject) HasMetaData(key string) bool {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
@@ -157,6 +161,7 @@ func (b BaseObject) SetMetaData(key string, value interface{}) bool {
 	return true
 }
 
+// Delete BaseObject meta data
 func (b BaseObject) DeleteMetaData(key string) {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
