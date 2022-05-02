@@ -240,3 +240,21 @@ func HashSHA256(str string) string {
 	defer C.free(unsafe.Pointer(cStr))
 	return C.GoString(C.core_string_to_s_h_a256(cStr))
 }
+
+// Faster Hash function
+/*func Joaat(str string) uint32 {
+	chars := []rune(strings.ToLower(str))
+	hash := uint32(0)
+
+	for _, c := range chars {
+		hash += uint32(c)
+		hash += hash << 10
+		hash ^= hash >> 6
+	}
+
+	hash += hash << 3
+	hash ^= hash >> 11
+	hash += hash << 15
+
+	return hash
+}*/
