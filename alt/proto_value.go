@@ -15,8 +15,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
-	var mValueType MValueType
+func newProtoMValue(value interface{}) *pb.MValue {
 	var protoValue *pb.MValue
 
 	rt := reflect.TypeOf(value)
@@ -41,16 +40,15 @@ func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
 					},
 				},
 			}
-			mValueType = MValueBaseObject
 		} else if kind == reflect.Struct {
 			// struct pointer
-			protoValue, mValueType = structToProto(rt, rv)
+			protoValue = structToProto(rt, rv)
 		} else if kind == reflect.Slice || kind == reflect.Array {
 			// slice / array pointer
-			protoValue, mValueType = sliceToProto(rt, rv)
+			protoValue = sliceToProto(rt, rv)
 		} else if kind == reflect.Map {
 			// map pointer
-			protoValue, mValueType = mapToProto(rt, rv)
+			protoValue = mapToProto(rt, rv)
 		}
 	case reflect.String:
 		protoValue = &pb.MValue{
@@ -58,21 +56,18 @@ func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
 				StringValue: rv.String(),
 			},
 		}
-		mValueType = MValueString
 	case reflect.Bool:
 		protoValue = &pb.MValue{
 			Value: &pb.MValue_BoolValue{
 				BoolValue: rv.Bool(),
 			},
 		}
-		mValueType = MValueBool
 	case reflect.Float32, reflect.Float64:
 		protoValue = &pb.MValue{
 			Value: &pb.MValue_DoubleValue{
 				DoubleValue: rv.Float(),
 			},
 		}
-		mValueType = MValueDouble
 	case reflect.Func:
 		// function
 		mValueFuncCount++
@@ -87,11 +82,9 @@ func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
 				},
 			},
 		}
-		mValueType = MValueFunction
 	// integers
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		// mValuePtr = C.core_create_mvalue_int(C.longlong(rv.Int()))
-		mValueType = MValueInt
 		protoValue = &pb.MValue{
 			Value: &pb.MValue_IntValue{
 				IntValue: rv.Int(),
@@ -99,7 +92,6 @@ func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
 		}
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 		// mValuePtr = C.core_create_mvalue_uint(C.ulonglong(rv.Uint()))
-		mValueType = MValueUInt
 		protoValue = &pb.MValue{
 			Value: &pb.MValue_UintValue{
 				UintValue: rv.Uint(),
@@ -107,15 +99,15 @@ func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
 		}
 	case reflect.Array, reflect.Slice:
 		// list
-		protoValue, mValueType = sliceToProto(rt, rv)
+		protoValue = sliceToProto(rt, rv)
 	case reflect.Struct:
 		// vector3, rgba, vector2
 		//mValuePtr, mValueType = serializeStruct(rt, rv)
-		protoValue, mValueType = structToProto(rt, rv)
+		protoValue = structToProto(rt, rv)
 	case reflect.Map:
 		// map
 		//mValuePtr, mValueType = serializeMap(rv)
-		protoValue, mValueType = mapToProto(rt, rv)
+		protoValue = mapToProto(rt, rv)
 	default:
 		//mValueType = MValueNone
 		protoValue = &pb.MValue{
@@ -123,10 +115,9 @@ func newProtoMValue(value interface{}) (*pb.MValue, MValueType) {
 				NoneValue: true,
 			},
 		}
-		mValueType = MValueNone
 	}
 
-	return protoValue, mValueType
+	return protoValue
 }
 
 func serializeProtoMValue(protoValue *pb.MValue) ([]byte, error) {
@@ -134,7 +125,7 @@ func serializeProtoMValue(protoValue *pb.MValue) ([]byte, error) {
 }
 
 func encode(v interface{}) (C.struct_array, error) {
-	pbv, _ := newProtoMValue(v)
+	pbv := newProtoMValue(v)
 	bytes, err := serializeProtoMValue(pbv)
 	if err != nil {
 		return C.struct_array{}, err

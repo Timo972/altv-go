@@ -28,16 +28,16 @@ const (
 )
 
 type BaseObject struct {
-	Ptr  unsafe.Pointer `json:"ptr"`
-	Type BaseObjectType `json:"type"`
+	Ptr  unsafe.Pointer
+	Type BaseObjectType
 }
 
-type Base interface {
+/*type Base interface {
 	HasMetaData(key string) bool
 	MetaData(key string, value interface{}) bool
 	SetMetaData(key string, value interface{})
 	DeleteMetaData(key string)
-}
+}*/
 
 func (b BaseObject) Valid() bool {
 	// TODO check if it works with player

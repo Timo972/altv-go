@@ -14,28 +14,6 @@ import (
 	"unsafe"
 )
 
-type MValueType = uint8
-
-// type MValueFunc = func(args ...interface{}) interface{}
-
-const (
-	MValueNone MValueType = iota
-	MValueNil
-	MValueBool
-	MValueInt
-	MValueUInt
-	MValueDouble
-	MValueString
-	MValueList
-	MValueDict
-	MValueBaseObject
-	MValueFunction
-	MValueVector3
-	MValueRGBA
-	MValueByteArray
-	MValueVector2
-)
-
 var (
 	mValueFuncCount = uint64(0)
 	mValueFunctions = make(map[uint64]reflect.Value)

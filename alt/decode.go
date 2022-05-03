@@ -24,15 +24,15 @@ import (
 // 	Decode(v interface{}) error
 // }
 
-type Decoder struct {
+type decoder struct {
 	Buffer    []byte
 	RootValue reflect.Value
 	RootType  reflect.Type
 	MValue    *pb.MValue
 }
 
-func newDecoder(data []byte) *Decoder {
-	return &Decoder{
+func newDecoder(data []byte) *decoder {
+	return &decoder{
 		Buffer: data,
 	}
 }
@@ -87,7 +87,7 @@ func decodeArgsExpensive(funcType reflect.Type, arr C.struct_array) ([]reflect.V
 
 		bytes := C.GoBytes(mValueArgs[i].array, C.int(mValueArgs[i].size))
 
-		d := &Decoder{
+		d := &decoder{
 			Buffer:    bytes,
 			RootType:  argType,
 			RootValue: out.Elem(),
@@ -120,17 +120,9 @@ func parsePointer(ptrStr string) (unsafe.Pointer, error) {
 	}
 
 	return unsafe.Pointer(uintptr(ptrUint)), nil
-
-	//str := C.CString(ptrStr)
-	//defer C.free(unsafe.Pointer(str))
-	//var ptr unsafe.Pointer
-	//C.sscanf(str, "%p", &ptr)
-	//_, err := fmt.Sscanf(ptrStr, "%p", &ptr)
-
-	//return ptr, err
 }
 
-func (d *Decoder) unmarshalBytes() error {
+func (d *decoder) unmarshalBytes() error {
 	if d.MValue == nil && len(d.Buffer) > 0 {
 		d.MValue = &pb.MValue{}
 		return proto.Unmarshal(d.Buffer, d.MValue)
@@ -145,7 +137,7 @@ func (d *Decoder) unmarshalBytes() error {
 	return nil
 }
 
-func (d *Decoder) Decode(v interface{}) error {
+func (d *decoder) Decode(v interface{}) error {
 	if reflect.TypeOf(v).Kind() != reflect.Ptr {
 		return fmt.Errorf("root type must be a pointer")
 	}
@@ -172,7 +164,7 @@ func (d *Decoder) Decode(v interface{}) error {
 	return d.decode()
 }
 
-func (d *Decoder) decode() error {
+func (d *decoder) decode() error {
 	switch d.RootType.Kind() {
 	case reflect.Ptr:
 		rt := d.RootType.Elem()
@@ -221,7 +213,7 @@ func (d *Decoder) decode() error {
 		return d.decodeMap(d.RootType, d.RootValue)
 	case reflect.Interface:
 		// interface
-		rd := ReflectDecoder{
+		rd := reflectDecoder{
 			MValue: d.MValue,
 		}
 
@@ -277,7 +269,7 @@ func baseObjectToReflectValue(base *pb.BaseObject, isEntity bool) (reflect.Value
 	return v, nil
 }
 
-func (d *Decoder) decodeStruct(rt reflect.Type, rv reflect.Value) error {
+func (d *decoder) decodeStruct(rt reflect.Type, rv reflect.Value) error {
 	structName := rt.Name()
 
 	if structName == "RGBA" {
@@ -330,7 +322,7 @@ func (d *Decoder) decodeStruct(rt reflect.Type, rv reflect.Value) error {
 				continue
 			}
 
-			valueDecoder := &Decoder{
+			valueDecoder := &decoder{
 				MValue:    values[i],
 				RootValue: field,
 				RootType:  field.Type(),
@@ -346,14 +338,14 @@ func (d *Decoder) decodeStruct(rt reflect.Type, rv reflect.Value) error {
 	return nil
 }
 
-func (d *Decoder) decodeMap(rt reflect.Type, rv reflect.Value) error {
+func (d *decoder) decodeMap(rt reflect.Type, rv reflect.Value) error {
 	m := reflect.MakeMap(rt)
 
 	keys := d.MValue.GetDict()
 	values := d.MValue.GetList()
 
 	for i, key := range keys {
-		valueDecoder := &Decoder{
+		valueDecoder := &decoder{
 			MValue: values[i],
 			// FIXME: ???
 			RootValue: reflect.New(rt.Elem()),
@@ -373,7 +365,7 @@ func (d *Decoder) decodeMap(rt reflect.Type, rv reflect.Value) error {
 	return nil
 }
 
-func (d *Decoder) decodeSlice(rt reflect.Type, rv reflect.Value) error {
+func (d *decoder) decodeSlice(rt reflect.Type, rv reflect.Value) error {
 	values := d.MValue.GetList()
 	size := len(values)
 	l := reflect.MakeSlice(rt, size, size)
@@ -382,7 +374,7 @@ func (d *Decoder) decodeSlice(rt reflect.Type, rv reflect.Value) error {
 	// TODO: support byte array
 
 	for i, pbVal := range values {
-		valueDecoder := &Decoder{
+		valueDecoder := &decoder{
 			MValue:    pbVal,
 			RootValue: l.Index(i),
 			RootType:  elemType,

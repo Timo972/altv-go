@@ -9,13 +9,13 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type ReflectDecoder struct {
+type reflectDecoder struct {
 	Buffer []byte
 	MValue *pb.MValue
 }
 
-func newReflectDecoder(data []byte) *ReflectDecoder {
-	return &ReflectDecoder{
+func newReflectDecoder(data []byte) *reflectDecoder {
+	return &reflectDecoder{
 		Buffer: data,
 	}
 }
@@ -26,7 +26,7 @@ func decodeReflect(arr C.struct_array) (reflect.Value, error) {
 	return d.Decode()
 }
 
-func (d *ReflectDecoder) Decode() (reflect.Value, error) {
+func (d *reflectDecoder) Decode() (reflect.Value, error) {
 	if d.MValue == nil && len(d.Buffer) == 0 {
 		return reflect.ValueOf(nil), nil
 	}
@@ -39,7 +39,7 @@ func (d *ReflectDecoder) Decode() (reflect.Value, error) {
 	return d.decode()
 }
 
-func (d *ReflectDecoder) unmarshalBytes() error {
+func (d *reflectDecoder) unmarshalBytes() error {
 	if d.MValue == nil && len(d.Buffer) > 0 {
 		d.MValue = &pb.MValue{}
 		return proto.Unmarshal(d.Buffer, d.MValue)
@@ -48,7 +48,7 @@ func (d *ReflectDecoder) unmarshalBytes() error {
 	return nil
 }
 
-func (d *ReflectDecoder) decode() (reflect.Value, error) {
+func (d *reflectDecoder) decode() (reflect.Value, error) {
 	var rv reflect.Value
 
 	// d.MValue.
@@ -112,7 +112,7 @@ func (d *ReflectDecoder) decode() (reflect.Value, error) {
 		data := make(map[string]interface{})
 
 		for i, key := range keys {
-			valueDecoder := &ReflectDecoder{
+			valueDecoder := &reflectDecoder{
 				MValue: values[i],
 			}
 
@@ -130,7 +130,7 @@ func (d *ReflectDecoder) decode() (reflect.Value, error) {
 		data := make([]interface{}, len(values))
 
 		for i, value := range values {
-			valueDecoder := &ReflectDecoder{
+			valueDecoder := &reflectDecoder{
 				MValue: value,
 			}
 

@@ -6,8 +6,7 @@ import (
 	"github.com/timo972/altv-go-pkg/internal/pb"
 )
 
-func sliceToProto(rt reflect.Type, rv reflect.Value) (*pb.MValue, MValueType) {
-	var mValueType MValueType
+func sliceToProto(rt reflect.Type, rv reflect.Value) *pb.MValue {
 	var protoValue *pb.MValue
 
 	// list
@@ -22,14 +21,13 @@ func sliceToProto(rt reflect.Type, rv reflect.Value) (*pb.MValue, MValueType) {
 				BytesValue: bytes,
 			},
 		}
-		mValueType = MValueByteArray
 	} else {
 		size := rv.Len()
 		mvalues := make([]*pb.MValue, size)
 
 		for i := 0; i < size; i++ {
 			item := rv.Index(i)
-			mvalues[i], _ = newProtoMValue(item.Interface())
+			mvalues[i] = newProtoMValue(item.Interface())
 		}
 
 		protoValue = &pb.MValue{
@@ -37,5 +35,5 @@ func sliceToProto(rt reflect.Type, rv reflect.Value) (*pb.MValue, MValueType) {
 		}
 	}
 
-	return protoValue, mValueType
+	return protoValue
 }

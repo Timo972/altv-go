@@ -18,8 +18,7 @@ func getFieldName(t reflect.StructField) string {
 	return name
 }
 
-func structToProto(rt reflect.Type, rv reflect.Value) (*pb.MValue, MValueType) {
-	var mValueType MValueType
+func structToProto(rt reflect.Type, rv reflect.Value) *pb.MValue {
 	var protoValue *pb.MValue
 
 	structName := rt.Name()
@@ -35,7 +34,6 @@ func structToProto(rt reflect.Type, rv reflect.Value) (*pb.MValue, MValueType) {
 				},
 			},
 		}
-		mValueType = MValueRGBA
 	} else if structName == "Vector2" {
 		protoValue = &pb.MValue{
 			Value: &pb.MValue_Vector2Value{
@@ -45,7 +43,6 @@ func structToProto(rt reflect.Type, rv reflect.Value) (*pb.MValue, MValueType) {
 				},
 			},
 		}
-		mValueType = MValueVector2
 	} else if structName == "Vector3" {
 		protoValue = &pb.MValue{
 			Value: &pb.MValue_Vector3Value{
@@ -56,7 +53,6 @@ func structToProto(rt reflect.Type, rv reflect.Value) (*pb.MValue, MValueType) {
 				},
 			},
 		}
-		mValueType = MValueVector3
 	} else {
 		// user struct
 
@@ -72,7 +68,7 @@ func structToProto(rt reflect.Type, rv reflect.Value) (*pb.MValue, MValueType) {
 			fieldType := rt.Field(i)
 
 			keys[i] = getFieldName(fieldType)
-			mvalues[i], _ = newProtoMValue(field.Interface())
+			mvalues[i] = newProtoMValue(field.Interface())
 
 		}
 
@@ -84,19 +80,14 @@ func structToProto(rt reflect.Type, rv reflect.Value) (*pb.MValue, MValueType) {
 			// 	continue
 			// }
 			keys[i] = method.Type.Name()
-			mvalues[i], _ = newProtoMValue(method.Func.Interface())
+			mvalues[i] = newProtoMValue(method.Func.Interface())
 		}
 
 		protoValue = &pb.MValue{
 			Dict: keys,
 			List: mvalues,
 		}
-		mValueType = MValueDict
 	}
 
-	return protoValue, mValueType
-}
-
-func protoToStruct(p *pb.MValue, rt reflect.Type, rv reflect.Value) {
-
+	return protoValue
 }

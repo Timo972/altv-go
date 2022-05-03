@@ -6,7 +6,7 @@ import (
 	"github.com/timo972/altv-go-pkg/internal/pb"
 )
 
-func mapToProto(rt reflect.Type, rv reflect.Value) (*pb.MValue, MValueType) {
+func mapToProto(rt reflect.Type, rv reflect.Value) *pb.MValue {
 	keys := rv.MapKeys()
 	size := len(keys)
 
@@ -15,11 +15,11 @@ func mapToProto(rt reflect.Type, rv reflect.Value) (*pb.MValue, MValueType) {
 
 	for i, key := range keys {
 		stringKeys[i] = key.String()
-		mvalues[i], _ = newProtoMValue(rv.MapIndex(key).Interface())
+		mvalues[i] = newProtoMValue(rv.MapIndex(key).Interface())
 	}
 
 	return &pb.MValue{
 		Dict: stringKeys,
 		List: mvalues,
-	}, MValueDict
+	}
 }
