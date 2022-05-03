@@ -3,7 +3,7 @@ package alt
 import (
 	"reflect"
 
-	"github.com/timo972/altv-go-pkg/pb"
+	"github.com/timo972/altv-go-pkg/internal/pb"
 )
 
 func sliceToProto(rt reflect.Type, rv reflect.Value) (*pb.MValue, MValueType) {

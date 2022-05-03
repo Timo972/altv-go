@@ -128,15 +128,7 @@ type consoleCommandListener = func(command string, args []string)
 
 type scriptEventListener = interface{}
 
-type listenerType = uint8
-
-const (
-	once listenerType = iota
-	repeated
-)
-
 type eventManager struct {
-	listenerType                     listenerType
 	serverStartedEvents              []serverStartedListener
 	playerConnectEvents              []playerConnectListener
 	playerBeforeConnectEvents        []playerBeforeConnectListener
@@ -222,12 +214,8 @@ type eventManager struct {
 	ClientEvent(eventName string, listener scriptEventListener)
 }*/
 
-var On = &eventManager{
-	listenerType: repeated,
-}
-var Once = &eventManager{
-	listenerType: once,
-}
+var On = &eventManager{}
+var Once = &eventManager{}
 
 func registerOnEvent(resource string, event uint16) {
 	cresource := C.CString(resource)

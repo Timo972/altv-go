@@ -15,7 +15,7 @@ import (
 	"strconv"
 	"unsafe"
 
-	"github.com/timo972/altv-go-pkg/pb"
+	"github.com/timo972/altv-go-pkg/internal/pb"
 	"golang.org/x/exp/slices"
 	"google.golang.org/protobuf/proto"
 )

@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/timo972/altv-go-pkg/pb"
+	"github.com/timo972/altv-go-pkg/internal/pb"
 	"google.golang.org/protobuf/proto"
 )
 
