@@ -196,7 +196,7 @@ func (d *decoder) decode() error {
 		}
 
 		d.RootValue.Set(reflect.ValueOf(ExternFunction{
-			Ptr: ptr,
+			ptr: ptr,
 		}))
 	// integers
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
@@ -241,7 +241,7 @@ func baseObjectToReflectValue(base *pb.BaseObject, isEntity bool) (reflect.Value
 	case PlayerObject:
 		if isEntity {
 			e := &Entity{}
-			e.Ptr = ptr
+			e.ptr = ptr
 			e.Type = t
 			v = reflect.ValueOf(e)
 		} else {
@@ -250,7 +250,7 @@ func baseObjectToReflectValue(base *pb.BaseObject, isEntity bool) (reflect.Value
 	case VehicleObject:
 		if isEntity {
 			e := &Entity{}
-			e.Ptr = ptr
+			e.ptr = ptr
 			e.Type = t
 			v = reflect.ValueOf(e)
 		} else {

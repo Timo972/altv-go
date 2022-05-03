@@ -20,7 +20,7 @@ type ColShape struct {
 
 func newColShape(c unsafe.Pointer) *ColShape {
 	colShape := &ColShape{}
-	colShape.Ptr = c
+	colShape.ptr = c
 	colShape.Type = ColshapeObject
 	return colShape
 }
@@ -73,44 +73,44 @@ func (c ColShape) String() string {
 
 func (c ColShape) IsPlayersOnly() bool {
 	if c.Type == ColshapeObject {
-		return int(C.col_shape_is_players_only(c.Ptr)) == 1
+		return int(C.col_shape_is_players_only(c.ptr)) == 1
 	} else if c.Type == CheckpointObject {
-		return int(C.checkpoint_is_players_only(c.Ptr)) == 1
+		return int(C.checkpoint_is_players_only(c.ptr)) == 1
 	}
 	return false
 }
 
 func (c ColShape) SetPlayersOnly(state bool) {
 	if c.Type == ColshapeObject {
-		C.col_shape_set_players_only(c.Ptr, C.int(module.Bool2int(state)))
+		C.col_shape_set_players_only(c.ptr, C.int(module.Bool2int(state)))
 	} else if c.Type == CheckpointObject {
-		C.checkpoint_set_players_only(c.Ptr, C.int(module.Bool2int(state)))
+		C.checkpoint_set_players_only(c.ptr, C.int(module.Bool2int(state)))
 	}
 }
 
 func (c ColShape) IsPointIn(pos Vector3) bool {
 	if c.Type == ColshapeObject {
-		return int(C.col_shape_is_point_in(c.Ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z))) == 1
+		return int(C.col_shape_is_point_in(c.ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z))) == 1
 	} else if c.Type == CheckpointObject {
-		return int(C.checkpoint_is_point_in(c.Ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z))) == 1
+		return int(C.checkpoint_is_point_in(c.ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z))) == 1
 	}
 	return false
 }
 
 func (c ColShape) IsEntityIn(entity IEntity) bool {
 	if c.Type == ColshapeObject {
-		return int(C.col_shape_is_entity_in(c.Ptr, newCEntity(entity))) == 1
+		return int(C.col_shape_is_entity_in(c.ptr, newCEntity(entity))) == 1
 	} else if c.Type == CheckpointObject {
-		return int(C.checkpoint_is_entity_in(c.Ptr, newCEntity(entity))) == 1
+		return int(C.checkpoint_is_entity_in(c.ptr, newCEntity(entity))) == 1
 	}
 	return false
 }
 
 func (c ColShape) ColShapeType() int8 {
 	if c.Type == ColshapeObject {
-		return int8(C.col_shape_get_col_shape_type(c.Ptr))
+		return int8(C.col_shape_get_col_shape_type(c.ptr))
 	} else if c.Type == CheckpointObject {
-		return int8(C.checkpoint_get_col_shape_type(c.Ptr))
+		return int8(C.checkpoint_get_col_shape_type(c.ptr))
 	}
 	return 0
 }

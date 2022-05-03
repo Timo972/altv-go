@@ -20,7 +20,7 @@ var (
 )
 
 type ExternFunction struct {
-	Ptr unsafe.Pointer
+	ptr unsafe.Pointer
 }
 
 func (e ExternFunction) String() string {
@@ -28,7 +28,7 @@ func (e ExternFunction) String() string {
 }
 
 func (e ExternFunction) Call(args ...interface{}) (interface{}, error) {
-	if e.Ptr == nil {
+	if e.ptr == nil {
 		return nil, errors.New("invalid extern function")
 	}
 
@@ -38,8 +38,8 @@ func (e ExternFunction) Call(args ...interface{}) (interface{}, error) {
 		return nil, err
 	}
 
-	cMeta := C.runtime_call_m_value_function(e.Ptr, arr)
-	//mVal := &MValue{Ptr: cMeta.Ptr, Type: uint8(cMeta.Type)}
+	cMeta := C.runtime_call_m_value_function(e.ptr, arr)
+	//mVal := &MValue{Ptr: cMeta.ptr, Type: uint8(cMeta.Type)}
 	val, err := decodeReflect(cMeta)
 	if err != nil {
 		return nil, err

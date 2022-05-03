@@ -32,7 +32,7 @@ func newEntity(e C.struct_entity) *Entity {
 	}
 
 	entity := &Entity{}
-	entity.Ptr = e.Ptr
+	entity.ptr = e.Ptr
 	entity.Type = t
 
 	return entity
@@ -70,7 +70,7 @@ func newCEntity(e IEntity) C.struct_entity {
 func (e Entity) AltEntity() {}
 
 func (e Entity) getPtr() unsafe.Pointer {
-	return e.Ptr
+	return e.ptr
 }
 
 func (e Entity) getType() BaseObjectType {
@@ -94,7 +94,7 @@ func (e Entity) AsPlayer() *Player {
 		return nil
 	}
 
-	return newPlayer(e.Ptr)
+	return newPlayer(e.ptr)
 }
 
 func (e Entity) AsVehicle() *Vehicle {
@@ -102,56 +102,56 @@ func (e Entity) AsVehicle() *Vehicle {
 		return nil
 	}
 
-	return newVehicle(e.Ptr)
+	return newVehicle(e.ptr)
 }
 
 func (e Entity) Model() uint32 {
 	if e.Type == PlayerObject {
-		return uint32(C.player_get_model(e.Ptr))
+		return uint32(C.player_get_model(e.ptr))
 	} else if e.Type == VehicleObject {
-		return uint32(C.vehicle_get_model(e.Ptr))
+		return uint32(C.vehicle_get_model(e.ptr))
 	}
 	return 0
 }
 
 func (e Entity) Detach() {
 	if e.Type == PlayerObject {
-		C.player_detach(e.Ptr)
+		C.player_detach(e.ptr)
 	} else if e.Type == VehicleObject {
-		C.vehicle_detach(e.Ptr)
+		C.vehicle_detach(e.ptr)
 	}
 }
 
 func (e Entity) AttachToEntity(entity IEntity, otherBoneIndex int16, myBoneIndex int16, position Vector3, rotation Vector3, collision bool, noFixedRotation bool) {
 	if e.Type == PlayerObject {
-		C.player_attach_to_entity(e.Ptr, newCEntity(entity), C.int(otherBoneIndex), C.int(myBoneIndex), newCPosition(position), newCRotation(rotation), C.int(module.Bool2int(collision)), C.int(module.Bool2int(noFixedRotation)))
+		C.player_attach_to_entity(e.ptr, newCEntity(entity), C.int(otherBoneIndex), C.int(myBoneIndex), newCPosition(position), newCRotation(rotation), C.int(module.Bool2int(collision)), C.int(module.Bool2int(noFixedRotation)))
 	} else if e.Type == VehicleObject {
-		C.vehicle_attach_to_entity(e.Ptr, newCEntity(entity), C.int(otherBoneIndex), C.int(myBoneIndex), newCPosition(position), newCRotation(rotation), C.int(module.Bool2int(collision)), C.int(module.Bool2int(noFixedRotation)))
+		C.vehicle_attach_to_entity(e.ptr, newCEntity(entity), C.int(otherBoneIndex), C.int(myBoneIndex), newCPosition(position), newCRotation(rotation), C.int(module.Bool2int(collision)), C.int(module.Bool2int(noFixedRotation)))
 	}
 }
 
 func (e Entity) SetVisible(toggle bool) {
 	if e.Type == PlayerObject {
-		C.player_set_visible(e.Ptr, C.int(module.Bool2int(toggle)))
+		C.player_set_visible(e.ptr, C.int(module.Bool2int(toggle)))
 	} else if e.Type == VehicleObject {
-		C.vehicle_set_visible(e.Ptr, C.int(module.Bool2int(toggle)))
+		C.vehicle_set_visible(e.ptr, C.int(module.Bool2int(toggle)))
 	}
 }
 
 func (e Entity) Visible() bool {
 	if e.Type == PlayerObject {
-		return int(C.player_get_visible(e.Ptr)) == 1
+		return int(C.player_get_visible(e.ptr)) == 1
 	} else if e.Type == VehicleObject {
-		return int(C.vehicle_get_visible(e.Ptr)) == 1
+		return int(C.vehicle_get_visible(e.ptr)) == 1
 	}
 	return false
 }
 
 func (e Entity) ID() uint16 {
 	if e.Type == PlayerObject {
-		return uint16(C.player_get_i_d(e.Ptr))
+		return uint16(C.player_get_i_d(e.ptr))
 	} else if e.Type == VehicleObject {
-		return uint16(C.vehicle_get_i_d(e.Ptr))
+		return uint16(C.vehicle_get_i_d(e.ptr))
 	}
 	return 0
 }
@@ -159,36 +159,36 @@ func (e Entity) ID() uint16 {
 func (e Entity) NetworkOwner() *Player {
 	var cPtr unsafe.Pointer
 	if e.Type == PlayerObject {
-		cPtr = unsafe.Pointer(C.player_get_network_owner(e.Ptr))
+		cPtr = unsafe.Pointer(C.player_get_network_owner(e.ptr))
 	} else if e.Type == VehicleObject {
-		cPtr = unsafe.Pointer(C.vehicle_get_network_owner(e.Ptr))
+		cPtr = unsafe.Pointer(C.vehicle_get_network_owner(e.ptr))
 	}
 	return newPlayer(cPtr)
 }
 
 func (e Entity) SetNetworkOwner(owner *Player, disableMigration bool) {
 	if e.Type == PlayerObject {
-		C.player_set_network_owner(e.Ptr, owner.Ptr, C.int(module.Bool2int(disableMigration)))
+		C.player_set_network_owner(e.ptr, owner.ptr, C.int(module.Bool2int(disableMigration)))
 	} else if e.Type == VehicleObject {
-		C.vehicle_set_network_owner(e.Ptr, owner.Ptr, C.int(module.Bool2int(disableMigration)))
+		C.vehicle_set_network_owner(e.ptr, owner.ptr, C.int(module.Bool2int(disableMigration)))
 	}
 }
 
 func (e Entity) Rotation() Vector3 {
 	var cRot C.struct_rot
 	if e.Type == PlayerObject {
-		cRot = C.player_get_rotation(e.Ptr)
+		cRot = C.player_get_rotation(e.ptr)
 	} else if e.Type == VehicleObject {
-		cRot = C.vehicle_get_rotation(e.Ptr)
+		cRot = C.vehicle_get_rotation(e.ptr)
 	}
 	return Vector3{X: float32(cRot.roll), Y: float32(cRot.pitch), Z: float32(cRot.yaw)}
 }
 
 func (e Entity) SetRotation(rotation Vector3) {
 	if e.Type == PlayerObject {
-		C.player_set_rotation(e.Ptr, C.float(rotation.X), C.float(rotation.Y), C.float(rotation.Z))
+		C.player_set_rotation(e.ptr, C.float(rotation.X), C.float(rotation.Y), C.float(rotation.Z))
 	} else if e.Type == VehicleObject {
-		C.vehicle_set_rotation(e.Ptr, C.float(rotation.X), C.float(rotation.Y), C.float(rotation.Z))
+		C.vehicle_set_rotation(e.ptr, C.float(rotation.X), C.float(rotation.Y), C.float(rotation.Z))
 	}
 }
 
@@ -197,11 +197,11 @@ func (e Entity) HasSyncedMetaData(key string) bool {
 	defer C.free(unsafe.Pointer(cKey))
 
 	if e.Type == PlayerObject {
-		return int(C.player_has_synced_meta_data(e.Ptr, cKey)) == 1
+		return int(C.player_has_synced_meta_data(e.ptr, cKey)) == 1
 	}
 
 	if e.Type == VehicleObject {
-		return int(C.vehicle_has_synced_meta_data(e.Ptr, cKey)) == 1
+		return int(C.vehicle_has_synced_meta_data(e.ptr, cKey)) == 1
 	}
 
 	return false
@@ -213,9 +213,9 @@ func (e Entity) SyncedMetaData(key string, val interface{}) bool {
 
 	var meta C.struct_array
 	if e.Type == PlayerObject {
-		meta = C.player_get_synced_meta_data(e.Ptr, cKey)
+		meta = C.player_get_synced_meta_data(e.ptr, cKey)
 	} else if e.Type == VehicleObject {
-		meta = C.vehicle_get_synced_meta_data(e.Ptr, cKey)
+		meta = C.vehicle_get_synced_meta_data(e.ptr, cKey)
 	}
 
 	err := decode(meta, val)
@@ -231,11 +231,11 @@ func (e Entity) HasStreamSyncedMetaData(key string) bool {
 	defer C.free(unsafe.Pointer(cKey))
 
 	if e.Type == PlayerObject {
-		return int(C.player_has_stream_synced_meta_data(e.Ptr, cKey)) == 1
+		return int(C.player_has_stream_synced_meta_data(e.ptr, cKey)) == 1
 	}
 
 	if e.Type == VehicleObject {
-		return int(C.vehicle_has_stream_synced_meta_data(e.Ptr, cKey)) == 1
+		return int(C.vehicle_has_stream_synced_meta_data(e.ptr, cKey)) == 1
 	}
 
 	return false
@@ -247,9 +247,9 @@ func (e Entity) StreamSyncedMetaData(key string, value interface{}) bool {
 
 	var meta C.struct_array
 	if e.Type == PlayerObject {
-		meta = C.player_get_stream_synced_meta_data(e.Ptr, cKey)
+		meta = C.player_get_stream_synced_meta_data(e.ptr, cKey)
 	} else if e.Type == VehicleObject {
-		meta = C.vehicle_get_stream_synced_meta_data(e.Ptr, cKey)
+		meta = C.vehicle_get_stream_synced_meta_data(e.ptr, cKey)
 	}
 
 	err := decode(meta, value)
@@ -273,9 +273,9 @@ func (e Entity) SetSyncedMetaData(key string, value interface{}) bool {
 	bytes := (*C.uchar)(arr.array)
 
 	if e.Type == PlayerObject {
-		C.player_set_synced_meta_data(e.Ptr, cKey, bytes, arr.size)
+		C.player_set_synced_meta_data(e.ptr, cKey, bytes, arr.size)
 	} else if e.Type == VehicleObject {
-		C.vehicle_set_synced_meta_data(e.Ptr, cKey, bytes, arr.size)
+		C.vehicle_set_synced_meta_data(e.ptr, cKey, bytes, arr.size)
 	}
 
 	return true
@@ -286,11 +286,11 @@ func (e Entity) DeleteSyncedMetaData(key string) {
 	defer C.free(unsafe.Pointer(cKey))
 
 	if e.Type == PlayerObject {
-		C.player_delete_synced_meta_data(e.Ptr, cKey)
+		C.player_delete_synced_meta_data(e.ptr, cKey)
 	}
 
 	if e.Type == VehicleObject {
-		C.vehicle_delete_synced_meta_data(e.Ptr, cKey)
+		C.vehicle_delete_synced_meta_data(e.ptr, cKey)
 	}
 }
 
@@ -307,9 +307,9 @@ func (e Entity) SetStreamSyncedMetaData(key string, value interface{}) bool {
 	bytes := (*C.uchar)(arr.array)
 
 	if e.Type == PlayerObject {
-		C.player_set_stream_synced_meta_data(e.Ptr, cKey, bytes, arr.size)
+		C.player_set_stream_synced_meta_data(e.ptr, cKey, bytes, arr.size)
 	} else if e.Type == VehicleObject {
-		C.vehicle_set_stream_synced_meta_data(e.Ptr, cKey, bytes, arr.size)
+		C.vehicle_set_stream_synced_meta_data(e.ptr, cKey, bytes, arr.size)
 	}
 
 	return true
@@ -320,19 +320,19 @@ func (e Entity) DeleteStreamSyncedMetaData(key string) {
 	defer C.free(unsafe.Pointer(cKey))
 
 	if e.Type == PlayerObject {
-		C.player_delete_stream_synced_meta_data(e.Ptr, cKey)
+		C.player_delete_stream_synced_meta_data(e.ptr, cKey)
 	}
 
 	if e.Type == VehicleObject {
-		C.vehicle_delete_stream_synced_meta_data(e.Ptr, cKey)
+		C.vehicle_delete_stream_synced_meta_data(e.ptr, cKey)
 	}
 }
 
 func (e Entity) Streamed() bool {
 	if e.Type == PlayerObject {
-		return int(C.player_get_streamed(e.Ptr)) == 1
+		return int(C.player_get_streamed(e.ptr)) == 1
 	} else if e.Type == VehicleObject {
-		return int(C.vehicle_get_streamed(e.Ptr)) == 1
+		return int(C.vehicle_get_streamed(e.ptr)) == 1
 	}
 	return false
 }
@@ -340,18 +340,18 @@ func (e Entity) Streamed() bool {
 func (e Entity) SetStreamed(toggle bool) {
 	state := C.int(module.Bool2int(toggle))
 	if e.Type == PlayerObject {
-		C.player_set_streamed(e.Ptr, state)
+		C.player_set_streamed(e.ptr, state)
 	} else if e.Type == VehicleObject {
-		C.vehicle_set_streamed(e.Ptr, state)
+		C.vehicle_set_streamed(e.ptr, state)
 	}
 }
 
 func (e Entity) IsFrozen() bool {
 	var cFrozen C.int
 	if e.Type == PlayerObject {
-		cFrozen = C.player_is_frozen(e.Ptr)
+		cFrozen = C.player_is_frozen(e.ptr)
 	} else if e.Type == VehicleObject {
-		cFrozen = C.vehicle_is_frozen(e.Ptr)
+		cFrozen = C.vehicle_is_frozen(e.ptr)
 	}
 
 	return int(cFrozen) == 1
@@ -360,18 +360,18 @@ func (e Entity) IsFrozen() bool {
 func (e Entity) SetFrozen(state bool) {
 	s := C.int(module.Bool2int(state))
 	if e.Type == PlayerObject {
-		C.player_set_frozen(e.Ptr, s)
+		C.player_set_frozen(e.ptr, s)
 	} else if e.Type == VehicleObject {
-		C.vehicle_set_frozen(e.Ptr, s)
+		C.vehicle_set_frozen(e.ptr, s)
 	}
 }
 
 func (e Entity) HasCollision() bool {
 	var cCol C.int
 	if e.Type == PlayerObject {
-		cCol = C.player_has_collision(e.Ptr)
+		cCol = C.player_has_collision(e.ptr)
 	} else if e.Type == VehicleObject {
-		cCol = C.vehicle_has_collision(e.Ptr)
+		cCol = C.vehicle_has_collision(e.ptr)
 	}
 
 	return int(cCol) == 1
@@ -380,8 +380,8 @@ func (e Entity) HasCollision() bool {
 func (e Entity) SetCollision(state bool) {
 	s := C.int(module.Bool2int(state))
 	if e.Type == PlayerObject {
-		C.player_set_collision(e.Ptr, s)
+		C.player_set_collision(e.ptr, s)
 	} else if e.Type == VehicleObject {
-		C.vehicle_set_collision(e.Ptr, s)
+		C.vehicle_set_collision(e.ptr, s)
 	}
 }

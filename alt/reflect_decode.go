@@ -83,7 +83,7 @@ func (d *reflectDecoder) decode() (reflect.Value, error) {
 		}
 
 		rv = reflect.ValueOf(ExternFunction{
-			Ptr: ptr,
+			ptr: ptr,
 		})
 	} else if v, ok := raw.(*pb.MValue_Vector3Value); ok {
 		rv = reflect.ValueOf(Vector3{

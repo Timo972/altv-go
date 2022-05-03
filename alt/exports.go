@@ -89,7 +89,7 @@ func Import[ValueType any](resource string, name string) (value ValueType, _ err
 	if !ok {
 		return *new(ValueType), errors.New("export is not of type specified type")
 	}
-	//if cMetaData.Ptr == nil {
+	//if cMetaData.ptr == nil {
 	//	return value, fmt.Errorf("failed to get export '%s' of resource '%s'; Make sure you set dependencies correctly", name, resource)
 	//}
 

@@ -19,7 +19,7 @@ import (
 }*/
 
 type publicResource struct {
-	Ptr unsafe.Pointer
+	ptr unsafe.Pointer
 	/*IsStarted           bool
 	Type                string
 	Name                string
@@ -64,7 +64,7 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char) {
 		name: C.GoString(name),
 		path: C.GoString(path),
 		publicResource: publicResource{
-			Ptr: ptr,
+			ptr: ptr,
 		},
 	}
 
@@ -86,7 +86,7 @@ func ResourceByName(name string) IResource {
 	ptr := C.core_get_resource_by_name(str)
 
 	return &publicResource{
-		Ptr: ptr,
+		ptr: ptr,
 	}
 }
 
@@ -98,14 +98,14 @@ func AllResources() []IResource {
 	resources := make([]IResource, size)
 
 	for i, ptr := range ptrs {
-		resources[i] = &publicResource{Ptr: ptr}
+		resources[i] = &publicResource{ptr: ptr}
 	}
 
 	return resources
 }
 
 func (r publicResource) IsStarted() bool {
-	return uint8(C.resource_is_started(r.Ptr)) == 1
+	return uint8(C.resource_is_started(r.ptr)) == 1
 }
 
 func (r localResource) IsStarted() bool {
@@ -113,7 +113,7 @@ func (r localResource) IsStarted() bool {
 }
 
 func (r publicResource) Type() string {
-	return C.GoString(C.resource_get_type(r.Ptr))
+	return C.GoString(C.resource_get_type(r.ptr))
 }
 
 func (r localResource) Type() string {
@@ -121,7 +121,7 @@ func (r localResource) Type() string {
 }
 
 func (r publicResource) Name() string {
-	return C.GoString(C.resource_get_name(r.Ptr))
+	return C.GoString(C.resource_get_name(r.ptr))
 }
 
 func (r localResource) Name() string {
@@ -129,45 +129,45 @@ func (r localResource) Name() string {
 }
 
 func (r publicResource) Main() string {
-	return C.GoString(C.resource_get_main(r.Ptr))
+	return C.GoString(C.resource_get_main(r.ptr))
 }
 
 func (r publicResource) Exports(out interface{}) error {
-	data := C.resource_get_exports(r.Ptr)
+	data := C.resource_get_exports(r.ptr)
 
 	return decode(data, out)
 }
 
 func (r publicResource) ExportsInterface() (interface{}, error) {
-	data := C.resource_get_exports(r.Ptr)
+	data := C.resource_get_exports(r.ptr)
 
 	return decodeReflect(data)
 }
 
 func (r publicResource) Dependencies() []string {
-	cDeps := C.resource_get_dependencies(r.Ptr)
+	cDeps := C.resource_get_dependencies(r.ptr)
 
 	return newStringArray(unsafe.Pointer(cDeps.array), int(cDeps.size))
 }
 
 func (r publicResource) Dependants() []string {
-	cDeps := C.resource_get_dependants(r.Ptr)
+	cDeps := C.resource_get_dependants(r.ptr)
 
 	return newStringArray(unsafe.Pointer(cDeps.array), int(cDeps.size))
 }
 
 func (r publicResource) RequiredPermissions() []Permission {
-	data := C.resource_get_required_permissions(r.Ptr)
+	data := C.resource_get_required_permissions(r.ptr)
 	return newPermissionArray(data)
 }
 
 func (r publicResource) OptionalPermissions() []Permission {
-	data := C.resource_get_optional_permissions(r.Ptr)
+	data := C.resource_get_optional_permissions(r.ptr)
 	return newPermissionArray(data)
 }
 
 func (r publicResource) Path() string {
-	return C.GoString(C.resource_get_path(r.Ptr))
+	return C.GoString(C.resource_get_path(r.ptr))
 }
 
 func (r localResource) Path() string {
@@ -175,11 +175,11 @@ func (r localResource) Path() string {
 }
 
 func (r publicResource) Config(out interface{}) error {
-	data := C.resource_get_config(r.Ptr)
+	data := C.resource_get_config(r.ptr)
 	return decode(data, out)
 }
 
 func (r publicResource) ConfigInterface() (interface{}, error) {
-	data := C.resource_get_config(r.Ptr)
+	data := C.resource_get_config(r.ptr)
 	return decodeReflect(data)
 }

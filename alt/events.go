@@ -466,7 +466,7 @@ func EmitClient(player *Player, eventName string, args ...interface{}) error {
 		return err
 	}
 
-	C.core_trigger_client_event(player.Ptr, cEvent, arr)
+	C.core_trigger_client_event(player.ptr, cEvent, arr)
 	return nil
 }
 
@@ -491,7 +491,7 @@ func EmitClients(players []*Player, eventName string, args ...interface{}) error
 	defer C.free(clientArrayPtr)
 
 	for i := uint64(0); i < clientSize; i++ {
-		clientArray[i] = players[i].Ptr
+		clientArray[i] = players[i].ptr
 	}
 
 	C.core_trigger_client_event_for(C.struct_array{
