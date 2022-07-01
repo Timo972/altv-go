@@ -1,4 +1,4 @@
-name: Build & deploy
+name: Build & Deploy Go Module
 on:
   push:
     branches-ignore:
@@ -34,10 +34,12 @@ jobs:
           vcpkgArguments: 'protobuf:x64-windows-static'
           vcpkgDirectory: '${{ github.workspace }}/vcpkg'
           vcpkgGitCommitId: 'c8a56fdc1594dfe134213c8c3edf1cc620e4fb37'
+        working-directory: ./runtime
 
       - name: Move protobuf lib into vendors dir
         shell: bash
         run: cp -r vcpkg/installed/x64-windows-static/lib/* vendors/protobuf/lib/
+        working-directory: ./runtime
 
       - name: Extract version
         id: version
@@ -76,11 +78,13 @@ jobs:
           copy bin\Release\go-module.dll dist\go-module
         env:
           VERSION: ${{ steps.version.outputs.VERSION }}
+        working-directory: ./runtime
 
       - uses: actions/upload-artifact@v2
         with:
           name: go-module-windows
           path: ./dist/
+        working-directory: ./runtime
 
   build-linux:
     name: Build linux release
@@ -136,11 +140,13 @@ jobs:
           cp ./bin/libgo-module.so dist/go-module
         env:
           VERSION: ${{ steps.version.outputs.VERSION }}
+        working-directory: ./runtime
 
       - uses: actions/upload-artifact@v2
         with:
           name: go-module-linux
           path: ./dist/
+        working-directory: ./runtime
 
   create-release:
     name: Create GitHub Release

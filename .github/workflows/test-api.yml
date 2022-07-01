@@ -1,4 +1,4 @@
-name: Build test
+name: Test Go API
 on: [push, pull_request]
 
 jobs:
@@ -18,9 +18,8 @@ jobs:
           go-version: '1.18'
 
       - name: Test
-        run: |
-          cd alt
-          go test
+        run: go test
+        working-directory: ./api/alt
 
       #- name: Create exmaple main.go
       #  shell: bash
@@ -91,9 +90,9 @@ jobs:
 
       - name: Test
         run: |
-          cd alt
           export CGO_LDFLAGS="-g -Wl,--no-as-needed -ldl"
           go test
+        working-directory: ./api/alt
 
       # export CGO_LDFLAGS="-g -02 -ldl"
       #- name: Build

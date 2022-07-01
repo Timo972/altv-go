@@ -1,4 +1,4 @@
-name: Test changes
+name: Test Go Module
 on: [push, pull_request]
 
 jobs:
@@ -27,10 +27,12 @@ jobs:
           vcpkgArguments: 'protobuf:x64-windows-static'
           vcpkgDirectory: '${{ github.workspace }}/vcpkg'
           vcpkgGitCommitId: 'c8a56fdc1594dfe134213c8c3edf1cc620e4fb37'
+        working-directory: ./runtime
 
       - name: Move protobuf lib into vendors dir
         shell: bash
         run: cp -r vcpkg/installed/x64-windows-static/lib/* vendors/protobuf/lib/
+        working-directory: ./runtime
 
       - name: Build
         shell: cmd
@@ -39,6 +41,7 @@ jobs:
           pushd build
           cmake -G"Visual Studio 16" -A x64 ..
           cmake --build . --config Release
+        working-directory: ./runtime
 
   test-linux:
     name: Test changes on Linux
@@ -64,3 +67,4 @@ jobs:
           mkdir build && cd build
           cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-8 ..
           cmake --build . --config Release
+        working-directory: ./runtime
