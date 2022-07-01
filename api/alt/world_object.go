@@ -1,11 +1,20 @@
 package alt
 
-// #cgo windows CFLAGS: -I../../c-api/lib/win32
-// #cgo windows LDFLAGS: -L../../c-api/lib/win32 -lcapi
-// #cgo linux CFLAGS: -I../../c-api/lib/linux
-// #cgo linux LDFLAGS: -L../../c-api/lib/linux -lcapi
-// #include <stdlib.h>
-// #include "../../c-api/build/out/capi.h"
+/*
+#cgo windows CFLAGS: -I../../c-api/lib
+#cgo windows LDFLAGS: -L../../c-api/lib/win32 -lcapi
+
+#cgo linux CFLAGS: -I../../c-api/lib
+#cgo linux LDFLAGS: -g -L../../c-api/lib/linux -lcapi  -ldl
+
+#ifndef GOLANG_APP
+#define GOLANG_APP
+
+#include <stdlib.h>
+#include "capi.h"
+
+#endif
+*/
 import "C"
 import "math"
 
