@@ -2,9 +2,12 @@ name: Test Go API
 on: [push, pull_request]
 
 jobs:
-  test-windows:
-    name: Test changes on Windows
-    runs-on: windows-2019
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    name: Test ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -18,84 +21,4 @@ jobs:
           go-version: '1.18'
 
       - name: Test
-        run: go test
-        working-directory: ./api/alt
-
-      #- name: Create exmaple main.go
-      #  shell: bash
-      #  run: |
-      #    cat <<EOF >main.go
-      #    package main
-      #
-      #    import "C"
-      #    import "github.com/timo972/altv-go/alt"
-      #
-      #    func main() { }
-      #
-      #    //export onStart
-      #    func onStart() {
-      #    alt.LogInfo("Resource Started")
-      #    }
-      #
-      #    //export onStop
-      #    func onStop() {
-      #    alt.LogInfo("Resource Stopped")
-      #    }
-
-      #- name: Build
-      #  shell: cmd
-      #  run: go build -o alt-test.dll -buildmode=c-shared
-
-  test-linux:
-    name: Test changes on Linux
-    runs-on: ubuntu-18.04
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          submodules: recursive
-          lfs: true
-
-      - name: Install go
-        uses: actions/setup-go@v2
-        with:
-          go-version: '1.18'
-
-      #- name: Create exmaple main.go
-      #  shell: bash
-      #  run: |
-      #      cat <<EOF >main.go
-      #      package main
-      #
-      #      import "C"
-      #      import "github.com/timo972/altv-go/alt"
-      #
-      #      func main() { }
-      #
-      #      //export onStart
-      #      func onStart() {
-      #      alt.LogInfo("Resource Started")
-      #      }
-      #
-      #      //export onStop
-      #      func onStop() {
-      #      alt.LogInfo("Resource Stopped")
-      #      }
-
-      - name: Install gcc and g++
-        run: |
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-          sudo apt-get update
-          sudo apt-get install gcc-8 g++-8
-
-      - name: Test
-        run: |
-          export CGO_LDFLAGS="-g -Wl,--no-as-needed -ldl"
-          go test
-        working-directory: ./api/alt
-
-      # export CGO_LDFLAGS="-g -02 -ldl"
-      #- name: Build
-      #  run: |
-      #    export CGO_LDFLAGS="-g -ldl"
-      #    go build -o alt-test.so -buildmode=c-shared
+        run: make test

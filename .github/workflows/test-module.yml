@@ -3,76 +3,76 @@ on: [push, pull_request]
 
 jobs:
   build:
-  strategy:
-    matrix:
-      os: [ubuntu-latest, windows-latest]
-  name: Build ${{ matrix.os }}
-  runs-on: ${{ matrix.os }}
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        submodules: recursive
-        lfs: true
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    name: Build ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          lfs: true
 
-    - name: Install Protoc
-      uses: arduino/setup-protoc@v1
-      with:
-        version: "3.19.4"
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+        with:
+          version: "3.19.4"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Extract version
-      id: version
-      shell: bash
-      run: |
-        TAG=${GITHUB_REF/refs\/tags\//}
-        echo ::set-output name=TAG::${TAG}
+      - name: Extract version
+        id: version
+        shell: bash
+        run: |
+          TAG=${GITHUB_REF/refs\/tags\//}
+          echo ::set-output name=TAG::${TAG}
 
-        semver=( ${TAG//./ } )
-        major="${semver[0]#v}"
-        minor="${semver[1]}"
-        patch="0"
-        branch=""
-        build="${semver[3]}"
+          semver=( ${TAG//./ } )
+          major="${semver[0]#v}"
+          minor="${semver[1]}"
+          patch="0"
+          branch=""
+          build="${semver[3]}"
 
-        if [[ "${semver[2]}" =~ "-" ]]; then
-        branch=${semver[2]/*\-}
-        patch=${semver[2]/\-*}
-        else
-        patch="${semver[2]}"
-        fi
+          if [[ "${semver[2]}" =~ "-" ]]; then
+          branch=${semver[2]/*\-}
+          patch=${semver[2]/\-*}
+          else
+          patch="${semver[2]}"
+          fi
 
-        echo ::set-output name=BRANCH::"${branch}"
-        echo ::set-output name=BUILD::"${build}"
-        echo ::set-output name=VERSION::"${major}.${minor}.${patch}"
+          echo ::set-output name=BRANCH::"${branch}"
+          echo ::set-output name=BUILD::"${build}"
+          echo ::set-output name=VERSION::"${major}.${minor}.${patch}"
 
-    - name: Build
-      if: os.matrix == 'windows-latest'
-      shell: cmd
-      run: |
-        mkdir build
-        pushd build
-        cmake -G"Visual Studio 16" -A x64 -DGO_MODULE_VERSION=%VERSION% ..
-        cmake --build . --config Release
-        popd
-        mkdir dist\go-module
-        copy bin\Release\go-module.dll dist\go-module
-      env:
-        VERSION: ${{ steps.version.outputs.VERSION }}
-      working-directory: ./runtime
+      - name: Build
+        if: os.matrix == 'windows-latest'
+        shell: cmd
+        run: |
+          mkdir build
+          pushd build
+          cmake -G"Visual Studio 16" -A x64 -DGO_MODULE_VERSION=%VERSION% ..
+          cmake --build . --config Release
+          popd
+          mkdir dist\go-module
+          copy bin\Release\go-module.dll dist\go-module
+        env:
+          VERSION: ${{ steps.version.outputs.VERSION }}
+        working-directory: ./runtime
 
-    - name: Build
-      if: os.matrix == 'ubuntu-latest'
-      run: |
-        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-        sudo apt-get update
-        sudo apt-get install gcc-8 g++-8
-        mkdir build && cd build
-        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-8 -DGO_MODULE_VERSION=%VERSION% ..
-        cmake --build . --config Release
-        cd ..
-        mkdir -p dist/go-module
-        cp ./bin/libgo-module.so dist/go-module
-      env:
-        VERSION: ${{ steps.version.outputs.VERSION }}
-      working-directory: ./runtime
+      - name: Build
+        if: os.matrix == 'ubuntu-latest'
+        run: |
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+          sudo apt-get update
+          sudo apt-get install gcc-8 g++-8
+          mkdir build && cd build
+          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-8 -DGO_MODULE_VERSION=%VERSION% ..
+          cmake --build . --config Release
+          cd ..
+          mkdir -p dist/go-module
+          cp ./bin/libgo-module.so dist/go-module
+        env:
+          VERSION: ${{ steps.version.outputs.VERSION }}
+        working-directory: ./runtime
