@@ -1,0 +1,12 @@
+build/
+bin/
+cmake-build-release/
+cmake-build-debug/
+cmake-build-default/
+.idea/
+.vscode/
+.vs/
+Module.c
+Module.h
+out/
+vendors/protobuf/lib/*

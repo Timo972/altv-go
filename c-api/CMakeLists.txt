@@ -11,8 +11,12 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib/linux")
 endif()
 MESSAGE(STATUS "Compiling altv-go-capi:" ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
+add_custom_command(OUTPUT ./out/capi.h ./out/capi.c
+    COMMAND node ../../runtime/tools/pkg-capi.js
+)
+
 # Aggiungere l'origine all'eseguibile di questo progetto.
-add_library (capi STATIC "src/capi.c" "src/capi.h")
+add_library (capi STATIC "./out/capi.c" "./out/capi.h")
 
 if ( MSVC )
     set_target_properties(capi PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} )

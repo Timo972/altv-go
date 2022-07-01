@@ -1,5 +1,5 @@
 proto:
-	protoc --go_out=.\ .\mvalue.proto
+	protoc --go_out=.\ .\runtime\src\mvalue.proto
 
 test:
-	cd alt && go test -v
+	cd api/alt && go test -v

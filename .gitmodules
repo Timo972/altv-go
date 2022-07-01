@@ -1,0 +1,3 @@
+[submodule "runtime/vendors/cpp-sdk"]
+	path = runtime/vendors/cpp-sdk
+	url = https://github.com/altmp/cpp-sdk.git

@@ -1,4 +1,4 @@
-name: Build test
+name: Test changes
 on: [push, pull_request]
 
 jobs:
@@ -12,40 +12,33 @@ jobs:
           submodules: recursive
           lfs: true
 
-      - name: Install go
-        uses: actions/setup-go@v2
+      - name: Install cmake
+        uses: lukka/get-cmake@latest
+
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
         with:
-          go-version: '1.18'
+          version: '3.19.4'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Test
+      - name: Install vcpkg & build protobuf lib
+        uses: lukka/run-vcpkg@v4
+        with:
+          vcpkgArguments: 'protobuf:x64-windows-static'
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          vcpkgGitCommitId: 'c8a56fdc1594dfe134213c8c3edf1cc620e4fb37'
+
+      - name: Move protobuf lib into vendors dir
+        shell: bash
+        run: cp -r vcpkg/installed/x64-windows-static/lib/* vendors/protobuf/lib/
+
+      - name: Build
+        shell: cmd
         run: |
-          cd alt
-          go test
-
-      #- name: Create exmaple main.go
-      #  shell: bash
-      #  run: |
-      #    cat <<EOF >main.go
-      #    package main
-      #
-      #    import "C"
-      #    import "github.com/timo972/altv-go-pkg/alt"
-      #
-      #    func main() { }
-      #
-      #    //export onStart
-      #    func onStart() {
-      #    alt.LogInfo("Resource Started")
-      #    }
-      #
-      #    //export onStop
-      #    func onStop() {
-      #    alt.LogInfo("Resource Stopped")
-      #    }
-
-      #- name: Build
-      #  shell: cmd
-      #  run: go build -o alt-test.dll -buildmode=c-shared
+          mkdir build
+          pushd build
+          cmake -G"Visual Studio 16" -A x64 ..
+          cmake --build . --config Release
 
   test-linux:
     name: Test changes on Linux
@@ -57,46 +50,17 @@ jobs:
           submodules: recursive
           lfs: true
 
-      - name: Install go
-        uses: actions/setup-go@v2
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
         with:
-          go-version: '1.18'
+          version: '3.19.4'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      #- name: Create exmaple main.go
-      #  shell: bash
-      #  run: |
-      #      cat <<EOF >main.go
-      #      package main
-      #
-      #      import "C"
-      #      import "github.com/timo972/altv-go-pkg/alt"
-      #
-      #      func main() { }
-      #
-      #      //export onStart
-      #      func onStart() {
-      #      alt.LogInfo("Resource Started")
-      #      }
-      #
-      #      //export onStop
-      #      func onStop() {
-      #      alt.LogInfo("Resource Stopped")
-      #      }
-
-      - name: Install gcc and g++
+      - name: Build
         run: |
           sudo add-apt-repository ppa:ubuntu-toolchain-r/test
           sudo apt-get update
           sudo apt-get install gcc-8 g++-8
-
-      - name: Test
-        run: |
-          cd alt
-          export CGO_LDFLAGS="-g -Wl,--no-as-needed -ldl"
-          go test
-
-      # export CGO_LDFLAGS="-g -02 -ldl"
-      #- name: Build
-      #  run: |
-      #    export CGO_LDFLAGS="-g -ldl"
-      #    go build -o alt-test.so -buildmode=c-shared
+          mkdir build && cd build
+          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-8 ..
+          cmake --build . --config Release
