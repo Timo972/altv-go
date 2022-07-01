@@ -1,6 +1,6 @@
 # altv-go [![Build test](https://github.com/timo972/altv-go/actions/workflows/test-changes.yml/badge.svg)](https://github.com/timo972/altv-go/actions/workflows/test-changes.yml)
 Go package for alt:V Multiplayer.
-Runtime can be found [here](https://github.com/shockdev04/altv-go-module).
+Runtime can be found [here](https://github.com/timo972/altv-go/runtime).
 
 ## Requirements
 Package depends heavily on [cgo](https://pkg.go.dev/cmd/cgo).
@@ -15,15 +15,21 @@ package main
 import "C"
 import "github.com/timo972/altv-go/alt"
 
-func main() { }
+func init() { 
+	// You may want to initialize something here
+}
 
-//export onStart
-func onStart() {
+func main() { 
+	// You dont want to initialize something here because this wont work
+}
+
+//export OnStart
+func OnStart() {
 	alt.LogInfo("Resource Started")
 }
 
-//export onStop
-func onStop() {
+//export OnStop
+func OnStop() {
 	alt.LogInfo("Resource Stopped")
 }
 ```
