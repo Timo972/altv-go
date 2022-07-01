@@ -4,9 +4,9 @@ on:
     branches-ignore:
       - '**'
     tags:
-      - '*.*.*-dev.*'
-      - '*.*.*-rc.*'
-      - '*.*.*'
+      - 'v*.*.*-dev.*'
+      - 'v*.*.*-rc.*'
+      - 'v*.*.*'
 
 jobs:
   build-windows:
@@ -48,7 +48,7 @@ jobs:
           echo ::set-output name=TAG::${TAG}
 
           semver=( ${TAG//./ } )
-          major="${semver[0]}"
+          major="${semver[0]#v}"
           minor="${semver[1]}"
           patch="0"
           branch=""
@@ -108,7 +108,7 @@ jobs:
             echo ::set-output name=TAG::${TAG}
 
             semver=( ${TAG//./ } )
-            major="${semver[0]}"
+            major="${semver[0]#v}"
             minor="${semver[1]}"
             patch="0"
             branch=""
