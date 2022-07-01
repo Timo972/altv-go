@@ -28,8 +28,17 @@ endif()
 MESSAGE(STATUS "Flags:" ${CMAKE_CXX_FLAGS_RELEASE})
 
 # protobuf dependency
-list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/vendors/protobuf")
-find_package(Protobuf REQUIRED)
+include(FetchContent)
+FetchContent_Declare(
+  Protobuf
+  GIT_REPOSITORY https://github.com/protocolbuffers/protobuf
+  GIT_TAG        v3.19.4
+)
+set(FETCHCONTENT_QUIET OFF)
+FetchContent_MakeAvailable(Protobuf)
+if(NOT BUILD_Protobuf AND NOT TARGET protobuf::libprotobuf)
+  find_package(Protobuf REQUIRED)
+endif()
 include_directories(${Protobuf_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 

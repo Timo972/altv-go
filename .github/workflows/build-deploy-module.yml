@@ -9,9 +9,12 @@ on:
       - 'v*.*.*'
 
 jobs:
-  build-windows:
-    name: Build windows release
-    runs-on: windows-2019
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    name: Build ${{ matrix.os }}
+    runs-on: ${{ matrix.os }} 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -19,26 +22,11 @@ jobs:
           submodules: recursive
           lfs: true
 
-      - name: Install cmake
-        uses: lukka/get-cmake@latest
-
       - name: Install Protoc
         uses: arduino/setup-protoc@v1
         with:
           version: '3.19.4'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Install vcpkg & build protobuf lib
-        uses: lukka/run-vcpkg@v4
-        with:
-          vcpkgArguments: 'protobuf:x64-windows-static'
-          vcpkgDirectory: '${{ github.workspace }}/runtime/vcpkg'
-          vcpkgGitCommitId: 'c8a56fdc1594dfe134213c8c3edf1cc620e4fb37'
-
-      - name: Move protobuf lib into vendors dir
-        shell: bash
-        run: cp -r vcpkg/installed/x64-windows-static/lib/* vendors/protobuf/lib/
-        working-directory: ./runtime
 
       - name: Extract version
         id: version
@@ -66,6 +54,7 @@ jobs:
           echo ::set-output name=VERSION::"${major}.${minor}.${patch}"
 
       - name: Build
+        if: os.matrix == 'windows-latest'
         shell: cmd
         run: |
           mkdir build
@@ -79,53 +68,8 @@ jobs:
           VERSION: ${{ steps.version.outputs.VERSION }}
         working-directory: ./runtime
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: go-module-windows
-          path: ./runtime/dist/
-
-  build-linux:
-    name: Build linux release
-    runs-on: ubuntu-18.04
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          submodules: recursive
-          lfs: true
-
-      - name: Install Protoc
-        uses: arduino/setup-protoc@v1
-        with:
-          version: '3.19.4'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract version
-        id: version
-        shell: bash
-        run: |
-            TAG=${GITHUB_REF/refs\/tags\//}
-            echo ::set-output name=TAG::${TAG}
-
-            semver=( ${TAG//./ } )
-            major="${semver[0]#v}"
-            minor="${semver[1]}"
-            patch="0"
-            branch=""
-            build="${semver[3]}"
-
-            if [[ "${semver[2]}" =~ "-" ]]; then
-            branch=${semver[2]/*\-}
-            patch=${semver[2]/\-*}
-            else
-            patch="${semver[2]}"
-            fi
-
-            echo ::set-output name=BRANCH::"${branch}"
-            echo ::set-output name=BUILD::"${build}"
-            echo ::set-output name=VERSION::"${major}.${minor}.${patch}"
-
       - name: Build
+        if: os.matrix == 'ubuntu-latest'
         run: |
           sudo add-apt-repository ppa:ubuntu-toolchain-r/test
           sudo apt-get update
@@ -140,57 +84,28 @@ jobs:
           VERSION: ${{ steps.version.outputs.VERSION }}
         working-directory: ./runtime
 
-      - uses: actions/upload-artifact@v2
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
         with:
-          name: go-module-linux
+          name: go-module-${{ matrix.os }}
           path: ./runtime/dist/
 
   create-release:
     name: Create GitHub Release
-    runs-on: ubuntu-18.04
-    needs: [build-linux, build-windows]
+    runs-on: ubuntu-latest
+    needs: [build]
     steps:
       - name: Download windows artifacts
         uses: actions/download-artifact@v2
         with:
-          name: go-module-windows
+          name: go-module-windows-latest
           path: dist-windows
 
       - name: Download linux artifacts
         uses: actions/download-artifact@v2
         with:
-          name: go-module-linux
+          name: go-module-ubuntu-latest
           path: dist-linux
-
-      #- name: Zip artifacts
-      #  run: |
-      #    zip -r -j go-module-windows dist-windows
-      #    zip -r -j go-module-linux dist-linux
-
-      - name: Extract version
-        id: version
-        shell: bash
-        run: |
-            TAG=${GITHUB_REF/refs\/tags\//}
-            echo ::set-output name=TAG::${TAG}
-
-            semver=( ${TAG//./ } )
-            major="${semver[0]}"
-            minor="${semver[1]}"
-            patch="0"
-            branch=""
-            build="${semver[3]}"
-
-            if [[ "${semver[2]}" =~ "-" ]]; then
-            branch=${semver[2]/*\-}
-            patch=${semver[2]/\-*}
-            else
-            patch="${semver[2]}"
-            fi
-
-            echo ::set-output name=BRANCH::"${branch}"
-            echo ::set-output name=BUILD::"${build}"
-            echo ::set-output name=VERSION::"${major}.${minor}.${patch}"
 
       - name: Create Release
         id: create_release
@@ -199,7 +114,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ steps.version.outputs.VERSION }}-${{ steps.version.outputs.BRANCH }}.${{ steps.version.outputs.BUILD }}
+          release_name: Release ${GITHUB_REF/refs\/tags\//}
 
       - name: Upload windows artifacts
         uses: actions/upload-release-asset@v1
@@ -231,5 +146,5 @@ jobs:
         uses: geekyeggo/delete-artifact@v1
         with:
           name: |
-            go-module-linux
-            go-module-windows
+            go-module-ubuntu-latest
+            go-module-windows-latest
