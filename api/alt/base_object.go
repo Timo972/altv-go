@@ -1,14 +1,9 @@
 package alt
 
-// #cgo windows CFLAGS: -I../../c-api/lib/win32
-// #cgo windows LDFLAGS: -L../../c-api/lib/win32 -lcapi
-// #cgo linux CFLAGS: -I../../c-api/lib/linux
-// #cgo linux LDFLAGS: -L../../c-api/lib/linux -lcapi
-// #include <stdlib.h>
-// #include "../../c-api/build/out/capi.h"
-import "C"
 import (
 	"unsafe"
+
+	"github.com/timo972/altv-go/internal/altcapi"
 )
 
 type BaseObjectType = uint8
@@ -40,44 +35,40 @@ type BaseObject struct {
 }*/
 
 func (b BaseObject) Valid() bool {
-	// TODO check if it works with player
 	if b.ptr == nil {
 		return false
 	}
 
-	cName := C.CString(CurrentResource.Name())
-	defer C.free(unsafe.Pointer(cName))
-
 	// if so add for other base object extenders
 	if b.Type == PlayerObject {
-		return int(C.player_is_valid(cName, b.ptr)) == 1
+		return altcapi.Player_is_valid(CurrentResource.Name(), b.ptr) == 1
 	} else if b.Type == VoiceChannelObject {
-		return int(C.voice_channel_is_valid(cName, b.ptr)) == 1
+		return altcapi.Voice_channel_is_valid(CurrentResource.Name(), b.ptr) == 1
 	} else if b.Type == CheckpointObject {
-		return int(C.checkpoint_is_valid(cName, b.ptr)) == 1
+		return altcapi.Checkpoint_is_valid(CurrentResource.Name(), b.ptr) == 1
 	} else if b.Type == ColshapeObject {
-		return int(C.col_shape_is_valid(cName, b.ptr)) == 1
+		return altcapi.Col_shape_is_valid(CurrentResource.Name(), b.ptr) == 1
 	} else if b.Type == VehicleObject {
-		return int(C.vehicle_is_valid(cName, b.ptr)) == 1
+		return altcapi.Vehicle_is_valid(CurrentResource.Name(), b.ptr) == 1
 	} else if b.Type == BlipObject {
-		return int(C.blip_is_valid(cName, b.ptr)) == 1
+		return altcapi.Blip_is_valid(CurrentResource.Name(), b.ptr) == 1
 	}
 	return false
 }
 
 func (b BaseObject) Destroy() {
 	if b.Type == PlayerObject {
-		C.player_destroy(b.ptr)
+		altcapi.Player_destroy(b.ptr)
 	} else if b.Type == VoiceChannelObject {
-		C.voice_channel_destroy(b.ptr)
+		altcapi.Voice_channel_destroy(b.ptr)
 	} else if b.Type == CheckpointObject {
-		C.checkpoint_destroy(b.ptr)
+		altcapi.Checkpoint_destroy(b.ptr)
 	} else if b.Type == ColshapeObject {
-		C.col_shape_destroy(b.ptr)
+		altcapi.Col_shape_destroy(b.ptr)
 	} else if b.Type == VehicleObject {
-		C.vehicle_destroy(b.ptr)
+		altcapi.Vehicle_destroy(b.ptr)
 	} else if b.Type == BlipObject {
-		C.blip_destroy(b.ptr)
+		altcapi.Blip_destroy(b.ptr)
 	}
 }
 

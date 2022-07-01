@@ -3,3 +3,6 @@ proto:
 
 test:
 	cd api/alt && go test -v
+
+capi:
+	c-for-go -out ./internal -ccdefs -ccincl c-api/altcapi.yml 

@@ -1,12 +1,5 @@
 package alt
 
-// #cgo windows CFLAGS: -I../../c-api/lib/win32
-// #cgo windows LDFLAGS: -L../../c-api/lib/win32 -lcapi
-// #cgo linux CFLAGS: -I../../c-api/lib/linux
-// #cgo linux LDFLAGS: -L../../c-api/lib/linux -lcapi
-// #include <stdlib.h>
-// #include "../../c-api/build/out/capi.h"
-import "C"
 import (
 	"fmt"
 	"unsafe"
@@ -43,6 +36,7 @@ func newBlip(b unsafe.Pointer) *Blip {
 }
 
 func CreatePointBlip(x float32, y float32, z float32) *Blip {
+	altcapi.
 	return newBlip(C.core_create_point_blip_position(C.float(x), C.float(y), C.float(z)))
 }
 func CreateEntityBlip(entity IEntity) *Blip {
