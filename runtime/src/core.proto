@@ -1,0 +1,140 @@
+syntax = "proto2";
+package Core;
+
+import "src/mvalue.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "/internal/pb";
+
+service Core {
+	rpc LogInfo(google.protobuf.StringValue) returns(google.protobuf.Empty);
+	rpc LogDebug(google.protobuf.StringValue) returns(google.protobuf.Empty);
+	rpc LogWarning(google.protobuf.StringValue) returns(google.protobuf.Empty);
+	rpc LogError(google.protobuf.StringValue) returns(google.protobuf.Empty);
+	rpc LogColored(google.protobuf.StringValue) returns(google.protobuf.Empty);
+	rpc CreateVehicle(CreateVehicleRequest) returns (Pointer);
+	// TODO:
+	rpc CreateCheckpoint(google.protobuf.Empty) returns (Pointer);
+	rpc CreateVoiceChannel(CreateVoiceChannelRequest) returns(Pointer);
+	rpc GetVersion(google.protobuf.Empty) returns (google.protobuf.StringValue);
+	rpc GetBranch(google.protobuf.Empty) returns (google.protobuf.StringValue);
+	rpc IsDebug(google.protobuf.Empty) returns (google.protobuf.BoolValue);
+	rpc Hash(google.protobuf.StringValue) returns (google.protobuf.UInt64Value);
+	rpc FileExists(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
+	rpc FileRead(google.protobuf.StringValue) returns (google.protobuf.StringValue);
+	rpc GetEntityByID(google.protobuf.UInt32Value) returns (BaseObject);
+	// TODO:
+	rpc GetEntities(google.protobuf.Empty) returns(google.protobuf.Empty);
+	rpc GetPlayers(google.protobuf.Empty) returns(google.protobuf.Empty);
+	rpc GetVehicles(google.protobuf.Empty) returns(google.protobuf.Empty);
+	rpc HasMetaData(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
+	rpc GetMetaData(google.protobuf.StringValue) returns (MValue.MValue);
+	rpc SetMetaData(SetMetaRequest) returns(google.protobuf.Empty);
+	rpc DeleteMetaData(google.protobuf.StringValue) returns(google.protobuf.Empty);
+	rpc HasSyncedMetaData(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
+	rpc GetSyncedMetaData(google.protobuf.StringValue) returns (MValue.MValue);
+	rpc SetSyncedMetaData(SetMetaRequest) returns(google.protobuf.Empty);
+	rpc DeleteMetaSyncedData(google.protobuf.StringValue) returns(google.protobuf.Empty);
+	rpc DestroyBaseObject(Pointer) returns(google.protobuf.Empty);
+	rpc GetRootDirectory(google.protobuf.Empty) returns (google.protobuf.StringValue);
+	rpc StartResource(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
+	rpc StopResource(google.protobuf.StringValue) returns(google.protobuf.Empty);
+	rpc RestartResource(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
+	// TODO:
+	rpc GetRequiredPermissions(google.protobuf.Empty) returns(google.protobuf.Empty);
+	rpc GetOptionalPermissions(google.protobuf.Empty) returns(google.protobuf.Empty);
+	rpc GetPlayersByName(google.protobuf.Empty) returns(google.protobuf.Empty);
+	rpc GetNetTime(google.protobuf.Empty) returns (google.protobuf.UInt32Value);
+	rpc GetSDKHash(google.protobuf.Empty) returns (google.protobuf.StringValue);
+	// TODO:
+	rpc CreateColShape(google.protobuf.Empty) returns(google.protobuf.Empty);
+	rpc GetVehicleModelByHash(google.protobuf.UInt32Value) returns (VehicleModelInfo);
+	rpc GetResourceByName(google.protobuf.StringValue) returns (Pointer);
+	rpc HashServerPassword(google.protobuf.StringValue) returns (google.protobuf.UInt64Value);
+	rpc StopServer(google.protobuf.Empty) returns(google.protobuf.Empty);
+}
+
+message CreateVehicleRequest {
+	required uint64 model = 1; 
+	required Vector3 pos = 2;
+	required Vector3 rot = 3;
+}
+
+message CreateVoiceChannelRequest {
+	required bool spatial = 1;
+	required float maxDistance = 2;
+}
+
+message SetMetaRequest {
+	required string key = 1;
+	required MValue.MValue value = 2;
+}
+
+message VehicleModelInfo {
+	
+	required string title = 1;
+	enum ModelType {
+		INVALID = 0;
+			PED = 1;
+			AUTOMOBILE = 2;
+			PLANE = 3;
+			TRAILER = 4;
+			QUAD_BIKE = 5;
+			SUBMARINE_CAR = 6;
+			AMPHIBIOUS_AUTOMOBILE = 7;
+			AMPHIBIOUS_QUAD_BIKE = 8;
+			HELI = 9;
+			BLIMP = 10;
+			AUTOGYRO = 11;
+			BIKE = 12;
+			BMX = 13;
+			BOAT = 14;
+			TRAIN = 15;
+			SUBMARINE = 16;
+			OBJECT = 17;
+	}
+	required ModelType modelType = 2;
+	required uint32 wheelsCount = 14;
+	required bool hasArmoredWindows = 3;
+	required bool hasAutoAttachTrailer = 4;
+	required uint32 primaryColor = 5;
+	required uint32 secondaryColor = 6;
+	required uint32 pearlColor = 7;
+	required uint32 wheelsColor = 8;
+	required uint32 interiorColor = 9;
+	required uint32 dashboardColor = 10;
+	repeated uint32 modKits = 11;
+	required uint32 extras = 12;
+	required uint32 defaultExtras = 13;
+}
+
+message Vector3 {
+	required float x = 1;
+	required float y = 2;
+	required float z = 3;
+}
+
+message Pointer {
+	required bytes ptr = 1;
+}
+
+message BaseObject {
+	required bytes ptr = 1;
+	enum Type {
+		PLAYER = 0;
+		VEHICLE = 1;
+		BLIP = 2;
+		WEBVIEW = 3;
+		VOICE_CHANNEL = 4;
+		COLSHAPE = 5;
+		CHECKPOINT = 6;
+		WEBSOCKET_CLIENT = 7;
+		HTTP_CLIENT = 8;
+		AUDIO = 9;
+		RML_ELEMENT = 10;
+		RML_DOCUMENT = 11;
+		LOCAL_PLAYER = 12;
+	}
+	required Type type = 2;
+}

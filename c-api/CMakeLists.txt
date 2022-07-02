@@ -16,7 +16,7 @@ add_custom_command(OUTPUT ./out/capi.h ./out/capi.c
     COMMAND node ../../runtime/tools/pkg-capi.js
 )
 # Copy header to lib directory
-configure_file(build/out/capi.h ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/../capi.h COPYONLY)
+configure_file(${CMAKE_CURRENT_BINARY_DIR}/out/capi.h ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/../capi.h COPYONLY)
 
 # Aggiungere l'origine all'eseguibile di questo progetto.
 add_library (capi STATIC "./out/capi.c" "./out/capi.h")

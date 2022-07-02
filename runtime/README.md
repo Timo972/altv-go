@@ -20,10 +20,12 @@ modules: [
 Thats it!
 
 ## Building
-**To build the module there are some prerequisites needed:**
+**To build the module you need some prerequisites:**
 - [Windows] Visual Studio 2019 or later
 - [Linux] GCC 8
-- [CMake](https://cmake.org/download/)
+- [CMake >=3.15](https://cmake.org/download/)
 - [ProtoC 3.19.4](https://github.com/protocolbuffers/protobuf/releases/tag/v3.19.4)
+- [Protobuf](https://github.com/protocolbuffers/protobuf)
+- [gRPC](https://github.com/grpc/grpc)
 
 Then just run ``build.bat`` or ``build.sh`` in the root folder (depending on os).
