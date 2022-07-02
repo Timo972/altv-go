@@ -15,11 +15,13 @@ jobs:
           submodules: recursive
           lfs: true
 
-      - name: Install Protoc
-        uses: arduino/setup-protoc@v1
+      - Name: Install python
+        uses: actions/setup-python@v1
         with:
-          version: "3.19.4"
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          python-version: '3.x'
+
+      - name: Install Meson & Ninja
+        run: pip install meson ninja
 
       - name: Extract version
         id: version
