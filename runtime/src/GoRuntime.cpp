@@ -5,11 +5,25 @@
 #include <cstdint>
 #include <sstream>
 
+#include "services/Core.h"
+
+#include <grpc/grpc.h>
+#include <grpcpp/server_builder.h>
+
 Go::Runtime *Go::Runtime::Instance = nullptr;
 
 Go::Runtime *Go::Runtime::GetInstance() {
-    if (Instance == nullptr)
+    if (Instance == nullptr) {
         Instance = new Runtime();
+        alt::ICore::Instance().LogInfo("Creating Go::Runtime");
+        grpc::ServerBuilder builder;
+        builder.AddListeningPort("127.0.0.1:50051", grpc::InsecureServerCredentials());
+        CoreService core_service;
+        builder.RegisterService(&core_service);
+
+        std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
+        alt::ICore::Instance().LogInfo("GRPC started");
+    }
 
     return Instance;
 }
