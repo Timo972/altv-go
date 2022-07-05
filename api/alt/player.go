@@ -469,3 +469,31 @@ func (p Player) DeleteLocalMetaData(key string) {
 
 	C.player_delete_local_meta_data(p.ptr, cKey)
 }
+
+func (p Player) CurrentAnimationDict() string {
+	return C.GoString(C.player_get_current_animation_dict(p.ptr))
+}
+
+func (p Player) CurrentAnimationName() string {
+	return C.GoString(C.player_get_current_animation_name(p.ptr))
+}
+
+func (p Player) IsSpawned() bool {
+	return uint8(C.player_is_spawned(p.ptr)) == 1
+}
+
+func (p Player) ForwardSpeed() float32 {
+	return float32(C.player_get_forward_speed(p.ptr))
+}
+
+func (p Player) StrafeSpeed() float32 {
+	return float32(C.player_get_strafe_speed(p.ptr))
+}
+
+func (p Player) DiscordId() string {
+	return C.GoString(C.player_get_discord_id(p.ptr))
+}
+
+func (p Player) InteriorLocation() uint32 {
+	return uint32(C.player_get_interior_location(p.ptr))
+}

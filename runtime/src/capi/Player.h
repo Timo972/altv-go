@@ -142,6 +142,14 @@ EXPORT int Player_HasLocalMetaData(void *p, const char *key);
 EXPORT void Player_SetLocalMetaData(void *p, const char *key, unsigned char* data, unsigned long long size);
 EXPORT Array Player_GetLocalMetaData(void *p, const char *key);
 EXPORT void Player_DeleteLocalMetaData(void *p, const char *key);
+
+EXPORT unsigned int Player_GetCurrentAnimationDict(void *p);
+EXPORT unsigned int Player_GetCurrentAnimationName(void *p);
+EXPORT unsigned char Player_IsSpawned(void *p);
+EXPORT float Player_GetForwardSpeed(void *p);
+EXPORT float Player_GetStrafeSpeed(void *p);
+EXPORT const char *Player_GetDiscordId(void *p);
+EXPORT unsigned int Player_GetInteriorLocation(void *p);
 #ifdef __cplusplus
 }
 #endif

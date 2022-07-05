@@ -778,3 +778,38 @@ EXPORT void Player_DeleteLocalMetaData(void *p, const char *key) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     player->DeleteLocalMetaData(key);
 }
+
+EXPORT unsigned int Player_GetCurrentAnimationDict(void *p) {
+    auto player = reinterpret_cast<alt::IPlayer *>(p);
+    return player->GetCurrentAnimationDict();
+}
+
+EXPORT unsigned int Player_GetCurrentAnimationName(void *p) {
+    auto player = reinterpret_cast<alt::IPlayer *>(p);
+    return player->GetCurrentAnimationName();
+}
+
+EXPORT unsigned char Player_IsSpawned(void *p) {
+    auto player = reinterpret_cast<alt::IPlayer *>(p);
+    return player->IsSpawned();
+}
+
+EXPORT float Player_GetForwardSpeed(void *p) {
+    auto player = reinterpret_cast<alt::IPlayer *>(p);
+    return player->GetForwardSpeed();
+}
+
+EXPORT float Player_GetStrafeSpeed(void *p) {
+    auto player = reinterpret_cast<alt::IPlayer *>(p);
+    return player->GetStrafeSpeed();
+}
+
+EXPORT const char *Player_GetDiscordId(void *p) {
+    auto player = reinterpret_cast<alt::IPlayer *>(p);
+    return player->GetDiscordId().c_str();
+}
+
+EXPORT unsigned int Player_GetInteriorLocation(void *p) {
+    auto player = reinterpret_cast<alt::IPlayer *>(p);
+    return player->GetInteriorLocation();
+}
