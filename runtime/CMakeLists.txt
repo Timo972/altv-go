@@ -30,6 +30,7 @@ endif()
 MESSAGE(STATUS "Flags:" ${CMAKE_CXX_FLAGS_RELEASE})
 
 # protobuf dependency
+list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/vendors/protobuf")
 find_package(Protobuf REQUIRED)
 
 # cpp-sdk dependency
@@ -49,7 +50,7 @@ add_dependencies(${PROJECT_MODULE_NAME} alt-sdk)
 target_link_libraries(${PROJECT_MODULE_NAME} PRIVATE ${Protobuf_LIBRARIES})
 
 # include generated proto sources
-target_include_directories(${PROJECT_MODULE_NAME} PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/src)
+target_include_directories(${PROJECT_MODULE_NAME} PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/src ${Protobuf_INCLUDE_DIRS})
 
 # generate protobuf files
 protobuf_generate(TARGET ${PROJECT_MODULE_NAME} LANGUAGE cpp)
