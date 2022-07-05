@@ -68,6 +68,8 @@ bool Go::Resource::Start() {
     RegisterEventHandler(Go::EventType::LOCAL_SYNCED_META_CHANGE, new LocalSyncedMetaDataChangeEvent(Module));
     RegisterEventHandler(Go::EventType::META_CHANGE, new MetaDataChangeEvent(Module));
     RegisterEventHandler(Go::EventType::PLAYER_REQUEST_CONTROL, new PlayerRequestControlEvent(Module));
+    RegisterEventHandler(Go::EventType::PLAYER_CHANGE_ANIMATION_EVENT, new PlayerChangeAnimationEvent(Module));
+    RegisterEventHandler(Go::EventType::PLAYER_CHANGE_INTERIOR_EVENT, new PlayerChangeInteriorEvent(Module));
 
     start();
 
@@ -90,9 +92,9 @@ bool Go::Resource::Stop() {
 bool Go::Resource::OnEvent(const alt::CEvent *ev) {
     auto type = ev->GetType();
 
-    if (!IsEventRegistered(type)) {
-        return false;
-    }
+    //if (!IsEventRegistered(type)) {
+    //    return false;
+    //}
 
     NotifyEvent(ev, _resource->GetName().c_str());
     return true;
