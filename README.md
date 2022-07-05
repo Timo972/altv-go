@@ -1,4 +1,4 @@
-# altv-go [![API](https://github.com/timo972/altv-go/actions/workflows/test-api.yml/badge.svg)](https://github.com/timo972/altv-go/actions/workflows/test-api.yml) [![Module](https://github.com/timo972/altv-go/actions/workflows/build-deploy-module.yml/badge.svg)](https://github.com/timo972/altv-go/actions/workflows/build-deploy-module.yml)
+# altv-go [![API](https://github.com/timo972/altv-go/actions/workflows/test-api.yml/badge.svg)](https://github.com/timo972/altv-go/actions/workflows/test-api.yml) [![Module](https://github.com/Timo972/altv-go/actions/workflows/test-module.yml/badge.svg)](https://github.com/Timo972/altv-go/actions/workflows/test-module.yml) [![Module](https://github.com/timo972/altv-go/actions/workflows/build-deploy-module.yml/badge.svg)](https://github.com/timo972/altv-go/actions/workflows/build-deploy-module.yml)
 
 Go package for alt:V Multiplayer.
 Runtime can be found [here](runtime).
