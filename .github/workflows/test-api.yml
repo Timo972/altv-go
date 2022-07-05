@@ -1,5 +1,19 @@
 name: Test Go API
-on: [push, pull_request]
+on: 
+  push:
+    paths:
+      - "api/*"
+      - "internal/*"
+      - "c-api/*"
+      - "go.mod"
+      - "go.sum"
+  pull_request:
+    paths:
+      - "api/*"
+      - "internal/*"
+      - "c-api/*"
+      - "go.mod"
+      - "go.sum"
 
 jobs:
   test:

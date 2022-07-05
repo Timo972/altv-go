@@ -1,11 +1,17 @@
 name: Test Go Module
-on: [push, pull_request]
+on: 
+  push:
+    paths:
+      - "runtime/*"
+  pull_request:
+    paths:
+      - "runtime/*"
 
 jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-18.04, windows-2019]
     name: Build ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     steps:
