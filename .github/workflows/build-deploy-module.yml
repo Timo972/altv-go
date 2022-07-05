@@ -114,7 +114,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${GITHUB_REF/refs\/tags\//}
+          release_name: Release ${{ steps.version.outputs.TAG }}
 
       - name: Upload windows artifacts
         uses: actions/upload-release-asset@v1
