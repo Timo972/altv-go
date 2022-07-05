@@ -358,6 +358,7 @@ typedef int (*capi_checkpoint_is_entity_in)(void *c, Entity e);
 typedef int (*capi_checkpoint_is_point_in)(void *c, float x, float y, float z);
 typedef void (*capi_checkpoint_set_players_only)(void *c, int state);
 typedef int (*capi_checkpoint_is_players_only)(void *c);
+typedef unsigned char (*capi_checkpoint_is_entity_id_in)(void *c, unsigned short id);
 typedef unsigned char (*capi_checkpoint_get_checkpoint_type)(void *c);
 typedef float (*capi_checkpoint_get_height)(void *c);
 typedef float (*capi_checkpoint_get_radius)(void *c);
@@ -387,6 +388,7 @@ int checkpoint_is_entity_in(void *c, Entity e);
 int checkpoint_is_point_in(void *c, float x, float y, float z);
 void checkpoint_set_players_only(void *c, int state);
 int checkpoint_is_players_only(void *c);
+unsigned char checkpoint_is_entity_id_in(void *c, unsigned short id);
 unsigned char checkpoint_get_checkpoint_type(void *c);
 float checkpoint_get_height(void *c);
 float checkpoint_get_radius(void *c);
@@ -415,6 +417,7 @@ typedef int (*capi_col_shape_is_entity_in)(void *c, Entity e);
 typedef int (*capi_col_shape_is_point_in)(void *c, float x, float y, float z);
 typedef void (*capi_col_shape_set_players_only)(void *c, int state);
 typedef int (*capi_col_shape_is_players_only)(void *c);
+typedef unsigned char (*capi_col_shape_is_entity_id_in)(void *c, unsigned short id);
 
 
 // /mnt/g/Dev/altV/altv-go-pkg/runtime/src/capi/ColShape.h Module.h
@@ -434,6 +437,7 @@ int col_shape_is_entity_in(void *c, Entity e);
 int col_shape_is_point_in(void *c, float x, float y, float z);
 void col_shape_set_players_only(void *c, int state);
 int col_shape_is_players_only(void *c);
+unsigned char col_shape_is_entity_id_in(void *c, unsigned short id);
 
 // /mnt/g/Dev/altV/altv-go-pkg/runtime/src/capi/Core.h Module.h
 typedef void (*capi_core_log_info)(const char *message);
@@ -688,6 +692,13 @@ typedef int (*capi_player_has_local_meta_data)(void *p, const char *key);
 typedef void (*capi_player_set_local_meta_data)(void *p, const char *key, unsigned char* data, unsigned long long size);
 typedef Array (*capi_player_get_local_meta_data)(void *p, const char *key);
 typedef void (*capi_player_delete_local_meta_data)(void *p, const char *key);
+typedef unsigned int (*capi_player_get_current_animation_dict)(void *p);
+typedef unsigned int (*capi_player_get_current_animation_name)(void *p);
+typedef unsigned char (*capi_player_is_spawned)(void *p);
+typedef float (*capi_player_get_forward_speed)(void *p);
+typedef float (*capi_player_get_strafe_speed)(void *p);
+typedef const char * (*capi_player_get_discord_id)(void *p);
+typedef unsigned int (*capi_player_get_interior_location)(void *p);
 
 
 // /mnt/g/Dev/altV/altv-go-pkg/runtime/src/capi/Player.h Module.h
@@ -816,6 +827,13 @@ int player_has_local_meta_data(void *p, const char *key);
 void player_set_local_meta_data(void *p, const char *key, unsigned char* data, unsigned long long size);
 Array player_get_local_meta_data(void *p, const char *key);
 void player_delete_local_meta_data(void *p, const char *key);
+unsigned int player_get_current_animation_dict(void *p);
+unsigned int player_get_current_animation_name(void *p);
+unsigned char player_is_spawned(void *p);
+float player_get_forward_speed(void *p);
+float player_get_strafe_speed(void *p);
+const char * player_get_discord_id(void *p);
+unsigned int player_get_interior_location(void *p);
 
 // /mnt/g/Dev/altV/altv-go-pkg/runtime/src/capi/Resource.h Module.h
 typedef unsigned char (*capi_resource_is_started)(void *r);
@@ -1076,6 +1094,12 @@ typedef int (*capi_vehicle_get_train_unk3)(void *v);
 typedef int (*capi_vehicle_is_boat_anchor_active)(void *v);
 typedef void (*capi_vehicle_set_boat_anchor_active)(void *v, int state);
 typedef int (*capi_vehicle_set_search_light)(void *v, int state, Entity e);
+typedef unsigned char (*capi_vehicle_get_light_state)(void *v);
+typedef void (*capi_vehicle_set_light_state)(void *v, unsigned char state);
+typedef unsigned char (*capi_vehicle_has_timed_explosion)(void *v);
+typedef void * (*capi_vehicle_get_timed_explosion_culprit)(void *v);
+typedef unsigned int (*capi_vehicle_get_timed_explosion_time)(void *v);
+typedef void (*capi_vehicle_set_timed_explosion)(void *v, unsigned char state, void *culprit, unsigned int time);
 
 
 // /mnt/g/Dev/altV/altv-go-pkg/runtime/src/capi/Vehicle.h Module.h
@@ -1287,6 +1311,12 @@ int vehicle_get_train_unk3(void *v);
 int vehicle_is_boat_anchor_active(void *v);
 void vehicle_set_boat_anchor_active(void *v, int state);
 int vehicle_set_search_light(void *v, int state, Entity e);
+unsigned char vehicle_get_light_state(void *v);
+void vehicle_set_light_state(void *v, unsigned char state);
+unsigned char vehicle_has_timed_explosion(void *v);
+void * vehicle_get_timed_explosion_culprit(void *v);
+unsigned int vehicle_get_timed_explosion_time(void *v);
+void vehicle_set_timed_explosion(void *v, unsigned char state, void *culprit, unsigned int time);
 
 // /mnt/g/Dev/altV/altv-go-pkg/runtime/src/capi/VoiceChannel.h Module.h
 typedef int (*capi_voice_channel_is_valid)(const char* resourceName, void *p);

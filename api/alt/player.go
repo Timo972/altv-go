@@ -470,12 +470,12 @@ func (p Player) DeleteLocalMetaData(key string) {
 	C.player_delete_local_meta_data(p.ptr, cKey)
 }
 
-func (p Player) CurrentAnimationDict() string {
-	return C.GoString(C.player_get_current_animation_dict(p.ptr))
+func (p Player) CurrentAnimationDict() uint32 {
+	return uint32(C.player_get_current_animation_dict(p.ptr))
 }
 
-func (p Player) CurrentAnimationName() string {
-	return C.GoString(C.player_get_current_animation_name(p.ptr))
+func (p Player) CurrentAnimationName() uint32 {
+	return uint32(C.player_get_current_animation_name(p.ptr))
 }
 
 func (p Player) IsSpawned() bool {

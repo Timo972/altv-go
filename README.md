@@ -17,7 +17,7 @@ Do not try to initialize stuff inside as it won't get called.
 package main
 
 import "C"
-import "github.com/timo972/altv-go/alt"
+import "github.com/timo972/altv-go/api/alt"
 
 func init() {
 	// You may want to initialize something here
