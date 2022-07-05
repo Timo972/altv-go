@@ -8,7 +8,7 @@ fi
 
 pushd build
 
-cmake ..
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-8 ..
 cmake --build . --config Release
 
 popd
