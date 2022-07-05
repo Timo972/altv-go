@@ -1148,3 +1148,34 @@ EXPORT int Vehicle_SetSearchLight(void *v, int state, Entity e) {
     auto target = Go::Runtime::GetEntityRef(e);
     return vehicle->SetSearchLight(state, target);
 }
+
+EXPORT unsigned char Vehicle_GetLightState(void *v) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    return vehicle->GetLightState();
+}
+
+EXPORT void Vehicle_SetLightState(void *v, unsigned char state) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    vehicle->SetLightState(state);
+}
+
+EXPORT unsigned char Vehicle_HasTimedExplosion(void *v) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    return vehicle->HasTimedExplosion();
+}
+
+EXPORT void *Vehicle_GetTimedExplosionCulprit(void *v) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    return vehicle->GetTimedExplosionCulprit().Get();
+}
+
+EXPORT unsigned int Vehicle_GetTimedExplosionTime(void *v) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    return vehicle->GetTimedExplosionTime();
+}
+
+EXPORT void Vehicle_SetTimedExplosion(void *v, unsigned char state, void *culprit, unsigned int time) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    auto player = reinterpret_cast<alt::IPlayer *>(culprit);
+    vehicle->SetTimedExplosion(state, player, time);
+}

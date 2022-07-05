@@ -980,3 +980,28 @@ func (v Vehicle) SetBoatAnchorActive(active bool) {
 func (v Vehicle) SetSearchLight(state bool, entity *Entity) bool {
 	return int(C.vehicle_set_search_light(v.ptr, C.int(module.Bool2int(state)), newCEntity(entity))) == 1
 }
+
+func (v Vehicle) LightState() uint8 {
+	return uint8(C.vehicle_get_light_state(v.ptr))
+}
+
+func (v Vehicle) SetLightState(state uint8) {
+	C.vehicle_set_light_state(v.ptr, C.uchar(state))
+}
+
+func (v Vehicle) HasTimedExplosion() bool {
+	return uint8(C.vehicle_has_timed_explosion(v.ptr)) == 1
+}
+
+func (v Vehicle) TimedExplosionCulprit() *Player {
+	p := C.vehicle_get_timed_explosion_culprit(v.ptr)
+	return newPlayer(p)
+}
+
+func (v Vehicle) TimedExplosionTime() uint32 {
+	return uint32(C.vehicle_get_timed_explosion_time(v.ptr))
+}
+
+func (v Vehicle) SetTimedExplosion(state bool, culprit *Player, time uint32) {
+	C.vehicle_set_timed_explosion(v.ptr, C.uchar(module.Bool2int(state)), culprit.ptr, C.uint(time))
+}

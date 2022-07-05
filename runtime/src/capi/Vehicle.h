@@ -224,6 +224,12 @@ EXPORT int Vehicle_IsBoatAnchorActive(void *v);
 EXPORT void Vehicle_SetBoatAnchorActive(void *v, int state);
 
 EXPORT int Vehicle_SetSearchLight(void *v, int state, Entity e);
+EXPORT unsigned char Vehicle_GetLightState(void *v);
+EXPORT void Vehicle_SetLightState(void *v, unsigned char state);
+EXPORT unsigned char Vehicle_HasTimedExplosion(void *v);
+EXPORT void *Vehicle_GetTimedExplosionCulprit(void *v);
+EXPORT unsigned int Vehicle_GetTimedExplosionTime(void *v);
+EXPORT void Vehicle_SetTimedExplosion(void *v, unsigned char state, void *culprit, unsigned int time);
 #ifdef __cplusplus
 }
 #endif
