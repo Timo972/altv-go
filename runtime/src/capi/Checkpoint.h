@@ -28,6 +28,7 @@ extern "C"
     EXPORT int Checkpoint_IsPointIn(void *c, float x, float y, float z);
     EXPORT void Checkpoint_SetPlayersOnly(void *c, int state);
     EXPORT int Checkpoint_IsPlayersOnly(void *c);
+    EXPORT unsigned char ColShape_IsEntityIdIn(void *c, unsigned short id);
 
     // Checkpoint methods
     EXPORT unsigned char Checkpoint_GetCheckpointType(void *c);
