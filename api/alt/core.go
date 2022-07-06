@@ -253,10 +253,9 @@ func HashSHA256(str string) string {
 }
 
 func Hash(str string) uint32 {
-	chars := []rune(strings.ToLower(str))
 	hash := uint32(0)
 
-	for _, c := range chars {
+	for _, c := range strings.ToLower(str) {
 		hash += uint32(c)
 		hash += hash << 10
 		hash ^= hash >> 6
