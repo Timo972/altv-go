@@ -97,7 +97,7 @@ function generateCAPIFunction(match, className, funcName, returnType, argStr) {
   const base = args.shift();
 
   let castTo = reinterprets[className];
-  if (typeof castTo == "undefined")
+  if (typeof castTo === "undefined")
     castTo = `alt::I${className}*`;
     console.warn(`Could not find proper cast preconfigured, using ${castTo}`)
     //throw new Error(`Could not find cast for class ${className}`);
@@ -185,12 +185,12 @@ node gen-body-from-def.js [relative path to .h file] [relative path to .cpp file
     encoding: "utf8",
   });
 
-  const targetContent = await new Promise((resolve, reject) => {
+  const targetContent = await new Promise((resolve) => {
     let cppFile = `#include "${definitionFile.base}"\n\n`;
 
     let match;
 
-    while ((match = definitionRegex.exec(definitionContent)) != null) {
+    while ((match = definitionRegex.exec(definitionContent)) !== null) {
       if (match.index === definitionRegex.lastIndex) {
         definitionRegex.lastIndex++;
       }

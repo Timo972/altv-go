@@ -8,6 +8,9 @@ enabled = true
 name = "javascript"
 enabled = true
 
+  [analyzers.meta]
+  environment = ["process", "__dirname"]
+
 [[analyzers]]
 name = "go"
 enabled = true

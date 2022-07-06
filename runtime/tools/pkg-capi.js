@@ -64,11 +64,11 @@ function generateCGetFunc(cFuncInitName, className, methodName, typedefName) {
 function generateCFuncBody(returnType, pureName, argStr) {
   const args = argStr.split(",").map((val) => {
     const lastIdxOfSpace = val.lastIndexOf(" ") + 1;
-    let type = val.substring(0, lastIdxOfSpace).trim();
+    // let type = val.substring(0, lastIdxOfSpace).trim();
     let name = val.substring(lastIdxOfSpace, val.length);
     if (name.charAt(0) === "*") {
       name = name.substring(1, name.length);
-      type += " *";
+      // type += " *";
     }
     return name;
   });
@@ -114,7 +114,7 @@ function generateCApiPartial(definitionPath, definitionContent) {
     let cFuncBodys = `// ${definitionPath}  Module.c\n`;
     let match;
 
-    while ((match = definitionRegex.exec(definitionContent)) != null) {
+    while ((match = definitionRegex.exec(definitionContent)) !== null) {
       if (match.index === definitionRegex.lastIndex) {
         definitionRegex.lastIndex++;
       }
@@ -227,7 +227,7 @@ async function main() {
         encoding: "utf8",
       });
 
-      return await generateCApiPartial(fp, definitionContent);
+      return generateCApiPartial(fp, definitionContent);
     })
   );
 
