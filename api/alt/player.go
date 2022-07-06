@@ -456,11 +456,8 @@ func (p Player) LocalMetaData(key string, value interface{}) bool {
 
 	cMeta := C.player_get_local_meta_data(p.ptr, cKey)
 	err := decode(cMeta, value)
-	if err != nil {
-		return false
-	}
 
-	return true
+	return err == nil
 }
 
 func (p Player) DeleteLocalMetaData(key string) {

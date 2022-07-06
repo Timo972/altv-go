@@ -67,12 +67,8 @@ func MetaData(key string, value interface{}) bool {
 
 	meta := C.core_get_meta_data(cStr)
 	err := decode(meta, value)
-	if err != nil {
-		LogError(err.Error())
-		return false
-	}
 
-	return true
+	return err == nil
 }
 
 func SetMetaData(key string, value interface{}) bool {
@@ -107,11 +103,8 @@ func SyncedMetaData(key string, value interface{}) bool {
 
 	meta := C.core_get_synced_meta_data(cStr)
 	err := decode(meta, value)
-	if err != nil {
-		return false
-	}
 
-	return true
+	return err == nil
 }
 
 func SetSyncedMetaData(key string, value interface{}) bool {
