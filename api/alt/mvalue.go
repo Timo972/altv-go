@@ -54,7 +54,7 @@ func (e ExternFunction) Call(args ...interface{}) (interface{}, error) {
 		return nil, err
 	}
 
-	return val, nil
+	return val.Interface(), nil
 }
 
 //export altCallFunction
