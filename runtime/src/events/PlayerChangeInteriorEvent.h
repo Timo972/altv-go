@@ -3,6 +3,7 @@
 #include "Main.h"
 #include "Library.h"
 #include "GoEventFactory.h"
+#include "events/CPlayerChangeInteriorEvent.h"
 
 namespace Go
 {
