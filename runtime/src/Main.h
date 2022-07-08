@@ -2,6 +2,9 @@
 #include "mvalue.pb.h"
 
 #define ALT_SERVER_API
+#ifndef GO_MODULE_VERSION
+    #define GO_MODULE_VERSION "DEBUG"
+#endif
 
 typedef struct pos {
     float x;
