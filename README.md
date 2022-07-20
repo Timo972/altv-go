@@ -46,7 +46,7 @@ func OnStop() {
 go build -o my-resource.dll -buildmode=c-shared
 ```
 
-#### Linux
+#### Linux (currently broken)
 
 ```
 export CGO_LDFLAGS="-g -ldl"

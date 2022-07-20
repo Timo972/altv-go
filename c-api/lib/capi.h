@@ -1124,7 +1124,7 @@ typedef unsigned char (*capi_vehicle_get_hybrid_extra_state)(void *v);
 typedef void (*capi_vehicle_set_hybrid_extra_state)(void *v, unsigned char state);
 typedef float (*capi_vehicle_get_damage_modifier)(void *v);
 typedef void (*capi_vehicle_set_damage_modifier)(void *v, float damageModifier);
-typedef float (*capi_veheicle_get_damage_multiplier)(void *v);
+typedef float (*capi_vehicle_get_damage_multiplier)(void *v);
 typedef void (*capi_vehicle_set_damage_multiplier)(void *v, float damageMultiplier);
 
 
@@ -1363,7 +1363,7 @@ unsigned char vehicle_get_hybrid_extra_state(void *v);
 void vehicle_set_hybrid_extra_state(void *v, unsigned char state);
 float vehicle_get_damage_modifier(void *v);
 void vehicle_set_damage_modifier(void *v, float damageModifier);
-float veheicle_get_damage_multiplier(void *v);
+float vehicle_get_damage_multiplier(void *v);
 void vehicle_set_damage_multiplier(void *v, float damageMultiplier);
 
 // C:\Users\beckm\Documents\Dev\altV\Modules\altv-go\runtime\src\capi\VoiceChannel.h Module.h

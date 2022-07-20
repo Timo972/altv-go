@@ -250,7 +250,7 @@ EXPORT unsigned char Vehicle_GetHybridExtraState(void *v);
 EXPORT void Vehicle_SetHybridExtraState(void *v, unsigned char state);
 EXPORT float Vehicle_GetDamageModifier(void *v);
 EXPORT void Vehicle_SetDamageModifier(void *v, float damageModifier);
-EXPORT float Veheicle_GetDamageMultiplier(void *v);
+EXPORT float Vehicle_GetDamageMultiplier(void *v);
 EXPORT void Vehicle_SetDamageMultiplier(void *v, float damageMultiplier);
 #ifdef __cplusplus
 }

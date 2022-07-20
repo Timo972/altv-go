@@ -1280,7 +1280,7 @@ EXPORT void Vehicle_SetDamageModifier(void *v, float damageModifier) {
     vehicle->SetDamageModifier(damageModifier);
 }
 
-EXPORT float Veheicle_GetDamageMultiplier(void *v) {
+EXPORT float Vehicle_GetDamageMultiplier(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
     return vehicle->GetDamageMultiplier();
 }
