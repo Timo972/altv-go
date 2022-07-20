@@ -494,3 +494,11 @@ func (p Player) DiscordId() string {
 func (p Player) InteriorLocation() uint32 {
 	return uint32(C.player_get_interior_location(p.ptr))
 }
+
+func (p Player) LastDamagedBodyPart() uint32 {
+	return uint32(C.player_get_last_damaged_body_part(p.ptr))
+}
+
+func (p Player) SetLastDamagedBodyPart(bodyPart uint32) {
+	C.player_set_last_damaged_body_part(p.ptr, C.uint(bodyPart))
+}
