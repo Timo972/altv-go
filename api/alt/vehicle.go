@@ -1005,3 +1005,91 @@ func (v Vehicle) TimedExplosionTime() uint32 {
 func (v Vehicle) SetTimedExplosion(state bool, culprit *Player, time uint32) {
 	C.vehicle_set_timed_explosion(v.ptr, C.uchar(module.Bool2int(state)), culprit.ptr, C.uint(time))
 }
+
+func (v Vehicle) IsTowingDisabled() bool {
+	return byte(C.vehicle_is_towing_disabled(v.ptr)) == 1
+}
+
+func (v Vehicle) SetTowingDisabled(state bool) {
+	C.vehicle_set_towing_disabled(v.ptr, C.uchar(module.Bool2int(state)))
+}
+
+func (v Vehicle) RocketRefuelSpeed() float32 {
+	return float32(C.vehicle_get_rocket_refuel_speed(v.ptr))
+}
+
+func (v Vehicle) SetRocketRefuelSpeed(speed float32) {
+	C.vehicle_set_rocket_refuel_speed(v.ptr, C.float(speed))
+}
+
+func (v Vehicle) BombCount() uint32 {
+	return uint32(C.vehicle_get_bomb_count(v.ptr))
+}
+
+func (v Vehicle) SetBombCount(count uint32) {
+	C.vehicle_set_bomb_count(v.ptr, C.uint(count))
+}
+
+func (v Vehicle) CounterMeasureCount() uint32 {
+	return uint32(C.vehicle_get_counter_measure_count(v.ptr))
+}
+
+func (v Vehicle) SetCounterMeasureCount(count uint32) {
+	C.vehicle_set_counter_measure_count(v.ptr, C.uint(count))
+}
+
+func (v Vehicle) ScriptMaxSpeed() float32 {
+	return float32(C.vehicle_get_script_max_speed(v.ptr))
+}
+
+func (v Vehicle) SetScriptMaxSpeed(speed float32) {
+	C.vehicle_set_script_max_speed(v.ptr, C.float(speed))
+}
+
+func (v Vehicle) WeaponsDisabled() bool {
+	return byte(C.vehicle_get_weapons_disabled(v.ptr)) == 1
+}
+
+func (v Vehicle) SetWeaponsDisabled(state bool) {
+	C.vehicle_set_weapons_disabled(v.ptr, C.uchar(module.Bool2int(state)))
+}
+
+func (v Vehicle) WeaponCapacity(index uint8) int32 {
+	return int32(C.vehicle_get_weapon_capacity(v.ptr, C.uchar(index)))
+}
+
+func (v Vehicle) SetWeaponCapacity(index uint8, cap int32) {
+	C.vehicle_set_weapon_capacity(v.ptr, C.uchar(index), C.int(cap))
+}
+
+func (v Vehicle) HybridExtraActive() bool {
+	return byte(C.vehicle_get_hybrid_extra_active(v.ptr)) == 1
+}
+
+func (v Vehicle) SetHybridExtraActive(active bool) {
+	C.vehicle_set_hybrid_extra_active(v.ptr, C.uchar(module.Bool2int(active)))
+}
+
+func (v Vehicle) HybridExtraState() uint8 {
+	return uint8(C.vehicle_get_hybrid_extra_state(v.ptr))
+}
+
+func (v Vehicle) SetHybridExtraState(state uint8) {
+	C.vehicle_set_hybrid_extra_state(v.ptr, C.uchar(state))
+}
+
+func (v Vehicle) DamageModifier() float32 {
+	return float32(C.vehicle_get_damage_modifier(v.ptr))
+}
+
+func (v Vehicle) SetDamageModifier(modifier float32) {
+	C.vehicle_set_damage_modifier(v.ptr, C.float(modifier))
+}
+
+func (v Vehicle) DamageMultiplier() float32 {
+	return float32(C.vehicle_get_damage_multiplier(v.ptr))
+}
+
+func (v Vehicle) SetDamageMultiplier(multiplier float32) {
+	C.vehicle_set_damage_multiplier(v.ptr, C.float(multiplier))
+}
