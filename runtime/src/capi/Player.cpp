@@ -813,3 +813,13 @@ EXPORT unsigned int Player_GetInteriorLocation(void *p) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     return player->GetInteriorLocation();
 }
+
+EXPORT unsigned int Player_GetLastDamagedBodyPart(void *p) {
+    auto player = reinterpret_cast<alt::IPlayer *>(p);
+    return player->GetLastDamagedBodyPart();
+}
+
+EXPORT void Player_SetLastDamagedBodyPart(void *p, unsigned int bodyPart) {
+    auto player = reinterpret_cast<alt::IPlayer *>(p);
+    player->SetLastDamagedBodyPart(bodyPart);
+}

@@ -150,6 +150,8 @@ EXPORT float Player_GetForwardSpeed(void *p);
 EXPORT float Player_GetStrafeSpeed(void *p);
 EXPORT const char *Player_GetDiscordId(void *p);
 EXPORT unsigned int Player_GetInteriorLocation(void *p);
+EXPORT unsigned int Player_GetLastDamagedBodyPart(void *p);
+EXPORT void Player_SetLastDamagedBodyPart(void *p, unsigned int bodyPart);
 #ifdef __cplusplus
 }
 #endif

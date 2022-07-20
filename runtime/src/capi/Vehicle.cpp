@@ -1179,3 +1179,113 @@ EXPORT void Vehicle_SetTimedExplosion(void *v, unsigned char state, void *culpri
     auto player = reinterpret_cast<alt::IPlayer *>(culprit);
     vehicle->SetTimedExplosion(state, player, time);
 }
+
+EXPORT unsigned char Vehicle_IsTowingDisabled(void *v) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    return vehicle->IsTowingDisabled();
+}
+
+EXPORT void Vehicle_SetTowingDisabled(void *v, unsigned char state) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    vehicle->SetTowingDisabled(state);
+}
+
+EXPORT float Vehicle_GetRocketRefuelSpeed(void *v) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    return vehicle->GetRocketRefuelSpeed();
+}
+
+EXPORT void Vehicle_SetRocketRefuelSpeed(void *v, float speed) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    vehicle->SetRocketRefuelSpeed(speed);
+}
+
+EXPORT unsigned int Vehicle_GetBombCount(void *v) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    return vehicle->GetBombCount();
+}
+
+EXPORT void Vehicle_SetBombCount(void *v, unsigned int count) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    vehicle->SetBombCount(count);
+}
+
+EXPORT unsigned int Vehicle_GetCounterMeasureCount(void *v) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    return vehicle->GetCounterMeasureCount();
+}
+
+EXPORT void Vehicle_SetCounterMeasureCount(void *v, unsigned int count) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    vehicle->SetCounterMeasureCount(count);
+}
+
+EXPORT float Vehicle_GetScriptMaxSpeed(void *v) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    return vehicle->GetScriptMaxSpeed();
+}
+
+EXPORT void Vehicle_SetScriptMaxSpeed(void *v, float speed) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    vehicle->SetScriptMaxSpeed(speed);
+}
+
+EXPORT unsigned char Vehicle_GetWeaponsDisabled(void *v) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    return vehicle->GetWeaponsDisabled();
+}
+
+EXPORT void Vehicle_SetWeaponsDisabled(void *v, unsigned char state) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    vehicle->SetWeaponsDisabled(state);
+}
+
+EXPORT int Vehicle_GetWeaponCapacity(void *v, unsigned char index) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    return vehicle->GetWeaponCapacity(index);
+}
+
+EXPORT void Vehicle_SetWeaponCapacity(void *v, unsigned char index, int capacity) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    vehicle->SetWeaponCapacity(index, capacity);
+}
+
+EXPORT unsigned char Vehicle_GetHybridExtraActive(void *v) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    return vehicle->GetHybridExtraActive();
+}
+
+EXPORT void Vehicle_SetHybridExtraActive(void *v, unsigned char state) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    vehicle->SetHybridExtraActive(state);
+}
+
+EXPORT unsigned char Vehicle_GetHybridExtraState(void *v) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    return vehicle->GetHybridExtraState();
+}
+
+EXPORT void Vehicle_SetHybridExtraState(void *v, unsigned char state) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    vehicle->SetHybridExtraState(state);
+}
+
+EXPORT float Vehicle_GetDamageModifier(void *v) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    return vehicle->GetDamageModifier();
+}
+
+EXPORT void Vehicle_SetDamageModifier(void *v, float damageModifier) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    vehicle->SetDamageModifier(damageModifier);
+}
+
+EXPORT float Veheicle_GetDamageMultiplier(void *v) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    return vehicle->GetDamageMultiplier();
+}
+
+EXPORT void Vehicle_SetDamageMultiplier(void *v, float damageMultiplier) {
+    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
+    vehicle->SetDamageMultiplier(damageMultiplier);
+}
