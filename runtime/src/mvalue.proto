@@ -4,6 +4,21 @@ package MValue;
 option go_package = "/internal/pb";
 
 message BaseObject {
+  /*enum Type {
+		PLAYER = 0;
+		VEHICLE = 1;
+		BLIP = 2;
+		WEBVIEW = 3;
+		VOICE_CHANNEL = 4;
+		COLSHAPE = 5;
+		CHECKPOINT = 6;
+		WEBSOCKET_CLIENT = 7;
+		HTTP_CLIENT = 8;
+		AUDIO = 9;
+		RML_ELEMENT = 10;
+		RML_DOCUMENT = 11;
+		LOCAL_PLAYER = 12;
+	}*/
   required uint32 type = 1;
   required string ptr = 2;
 }

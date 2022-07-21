@@ -25,6 +25,21 @@ type BaseObject struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	//enum Type {
+	//PLAYER = 0;
+	//VEHICLE = 1;
+	//BLIP = 2;
+	//WEBVIEW = 3;
+	//VOICE_CHANNEL = 4;
+	//COLSHAPE = 5;
+	//CHECKPOINT = 6;
+	//WEBSOCKET_CLIENT = 7;
+	//HTTP_CLIENT = 8;
+	//AUDIO = 9;
+	//RML_ELEMENT = 10;
+	//RML_DOCUMENT = 11;
+	//LOCAL_PLAYER = 12;
+	//}
 	Type *uint32 `protobuf:"varint,1,req,name=type" json:"type,omitempty"`
 	Ptr  *string `protobuf:"bytes,2,req,name=ptr" json:"ptr,omitempty"`
 }

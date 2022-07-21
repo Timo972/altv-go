@@ -23,7 +23,7 @@ service CoreAPI {
 	rpc Hash(google.protobuf.StringValue) returns (google.protobuf.UInt64Value);
 	rpc FileExists(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
 	rpc FileRead(google.protobuf.StringValue) returns (google.protobuf.StringValue);
-	rpc GetEntityByID(google.protobuf.UInt32Value) returns (BaseObject);
+	rpc GetEntityByID(google.protobuf.UInt32Value) returns (MValue.BaseObject);
 	// TODO:
 	rpc GetEntities(google.protobuf.Empty) returns(google.protobuf.Empty);
 	rpc GetPlayers(google.protobuf.Empty) returns(google.protobuf.Empty);
@@ -57,8 +57,8 @@ service CoreAPI {
 
 message CreateVehicleRequest {
 	required uint64 model = 1; 
-	required Vector3 pos = 2;
-	required Vector3 rot = 3;
+	required MValue.Vector3 pos = 2;
+	required MValue.Vector3 rot = 3;
 }
 
 message CreateVoiceChannelRequest {
@@ -109,32 +109,6 @@ message VehicleModelInfo {
 	required uint32 defaultExtras = 13;
 }
 
-message Vector3 {
-	required float x = 1;
-	required float y = 2;
-	required float z = 3;
-}
-
 message Pointer {
 	required string ptr = 1;
-}
-
-message BaseObject {
-	required bytes ptr = 1;
-	enum Type {
-		PLAYER = 0;
-		VEHICLE = 1;
-		BLIP = 2;
-		WEBVIEW = 3;
-		VOICE_CHANNEL = 4;
-		COLSHAPE = 5;
-		CHECKPOINT = 6;
-		WEBSOCKET_CLIENT = 7;
-		HTTP_CLIENT = 8;
-		AUDIO = 9;
-		RML_ELEMENT = 10;
-		RML_DOCUMENT = 11;
-		LOCAL_PLAYER = 12;
-	}
-	required Type type = 2;
 }
