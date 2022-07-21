@@ -7,7 +7,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set_target_properties(PROPERTIES PREFIX "")
 
-#add_definitions(-DGO_MODULE_VERSION="${GO_MODULE_VERSION}")
+if ("${GO_MODULE_VERSION}" STREQUAL "")
+add_definitions(-DGO_MODULE_VERSION="DEBUG")
+else()
+add_definitions(-DGO_MODULE_VERSION="${GO_MODULE_VERSION}")
+endif()
 
 set(Protobuf_USE_STATIC_LIBS ON)
 set(PROTOBUF_IMPORT_DIRS ${CMAKE_SOURCE_DIR}/src)
