@@ -4,6 +4,8 @@
 #include <map>
 #include <vector>
 
+#include <grpcpp/server_builder.h>
+
 #include "Main.h"
 
 namespace Go {
@@ -11,6 +13,7 @@ namespace Go {
     private:
         static Runtime *Instance;
         std::vector<std::map<std::string, alt::IResource::Impl *>> _resources;
+        std::unique_ptr<grpc::Server> _server;
     public:
         Runtime();
         ~Runtime() override = default;

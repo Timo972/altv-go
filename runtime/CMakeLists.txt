@@ -13,9 +13,9 @@ else()
 add_definitions(-DGO_MODULE_VERSION="${GO_MODULE_VERSION}")
 endif()
 
-set(Protobuf_USE_STATIC_LIBS ON)
-set(gRPC_USE_STATIC_LIBS ON)
-set(PROTOBUF_IMPORT_DIRS ${CMAKE_SOURCE_DIR})
+#set(Protobuf_USE_STATIC_LIBS ON)
+#set(gRPC_USE_STATIC_LIBS ON)
+#set(PROTOBUF_IMPORT_DIRS ${CMAKE_SOURCE_DIR})
 
 file(GLOB_RECURSE PROJECT_SOURCE_FILES "src/*.h" "src/*.hpp" "src/*.cpp"
         "src/events/*.h" "src/events/*.hpp" "src/events/*.cpp")
@@ -25,13 +25,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
-if(MSVC)
-    add_compile_options(
-        $<$<CONFIG:>:/MT>
-        $<$<CONFIG:Debug>:/MTd>
-        $<$<CONFIG:Release>:/MT>
-    )
-endif()
+#if(MSVC)
+#    add_compile_options(
+#        $<$<CONFIG:>:/MT>
+#        $<$<CONFIG:Debug>:/MTd>
+#        $<$<CONFIG:Release>:/MT>
+#    )
+#endif()
 
 MESSAGE(STATUS "Flags:" ${CMAKE_CXX_FLAGS_RELEASE})
 MESSAGE(STATUS "Sources:" ${CMAKE_SOURCE_DIR})

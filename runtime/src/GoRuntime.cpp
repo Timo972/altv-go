@@ -5,20 +5,26 @@
 #include <cstdint>
 #include <sstream>
 
-// #include "services/Core.h"
+#include "services/Core.h"
 
+// #include <grpcpp/ext/proto_server_reflection_plugin.h>
+#include <grpcpp/grpcpp.h>
+#include <grpcpp/health_check_service_interface.h>
 // #include <grpc/grpc.h>
-#include <grpcpp/server_builder.h>
 
 Go::Runtime::Runtime() {
     alt::ICore::Instance().LogInfo("Creating Go::Runtime");
+
+    grpc::EnableDefaultHealthCheckService(true);
+    //grpc::reflection::InitProtoReflectionServerBuilderPlugin();
+
     grpc::ServerBuilder builder;
     builder.AddListeningPort("127.0.0.1:50051", grpc::InsecureServerCredentials());
 
-    // CoreService core_service;
-    // builder.RegisterService(&core_service);
+    CoreService coreService;
+    builder.RegisterService(&coreService);
 
-    std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
+    _server = std::unique_ptr<grpc::Server>(builder.BuildAndStart());
     alt::ICore::Instance().LogInfo("GRPC started");
 }
 
@@ -48,6 +54,7 @@ void Go::Runtime::DestroyImpl(alt::IResource::Impl *impl) {
 
 void Go::Runtime::OnDispose() {
     // Delete all global objects allocated by libprotobuf.
+    _server->Shutdown();
     google::protobuf::ShutdownProtobufLibrary();
 }
 

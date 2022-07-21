@@ -21,6 +21,8 @@ import (
 	"log"
 	runtime "runtime/debug"
 	"unsafe"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 /*type resource struct {
@@ -81,8 +83,6 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, version *C.c
 
 	v := C.GoString(version)
 
-	cstr := C.CString("go-module")
-	defer C.free(unsafe.Pointer(cstr))
 
 	log.SetFlags(log.Ltime)
 
@@ -102,10 +102,15 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, version *C.c
 		log.Fatalf("Version mismatch: %s != %s", v, info.Main.Version)
 	}
 
-	moduleLoaded := int(C.load_module(cstr))
-	if moduleLoaded == 0 {
-		log.Fatal("Couldn't locate go-module library.")
+	conn, err := grpc.Dial("127.0.0.1:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("Couldn't connect to go-module: %v", err.Error())
 	}
+}
+
+//export stopGoResource
+func stopGoResource() {
+
 }
 
 func ResourceByName(name string) IResource {
