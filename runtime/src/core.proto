@@ -116,7 +116,7 @@ message Vector3 {
 }
 
 message Pointer {
-	required bytes ptr = 1;
+	required string ptr = 1;
 }
 
 message BaseObject {

@@ -1,5 +1,6 @@
 #include "Core.h"
 #include "Main.h"
+#include "GoRuntime.h"
 
 
 Status CoreService::CreateVehicle(ServerContext* context, const Core::CreateVehicleRequest* req, Core::Pointer* res)
@@ -11,7 +12,7 @@ Status CoreService::CreateVehicle(ServerContext* context, const Core::CreateVehi
 
 	auto vehicle = alt::ICore::Instance().CreateVehicle(req->model(), position, rotation);
 	auto ptr = vehicle.Get();
-	// res->set_ptr();
+	res->set_ptr(Go::Runtime::PointerToString(ptr));
 
 	return Status::OK;
 }
