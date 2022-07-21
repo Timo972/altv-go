@@ -9,4 +9,3 @@ cmake-build-default/
 Module.c
 Module.h
 out/
-vendors/protobuf/lib/*

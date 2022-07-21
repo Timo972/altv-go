@@ -1,7 +1,7 @@
-# altv-go [![API](https://github.com/timo972/altv-go/actions/workflows/test-api.yml/badge.svg)](https://github.com/timo972/altv-go/actions/workflows/test-api.yml) [![Module](https://github.com/timo972/altv-go/actions/workflows/build-deploy-module.yml/badge.svg)](https://github.com/timo972/altv-go/actions/workflows/build-deploy-module.yml)
+# altv-go [![API](https://github.com/timo972/altv-go/actions/workflows/test-api.yml/badge.svg)](https://github.com/timo972/altv-go/actions/workflows/test-api.yml) [![Module](https://github.com/Timo972/altv-go/actions/workflows/test-module.yml/badge.svg)](https://github.com/Timo972/altv-go/actions/workflows/test-module.yml) [![Module](https://github.com/timo972/altv-go/actions/workflows/build-deploy-module.yml/badge.svg)](https://github.com/timo972/altv-go/actions/workflows/build-deploy-module.yml)
 
 Go package for alt:V Multiplayer.
-Runtime can be found [here](https://github.com/Timo972/altv-go/runtime).
+Runtime can be found [here](runtime).
 
 ## Requirements
 
@@ -17,7 +17,7 @@ Do not try to initialize stuff inside as it won't get called.
 package main
 
 import "C"
-import "github.com/timo972/altv-go/alt"
+import "github.com/timo972/altv-go/api/alt"
 
 func init() {
 	// You may want to initialize something here
@@ -46,7 +46,7 @@ func OnStop() {
 go build -o my-resource.dll -buildmode=c-shared
 ```
 
-#### Linux
+#### Linux (currently broken)
 
 ```
 export CGO_LDFLAGS="-g -ldl"

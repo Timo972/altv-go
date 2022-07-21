@@ -14,7 +14,7 @@ Installing the module is very simple:
 3. Edit the server.cfg and add the module:
 ```
 modules: [
-    go
+    go-module
 ]
 ```
 Thats it!

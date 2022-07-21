@@ -45,6 +45,8 @@
 #include "events/LocalSyncedMetaDataChangeEvent.h"
 #include "events/MetaDataChangeEvent.h"
 #include "events/PlayerRequestControlEvent.h"
+#include "events/PlayerChangeAnimationEvent.h"
+#include "events/PlayerChangeInteriorEvent.h"
 
 namespace Go
 {

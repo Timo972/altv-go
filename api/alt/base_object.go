@@ -131,11 +131,8 @@ func (b BaseObject) MetaData(key string, val interface{}) bool {
 	}
 
 	err := decode(arr, val)
-	if err != nil {
-		return false
-	}
 
-	return true
+	return err == nil
 }
 
 func (b BaseObject) SetMetaData(key string, value interface{}) bool {

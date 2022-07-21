@@ -80,6 +80,8 @@ const (
 	dataNodeReceivedEvent
 
 	consoleCommandEvent
+	playerChangeAnimationEvent
+	playerChangeInteriorEvent
 )
 
 type serverStartedListener = func()
@@ -130,6 +132,9 @@ type removeEntityListener = func(entity *Entity)
 
 type consoleCommandListener = func(command string, args []string)
 
+type playerChangeAnimationListener = func(player *Player, oldAnimDict uint32, oldAnimName uint32, newAnimDict uint32, newAnimName uint32)
+type playerChangeInteriorListener = func(player *Player, oldInterior uint32, newInterior uint32)
+
 // type allServerEventsListener = func(eventName string, args ...interface{})
 // type serverEventListener = func(args ...interface{})
 // type allClientEventsListener = func(player *Player, eventName string, args ...interface{})
@@ -178,6 +183,8 @@ type eventManager struct {
 	clientScriptEvents               map[string][]reflect.Value
 	allServerScriptEvents            []reflect.Value
 	allClientScriptEvents            []reflect.Value
+	playerChangeAnimationEvents      []playerChangeAnimationListener
+	playerChangeInteriorEvents       []playerChangeInteriorListener
 }
 
 /*type listener interface {
@@ -448,6 +455,16 @@ func (e *eventManager) ClientEvent(eventName string, listener scriptEventListene
 func (e *eventManager) AllClientEvents(listener scriptEventListener) {
 	e.allClientScriptEvents = append(e.allClientScriptEvents, reflect.ValueOf(listener))
 	registerOnEvent(CurrentResource.Name(), clientScriptEvent)
+}
+
+func (e *eventManager) PlayerChangeAnimationEvent(listener playerChangeAnimationListener) {
+	e.playerChangeAnimationEvents = append(e.playerChangeAnimationEvents, listener)
+	registerOnEvent(CurrentResource.Name(), playerChangeAnimationEvent)
+}
+
+func (e *eventManager) playerChangeInteriorEvent(listener playerChangeInteriorListener) {
+	e.playerChangeInteriorEvents = append(e.playerChangeInteriorEvents, listener)
+	registerOnEvent(CurrentResource.Name(), playerChangeInteriorEvent)
 }
 
 func Emit(eventName string, args ...interface{}) error {
@@ -1411,5 +1428,49 @@ func altVehicleDamageEvent(v unsafe.Pointer, e C.struct_entity, body C.uint, add
 	re := len(Once.vehicleDamageEvents) + len(On.vehicleDamageEvents)
 	if re < 1 {
 		unregisterOnEvent(CurrentResource.Name(), vehicleDamage)
+	}
+}
+
+//export altPlayerChangeAnimationEvent
+func altPlayerChangeAnimationEvent(p unsafe.Pointer, oldAnimDict C.uint, oldAnimName C.uint, newAnimDict C.uint, newAnimName C.uint) {
+	player := newPlayer(p)
+	oad := uint32(oldAnimDict)
+	oan := uint32(oldAnimName)
+	nad := uint32(newAnimDict)
+	nan := uint32(newAnimName)
+
+	for i, event := range Once.playerChangeAnimationEvents {
+		event(player, oad, oan, nad, nan)
+		Once.playerChangeAnimationEvents = removeIndex(Once.playerChangeAnimationEvents, i)
+	}
+
+	for _, event := range On.playerChangeAnimationEvents {
+		event(player, oad, oan, nad, nan)
+	}
+
+	re := len(Once.playerChangeAnimationEvents) + len(On.playerChangeAnimationEvents)
+	if re < 1 {
+		unregisterOnEvent(CurrentResource.Name(), playerChangeAnimationEvent)
+	}
+}
+
+//export altPlayerChangeInteriorEvent
+func altPlayerChangeInteriorEvent(p unsafe.Pointer, oldInterior C.uint, newInterior C.uint) {
+	player := newPlayer(p)
+	oi := uint32(oldInterior)
+	ni := uint32(newInterior)
+
+	for i, event := range Once.playerChangeInteriorEvents {
+		event(player, oi, ni)
+		Once.playerChangeInteriorEvents = removeIndex(Once.playerChangeInteriorEvents, i)
+	}
+
+	for _, event := range On.playerChangeInteriorEvents {
+		event(player, oi, ni)
+	}
+
+	re := len(Once.playerChangeInteriorEvents) + len(On.playerChangeInteriorEvents)
+	if re < 1 {
+		unregisterOnEvent(CurrentResource.Name(), playerChangeInteriorEvent)
 	}
 }

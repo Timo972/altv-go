@@ -123,3 +123,14 @@ func (c ColShape) ColShapeType() int8 {
 	}
 	return 0
 }
+
+func (c ColShape) IsEntityIdIn(id uint16) bool {
+	var x uint8
+	if c.Type == ColshapeObject {
+		x = uint8(C.col_shape_is_entity_id_in(c.ptr, C.ushort(id)))
+	} else if c.Type == CheckpointObject {
+		x = uint8(C.checkpoint_is_entity_id_in(c.ptr, C.ushort(id)))
+	}
+
+	return x == 1
+}

@@ -11,8 +11,11 @@ EXPORT bool altMain(alt::ICore* core) {
     auto runtime = Go::Runtime::GetInstance();
 
     core->RegisterScriptRuntime("go", runtime);
-    core->LogInfo("Go Module Loaded");
 
+    std::stringstream log;
+    log << "Go Module Loaded: " << GO_MODULE_VERSION;
+    core->LogInfo(log.str());
+    
     return true;
 }
 

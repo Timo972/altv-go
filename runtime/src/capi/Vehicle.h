@@ -224,6 +224,34 @@ EXPORT int Vehicle_IsBoatAnchorActive(void *v);
 EXPORT void Vehicle_SetBoatAnchorActive(void *v, int state);
 
 EXPORT int Vehicle_SetSearchLight(void *v, int state, Entity e);
+EXPORT unsigned char Vehicle_GetLightState(void *v);
+EXPORT void Vehicle_SetLightState(void *v, unsigned char state);
+EXPORT unsigned char Vehicle_HasTimedExplosion(void *v);
+EXPORT void *Vehicle_GetTimedExplosionCulprit(void *v);
+EXPORT unsigned int Vehicle_GetTimedExplosionTime(void *v);
+EXPORT void Vehicle_SetTimedExplosion(void *v, unsigned char state, void *culprit, unsigned int time);
+EXPORT unsigned char Vehicle_IsTowingDisabled(void *v);
+EXPORT void Vehicle_SetTowingDisabled(void *v, unsigned char state);
+EXPORT float Vehicle_GetRocketRefuelSpeed(void *v);
+EXPORT void Vehicle_SetRocketRefuelSpeed(void *v, float speed);
+EXPORT unsigned int Vehicle_GetBombCount(void *v);
+EXPORT void Vehicle_SetBombCount(void *v, unsigned int count);
+EXPORT unsigned int Vehicle_GetCounterMeasureCount(void *v);
+EXPORT void Vehicle_SetCounterMeasureCount(void *v, unsigned int count);
+EXPORT float Vehicle_GetScriptMaxSpeed(void *v);
+EXPORT void Vehicle_SetScriptMaxSpeed(void *v, float speed);
+EXPORT unsigned char Vehicle_GetWeaponsDisabled(void *v);
+EXPORT void Vehicle_SetWeaponsDisabled(void *v, unsigned char state);
+EXPORT int Vehicle_GetWeaponCapacity(void *v, unsigned char index);
+EXPORT void Vehicle_SetWeaponCapacity(void *v, unsigned char index, int capacity);
+EXPORT unsigned char Vehicle_GetHybridExtraActive(void *v);
+EXPORT void Vehicle_SetHybridExtraActive(void *v, unsigned char state);
+EXPORT unsigned char Vehicle_GetHybridExtraState(void *v);
+EXPORT void Vehicle_SetHybridExtraState(void *v, unsigned char state);
+EXPORT float Vehicle_GetDamageModifier(void *v);
+EXPORT void Vehicle_SetDamageModifier(void *v, float damageModifier);
+EXPORT float Vehicle_GetDamageMultiplier(void *v);
+EXPORT void Vehicle_SetDamageMultiplier(void *v, float damageMultiplier);
 #ifdef __cplusplus
 }
 #endif

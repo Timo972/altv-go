@@ -7,6 +7,12 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set_target_properties(PROPERTIES PREFIX "")
 
+if ("${GO_MODULE_VERSION}" STREQUAL "")
+add_definitions(-DGO_MODULE_VERSION="DEBUG")
+else()
+add_definitions(-DGO_MODULE_VERSION="${GO_MODULE_VERSION}")
+endif()
+
 set(Protobuf_USE_STATIC_LIBS ON)
 set(gRPC_USE_STATIC_LIBS ON)
 set(PROTOBUF_IMPORT_DIRS ${CMAKE_SOURCE_DIR})
@@ -19,21 +25,21 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
-#if(MSVC)
-#    add_compile_options(
-#        $<$<CONFIG:>:/MT>
-#        $<$<CONFIG:Debug>:/MTd>
-#        $<$<CONFIG:Release>:/MT>
-#    )
-#endif()
+if(MSVC)
+    add_compile_options(
+        $<$<CONFIG:>:/MT>
+        $<$<CONFIG:Debug>:/MTd>
+        $<$<CONFIG:Release>:/MT>
+    )
+endif()
 
 MESSAGE(STATUS "Flags:" ${CMAKE_CXX_FLAGS_RELEASE})
 MESSAGE(STATUS "Sources:" ${CMAKE_SOURCE_DIR})
 MESSAGE(STATUS "Protobuf builds:" ${CMAKE_CURRENT_BINARY_DIR})
 
 # grpc & protobuf
-find_package(Protobuf CONFIG REQUIRED)
-find_package(gRPC CONFIG REQUIRED)
+find_package(Protobuf REQUIRED)
+find_package(gRPC REQUIRED)
 
 # cpp-sdk dependency
 include("vendors/cpp-sdk/CMakeLists.txt")

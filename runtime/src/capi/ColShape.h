@@ -29,6 +29,8 @@ extern "C"
     EXPORT void ColShape_SetPlayersOnly(void *c, int state);
     EXPORT int ColShape_IsPlayersOnly(void *c);
 
+    EXPORT unsigned char ColShape_IsEntityIdIn(void *c, unsigned short id);
+
 #ifdef __cplusplus
 }
 #endif

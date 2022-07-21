@@ -3,7 +3,11 @@
 
 #include "core.grpc.pb.h"
 
-class CoreService final : public Core::Core::Service {
+using Core::CoreAPI;
+using grpc::Status;
+using grpc::ServerContext;
+
+class CoreService final : public CoreAPI::Service {
 public:
-	virtual ::grpc::Status CreateVehicle(::grpc::ServerContext* context, const ::Core::CreateVehicleRequest* req, ::Core::Pointer* res);
-}
+	virtual Status CreateVehicle(ServerContext* context, const Core::CreateVehicleRequest* req, Core::Pointer* res);
+};

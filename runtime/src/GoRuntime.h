@@ -12,7 +12,8 @@ namespace Go {
         static Runtime *Instance;
         std::vector<std::map<std::string, alt::IResource::Impl *>> _resources;
     public:
-        Runtime() = default;
+        Runtime();
+        ~Runtime() override = default;
 
         alt::IResource::Impl *CreateImpl(alt::IResource *resource) override;
 

@@ -45,7 +45,7 @@ func newProtoMValue(value interface{}) *pb.MValue {
 				Value: &pb.MValue_BaseObjectValue{
 					BaseObjectValue: &pb.BaseObject{
 						Type: proto.Uint32(uint32(rv.FieldByName("Type").Uint())),
-						Ptr:  proto.String(fmt.Sprintf("%v", rv.FieldByName("Ptr").UnsafePointer())),
+						Ptr:  proto.String(fmt.Sprintf("%v", rv.FieldByName("ptr").UnsafePointer())),
 					},
 				},
 			}

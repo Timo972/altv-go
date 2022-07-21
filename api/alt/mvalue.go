@@ -54,7 +54,11 @@ func (e ExternFunction) Call(args ...interface{}) (interface{}, error) {
 		return nil, err
 	}
 
-	return val, nil
+	if val.IsValid() {
+		return val.Interface(), nil
+	} else {
+		return nil, nil
+	}
 }
 
 //export altCallFunction

@@ -23,8 +23,24 @@ import (
 	"unsafe"
 )
 
+func registerExport(cResource *C.char, exportName string, field reflect.Value) error {
+	pv, err := encode(field.Interface())
+	if err != nil {
+		return err
+	}
+
+	cExportName := C.CString(exportName)
+	defer C.free(unsafe.Pointer(cExportName)) // not freeing it because module needs it while whole runtime
+
+	exp := int(C.runtime_register_alt_export(cResource, cExportName, (*C.uchar)(pv.array), pv.size)) == 1
+	if !exp {
+		return fmt.Errorf("failed to register export '%s'", exportName)
+	}
+	return nil
+}
+
 // Export exports a struct
-func Export(export interface{}) (err error) {
+func Export(export interface{}) error {
 	cResource := C.CString(CurrentResource.Name())
 	defer C.free(unsafe.Pointer(cResource))
 
@@ -40,19 +56,8 @@ func Export(export interface{}) (err error) {
 		field := rv.Field(i)
 		fieldType := rt.Field(i)
 		exportName := getFieldName(fieldType)
-		cExportName := C.CString(exportName)
 
-		cArr, err := encode(field.Interface())
-		if err != nil {
-			return err
-		}
-
-		exported := int(C.runtime_register_alt_export(cResource, cExportName, (*C.uchar)(cArr.array), cArr.size)) == 1
-		if !exported {
-			err = fmt.Errorf("failed to export %s", exportName)
-		}
-
-		C.free(unsafe.Pointer(cExportName)) // not freeing it because module needs it while whole runtime
+		registerExport(cResource, exportName, field)
 	}
 
 	// export methods
@@ -62,24 +67,12 @@ func Export(export interface{}) (err error) {
 		// if !method.IsExported() {
 		// 	continue
 		// }
-
 		exportName := method.Type.Name()
-		cExportName := C.CString(exportName)
 
-		pv, err := encode(method.Func.Interface())
-		if err != nil {
-			return err
-		}
-
-		exported := int(C.runtime_register_alt_export(cResource, cExportName, (*C.uchar)(pv.array), pv.size)) == 1
-		if !exported {
-			err = fmt.Errorf("failed to export %s", exportName)
-		}
-
-		C.free(unsafe.Pointer(cExportName)) // not freeing it because module needs it while whole runtime
+		registerExport(cResource, exportName, method.Func)
 	}
 
-	return err
+	return nil
 }
 
 func Import[ValueType any](resource string, name string) (value ValueType, _ error) {

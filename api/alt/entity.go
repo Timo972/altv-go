@@ -228,11 +228,8 @@ func (e Entity) SyncedMetaData(key string, val interface{}) bool {
 	}
 
 	err := decode(meta, val)
-	if err != nil {
-		return false
-	}
 
-	return true
+	return err == nil
 }
 
 func (e Entity) HasStreamSyncedMetaData(key string) bool {
@@ -262,11 +259,8 @@ func (e Entity) StreamSyncedMetaData(key string, value interface{}) bool {
 	}
 
 	err := decode(meta, value)
-	if err != nil {
-		return false
-	}
 
-	return true
+	return err == nil
 }
 
 func (e Entity) SetSyncedMetaData(key string, value interface{}) bool {

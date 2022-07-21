@@ -204,3 +204,9 @@ EXPORT int Checkpoint_IsValid(const char *resourceName, void *p)
 
     return resource->HasEntity(cp);
 }
+
+EXPORT unsigned char Checkpoint_IsEntityIdIn(void *c, unsigned short id) 
+{
+    auto cp = reinterpret_cast<alt::ICheckpoint*>(c);
+    return cp->IsEntityIdIn(id);
+}

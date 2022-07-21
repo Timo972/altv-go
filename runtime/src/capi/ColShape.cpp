@@ -124,3 +124,8 @@ EXPORT int ColShape_IsPlayersOnly(void *c)
     return colShape->IsPlayersOnly();
 }
 
+EXPORT unsigned char ColShape_IsEntityIdIn(void *c, unsigned short id) 
+{
+    auto colShape = reinterpret_cast<alt::IColShape*>(c);
+    return colShape->IsEntityIdIn(id);
+}

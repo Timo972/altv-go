@@ -456,11 +456,8 @@ func (p Player) LocalMetaData(key string, value interface{}) bool {
 
 	cMeta := C.player_get_local_meta_data(p.ptr, cKey)
 	err := decode(cMeta, value)
-	if err != nil {
-		return false
-	}
 
-	return true
+	return err == nil
 }
 
 func (p Player) DeleteLocalMetaData(key string) {
@@ -468,4 +465,40 @@ func (p Player) DeleteLocalMetaData(key string) {
 	defer C.free(unsafe.Pointer(cKey))
 
 	C.player_delete_local_meta_data(p.ptr, cKey)
+}
+
+func (p Player) CurrentAnimationDict() uint32 {
+	return uint32(C.player_get_current_animation_dict(p.ptr))
+}
+
+func (p Player) CurrentAnimationName() uint32 {
+	return uint32(C.player_get_current_animation_name(p.ptr))
+}
+
+func (p Player) IsSpawned() bool {
+	return uint8(C.player_is_spawned(p.ptr)) == 1
+}
+
+func (p Player) ForwardSpeed() float32 {
+	return float32(C.player_get_forward_speed(p.ptr))
+}
+
+func (p Player) StrafeSpeed() float32 {
+	return float32(C.player_get_strafe_speed(p.ptr))
+}
+
+func (p Player) DiscordId() string {
+	return C.GoString(C.player_get_discord_id(p.ptr))
+}
+
+func (p Player) InteriorLocation() uint32 {
+	return uint32(C.player_get_interior_location(p.ptr))
+}
+
+func (p Player) LastDamagedBodyPart() uint32 {
+	return uint32(C.player_get_last_damaged_body_part(p.ptr))
+}
+
+func (p Player) SetLastDamagedBodyPart(bodyPart uint32) {
+	C.player_set_last_damaged_body_part(p.ptr, C.uint(bodyPart))
 }
