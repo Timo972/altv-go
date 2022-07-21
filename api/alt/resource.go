@@ -93,7 +93,9 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, version *C.c
 
 	switch {
 	case v == "DEBUG":
-		fmt.Printf("Using debug version together with: %s\n", info.Main.Version)
+		fmt.Printf("Using module debug version together with: %s\n", info.Main.Version)
+	case info.Main.Version == "(devel)":
+		fmt.Printf("Using module version: %s together with pkg debug version\n", v)
 	case v == info.Main.Version:
 		fmt.Printf("Using version: %s\n", info.Main.Version)
 	default:
