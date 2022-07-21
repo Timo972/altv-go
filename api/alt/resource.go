@@ -17,7 +17,9 @@ package alt
 */
 import "C"
 import (
+	"fmt"
 	"log"
+	runtime "runtime/debug"
 	"unsafe"
 )
 
@@ -68,7 +70,7 @@ type IResource interface {
 var CurrentResource IResource
 
 //export initGoResource
-func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char) {
+func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, version *C.char) {
 	CurrentResource = &localResource{
 		name: C.GoString(name),
 		path: C.GoString(path),
@@ -77,10 +79,26 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char) {
 		},
 	}
 
+	v := C.GoString(version)
+
 	cstr := C.CString("go-module")
 	defer C.free(unsafe.Pointer(cstr))
 
 	log.SetFlags(log.Ltime)
+
+	info, ok := runtime.ReadBuildInfo()
+	if !ok {
+		log.Fatal("Couldn't read build info")
+	}
+
+	switch {
+	case v == "DEBUG":
+		fmt.Printf("Using debug version together with: %s\n", info.Main.Version)
+	case v == info.Main.Version:
+		fmt.Printf("Using version: %s\n", info.Main.Version)
+	default:
+		log.Fatalf("Version mismatch: %s != %s", v, info.Main.Version)
+	}
 
 	moduleLoaded := int(C.load_module(cstr))
 	if moduleLoaded == 0 {

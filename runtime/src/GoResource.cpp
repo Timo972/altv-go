@@ -14,7 +14,7 @@ bool Go::Resource::Start() {
     auto resourceName = _resource->GetName().c_str();
     auto resourcePath = _resource->GetPath().c_str();
     auto go = GET_FUNC(Module, "initGoResource",
-                       void(*)(alt::IResource * resourcePtr, const char *resourceName, const char *ResourcePath));
+                       void(*)(alt::IResource * resourcePtr, const char *resourceName, const char *ResourcePath, const char *version));
     if (go == nullptr) {
         alt::ICore::Instance()
                 .LogError("Error while initializing Go Resource");
@@ -22,7 +22,7 @@ bool Go::Resource::Start() {
         return false;
     }
 
-    go(_resource, resourceName, resourcePath);
+    go(_resource, resourceName, resourcePath, GO_MODULE_VERSION);
 
 
     auto start = GET_FUNC(Module, "OnStart", void(*)());
