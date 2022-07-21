@@ -1,4 +1,4 @@
-package alt
+package mvalue
 
 /*
 #cgo windows CFLAGS: -I../../c-api/lib
@@ -19,6 +19,7 @@ import "C"
 import (
 	"errors"
 	"fmt"
+	"github.com/timo972/altv-go/api/alt"
 	"reflect"
 	"unsafe"
 )
@@ -41,7 +42,7 @@ func (e ExternFunction) Call(args ...interface{}) (interface{}, error) {
 		return nil, errors.New("invalid extern function")
 	}
 
-	arr, err := encodeArgs(args)
+	arr, err := EncodeArgs(args)
 	defer C.free(unsafe.Pointer(arr.array))
 	if err != nil {
 		return nil, err
@@ -49,7 +50,7 @@ func (e ExternFunction) Call(args ...interface{}) (interface{}, error) {
 
 	cMeta := C.runtime_call_m_value_function(e.ptr, arr)
 	//mVal := &MValue{Ptr: cMeta.ptr, Type: uint8(cMeta.Type)}
-	val, err := decodeReflect(cMeta)
+	val, err := DecodeReflect(cMeta)
 	if err != nil {
 		return nil, err
 	}
@@ -62,14 +63,14 @@ func altCallFunction(id C.ulonglong, cMValueArgs C.struct_array) C.struct_array 
 	exportedFunc := mValueFunctions[uint64(id)]
 	funcType := exportedFunc.Type()
 
-	args, err := decodeArgsExpensive(funcType, cMValueArgs)
+	args, err := DecodeArgsExpensive(funcType, cMValueArgs)
 	if err != nil {
-		LogError("failed to call exported function:", err.Error())
+		alt.LogError("failed to call exported function:", err.Error())
 		return C.struct_array{array: nil, size: C.ulonglong(0)}
 	}
 
 	if len(args) != funcType.NumIn() {
-		LogError(fmt.Sprintf("failed to call exported function: argument count mismatch (required: %v, got: %v) - dont pass nil / none values", funcType.NumIn(), len(args)))
+		alt.LogError(fmt.Sprintf("failed to call exported function: argument count mismatch (required: %v, got: %v) - dont pass nil / none values", funcType.NumIn(), len(args)))
 		return C.struct_array{array: nil, size: C.ulonglong(0)}
 	}
 
@@ -94,9 +95,9 @@ func altCallFunction(id C.ulonglong, cMValueArgs C.struct_array) C.struct_array 
 		returnValue = resValues[0].Interface()
 	}
 
-	cBytes, err := encode(returnValue)
+	cBytes, err := Encode(returnValue)
 	if err != nil {
-		LogError("exported function returned invalid value:", err.Error())
+		alt.LogError("exported function returned invalid value:", err.Error())
 		return C.struct_array{array: nil, size: C.ulonglong(0)}
 	}
 

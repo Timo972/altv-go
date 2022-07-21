@@ -18,6 +18,7 @@ package alt
 import "C"
 import (
 	"crypto/sha256"
+	"github.com/timo972/altv-go/internal/mvalue"
 	"strings"
 	"unsafe"
 )
@@ -66,7 +67,7 @@ func MetaData(key string, value interface{}) bool {
 	defer C.free(unsafe.Pointer(cStr))
 
 	meta := C.core_get_meta_data(cStr)
-	err := decode(meta, value)
+	err := mvalue.decode(meta, value)
 
 	return err == nil
 }
@@ -102,7 +103,7 @@ func SyncedMetaData(key string, value interface{}) bool {
 	defer C.free(unsafe.Pointer(cStr))
 
 	meta := C.core_get_synced_meta_data(cStr)
-	err := decode(meta, value)
+	err := mvalue.decode(meta, value)
 
 	return err == nil
 }
@@ -216,7 +217,7 @@ func Entities() []*Entity {
 
 func ServerConfig(v interface{}) error {
 	arr := C.core_get_server_config()
-	return decode(arr, v)
+	return mvalue.decode(arr, v)
 }
 
 func HashPassword(password string) uint64 {

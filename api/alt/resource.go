@@ -18,7 +18,9 @@ package alt
 import "C"
 import (
 	"fmt"
+	"github.com/timo972/altv-go/internal/mvalue"
 	"log"
+	"os"
 	runtime "runtime/debug"
 	"unsafe"
 )
@@ -71,8 +73,9 @@ var CurrentResource IResource
 
 //export initGoResource
 func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, version *C.char) {
+	resourceName := C.GoString(name)
 	CurrentResource = &localResource{
-		name: C.GoString(name),
+		name: resourceName,
 		path: C.GoString(path),
 		publicResource: publicResource{
 			ptr: ptr,
@@ -85,6 +88,10 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, version *C.c
 	defer C.free(unsafe.Pointer(cstr))
 
 	log.SetFlags(log.Ltime)
+
+	if err := os.Setenv("resourceName", resourceName); err != nil {
+		log.Fatal("Couldn't set resource name")
+	}
 
 	info, ok := runtime.ReadBuildInfo()
 	if !ok {
@@ -164,13 +171,13 @@ func (r publicResource) Main() string {
 func (r publicResource) Exports(out interface{}) error {
 	data := C.resource_get_exports(r.ptr)
 
-	return decode(data, out)
+	return mvalue.decode(data, out)
 }
 
 func (r publicResource) ExportsInterface() (interface{}, error) {
 	data := C.resource_get_exports(r.ptr)
 
-	return decodeReflect(data)
+	return mvalue.decodeReflect(data)
 }
 
 func (r publicResource) Dependencies() []string {
@@ -205,10 +212,10 @@ func (r localResource) Path() string {
 
 func (r publicResource) Config(out interface{}) error {
 	data := C.resource_get_config(r.ptr)
-	return decode(data, out)
+	return mvalue.decode(data, out)
 }
 
 func (r publicResource) ConfigInterface() (interface{}, error) {
 	data := C.resource_get_config(r.ptr)
-	return decodeReflect(data)
+	return mvalue.decodeReflect(data)
 }

@@ -18,6 +18,7 @@ package alt
 import "C"
 import (
 	"fmt"
+	"github.com/timo972/altv-go/internal/mvalue"
 	"unsafe"
 
 	"github.com/timo972/altv-go/internal/module"
@@ -455,7 +456,7 @@ func (p Player) LocalMetaData(key string, value interface{}) bool {
 	defer C.free(unsafe.Pointer(cKey))
 
 	cMeta := C.player_get_local_meta_data(p.ptr, cKey)
-	err := decode(cMeta, value)
+	err := mvalue.decode(cMeta, value)
 
 	return err == nil
 }

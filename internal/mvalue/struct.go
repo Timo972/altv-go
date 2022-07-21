@@ -1,4 +1,4 @@
-package alt
+package mvalue
 
 import (
 	"reflect"
@@ -7,7 +7,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func getFieldName(t reflect.StructField) string {
+func GetFieldName(t reflect.StructField) string {
 	var name string
 
 	name, ok := t.Tag.Lookup("alt")
@@ -67,8 +67,8 @@ func structToProto(rt reflect.Type, rv reflect.Value) *pb.MValue {
 			field := rv.Field(i)
 			fieldType := rt.Field(i)
 
-			keys[i] = getFieldName(fieldType)
-			mvalues[i] = newProtoMValue(field.Interface())
+			keys[i] = GetFieldName(fieldType)
+			mvalues[i] = New(field.Interface())
 
 		}
 
@@ -80,7 +80,7 @@ func structToProto(rt reflect.Type, rv reflect.Value) *pb.MValue {
 			// 	continue
 			// }
 			keys[i] = method.Type.Name()
-			mvalues[i] = newProtoMValue(method.Func.Interface())
+			mvalues[i] = New(method.Func.Interface())
 		}
 
 		protoValue = &pb.MValue{

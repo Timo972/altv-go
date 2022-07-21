@@ -1,8 +1,9 @@
-package alt
+package mvalue
 
 import "C"
 import (
 	"fmt"
+	"github.com/timo972/altv-go/api/alt"
 	"reflect"
 
 	"github.com/timo972/altv-go/internal/pb"
@@ -20,7 +21,7 @@ func newReflectDecoder(data []byte) *reflectDecoder {
 	}
 }
 
-func decodeReflect(arr C.struct_array) (reflect.Value, error) {
+func DecodeReflect(arr C.struct_array) (reflect.Value, error) {
 	bytes := C.GoBytes(arr.array, C.int(arr.size))
 	d := newReflectDecoder(bytes)
 	return d.Decode()
@@ -56,7 +57,7 @@ func (d *reflectDecoder) decode() (reflect.Value, error) {
 	raw := d.MValue.GetValue()
 
 	if _, ok := raw.(*pb.MValue_NoneValue); ok {
-		LogWarning("MValue_NoneValue will not be decoded")
+		alt.LogWarning("MValue_NoneValue will not be decoded")
 	} else if _, ok := raw.(*pb.MValue_NilValue); ok {
 		rv = reflect.ValueOf(nil)
 	} else if v, ok := raw.(*pb.MValue_BoolValue); ok {
@@ -86,13 +87,13 @@ func (d *reflectDecoder) decode() (reflect.Value, error) {
 			ptr: ptr,
 		})
 	} else if v, ok := raw.(*pb.MValue_Vector3Value); ok {
-		rv = reflect.ValueOf(Vector3{
+		rv = reflect.ValueOf(alt.Vector3{
 			X: v.Vector3Value.GetX(),
 			Y: v.Vector3Value.GetY(),
 			Z: v.Vector3Value.GetZ(),
 		})
 	} else if v, ok := raw.(*pb.MValue_RgbaValue); ok {
-		rv = reflect.ValueOf(RGBA{
+		rv = reflect.ValueOf(alt.RGBA{
 			R: uint8(v.RgbaValue.GetR()),
 			G: uint8(v.RgbaValue.GetG()),
 			B: uint8(v.RgbaValue.GetB()),
@@ -101,7 +102,7 @@ func (d *reflectDecoder) decode() (reflect.Value, error) {
 	} else if v, ok := raw.(*pb.MValue_BytesValue); ok {
 		rv = reflect.ValueOf(v.BytesValue)
 	} else if v, ok := raw.(*pb.MValue_Vector2Value); ok {
-		rv = reflect.ValueOf(Vector2{
+		rv = reflect.ValueOf(alt.Vector2{
 			X: v.Vector2Value.GetX(),
 			Y: v.Vector2Value.GetY(),
 		})

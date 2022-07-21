@@ -19,12 +19,13 @@ import "C"
 import (
 	"errors"
 	"fmt"
+	"github.com/timo972/altv-go/internal/mvalue"
 	"reflect"
 	"unsafe"
 )
 
 func registerExport(cResource *C.char, exportName string, field reflect.Value) error {
-	pv, err := encode(field.Interface())
+	pv, err := mvalue.Encode(field.Interface())
 	if err != nil {
 		return err
 	}
@@ -55,7 +56,7 @@ func Export(export interface{}) error {
 	for i := 0; i < rv.NumField(); i++ {
 		field := rv.Field(i)
 		fieldType := rt.Field(i)
-		exportName := getFieldName(fieldType)
+		exportName := mvalue.GetFieldName(fieldType)
 
 		registerExport(cResource, exportName, field)
 	}
@@ -82,7 +83,7 @@ func Import[ValueType any](resource string, name string) (value ValueType, _ err
 	defer C.free(unsafe.Pointer(cExport))
 
 	cProtoArray := C.runtime_get_alt_export(cTargetResource, cExport)
-	imp, err := decodeReflect(cProtoArray)
+	imp, err := mvalue.DecodeReflect(cProtoArray)
 	if err != nil {
 		return *new(ValueType), err
 	}

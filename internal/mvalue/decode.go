@@ -1,4 +1,4 @@
-package alt
+package mvalue
 
 /*
 #cgo windows CFLAGS: -I../../c-api/lib
@@ -19,6 +19,7 @@ import "C"
 import (
 	"errors"
 	"fmt"
+	"github.com/timo972/altv-go/api/alt"
 	"reflect"
 	"strconv"
 	"unsafe"
@@ -45,14 +46,14 @@ func newDecoder(data []byte) *decoder {
 	}
 }
 
-func decode(arr C.struct_array, v interface{}) error {
+func Decode(arr C.struct_array, v interface{}) error {
 	bytes := C.GoBytes(arr.array, C.int(arr.size))
 
 	d := newDecoder(bytes)
 	return d.Decode(v)
 }
 
-func decodeArgs(arr C.struct_array) ([]reflect.Value, error) {
+func DecodeArgs(arr C.struct_array) ([]reflect.Value, error) {
 	size := int(arr.size)
 	if size == 0 {
 		return nil, nil
@@ -76,7 +77,7 @@ func decodeArgs(arr C.struct_array) ([]reflect.Value, error) {
 	return data, nil
 }
 
-func decodeArgsExpensive(funcType reflect.Type, arr C.struct_array) ([]reflect.Value, error) {
+func DecodeArgsExpensive(funcType reflect.Type, arr C.struct_array) ([]reflect.Value, error) {
 	var err error
 
 	argsSize := int(arr.size)
@@ -237,7 +238,7 @@ func (d *decoder) decode() error {
 }
 
 func baseObjectToReflectValue(base *pb.BaseObject, isEntity bool) (reflect.Value, error) {
-	t := BaseObjectType(base.GetType())
+	t := alt.BaseObjectType(base.GetType())
 	ptr, err := parsePointer(base.GetPtr())
 	var v reflect.Value
 
@@ -246,32 +247,32 @@ func baseObjectToReflectValue(base *pb.BaseObject, isEntity bool) (reflect.Value
 	}
 
 	switch t {
-	case PlayerObject:
+	case alt.PlayerObject:
 		if isEntity {
-			e := &Entity{}
+			e := &alt.Entity{}
 			e.ptr = ptr
 			e.Type = t
 			v = reflect.ValueOf(e)
 		} else {
-			v = reflect.ValueOf(newPlayer(ptr))
+			v = reflect.ValueOf(alt.newPlayer(ptr))
 		}
-	case VehicleObject:
+	case alt.VehicleObject:
 		if isEntity {
-			e := &Entity{}
+			e := &alt.Entity{}
 			e.ptr = ptr
 			e.Type = t
 			v = reflect.ValueOf(e)
 		} else {
-			v = reflect.ValueOf(newVehicle(ptr))
+			v = reflect.ValueOf(alt.newVehicle(ptr))
 		}
-	case ColshapeObject:
-		v = reflect.ValueOf(newColShape(ptr))
-	case CheckpointObject:
-		v = reflect.ValueOf(newCheckpoint(ptr))
-	case VoiceChannelObject:
-		v = reflect.ValueOf(newVoiceChannel(ptr))
-	case BlipObject:
-		v = reflect.ValueOf(newBlip(ptr))
+	case alt.ColshapeObject:
+		v = reflect.ValueOf(alt.newColShape(ptr))
+	case alt.CheckpointObject:
+		v = reflect.ValueOf(alt.newCheckpoint(ptr))
+	case alt.VoiceChannelObject:
+		v = reflect.ValueOf(alt.newVoiceChannel(ptr))
+	case alt.BlipObject:
+		v = reflect.ValueOf(alt.newBlip(ptr))
 	}
 
 	return v, nil
@@ -283,7 +284,7 @@ func (d *decoder) decodeStruct(rt reflect.Type, rv reflect.Value) error {
 	if structName == "RGBA" {
 		rgba := d.MValue.GetRgbaValue()
 
-		rv.Set(reflect.ValueOf(RGBA{
+		rv.Set(reflect.ValueOf(alt.RGBA{
 			R: uint8(rgba.GetR()),
 			G: uint8(rgba.GetG()),
 			B: uint8(rgba.GetB()),
@@ -292,14 +293,14 @@ func (d *decoder) decodeStruct(rt reflect.Type, rv reflect.Value) error {
 	} else if structName == "Vector2" {
 		v2 := d.MValue.GetVector2Value()
 
-		rv.Set(reflect.ValueOf(Vector2{
+		rv.Set(reflect.ValueOf(alt.Vector2{
 			X: v2.GetX(),
 			Y: v2.GetY(),
 		}))
 	} else if structName == "Vector3" {
 		v3 := d.MValue.GetVector3Value()
 
-		rv.Set(reflect.ValueOf(Vector3{
+		rv.Set(reflect.ValueOf(alt.Vector3{
 			X: v3.GetX(),
 			Y: v3.GetY(),
 			Z: v3.GetZ(),

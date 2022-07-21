@@ -1,4 +1,4 @@
-package alt
+package mvalue
 
 import (
 	"reflect"
@@ -27,7 +27,7 @@ func sliceToProto(rt reflect.Type, rv reflect.Value) *pb.MValue {
 
 		for i := 0; i < size; i++ {
 			item := rv.Index(i)
-			mvalues[i] = newProtoMValue(item.Interface())
+			mvalues[i] = New(item.Interface())
 		}
 
 		protoValue = &pb.MValue{

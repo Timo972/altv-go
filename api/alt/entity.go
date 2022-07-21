@@ -18,6 +18,7 @@ package alt
 import "C"
 import (
 	"fmt"
+	"github.com/timo972/altv-go/internal/mvalue"
 	"unsafe"
 
 	"github.com/timo972/altv-go/internal/module"
@@ -227,7 +228,7 @@ func (e Entity) SyncedMetaData(key string, val interface{}) bool {
 		meta = C.vehicle_get_synced_meta_data(e.ptr, cKey)
 	}
 
-	err := decode(meta, val)
+	err := mvalue.decode(meta, val)
 
 	return err == nil
 }
@@ -258,7 +259,7 @@ func (e Entity) StreamSyncedMetaData(key string, value interface{}) bool {
 		meta = C.vehicle_get_stream_synced_meta_data(e.ptr, cKey)
 	}
 
-	err := decode(meta, value)
+	err := mvalue.decode(meta, value)
 
 	return err == nil
 }

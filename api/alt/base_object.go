@@ -17,6 +17,7 @@ package alt
 */
 import "C"
 import (
+	"github.com/timo972/altv-go/internal/mvalue"
 	"unsafe"
 )
 
@@ -130,7 +131,7 @@ func (b BaseObject) MetaData(key string, val interface{}) bool {
 		arr = C.blip_get_meta_data(b.ptr, cKey)
 	}
 
-	err := decode(arr, val)
+	err := mvalue.Decode(arr, val)
 
 	return err == nil
 }
@@ -139,7 +140,7 @@ func (b BaseObject) SetMetaData(key string, value interface{}) bool {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
-	arr, err := encode(value)
+	arr, err := mvalue.Encode(value)
 	if err != nil {
 		return false
 	}

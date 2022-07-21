@@ -1,4 +1,4 @@
-package alt
+package mvalue
 
 import (
 	"reflect"
@@ -15,7 +15,7 @@ func mapToProto(rt reflect.Type, rv reflect.Value) *pb.MValue {
 
 	for i, key := range keys {
 		stringKeys[i] = key.String()
-		mvalues[i] = newProtoMValue(rv.MapIndex(key).Interface())
+		mvalues[i] = New(rv.MapIndex(key).Interface())
 	}
 
 	return &pb.MValue{

@@ -18,6 +18,7 @@ package alt
 import "C"
 import (
 	"errors"
+	"github.com/timo972/altv-go/internal/mvalue"
 	"reflect"
 	"unsafe"
 
@@ -547,7 +548,7 @@ func altServerScriptEvent(cName *C.char, arr C.struct_array) {
 	name := C.GoString(cName)
 	eventName := reflect.ValueOf(name)
 
-	args, err := decodeArgs(arr)
+	args, err := mvalue.decodeArgs(arr)
 	if err != nil {
 		LogError("ServerScriptEvent error:", err.Error())
 	}
@@ -579,7 +580,7 @@ func altClientScriptEvent(p unsafe.Pointer, cName *C.char, arr C.struct_array) {
 	eventName := reflect.ValueOf(name)
 	target := reflect.ValueOf(newPlayer(p))
 
-	args, err := decodeArgs(arr)
+	args, err := mvalue.decodeArgs(arr)
 	if err != nil {
 		LogError("ClientScriptEvent error:", err.Error())
 	}
@@ -1027,13 +1028,13 @@ func altFireEvent(p unsafe.Pointer, f C.struct_array) C.int {
 func altGlobalMetaDataChangeEvent(k *C.char, nVal C.struct_array, oVal C.struct_array) {
 	key := C.GoString(k)
 
-	oldValue, err := decodeReflect(oVal)
+	oldValue, err := mvalue.decodeReflect(oVal)
 	if err != nil {
 		LogError(err.Error())
 		return
 	}
 
-	newValue, err := decodeReflect(nVal)
+	newValue, err := mvalue.decodeReflect(nVal)
 	if err != nil {
 		LogError(err.Error())
 		return
