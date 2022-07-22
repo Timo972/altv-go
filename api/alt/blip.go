@@ -83,7 +83,8 @@ func (b Blip) IsAttached() bool {
 }
 
 func (b Blip) AttachedTo() *Entity {
-	return newEntity(C.blip_attached_to(b.ptr))
+	//return newEntity(C.blip_attached_to(b.ptr))
+	return nil
 }
 
 func (b Blip) AttachTo(entity *Entity) {

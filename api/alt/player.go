@@ -169,7 +169,7 @@ func (p Player) Seat() uint8 {
 }
 
 func (p Player) EntityAimingAt() *Entity {
-	return newEntity(C.player_get_entity_aiming_at(p.ptr))
+	return nil //newEntity(C.player_get_entity_aiming_at(p.ptr))
 }
 
 func (p Player) EntityAimOffset() Vector3 {

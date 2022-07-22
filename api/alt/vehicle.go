@@ -17,8 +17,10 @@ package alt
 */
 import "C"
 import (
+	"context"
 	"errors"
 	"fmt"
+	"github.com/timo972/altv-go/internal/pb"
 	"unsafe"
 
 	"github.com/timo972/altv-go/internal/module"
@@ -219,14 +221,22 @@ func newVehicleArray(arr C.struct_array) []*Vehicle {
 }
 
 func CreateVehicle(model uint32, pos Vector3, rot Vector3) (*Vehicle, error) {
-	vehicle := C.core_create_vehicle(C.ulong(model), C.float(pos.X), C.float(pos.Y), C.float(pos.Z),
-		C.float(rot.X), C.float(rot.Y), C.float(rot.Z))
+	p, err := coreService.CreateVehicle(context.Background(), &pb.CreateVehicleRequest{
+		Model: &model,
+		Pos:   pos.pb(),
+		Rot:   rot.pb(),
+	})
 
-	if vehicle == nil {
+	if err != nil {
 		return nil, fmt.Errorf("failed to create vehicle: %v is not a proper model hash", model)
 	}
 
-	veh := newVehicle(vehicle)
+	ptr, err := parsePointer(p.GetPtr())
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse vehicle pointer: %v", err.Error())
+	}
+
+	veh := newVehicle(ptr)
 
 	if !veh.Valid() {
 		return nil, errors.New("could not create vehicle")

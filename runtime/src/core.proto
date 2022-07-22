@@ -8,14 +8,14 @@ import "google/protobuf/empty.proto";
 option go_package = "/internal/pb";
 
 service CoreAPI {
-	rpc LogInfo(google.protobuf.StringValue) returns(google.protobuf.Empty);
+	/*rpc LogInfo(google.protobuf.StringValue) returns(google.protobuf.Empty);
 	rpc LogDebug(google.protobuf.StringValue) returns(google.protobuf.Empty);
 	rpc LogWarning(google.protobuf.StringValue) returns(google.protobuf.Empty);
 	rpc LogError(google.protobuf.StringValue) returns(google.protobuf.Empty);
-	rpc LogColored(google.protobuf.StringValue) returns(google.protobuf.Empty);
+	rpc LogColored(google.protobuf.StringValue) returns(google.protobuf.Empty);*/
 	rpc CreateVehicle(CreateVehicleRequest) returns (Pointer);
 	// TODO:
-	rpc CreateCheckpoint(google.protobuf.Empty) returns (Pointer);
+	//rpc CreateCheckpoint(google.protobuf.Empty) returns (Pointer);
 	rpc CreateVoiceChannel(CreateVoiceChannelRequest) returns(Pointer);
 	rpc GetVersion(google.protobuf.Empty) returns (google.protobuf.StringValue);
 	rpc GetBranch(google.protobuf.Empty) returns (google.protobuf.StringValue);
@@ -23,11 +23,10 @@ service CoreAPI {
 	rpc Hash(google.protobuf.StringValue) returns (google.protobuf.UInt64Value);
 	rpc FileExists(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
 	rpc FileRead(google.protobuf.StringValue) returns (google.protobuf.StringValue);
-	rpc GetEntityByID(google.protobuf.UInt32Value) returns (MValue.BaseObject);
-	// TODO:
-	rpc GetEntities(google.protobuf.Empty) returns(google.protobuf.Empty);
-	rpc GetPlayers(google.protobuf.Empty) returns(google.protobuf.Empty);
-	rpc GetVehicles(google.protobuf.Empty) returns(google.protobuf.Empty);
+	/*rpc GetEntityByID(google.protobuf.UInt32Value) returns (MValue.BaseObject);
+	rpc GetEntities(google.protobuf.Empty) returns(BaseObjectList);
+	rpc GetPlayers(google.protobuf.Empty) returns(BaseObjectList);
+	rpc GetVehicles(google.protobuf.Empty) returns(BaseObjectList);
 	rpc HasMetaData(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
 	rpc GetMetaData(google.protobuf.StringValue) returns (MValue.MValue);
 	rpc SetMetaData(SetMetaRequest) returns(google.protobuf.Empty);
@@ -41,9 +40,8 @@ service CoreAPI {
 	rpc StartResource(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
 	rpc StopResource(google.protobuf.StringValue) returns(google.protobuf.Empty);
 	rpc RestartResource(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
-	// TODO:
-	rpc GetRequiredPermissions(google.protobuf.Empty) returns(google.protobuf.Empty);
-	rpc GetOptionalPermissions(google.protobuf.Empty) returns(google.protobuf.Empty);
+	rpc GetRequiredPermissions(google.protobuf.Empty) returns(PermissionList);
+	rpc GetOptionalPermissions(google.protobuf.Empty) returns(PermissionList);
 	rpc GetPlayersByName(google.protobuf.Empty) returns(google.protobuf.Empty);
 	rpc GetNetTime(google.protobuf.Empty) returns (google.protobuf.UInt32Value);
 	rpc GetSDKHash(google.protobuf.Empty) returns (google.protobuf.StringValue);
@@ -52,11 +50,11 @@ service CoreAPI {
 	rpc GetVehicleModelByHash(google.protobuf.UInt32Value) returns (VehicleModelInfo);
 	rpc GetResourceByName(google.protobuf.StringValue) returns (Pointer);
 	rpc HashServerPassword(google.protobuf.StringValue) returns (google.protobuf.UInt64Value);
-	rpc StopServer(google.protobuf.Empty) returns(google.protobuf.Empty);
+	rpc StopServer(google.protobuf.Empty) returns(google.protobuf.Empty);*/
 }
 
 message CreateVehicleRequest {
-	required uint64 model = 1; 
+	required uint32 model = 1;
 	required MValue.Vector3 pos = 2;
 	required MValue.Vector3 rot = 3;
 }
@@ -111,4 +109,12 @@ message VehicleModelInfo {
 
 message Pointer {
 	required string ptr = 1;
+}
+
+message BaseObjectList {
+	repeated MValue.BaseObject entities = 1;
+}
+
+message PermissionList {
+	repeated string perms = 1;
 }

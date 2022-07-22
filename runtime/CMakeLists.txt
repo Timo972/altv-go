@@ -60,6 +60,7 @@ target_link_libraries(${PROJECT_MODULE_NAME}
         protobuf::libprotobuf
         gRPC::grpc
         gRPC::grpc++
+        gRPC::grpc++_reflection
 )
 # include generated protos
 target_include_directories(${PROJECT_MODULE_NAME} PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/src)

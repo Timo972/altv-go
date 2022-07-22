@@ -18,6 +18,7 @@ package alt
 import "C"
 import (
 	"fmt"
+	"github.com/timo972/altv-go/internal/pb"
 	"math"
 )
 
@@ -203,5 +204,13 @@ func (v Vector3) Lerp(v2 Vector3, ratio float32) Vector3 {
 		X: v.X + (v2.X-v.X)*ratio,
 		Y: v.Y + (v2.Y-v.Y)*ratio,
 		Z: v.Z + (v2.Z-v.Z)*ratio,
+	}
+}
+
+func (v Vector3) pb() *pb.Vector3 {
+	return &pb.Vector3{
+		X: &v.X,
+		Y: &v.Y,
+		Z: &v.Z,
 	}
 }

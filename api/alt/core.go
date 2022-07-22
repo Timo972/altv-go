@@ -17,7 +17,10 @@ package alt
 */
 import "C"
 import (
+	"context"
 	"crypto/sha256"
+	"google.golang.org/protobuf/types/known/wrapperspb"
+	"log"
 	"strings"
 	"unsafe"
 )
@@ -33,16 +36,21 @@ type FileApi interface {
 }
 
 func (f *fileApi) Exists(path string) bool {
-	cStr := C.CString(path)
-	defer C.free(unsafe.Pointer(cStr))
-	return int(C.core_file_exists(cStr)) == 1
+	exists, err := coreService.FileExists(context.Background(), wrapperspb.String(path))
+	if err != nil {
+		log.Fatalf("Unexpected rpc error: %v", err.Error())
+	}
+
+	return exists.Value
 }
 
 func (f *fileApi) Read(path string) string {
-	cStr := C.CString(path)
-	defer C.free(unsafe.Pointer(cStr))
-	cContent := C.core_read_file(cStr)
-	return C.GoString(cContent)
+	c, err := coreService.FileRead(context.Background(), wrapperspb.String(path))
+	if err != nil {
+		log.Fatalf("Unexpected rpc error: %v", err.Error())
+	}
+
+	return c.Value
 }
 
 /*func Hash(str string) uint32 {
@@ -52,49 +60,65 @@ func (f *fileApi) Read(path string) string {
 }*/
 
 func EntityByID(id uint16) *Entity {
-	return newEntity(C.core_get_entity_by_i_d(C.ushort(id)))
+	/*b, err := coreService.GetEntityByID(context.Background(), wrapperspb.UInt32(uint32(id)))
+	if err != nil {
+		log.Fatalf("Unexpected rpc error: %v", err.Error())
+	}
+
+	// TODO: use entity factories
+	return newEntity(b)*/
+	return new(Entity)
 }
 
 func HasMetaData(key string) bool {
-	cStr := C.CString(key)
-	defer C.free(unsafe.Pointer(cStr))
-	return int(C.core_has_meta_data(cStr)) == 1
+	/*b, err := coreService.HasMetaData(context.Background(), wrapperspb.String(key))
+	if err != nil {
+		log.Fatalf("Unexpected rpc error: %v", err.Error())
+	}
+
+	return b.Value*/
+	return false
 }
 
 func MetaData(key string, value interface{}) bool {
-	cStr := C.CString(key)
-	defer C.free(unsafe.Pointer(cStr))
+	/*// TODO: improve decoder & implement this
+	_, err := coreService.GetMetaData(context.Background(), wrapperspb.String(key))
+	if err != nil {
+		log.Fatalf("Unexpected rpc error: %v", err.Error())
+	}
+	//err := decode(meta, value)
 
-	meta := C.core_get_meta_data(cStr)
-	err := decode(meta, value)
-
-	return err == nil
+	return err == nil*/
+	return false
 }
 
 func SetMetaData(key string, value interface{}) bool {
-	cKey := C.CString(key)
-	defer C.free(unsafe.Pointer(cKey))
+	/*_, err := encode(value)
+	// TODO: improve encoder & implement this
+	_, err = coreService.SetMetaData(context.Background(), &pb.SetMetaRequest{
+		Key:   &key,
+		Value: nil,
+	})
 
-	arr, err := encode(value)
-	if err != nil {
-		return false
-	}
-	defer C.free(arr.array)
-
-	C.core_set_meta_data(cKey, (*C.uchar)(arr.array), arr.size)
-	return true
+	return err == nil*/
+	return false
 }
 
 func DeleteMetaData(key string) {
-	cKey := C.CString(key)
-	defer C.free(unsafe.Pointer(cKey))
-	C.core_delete_meta_data(cKey)
+	/*_, err := coreService.DeleteMetaData(context.Background(), wrapperspb.String(key))
+	if err != nil {
+		log.Fatalf("Unexpected rpc error: %v", err.Error())
+	}*/
 }
 
 func HasSyncedMetaData(key string) bool {
-	cStr := C.CString(key)
-	defer C.free(unsafe.Pointer(cStr))
-	return int(C.core_has_synced_meta_data(cStr)) == 1
+	/*b, err := coreService.HasSyncedMetaData(context.Background(), wrapperspb.String(key))
+	if err != nil {
+		log.Fatalf("Unexpected rpc error: %v", err.Error())
+	}
+
+	return b.Value*/
+	return false
 }
 
 func SyncedMetaData(key string, value interface{}) bool {
