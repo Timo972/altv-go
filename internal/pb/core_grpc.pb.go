@@ -20,6 +20,92 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
+// TestAPIClient is the client API for TestAPI service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type TestAPIClient interface {
+	Hello(ctx context.Context, in *HelloReq, opts ...grpc.CallOption) (*HelloRes, error)
+}
+
+type testAPIClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewTestAPIClient(cc grpc.ClientConnInterface) TestAPIClient {
+	return &testAPIClient{cc}
+}
+
+func (c *testAPIClient) Hello(ctx context.Context, in *HelloReq, opts ...grpc.CallOption) (*HelloRes, error) {
+	out := new(HelloRes)
+	err := c.cc.Invoke(ctx, "/Core.TestAPI/Hello", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// TestAPIServer is the server API for TestAPI service.
+// All implementations must embed UnimplementedTestAPIServer
+// for forward compatibility
+type TestAPIServer interface {
+	Hello(context.Context, *HelloReq) (*HelloRes, error)
+	mustEmbedUnimplementedTestAPIServer()
+}
+
+// UnimplementedTestAPIServer must be embedded to have forward compatible implementations.
+type UnimplementedTestAPIServer struct {
+}
+
+func (UnimplementedTestAPIServer) Hello(context.Context, *HelloReq) (*HelloRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Hello not implemented")
+}
+func (UnimplementedTestAPIServer) mustEmbedUnimplementedTestAPIServer() {}
+
+// UnsafeTestAPIServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to TestAPIServer will
+// result in compilation errors.
+type UnsafeTestAPIServer interface {
+	mustEmbedUnimplementedTestAPIServer()
+}
+
+func RegisterTestAPIServer(s grpc.ServiceRegistrar, srv TestAPIServer) {
+	s.RegisterService(&TestAPI_ServiceDesc, srv)
+}
+
+func _TestAPI_Hello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HelloReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TestAPIServer).Hello(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Core.TestAPI/Hello",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TestAPIServer).Hello(ctx, req.(*HelloReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// TestAPI_ServiceDesc is the grpc.ServiceDesc for TestAPI service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var TestAPI_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "Core.TestAPI",
+	HandlerType: (*TestAPIServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Hello",
+			Handler:    _TestAPI_Hello_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "src/core.proto",
+}
+
 // CoreAPIClient is the client API for CoreAPI service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.

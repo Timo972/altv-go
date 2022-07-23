@@ -1,4 +1,4 @@
-syntax = "proto2";
+syntax = "proto3";
 package Core;
 
 import "src/mvalue.proto";
@@ -7,22 +7,34 @@ import "google/protobuf/empty.proto";
 
 option go_package = "/internal/pb";
 
+message HelloReq {
+	string hello = 1;
+}
+
+message HelloRes {
+	string foo = 1;
+}
+
+service TestAPI {
+	rpc Hello(HelloReq) returns (HelloRes) {}
+}
+
 service CoreAPI {
 	/*rpc LogInfo(google.protobuf.StringValue) returns(google.protobuf.Empty);
 	rpc LogDebug(google.protobuf.StringValue) returns(google.protobuf.Empty);
 	rpc LogWarning(google.protobuf.StringValue) returns(google.protobuf.Empty);
 	rpc LogError(google.protobuf.StringValue) returns(google.protobuf.Empty);
 	rpc LogColored(google.protobuf.StringValue) returns(google.protobuf.Empty);*/
-	rpc CreateVehicle(CreateVehicleRequest) returns (Pointer);
+	rpc CreateVehicle(CreateVehicleRequest) returns (Pointer) {}
 	// TODO:
 	//rpc CreateCheckpoint(google.protobuf.Empty) returns (Pointer);
 	rpc CreateVoiceChannel(CreateVoiceChannelRequest) returns(Pointer);
-	rpc GetVersion(google.protobuf.Empty) returns (google.protobuf.StringValue);
-	rpc GetBranch(google.protobuf.Empty) returns (google.protobuf.StringValue);
-	rpc IsDebug(google.protobuf.Empty) returns (google.protobuf.BoolValue);
-	rpc Hash(google.protobuf.StringValue) returns (google.protobuf.UInt64Value);
-	rpc FileExists(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
-	rpc FileRead(google.protobuf.StringValue) returns (google.protobuf.StringValue);
+	rpc GetVersion(google.protobuf.Empty) returns (google.protobuf.StringValue) {}
+	rpc GetBranch(google.protobuf.Empty) returns (google.protobuf.StringValue) {}
+	rpc IsDebug(google.protobuf.Empty) returns (google.protobuf.BoolValue) {}
+	rpc Hash(google.protobuf.StringValue) returns (google.protobuf.UInt64Value) {}
+	rpc FileExists(google.protobuf.StringValue) returns (google.protobuf.BoolValue) {}
+	rpc FileRead(google.protobuf.StringValue) returns (google.protobuf.StringValue) {}
 	/*rpc GetEntityByID(google.protobuf.UInt32Value) returns (MValue.BaseObject);
 	rpc GetEntities(google.protobuf.Empty) returns(BaseObjectList);
 	rpc GetPlayers(google.protobuf.Empty) returns(BaseObjectList);
@@ -54,24 +66,24 @@ service CoreAPI {
 }
 
 message CreateVehicleRequest {
-	required uint32 model = 1;
-	required MValue.Vector3 pos = 2;
-	required MValue.Vector3 rot = 3;
+	uint32 model = 1;
+	MValue.Vector3 pos = 2;
+	MValue.Vector3 rot = 3;
 }
 
 message CreateVoiceChannelRequest {
-	required bool spatial = 1;
-	required float maxDistance = 2;
+	bool spatial = 1;
+	float maxDistance = 2;
 }
 
 message SetMetaRequest {
-	required string key = 1;
-	required MValue.MValue value = 2;
+	string key = 1;
+	MValue.MValue value = 2;
 }
 
 message VehicleModelInfo {
 	
-	required string title = 1;
+	string title = 1;
 	enum ModelType {
 		INVALID = 0;
 			PED = 1;
@@ -92,23 +104,23 @@ message VehicleModelInfo {
 			SUBMARINE = 16;
 			OBJECT = 17;
 	}
-	required ModelType modelType = 2;
-	required uint32 wheelsCount = 14;
-	required bool hasArmoredWindows = 3;
-	required bool hasAutoAttachTrailer = 4;
-	required uint32 primaryColor = 5;
-	required uint32 secondaryColor = 6;
-	required uint32 pearlColor = 7;
-	required uint32 wheelsColor = 8;
-	required uint32 interiorColor = 9;
-	required uint32 dashboardColor = 10;
-	repeated uint32 modKits = 11;
-	required uint32 extras = 12;
-	required uint32 defaultExtras = 13;
+	ModelType modelType = 2;
+	uint32 wheelsCount = 14;
+	bool hasArmoredWindows = 3;
+	bool hasAutoAttachTrailer = 4;
+	uint32 primaryColor = 5;
+	uint32 secondaryColor = 6;
+	uint32 pearlColor = 7;
+	uint32 wheelsColor = 8;
+	uint32 interiorColor = 9;
+	uint32 dashboardColor = 10;
+	uint32 modKits = 11;
+	uint32 extras = 12;
+	uint32 defaultExtras = 13;
 }
 
 message Pointer {
-	required string ptr = 1;
+	string ptr = 1;
 }
 
 message BaseObjectList {

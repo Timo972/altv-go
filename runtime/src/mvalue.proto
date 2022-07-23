@@ -1,4 +1,4 @@
-syntax = "proto2";
+syntax = "proto3";
 package MValue;
 
 option go_package = "/internal/pb";
@@ -19,37 +19,37 @@ message BaseObject {
 		RML_DOCUMENT = 11;
 		LOCAL_PLAYER = 12;
 	}*/
-  required uint32 type = 1;
-  required string ptr = 2;
+  uint32 type = 1;
+  string ptr = 2;
 }
 
 message Vector3 {
-  required float x = 1;
-  required float y = 2;
-  required float z = 3;
+  float x = 1;
+  float y = 2;
+  float z = 3;
 }
 
 message Vector2 {
-  required float x = 1;
-  required float y = 2;
+  float x = 1;
+  float y = 2;
 }
 
 // used when function is exported from go (Go::Runtime::ProtoToMValue)
 message InternFunction {
-  required string resourceName = 1;
-  required uint64 id = 2;
+  string resourceName = 1;
+  uint64 id = 2;
 }
 
 // used when function is imported to go (Go::Runtime::MValueToProto(Bytes))
 message ExternFunction {
-  required string ptr = 1;
+  string ptr = 1;
 }
 
 message RGBA {
-  required uint32 r = 1;
-  required uint32 g = 2;
-  required uint32 b = 3;
-  required uint32 a = 4;
+  uint32 r = 1;
+  uint32 g = 2;
+  uint32 b = 3;
+  uint32 a = 4;
 }
 
 message MValue {

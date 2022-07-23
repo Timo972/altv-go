@@ -209,8 +209,8 @@ func (v Vector3) Lerp(v2 Vector3, ratio float32) Vector3 {
 
 func (v Vector3) pb() *pb.Vector3 {
 	return &pb.Vector3{
-		X: &v.X,
-		Y: &v.Y,
-		Z: &v.Z,
+		X: v.X,
+		Y: v.Y,
+		Z: v.Z,
 	}
 }

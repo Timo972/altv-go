@@ -222,7 +222,7 @@ func newVehicleArray(arr C.struct_array) []*Vehicle {
 
 func CreateVehicle(model uint32, pos Vector3, rot Vector3) (*Vehicle, error) {
 	p, err := coreService.CreateVehicle(context.Background(), &pb.CreateVehicleRequest{
-		Model: &model,
+		Model: model,
 		Pos:   pos.pb(),
 		Rot:   rot.pb(),
 	})

@@ -44,8 +44,8 @@ func newProtoMValue(value interface{}) *pb.MValue {
 			protoValue = &pb.MValue{
 				Value: &pb.MValue_BaseObjectValue{
 					BaseObjectValue: &pb.BaseObject{
-						Type: proto.Uint32(uint32(rv.FieldByName("Type").Uint())),
-						Ptr:  proto.String(fmt.Sprintf("%v", rv.FieldByName("ptr").UnsafePointer())),
+						Type: uint32(rv.FieldByName("Type").Uint()),
+						Ptr:  fmt.Sprintf("%v", rv.FieldByName("ptr").UnsafePointer()),
 					},
 				},
 			}
@@ -86,8 +86,8 @@ func newProtoMValue(value interface{}) *pb.MValue {
 		protoValue = &pb.MValue{
 			Value: &pb.MValue_InternFunctionValue{
 				InternFunctionValue: &pb.InternFunction{
-					Id:           proto.Uint64(id),
-					ResourceName: proto.String(CurrentResource.Name()),
+					Id:           id,
+					ResourceName: CurrentResource.Name(),
 				},
 			},
 		}

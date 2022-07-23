@@ -4,7 +4,6 @@ import (
 	"reflect"
 
 	"github.com/timo972/altv-go/internal/pb"
-	"google.golang.org/protobuf/proto"
 )
 
 func getFieldName(t reflect.StructField) string {
@@ -27,10 +26,10 @@ func structToProto(rt reflect.Type, rv reflect.Value) *pb.MValue {
 		protoValue = &pb.MValue{
 			Value: &pb.MValue_RgbaValue{
 				RgbaValue: &pb.RGBA{
-					R: proto.Uint32(uint32(rv.FieldByName("R").Uint())),
-					G: proto.Uint32(uint32(rv.FieldByName("G").Uint())),
-					B: proto.Uint32(uint32(rv.FieldByName("B").Uint())),
-					A: proto.Uint32(uint32(rv.FieldByName("A").Uint())),
+					R: uint32(rv.FieldByName("R").Uint()),
+					G: uint32(rv.FieldByName("G").Uint()),
+					B: uint32(rv.FieldByName("B").Uint()),
+					A: uint32(rv.FieldByName("A").Uint()),
 				},
 			},
 		}
@@ -38,8 +37,8 @@ func structToProto(rt reflect.Type, rv reflect.Value) *pb.MValue {
 		protoValue = &pb.MValue{
 			Value: &pb.MValue_Vector2Value{
 				Vector2Value: &pb.Vector2{
-					X: proto.Float32(float32(rv.FieldByName("X").Float())),
-					Y: proto.Float32(float32(rv.FieldByName("Y").Float())),
+					X: float32(rv.FieldByName("X").Float()),
+					Y: float32(rv.FieldByName("Y").Float()),
 				},
 			},
 		}
@@ -47,9 +46,9 @@ func structToProto(rt reflect.Type, rv reflect.Value) *pb.MValue {
 		protoValue = &pb.MValue{
 			Value: &pb.MValue_Vector3Value{
 				Vector3Value: &pb.Vector3{
-					X: proto.Float32(float32(rv.FieldByName("X").Float())),
-					Y: proto.Float32(float32(rv.FieldByName("Y").Float())),
-					Z: proto.Float32(float32(rv.FieldByName("Z").Float())),
+					X: float32(rv.FieldByName("X").Float()),
+					Y: float32(rv.FieldByName("Y").Float()),
+					Z: float32(rv.FieldByName("Z").Float()),
 				},
 			},
 		}
