@@ -13,7 +13,7 @@ EXPORT bool altMain(alt::ICore* core) {
     core->RegisterScriptRuntime("go", runtime);
 
     std::stringstream log;
-    log << "Go Module Loaded: " <<  GO_MODULE_VERSION;
+    log << "Go Module Loaded: " << GO_MODULE_VERSION;
     core->LogInfo(log.str());
     
     return true;

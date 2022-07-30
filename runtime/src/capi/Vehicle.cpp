@@ -1187,7 +1187,7 @@ EXPORT unsigned char Vehicle_IsTowingDisabled(void *v) {
 
 EXPORT void Vehicle_SetTowingDisabled(void *v, unsigned char state) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    vehicle->SetTowingDisabled(state);
+    vehicle->SetDisableTowing(state);
 }
 
 EXPORT float Vehicle_GetRocketRefuelSpeed(void *v) {
