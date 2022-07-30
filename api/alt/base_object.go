@@ -17,6 +17,7 @@ package alt
 */
 import "C"
 import (
+	"reflect"
 	"unsafe"
 )
 
@@ -38,8 +39,26 @@ const (
 
 type BaseObject struct {
 	ptr  unsafe.Pointer
+	data map[string]reflect.Value
 	Type BaseObjectType
 }
+
+type IBaseObject interface {
+	HasMetaData(key string) bool
+	MetaData(key string, value interface{}) bool
+	SetMetaData(key string, value interface{}) bool
+	DeleteMetaData(key string)
+	SetData(key string, v interface{})
+	Data(key string, out interface{}) bool
+	HasData(key string) bool
+	DeleteData(key string)
+	ClearData()
+	Valid() bool
+	Remove()
+	nativePtr() unsafe.Pointer
+}
+
+var BaseObjectTest IBaseObject = &BaseObject{}
 
 /*type Base interface {
 	HasMetaData(key string) bool
@@ -47,6 +66,37 @@ type BaseObject struct {
 	SetMetaData(key string, value interface{})
 	DeleteMetaData(key string)
 }*/
+
+func (b *BaseObject) nativePtr() unsafe.Pointer {
+	return b.ptr
+}
+
+func (b *BaseObject) SetData(key string, v interface{}) {
+	b.data[key] = reflect.ValueOf(v)
+}
+
+func (b BaseObject) Data(key string, out interface{}) bool {
+	v, ok := b.data[key]
+	if !ok {
+		return false
+	}
+
+	reflect.ValueOf(out).Elem().Set(v)
+	return true
+}
+
+func (b *BaseObject) DeleteData(key string) {
+	delete(b.data, key)
+}
+
+func (b BaseObject) HasData(key string) bool {
+	_, has := b.data[key]
+	return has
+}
+
+func (b *BaseObject) ClearData() {
+	b.data = make(map[string]reflect.Value)
+}
 
 func (b BaseObject) Valid() bool {
 	// TODO check if it works with player
@@ -74,7 +124,7 @@ func (b BaseObject) Valid() bool {
 	return false
 }
 
-func (b BaseObject) Destroy() {
+func (b BaseObject) Remove() {
 	if b.Type == PlayerObject {
 		C.player_destroy(b.ptr)
 	} else if b.Type == VoiceChannelObject {
