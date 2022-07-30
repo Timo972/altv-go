@@ -37,7 +37,6 @@ MESSAGE(STATUS "Flags:" ${CMAKE_CXX_FLAGS_RELEASE})
 MESSAGE(STATUS "LIB_SUFFIX:" ${CMAKE_FIND_LIBRARY_SUFFIXES})
 
 # protobuf dependency
-list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/vendors/protobuf")
 find_package(Protobuf REQUIRED)
 
 # cpp-sdk dependency
