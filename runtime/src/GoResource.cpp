@@ -14,7 +14,7 @@ bool Go::Resource::Start() {
     auto resourceName = _resource->GetName().c_str();
     auto resourcePath = _resource->GetPath().c_str();
     auto go = GET_FUNC(Module, "initGoResource",
-                       void(*)(alt::IResource * resourcePtr, const char *resourceName, const char *ResourcePath, const char *version));
+                       void(*)(alt::IResource * resourcePtr, const char *resourceName, const char *resourcePath, const char *version));
     if (go == nullptr) {
         alt::ICore::Instance()
                 .LogError("Error while initializing Go Resource");
@@ -79,12 +79,19 @@ bool Go::Resource::Start() {
 }
 
 bool Go::Resource::Stop() {
+    auto shutdown = GET_FUNC(Module, "stopGoResource", void(*)());
+    if (shutdown == nullptr) {
+        alt::ICore::Instance().LogError("Couldn't call resource internal shutdown.");
+        return false;
+    }
+
     auto stop = GET_FUNC(Module, "OnStop", void(*)());
     if (stop == nullptr) {
         alt::ICore::Instance().LogError("Couldn't call OnStop.");
         return false;
     }
 
+    shutdown();
     stop();
     return true;
 }

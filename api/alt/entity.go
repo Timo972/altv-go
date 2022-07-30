@@ -18,6 +18,8 @@ package alt
 import "C"
 import (
 	"fmt"
+	"github.com/timo972/altv-go/internal/pb"
+	"log"
 	"unsafe"
 
 	"github.com/timo972/altv-go/internal/module"
@@ -33,15 +35,19 @@ type IEntity interface {
 	AltEntity()
 }
 
-func newEntity(e C.struct_entity) *Entity {
-	t := BaseObjectType(e.Type)
+func newEntity(e *pb.BaseObject) *Entity {
+	t := BaseObjectType(e.GetType())
+	ptr, err := parsePointer(e.GetPtr())
+	if err != nil {
+		log.Fatalf("Couldn't parse pointer: %v", err.Error())
+	}
 
 	if t != PlayerObject && t != VehicleObject {
 		return nil
 	}
 
 	entity := &Entity{}
-	entity.ptr = e.Ptr
+	entity.ptr = ptr
 	entity.Type = t
 
 	return entity
@@ -52,7 +58,7 @@ func newEntityArray(arr C.struct_array) []*Entity {
 	// FIXME: may causes a crash because it frees to early
 	defer C.free(unsafe.Pointer(arr.array))
 
-	cArray := (*[1 << 28]C.struct_entity)(arr.array)[:size:size]
+	// cArray := (*[1 << 28]C.struct_entity)(arr.array)[:size:size]
 
 	entities := make([]*Entity, size)
 
@@ -61,8 +67,8 @@ func newEntityArray(arr C.struct_array) []*Entity {
 	}
 
 	for i := 0; i < size; i++ {
-		p := cArray[i]
-		entities[i] = newEntity(p)
+		// p := cArray[i]
+		// entities[i] = newEntity(p)
 	}
 
 	return entities

@@ -4,12 +4,46 @@
 // #include <cstdio>
 #include <cstdint>
 #include <sstream>
+// #include <thread>
+
+#include "services/Core.h"
+
+#include <grpcpp/ext/proto_server_reflection_plugin.h>
+#include <grpcpp/grpcpp.h>
+#include <grpcpp/health_check_service_interface.h>
+// #include <grpc/grpc.h>
+
+Go::Runtime::Runtime() {
+    alt::ICore::Instance().LogInfo("Creating Go::Runtime");
+
+    grpc::EnableDefaultHealthCheckService(true);
+    grpc::reflection::InitProtoReflectionServerBuilderPlugin();
+
+    grpc::ServerBuilder builder;
+    builder.AddListeningPort("127.0.0.1:50051", grpc::InsecureServerCredentials());
+
+    CoreService coreService;
+    builder.RegisterService(&coreService);
+
+    _server = builder.BuildAndStart();
+    //_server = std::unique_ptr<grpc::Server>(builder.BuildAndStart());
+    //auto rpcWaitThread = std::thread(HandleRpcs);
+    //rpcWaitThread.join();
+    alt::ICore::Instance().LogInfo("gRPC started");
+    
+}
+
+void Go::Runtime::HandleRpcs()
+{
+
+}
 
 Go::Runtime *Go::Runtime::Instance = nullptr;
 
 Go::Runtime *Go::Runtime::GetInstance() {
-    if (Instance == nullptr)
-        Instance = new Runtime();
+    if (Instance == nullptr) {
+        Instance = new Go::Runtime();
+    }
 
     return Instance;
 }
@@ -23,12 +57,11 @@ alt::IResource::Impl *Go::Runtime::CreateImpl(alt::IResource *impl) {
 
 void Go::Runtime::DestroyImpl(alt::IResource::Impl *impl) {
     auto resource = dynamic_cast<Go::Resource *>(impl);
-
-    if (resource != nullptr)
-        delete resource;
+    delete resource;
 }
 
 void Go::Runtime::OnDispose() {
+    _server->Shutdown();
     // Delete all global objects allocated by libprotobuf.
     google::protobuf::ShutdownProtobufLibrary();
 }
@@ -590,4 +623,9 @@ alt::MValueArgs Go::Runtime::ProtoToMValueArgs(Array data) {
 //#endif
 
     return args;
+}
+
+void Go::Runtime::OnTick()
+{
+    HandleRpcs();
 }

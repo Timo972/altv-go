@@ -4,6 +4,8 @@
 #include <map>
 #include <vector>
 
+#include <grpcpp/server_builder.h>
+
 #include "Main.h"
 
 namespace Go {
@@ -11,14 +13,19 @@ namespace Go {
     private:
         static Runtime *Instance;
         std::vector<std::map<std::string, alt::IResource::Impl *>> _resources;
+        std::unique_ptr<grpc::Server> _server;
+        // alt::Ref<grpc::Server> _server;
+        void HandleRpcs();
     public:
-        Runtime() = default;
+        Runtime();
+        ~Runtime() override = default;
 
         alt::IResource::Impl *CreateImpl(alt::IResource *resource) override;
 
         void DestroyImpl(alt::IResource::Impl *impl) override;
 
         void OnDispose() override;
+        void OnTick() override;
 
         alt::IResource::Impl *GetResource(const std::string &name);
 

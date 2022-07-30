@@ -18,6 +18,9 @@ package alt
 import "C"
 import (
 	"fmt"
+	"github.com/timo972/altv-go/internal/pb"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	runtime "runtime/debug"
 	"unsafe"
@@ -68,9 +71,12 @@ type IResource interface {
 }
 
 var CurrentResource IResource
+var conn *grpc.ClientConn
+var coreService pb.CoreAPIClient
 
 //export initGoResource
 func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, version *C.char) {
+	v := C.GoString(version)
 	CurrentResource = &localResource{
 		name: C.GoString(name),
 		path: C.GoString(path),
@@ -78,11 +84,6 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, version *C.c
 			ptr: ptr,
 		},
 	}
-
-	v := C.GoString(version)
-
-	cstr := C.CString("go-module")
-	defer C.free(unsafe.Pointer(cstr))
 
 	log.SetFlags(log.Ltime)
 
@@ -102,9 +103,32 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, version *C.c
 		log.Fatalf("Version mismatch: %s != %s", v, info.Main.Version)
 	}
 
-	moduleLoaded := int(C.load_module(cstr))
-	if moduleLoaded == 0 {
-		log.Fatal("Couldn't locate go-module library.")
+	golib := C.CString("go-module")
+	defer C.free(unsafe.Pointer(golib))
+	loaded := int(C.load_module(golib))
+	if loaded == 0 {
+		log.Fatalf("Couldn't load go-module")
+	}
+
+	fmt.Println("Dialing...")
+	conn, err := grpc.Dial("127.0.0.1:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("Couldn't connect to go-module: %v", err.Error())
+	}
+
+	fmt.Printf("Connected to backend: state(%v), target(%s)", conn.GetState(), conn.Target())
+
+	coreService = pb.NewCoreAPIClient(conn)
+	fmt.Println("Created coreService client")
+}
+
+//export stopGoResource
+func stopGoResource() {
+	if conn != nil {
+		err := conn.Close()
+		if err != nil {
+			log.Fatalf("Couldn't close connection properly: %v", err.Error())
+		}
 	}
 }
 
