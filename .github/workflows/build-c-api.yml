@@ -1,0 +1,52 @@
+name: Build c-api
+on:
+  push:
+    paths:
+      - "c-api/*"
+      - "runtime/src/capi/*"
+
+  workflow_dispatch:
+
+concurrency: 
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    name: Build ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    env:
+      working-directory: ./c-api
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      
+      - name: Build windows
+        if: ${{ matrix.os }} == "windows-latest"
+        run: |
+          ./build.bat
+          copy build/out/capi.h lib/capi.h
+
+      - name: Build linux
+        if: ${{ matrix.os }} == "ubuntu-latest"
+        run: | 
+          ./build.sh
+          cp build/out/capi.h lib/capi.h
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: Commit & Push static libs
+        uses: actions-js/push@v1.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          message: "chore: update ${{ matrix.os }} c-api libs"
+          branch: ${{ steps.extract_branch.outputs.branch }}
