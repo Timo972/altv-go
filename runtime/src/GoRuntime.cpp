@@ -48,14 +48,35 @@ Entity Go::Runtime::GetEntity(alt::Ref <alt::IEntity> entity) {
 
     if (!entity.IsEmpty()) {
         auto entityType = entity->GetType();
-        e.Type = static_cast<unsigned char>(entityType);
+        e.typ = static_cast<unsigned char>(entityType);
 
         switch (entityType) {
             case alt::IEntity::Type::PLAYER:
-                e.Ptr = entity.As<alt::IPlayer>().Get();
+                auto p = entity.As<alt::IPlayer>();
+                e.ptr = p.Get();
+                e.id = p->GetID();
                 break;
             case alt::IEntity::Type::VEHICLE:
-                e.Ptr = entity.As<alt::IVehicle>().Get();
+                auto v = entity.As<alt::IVehicle>();
+                e.ptr = v.Get();
+                e.id = v->GetID();
+                e.model = v->GetModel();
+                break;
+            case alt::IEntity::Type::BLIP:
+                auto b = entity.As<alt::IBlip>();
+                e.ptr = b.Get();
+                break;
+            case alt::IEntity::Type::CHECKPOINT:
+                auto c = entity.As<alt::ICheckpoint>();
+                e.ptr = c.Get();
+                break;
+            case alt::IEntity::Type::COLSHAPE:
+                auto c = entity.As<alt::IColShape>();
+                e.ptr = c.Get();
+                break;
+            case alt::IEntity::Type::VOICE_CHANNEL:
+                auto c = entity.As<alt::IVoiceChannel>();
+                e.ptr = c.Get();
                 break;
         }
     } else {
@@ -142,14 +163,14 @@ void Go::Runtime::ConfigNodeToProto(alt::config::Node node, MValue::MValue *out)
 }
 
 alt::IEntity *Go::Runtime::GetEntityRef(Entity entity) {
-    auto type = static_cast<alt::IEntity::Type>(entity.Type);
+    auto type = static_cast<alt::IEntity::Type>(entity.typ);
 
     switch (type) {
         case alt::IEntity::Type::PLAYER:
-            return reinterpret_cast<alt::IPlayer *>(entity.Ptr);
+            return reinterpret_cast<alt::IPlayer *>(entity.ptr);
 
         case alt::IEntity::Type::VEHICLE:
-            return reinterpret_cast<alt::IVehicle *>(entity.Ptr);
+            return reinterpret_cast<alt::IVehicle *>(entity.ptr);
 
         default:
             return nullptr;
@@ -157,21 +178,21 @@ alt::IEntity *Go::Runtime::GetEntityRef(Entity entity) {
 }
 
 alt::IBaseObject* Go::Runtime::GetBaseObjectRef(Entity baseObject) {
-    auto type = static_cast<alt::IBaseObject::Type>(baseObject.Type);
+    auto type = static_cast<alt::IBaseObject::Type>(baseObject.typ);
 
     switch (type) {
     case alt::IBaseObject::Type::BLIP:
-        return reinterpret_cast<alt::IBlip*>(baseObject.Ptr);
+        return reinterpret_cast<alt::IBlip*>(baseObject.ptr);
     case alt::IBaseObject::Type::CHECKPOINT:
-        return reinterpret_cast<alt::ICheckpoint*>(baseObject.Ptr);
+        return reinterpret_cast<alt::ICheckpoint*>(baseObject.ptr);
     case alt::IBaseObject::Type::COLSHAPE:
-        return reinterpret_cast<alt::IColShape*>(baseObject.Ptr);
+        return reinterpret_cast<alt::IColShape*>(baseObject.ptr);
     case alt::IBaseObject::Type::PLAYER:
-        return reinterpret_cast<alt::IPlayer*>(baseObject.Ptr);
+        return reinterpret_cast<alt::IPlayer*>(baseObject.ptr);
     case alt::IBaseObject::Type::VEHICLE:
-        return reinterpret_cast<alt::IVehicle*>(baseObject.Ptr);
+        return reinterpret_cast<alt::IVehicle*>(baseObject.ptr);
     case alt::IBaseObject::Type::VOICE_CHANNEL:
-        return reinterpret_cast<alt::IVoiceChannel*>(baseObject.Ptr);
+        return reinterpret_cast<alt::IVoiceChannel*>(baseObject.ptr);
     }
 
     return nullptr;

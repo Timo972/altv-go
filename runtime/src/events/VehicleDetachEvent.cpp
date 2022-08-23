@@ -1,10 +1,11 @@
 #include "VehicleDetachEvent.h"
+#include "GoRuntime.h"
 
 Go::VehicleDetachEvent::VehicleDetachEvent(ModuleLibrary *module) : IEvent(module) { }
 
 void Go::VehicleDetachEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altVehicleDetachEvent", void (*)(alt::IVehicle* vehicle, alt::IVehicle* detachedVehicle));
+    static auto call = GET_FUNC(Library, "altVehicleDetachEvent", void (*)(Entity vehicle, Entity detachedVehicle));
 
     if (call == nullptr)
     {
@@ -13,8 +14,8 @@ void Go::VehicleDetachEvent::Call(const alt::CEvent *ev)
     }
 
     auto event = dynamic_cast<const alt::CVehicleDetachEvent *>(ev);
-    auto vehicle = event->GetTarget().Get();
-    auto detached = event->GetDetached().Get();
+    auto vehicle = Go::Runtime::GetEntity(event->GetTarget());
+    auto detached = Go::Runtime::GetEntity(event->GetDetached());
 
     call(vehicle, detached);
 }

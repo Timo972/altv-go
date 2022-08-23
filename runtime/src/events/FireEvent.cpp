@@ -1,10 +1,11 @@
 #include "FireEvent.h"
+#include "GoRuntime.h"
 
 Go::FireEvent::FireEvent(ModuleLibrary *module) : IEvent(module) { }
 
 void Go::FireEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altFireEvent", int (*)(alt::IPlayer* player, Array fires));
+    static auto call = GET_FUNC(Library, "altFireEvent", int (*)(Entity player, Array fires));
 
     if (call == nullptr)
     {
@@ -13,7 +14,7 @@ void Go::FireEvent::Call(const alt::CEvent *ev)
     }
 
     auto event = dynamic_cast<const alt::CFireEvent *>(ev);
-    auto source = event->GetSource().Get();
+    auto source = Go::Runtime::GetEntity(event->GetSource());
     auto fires = event->GetFires();
 
     Array cFireArr;

@@ -1,10 +1,11 @@
 #include "PlayerConnectEvent.h"
+#include "GoRuntime.h"
 
 Go::PlayerConnectEvent::PlayerConnectEvent(ModuleLibrary *module) : IEvent(module) { }
 
 void Go::PlayerConnectEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altPlayerConnectEvent", void (*)(alt::IPlayer *playerObject));
+    static auto call = GET_FUNC(Library, "altPlayerConnectEvent", void (*)(Entity playerObject));
 
     if (call == nullptr)
     {
@@ -13,7 +14,7 @@ void Go::PlayerConnectEvent::Call(const alt::CEvent *ev)
     }
 
     auto event = dynamic_cast<const alt::CPlayerConnectEvent *>(ev);
-    auto player = event->GetTarget().Get();
+    auto player = Go::Runtime::GetEntity(event->GetTarget());
 
     call(player);
 }

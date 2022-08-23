@@ -113,11 +113,7 @@ EXPORT Entity Blip_AttachedTo(void *b)
     auto blip = reinterpret_cast<alt::IBlip*>(b);
     auto entity = blip->AttachedTo();
 
-    Entity e;
-    e.Ptr = entity.Get();
-    e.Type = static_cast<unsigned char>(entity->GetType());
-
-    return e;
+    return Go::Runtime::GetEntity(entity);
 }
 
 EXPORT void Blip_AttachTo(void *b, Entity e)

@@ -5,7 +5,7 @@ Go::LocalSyncedMetaDataChangeEvent::LocalSyncedMetaDataChangeEvent(ModuleLibrary
 
 void Go::LocalSyncedMetaDataChangeEvent::Call(const alt::CEvent *ev) {
     static auto call = GET_FUNC(Library, "altLocalSyncedMetaDataChangeEvent",
-                                void(*)(void *p, const char* key, Array newValue, Array oldValue));
+                                void(*)(Entity p, const char* key, Array newValue, Array oldValue));
 
     if (call == nullptr) {
         alt::ICore::Instance().LogError("Could not call LocalSyncedMetaDataChangeEvent.");
@@ -13,7 +13,7 @@ void Go::LocalSyncedMetaDataChangeEvent::Call(const alt::CEvent *ev) {
     }
 
     auto event = dynamic_cast<const alt::CLocalMetaDataChangeEvent *>(ev);
-    auto player = event->GetTarget().Get();
+    auto player = Go::Runtime::GetEntity(event->GetTarget());
     auto key = event->GetKey().c_str();
     auto newValueMeta = event->GetVal();
     auto oldValueMeta = event->GetOldVal();
