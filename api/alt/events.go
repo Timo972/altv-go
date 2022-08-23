@@ -86,9 +86,9 @@ const (
 
 type serverStartedListener = func()
 
-type playerConnectListener = func(p *Player)
+type playerConnectListener = func(p IPlayer)
 type playerBeforeConnectListener = func(connectionInfo ConnectionInfo, reason string)
-type playerDisconnectListener = func(p *Player, reason string)
+type playerDisconnectListener = func(p IPlayer, reason string)
 
 type connectionQueueAddListener = func(connectionInfo ConnectionInfo)
 type connectionQueueRemoveListener = func(connectionInfo ConnectionInfo)
@@ -98,42 +98,42 @@ type resourceStopListener = func(resourceName string)
 type resourceErrorListener = func(resourceName string)
 
 type metaDataChangeListener = func(key string, newValue interface{}, oldValue interface{})
-type syncedMetaDataChangeListener = func(entity *Entity, key string, newValue interface{}, oldValue interface{})
-type streamSyncedMetaDataChangeListener = func(entity *Entity, key string, newValue interface{}, oldValue interface{})
+type syncedMetaDataChangeListener = func(entity IEntity, key string, newValue interface{}, oldValue interface{})
+type streamSyncedMetaDataChangeListener = func(entity IEntity, key string, newValue interface{}, oldValue interface{})
 type globalMetaDataChangeListener = func(key string, newValue interface{}, oldValue interface{})
 type globalSyncedMetaDataChangeListener func(key string, newValue interface{}, oldValue interface{})
-type localSyncedMetaDataChangeListener = func(player *Player, key string, newValue interface{}, oldValue interface{})
+type localSyncedMetaDataChangeListener = func(player IPlayer, key string, newValue interface{}, oldValue interface{})
 
-type playerDamageListener = func(p *Player, attacker *Entity, healthDamage uint16, armourDamage uint16, weapon uint32)
-type playerDeathListener = func(p *Player, killer *Entity, weapon uint32)
-type fireListener = func(player *Player, fires []FireInfo) bool
-type explosionListener = func(p *Player, target *Entity, pos Vector3, explosionType int16, explosionFX uint) bool
-type startProjectileListener = func(player *Player, position Vector3, direction Vector3, ammoHash uint16, weaponHash uint32) bool
+type playerDamageListener = func(p IPlayer, attacker IEntity, healthDamage uint16, armourDamage uint16, weapon uint32)
+type playerDeathListener = func(p IPlayer, killer IEntity, weapon uint32)
+type fireListener = func(player IPlayer, fires []FireInfo) bool
+type explosionListener = func(p IPlayer, target IEntity, pos Vector3, explosionType int16, explosionFX uint) bool
+type startProjectileListener = func(player IPlayer, position Vector3, direction Vector3, ammoHash uint16, weaponHash uint32) bool
 
 // TODO bodyPart ENUM
-type weaponDamageListener = func(source *Player, target *Entity, weapon uint32, damage uint16, offset Vector3, bodyPart int8) bool
-type vehicleDestroyListener = func(vehicle *Vehicle)
-type vehicleDamageListener = func(vehicle *Vehicle, entity *Entity, bodyDamage uint32, additionalBodyDamage uint32, engineDamage uint32, petrolTankDamage uint32, damageWidth uint32)
+type weaponDamageListener = func(source IPlayer, target IEntity, weapon uint32, damage uint16, offset Vector3, bodyPart int8) bool
+type vehicleDestroyListener = func(vehicle IVehicle)
+type vehicleDamageListener = func(vehicle IVehicle, entity IEntity, bodyDamage uint32, additionalBodyDamage uint32, engineDamage uint32, petrolTankDamage uint32, damageWidth uint32)
 
-type entityEnterColShapeListener = func(colShape *ColShape, entity *Entity)
-type entityLeaveColShapeListener = func(colShape *ColShape, entity *Entity)
-type playerEnterVehicleListener = func(p *Player, v *Vehicle, seat uint8)
-type playerEnteringVehicleListener = func(p *Player, v *Vehicle, seat uint8)
-type playerLeaveVehicleListener = func(p *Player, v *Vehicle, seat uint8)
-type playerChangeVehicleSeatListener = func(p *Player, v *Vehicle, oldSeat uint8, newSeat uint8)
-type playerWeaponChangeListener = func(player *Player, oldWeapon uint32, newWeapon uint32) bool
-type playerRequestControlListener = func(player *Player, target *Entity) bool
+type entityEnterColShapeListener = func(colShape IColShape, entity IEntity)
+type entityLeaveColShapeListener = func(colShape IColShape, entity IEntity)
+type playerEnterVehicleListener = func(p IPlayer, v IVehicle, seat uint8)
+type playerEnteringVehicleListener = func(p IPlayer, v IVehicle, seat uint8)
+type playerLeaveVehicleListener = func(p IPlayer, v IVehicle, seat uint8)
+type playerChangeVehicleSeatListener = func(p IPlayer, v IVehicle, oldSeat uint8, newSeat uint8)
+type playerWeaponChangeListener = func(player IPlayer, oldWeapon uint32, newWeapon uint32) bool
+type playerRequestControlListener = func(player IPlayer, target IEntity) bool
 
-type vehicleAttachListener = func(vehicle *Vehicle, attachedVehicle *Vehicle)
-type vehicleDetachListener = func(vehicle *Vehicle, detachedVehicle *Vehicle)
-type netOwnerChangeListener = func(entity *Entity, owner *Player, oldOwner *Player)
+type vehicleAttachListener = func(vehicle IVehicle, attachedVehicle IVehicle)
+type vehicleDetachListener = func(vehicle IVehicle, detachedVehicle IVehicle)
+type netOwnerChangeListener = func(entity IEntity, owner IPlayer, oldOwner IPlayer)
 
-type removeEntityListener = func(entity *Entity)
+type removeEntityListener = func(entity IEntity)
 
 type consoleCommandListener = func(command string, args []string)
 
-type playerChangeAnimationListener = func(player *Player, oldAnimDict uint32, oldAnimName uint32, newAnimDict uint32, newAnimName uint32)
-type playerChangeInteriorListener = func(player *Player, oldInterior uint32, newInterior uint32)
+type playerChangeAnimationListener = func(player IPlayer, oldAnimDict uint32, oldAnimName uint32, newAnimDict uint32, newAnimName uint32)
+type playerChangeInteriorListener = func(player IPlayer, oldInterior uint32, newInterior uint32)
 
 // type allServerEventsListener = func(eventName string, args ...interface{})
 // type serverEventListener = func(args ...interface{})
@@ -625,7 +625,7 @@ func altServerStartedEvent() {
 
 //export altPlayerConnectEvent
 func altPlayerConnectEvent(p unsafe.Pointer) {
-	player := newPlayer(p)
+	player := getPlayer(p)
 
 	for i, event := range Once.playerConnectEvents {
 		event(player)
@@ -665,7 +665,7 @@ func altConsoleCommandEvent(cName *C.char, cArray C.struct_array) {
 //export altPlayerDisconnectEvent
 func altPlayerDisconnectEvent(p unsafe.Pointer, cReason *C.char) {
 	reason := C.GoString(cReason)
-	player := newPlayer(p)
+	player := getPlayer(p)
 
 	for i, event := range Once.playerDisconnectEvents {
 		event(player, reason)
@@ -684,11 +684,11 @@ func altPlayerDisconnectEvent(p unsafe.Pointer, cReason *C.char) {
 
 //export altExplosionEvent
 func altExplosionEvent(p unsafe.Pointer, e C.struct_entity, pos C.struct_pos, explosionType C.short, explosionFX C.uint) C.int {
-	player := newPlayer(p)
+	player := getPlayer(p)
 	goPos := Vector3{X: float32(pos.x), Y: float32(pos.y), Z: float32(pos.z)}
 	expType := int16(explosionType)
 	expFX := uint(explosionFX)
-	entity := newEntity(e)
+	entity := getEntity(e)
 
 	cont := true
 
@@ -717,8 +717,8 @@ func altExplosionEvent(p unsafe.Pointer, e C.struct_entity, pos C.struct_pos, ex
 
 //export altPlayerChangeVehicleSeatEvent
 func altPlayerChangeVehicleSeatEvent(p unsafe.Pointer, v unsafe.Pointer, old C.uchar, new C.uchar) {
-	player := newPlayer(p)
-	vehicle := newVehicle(v)
+	player := getPlayer(p)
+	vehicle := getVehicle(v)
 	oSeat := uint8(old)
 	nSeat := uint8(new)
 
@@ -739,11 +739,11 @@ func altPlayerChangeVehicleSeatEvent(p unsafe.Pointer, v unsafe.Pointer, old C.u
 
 //export altPlayerDamageEvent
 func altPlayerDamageEvent(p unsafe.Pointer, e C.struct_entity, healthDmg C.ushort, armourDmg C.ushort, weap C.ulong) {
-	player := newPlayer(p)
+	player := getPlayer(p)
 	healthDamage := uint16(healthDmg)
 	armourDamage := uint16(armourDmg)
 	weapon := uint32(weap)
-	entity := newEntity(e)
+	entity := getEntity(e)
 
 	for i, event := range Once.playerDamageEvents {
 		event(player, entity, healthDamage, armourDamage, weapon)
@@ -761,10 +761,10 @@ func altPlayerDamageEvent(p unsafe.Pointer, e C.struct_entity, healthDmg C.ushor
 }
 
 //export altPlayerDeathEvent
-func altPlayerDeathEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong) {
-	player := newPlayer(p)
+func altPlayerDeathEvent(p C.struct_entity, e C.struct_entity, weap C.ulong) {
+	player := getPlayer(p)
 	weapon := uint32(weap)
-	entity := newEntity(e)
+	entity := getEntity(e)
 
 	for i, event := range Once.playerDeathEvents {
 		event(player, entity, weapon)
@@ -782,9 +782,9 @@ func altPlayerDeathEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong) {
 }
 
 //export altPlayerEnterVehicleEvent
-func altPlayerEnterVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.uchar) {
-	player := newPlayer(p)
-	vehicle := newVehicle(v)
+func altPlayerEnterVehicleEvent(p C.struct_entity, v C.struct_entity, s C.uchar) {
+	player := getPlayer(p)
+	vehicle := getVehicle(v)
 	seat := uint8(s)
 
 	for i, event := range Once.playerEnterVehicleEvents {
@@ -803,9 +803,9 @@ func altPlayerEnterVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.uchar) {
 }
 
 //export altPlayerLeaveVehicleEvent
-func altPlayerLeaveVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.uchar) {
-	player := newPlayer(p)
-	vehicle := newVehicle(v)
+func altPlayerLeaveVehicleEvent(p C.struct_entity, v C.struct_entity, s C.uchar) {
+	player := getPlayer(p)
+	vehicle := getVehicle(v)
 	seat := uint8(s)
 
 	for i, event := range Once.playerLeaveVehicleEvents {
@@ -825,7 +825,7 @@ func altPlayerLeaveVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.uchar) {
 
 //export altRemoveEntityEvent
 func altRemoveEntityEvent(e C.struct_entity) {
-	entity := newEntity(e)
+	entity := getEntity(e)
 
 	for i, event := range Once.removeEntityEvents {
 		event(entity)
@@ -900,13 +900,13 @@ func altResourceErrorEvent(n *C.char) {
 }
 
 //export altWeaponDamageEvent
-func altWeaponDamageEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong, dmg C.ushort, ofs C.struct_pos, bPart C.short) C.int {
-	player := newPlayer(p)
+func altWeaponDamageEvent(p C.struct_entity, e C.struct_entity, weap C.ulong, dmg C.ushort, ofs C.struct_pos, bPart C.short) C.int {
+	player := getPlayer(p)
 	weapon := uint32(weap)
 	damage := uint16(dmg)
 	offset := Vector3{X: float32(ofs.x), Y: float32(ofs.y), Z: float32(ofs.z)}
 	bodyPart := int8(bPart)
-	entity := newEntity(e)
+	entity := getEntity(e)
 
 	cont := false
 
@@ -935,8 +935,8 @@ func altWeaponDamageEvent(p unsafe.Pointer, e C.struct_entity, weap C.ulong, dmg
 
 //export altPlayerEnteringVehicleEvent
 func altPlayerEnteringVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.ushort) {
-	player := newPlayer(p)
-	vehicle := newVehicle(v)
+	player := getPlayer(p)
+	vehicle := getVehicle(v)
 	seat := uint8(s)
 
 	for i, event := range Once.playerEnteringVehicleEvents {
@@ -956,9 +956,9 @@ func altPlayerEnteringVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.ushor
 
 //export altColShapeEvent
 func altColShapeEvent(c unsafe.Pointer, e C.struct_entity, s C.int) {
-	colShape := newColShape(c)
+	colShape := getColShape(c)
 	state := int(s) == 1
-	entity := newEntity(e)
+	entity := getEntity(e)
 
 	if state {
 		for i, event := range Once.entityEnterColShapeEvents {
@@ -988,7 +988,7 @@ func altColShapeEvent(c unsafe.Pointer, e C.struct_entity, s C.int) {
 
 //export altFireEvent
 func altFireEvent(p unsafe.Pointer, f C.struct_array) C.int {
-	player := newPlayer(p)
+	player := getPlayer(p)
 
 	cFireInfoStructs, size := convertArray[C.struct_fireInfo](f)
 
@@ -1079,7 +1079,7 @@ func altGlobalSyncedMetaDataChangeEvent(k *C.char, nVal C.struct_array, oVal C.s
 
 //export altLocalSyncedMetaDataChangeEvent
 func altLocalSyncedMetaDataChangeEvent(p unsafe.Pointer, cKey *C.char, cNewValue C.struct_array, cOldValue C.struct_array) {
-	player := newPlayer(p)
+	player := getPlayer(p)
 	key := C.GoString(cKey)
 
 	// FIXME:
@@ -1126,9 +1126,9 @@ func altMetaDataChangeEvent(cKey *C.char, cNewValue C.struct_array, cOldValue C.
 
 //export altNetOwnerChangeEvent
 func altNetOwnerChangeEvent(e C.struct_entity, o unsafe.Pointer, oo unsafe.Pointer) {
-	owner := newPlayer(o)
-	oldOwner := newPlayer(oo)
-	entity := newEntity(e)
+	owner := getPlayer(o)
+	oldOwner := getPlayer(oo)
+	entity := getEntity(e)
 
 	for i, event := range Once.netOwnerChangeEvents {
 		event(entity, oldOwner, owner)
@@ -1147,7 +1147,7 @@ func altNetOwnerChangeEvent(e C.struct_entity, o unsafe.Pointer, oo unsafe.Point
 
 //export altPlayerWeaponChangeEvent
 func altPlayerWeaponChangeEvent(p unsafe.Pointer, oWeap C.ulong, nWeap C.ulong) C.int {
-	player := newPlayer(p)
+	player := getPlayer(p)
 	oldWeapon := uint32(oWeap)
 	newWeapon := uint32(nWeap)
 
@@ -1178,8 +1178,8 @@ func altPlayerWeaponChangeEvent(p unsafe.Pointer, oWeap C.ulong, nWeap C.ulong) 
 
 //export altPlayerRequestControlEvent
 func altPlayerRequestControlEvent(p unsafe.Pointer, e C.struct_entity) C.int {
-	player := newPlayer(p)
-	entity := newEntity(e)
+	player := getPlayer(p)
+	entity := getEntity(e)
 
 	ok := true
 
@@ -1266,7 +1266,7 @@ func altConnectionQueueRemoveEvent(cHandle unsafe.Pointer, cInfo C.struct_connec
 
 //export altStartProjectileEvent
 func altStartProjectileEvent(p unsafe.Pointer, pos C.struct_pos, dir C.struct_pos, aHash C.uint, wHash C.ulong) C.int {
-	player := newPlayer(p)
+	player := getPlayer(p)
 	position := Vector3{X: float32(pos.x), Y: float32(pos.y), Z: float32(pos.z)}
 	direction := Vector3{X: float32(dir.x), Y: float32(dir.y), Z: float32(dir.z)}
 	ammoHash := uint16(aHash)
@@ -1305,7 +1305,7 @@ func altStreamSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.str
 	var oldValue interface{}
 	var newValue interface{}
 
-	entity := newEntity(e)
+	entity := getEntity(e)
 
 	for i, event := range Once.streamSyncedMetaDataChangeEvents {
 		event(entity, key, newValue, oldValue)
@@ -1330,7 +1330,7 @@ func altSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.struct_ar
 	var oldValue interface{}
 	var newValue interface{}
 
-	entity := newEntity(e)
+	entity := getEntity(e)
 
 	for i, event := range Once.syncedMetaDataChangeEvents {
 		event(entity, key, newValue, oldValue)
@@ -1349,8 +1349,8 @@ func altSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.struct_ar
 
 //export altVehicleAttachEvent
 func altVehicleAttachEvent(v unsafe.Pointer, a unsafe.Pointer) {
-	vehicle := newVehicle(v)
-	attached := newVehicle(a)
+	vehicle := getVehicle(v)
+	attached := getVehicle(a)
 
 	for i, event := range Once.vehicleAttachEvents {
 		event(vehicle, attached)
@@ -1369,8 +1369,8 @@ func altVehicleAttachEvent(v unsafe.Pointer, a unsafe.Pointer) {
 
 //export altVehicleDetachEvent
 func altVehicleDetachEvent(v unsafe.Pointer, a unsafe.Pointer) {
-	vehicle := newVehicle(v)
-	attached := newVehicle(a)
+	vehicle := getVehicle(v)
+	attached := getVehicle(a)
 
 	for i, event := range Once.vehicleDetachEvents {
 		event(vehicle, attached)
@@ -1389,7 +1389,7 @@ func altVehicleDetachEvent(v unsafe.Pointer, a unsafe.Pointer) {
 
 //export altVehicleDestroyEvent
 func altVehicleDestroyEvent(v unsafe.Pointer) {
-	vehicle := newVehicle(v)
+	vehicle := getVehicle(v)
 
 	for i, event := range Once.vehicleDestroyEvents {
 		event(vehicle)
@@ -1408,8 +1408,8 @@ func altVehicleDestroyEvent(v unsafe.Pointer) {
 
 //export altVehicleDamageEvent
 func altVehicleDamageEvent(v unsafe.Pointer, e C.struct_entity, body C.uint, additional C.uint, engine C.uint, tank C.uint, width C.uint) {
-	vehicle := newVehicle(v)
-	entity := newEntity(e)
+	vehicle := getVehicle(v)
+	entity := getEntity(e)
 	bodyDamage := uint32(body)
 	additionalBodyDamage := uint32(additional)
 	engineDamage := uint32(engine)
@@ -1433,7 +1433,7 @@ func altVehicleDamageEvent(v unsafe.Pointer, e C.struct_entity, body C.uint, add
 
 //export altPlayerChangeAnimationEvent
 func altPlayerChangeAnimationEvent(p unsafe.Pointer, oldAnimDict C.uint, oldAnimName C.uint, newAnimDict C.uint, newAnimName C.uint) {
-	player := newPlayer(p)
+	player := getPlayer(p)
 	oad := uint32(oldAnimDict)
 	oan := uint32(oldAnimName)
 	nad := uint32(newAnimDict)
@@ -1456,7 +1456,7 @@ func altPlayerChangeAnimationEvent(p unsafe.Pointer, oldAnimDict C.uint, oldAnim
 
 //export altPlayerChangeInteriorEvent
 func altPlayerChangeInteriorEvent(p unsafe.Pointer, oldInterior C.uint, newInterior C.uint) {
-	player := newPlayer(p)
+	player := getPlayer(p)
 	oi := uint32(oldInterior)
 	ni := uint32(newInterior)
 

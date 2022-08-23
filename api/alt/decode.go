@@ -17,14 +17,12 @@ package alt
 */
 import "C"
 import (
-	"errors"
 	"fmt"
 	"reflect"
 	"strconv"
 	"unsafe"
 
 	"github.com/timo972/altv-go/internal/pb"
-	"golang.org/x/exp/slices"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -35,7 +33,7 @@ import (
 type decoder struct {
 	Buffer    []byte
 	RootValue reflect.Value
-	RootType  reflect.Type
+	RootType  reflect.Type()
 	MValue    *pb.MValue
 }
 
@@ -76,44 +74,44 @@ func decodeArgs(arr C.struct_array) ([]reflect.Value, error) {
 	return data, nil
 }
 
-func decodeArgsExpensive(funcType reflect.Type, arr C.struct_array) ([]reflect.Value, error) {
-	var err error
+func decodeArgsExpensive(funcType reflect.Type(), arr C.struct_array) ([]reflect.Value, error) {
+var err error
 
-	argsSize := int(arr.size)
-	mValueArgs := (*[1 << 30]C.struct_array)(arr.array)
+argsSize := int(arr.size)
+mValueArgs := (*[1 << 30]C.struct_array)(arr.array)
 
-	argCount := funcType.NumIn()
-	args := make([]reflect.Value, argCount)
+argCount := funcType.NumIn()
+args := make([]reflect.Value, argCount)
 
-	if argsSize != argCount {
-		return nil, errors.New("argument count mismatch")
-	}
+if argsSize != argCount {
+return nil, errors.New("argument count mismatch")
+}
 
-	for i := 0; i < argCount; i++ {
-		argType := funcType.In(i)
-		out := reflect.New(argType)
+for i := 0; i < argCount; i++ {
+argType := funcType.In(i)
+out := reflect.New(argType)
 
-		bytes := C.GoBytes(mValueArgs[i].array, C.int(mValueArgs[i].size))
+bytes := C.GoBytes(mValueArgs[i].array, C.int(mValueArgs[i].size))
 
-		d := &decoder{
-			Buffer:    bytes,
-			RootType:  argType,
-			RootValue: out.Elem(),
-		}
-		err = d.unmarshalBytes()
-		if err != nil {
-			return nil, err
-		}
+d := &decoder{
+Buffer:    bytes,
+RootType:  argType,
+RootValue: out.Elem(),
+}
+err = d.unmarshalBytes()
+if err != nil {
+return nil, err
+}
 
-		err = d.decode()
-		if err != nil {
-			return nil, err
-		}
+err = d.decode()
+if err != nil {
+return nil, err
+}
 
-		args[i] = d.RootValue
-	}
+args[i] = d.RootValue
+}
 
-	return args, nil
+return args, nil
 }
 
 func parsePointer(ptrStr string) (unsafe.Pointer, error) {
@@ -146,7 +144,7 @@ func (d *decoder) unmarshalBytes() error {
 }
 
 func (d *decoder) Decode(v interface{}) error {
-	if reflect.TypeOf(v).Kind() != reflect.Ptr {
+	if reflect.Type()Of(v).Kind() != reflect.Ptr {
 		return fmt.Errorf("root type must be a pointer")
 	}
 
@@ -250,7 +248,7 @@ func baseObjectToReflectValue(base *pb.BaseObject, isEntity bool) (reflect.Value
 		if isEntity {
 			e := &Entity{}
 			e.ptr = ptr
-			e.Type = t
+			e.Type() = t
 			v = reflect.ValueOf(e)
 		} else {
 			v = reflect.ValueOf(newPlayer(ptr))
@@ -259,7 +257,7 @@ func baseObjectToReflectValue(base *pb.BaseObject, isEntity bool) (reflect.Value
 		if isEntity {
 			e := &Entity{}
 			e.ptr = ptr
-			e.Type = t
+			e.Type() = t
 			v = reflect.ValueOf(e)
 		} else {
 			v = reflect.ValueOf(newVehicle(ptr))
@@ -277,124 +275,124 @@ func baseObjectToReflectValue(base *pb.BaseObject, isEntity bool) (reflect.Value
 	return v, nil
 }
 
-func (d *decoder) decodeStruct(rt reflect.Type, rv reflect.Value) error {
-	structName := rt.Name()
+func (d *decoder) decodeStruct(rt reflect.Type(), rv reflect.Value) error {
+structName := rt.Name()
 
-	if structName == "RGBA" {
-		rgba := d.MValue.GetRgbaValue()
+if structName == "RGBA" {
+rgba := d.MValue.GetRgbaValue()
 
-		rv.Set(reflect.ValueOf(RGBA{
-			R: uint8(rgba.GetR()),
-			G: uint8(rgba.GetG()),
-			B: uint8(rgba.GetB()),
-			A: uint8(rgba.GetA()),
-		}))
-	} else if structName == "Vector2" {
-		v2 := d.MValue.GetVector2Value()
+rv.Set(reflect.ValueOf(RGBA{
+R: uint8(rgba.GetR()),
+G: uint8(rgba.GetG()),
+B: uint8(rgba.GetB()),
+A: uint8(rgba.GetA()),
+}))
+} else if structName == "Vector2" {
+v2 := d.MValue.GetVector2Value()
 
-		rv.Set(reflect.ValueOf(Vector2{
-			X: v2.GetX(),
-			Y: v2.GetY(),
-		}))
-	} else if structName == "Vector3" {
-		v3 := d.MValue.GetVector3Value()
+rv.Set(reflect.ValueOf(Vector2{
+X: v2.GetX(),
+Y: v2.GetY(),
+}))
+} else if structName == "Vector3" {
+v3 := d.MValue.GetVector3Value()
 
-		rv.Set(reflect.ValueOf(Vector3{
-			X: v3.GetX(),
-			Y: v3.GetY(),
-			Z: v3.GetZ(),
-		}))
-	} else if structName == "Player" || structName == "Entity" || structName == "Vehicle" || structName == "ColShape" || structName == "Checkpoint" || structName == "VoiceChannel" || structName == "Blip" {
-		base := d.MValue.GetBaseObjectValue()
+rv.Set(reflect.ValueOf(Vector3{
+X: v3.GetX(),
+Y: v3.GetY(),
+Z: v3.GetZ(),
+}))
+} else if structName == "Player" || structName == "Entity" || structName == "Vehicle" || structName == "ColShape" || structName == "Checkpoint" || structName == "VoiceChannel" || structName == "Blip" {
+base := d.MValue.GetBaseObjectValue()
 
-		v, err := baseObjectToReflectValue(base, structName == "Entity")
-		if err != nil {
-			return err
-		}
-
-		rv.Set(v)
-	} else {
-		keys := d.MValue.GetDict()
-		values := d.MValue.GetList()
-
-		fieldCount := rv.NumField()
-
-		for i := 0; i < fieldCount; i++ {
-			field := rv.Field(i)
-			fieldType := rt.Field(i)
-			name := getFieldName(fieldType)
-
-			i := slices.Index(keys, name)
-			if i < 0 || i >= len(values) {
-				// field is not set
-				continue
-			}
-
-			valueDecoder := &decoder{
-				MValue:    values[i],
-				RootValue: field,
-				RootType:  field.Type(),
-			}
-
-			err := valueDecoder.decode()
-			if err != nil {
-				return err
-			}
-		}
-	}
-
-	return nil
+v, err := baseObjectToReflectValue(base, structName == "Entity")
+if err != nil {
+return err
 }
 
-func (d *decoder) decodeMap(rt reflect.Type, rv reflect.Value) error {
-	m := reflect.MakeMap(rt)
+rv.Set(v)
+} else {
+keys := d.MValue.GetDict()
+values := d.MValue.GetList()
 
-	keys := d.MValue.GetDict()
-	values := d.MValue.GetList()
+fieldCount := rv.NumField()
 
-	for i, key := range keys {
-		valueDecoder := &decoder{
-			MValue: values[i],
-			// FIXME: ???
-			RootValue: reflect.New(rt.Elem()),
-			RootType:  rt.Elem(),
-		}
+for i := 0; i < fieldCount; i++ {
+field := rv.Field(i)
+fieldType := rt.Field(i)
+name := getFieldName(fieldType)
 
-		err := valueDecoder.decode()
-		if err != nil {
-			return err
-		}
-
-		m.SetMapIndex(reflect.ValueOf(key), valueDecoder.RootValue)
-	}
-
-	rv.Set(m)
-
-	return nil
+i := slices.Index(keys, name)
+if i < 0 || i >= len(values) {
+// field is not set
+continue
 }
 
-func (d *decoder) decodeSlice(rt reflect.Type, rv reflect.Value) error {
-	values := d.MValue.GetList()
-	size := len(values)
-	l := reflect.MakeSlice(rt, size, size)
-	elemType := rt.Elem()
+valueDecoder := &decoder{
+MValue:    values[i],
+RootValue: field,
+RootType:  field.Type(),
+}
 
-	// TODO: support byte array
+err := valueDecoder.decode()
+if err != nil {
+return err
+}
+}
+}
 
-	for i, pbVal := range values {
-		valueDecoder := &decoder{
-			MValue:    pbVal,
-			RootValue: l.Index(i),
-			RootType:  elemType,
-		}
+return nil
+}
 
-		err := valueDecoder.decode()
-		if err != nil {
-			return err
-		}
-	}
+func (d *decoder) decodeMap(rt reflect.Type(), rv reflect.Value) error {
+m := reflect.MakeMap(rt)
 
-	rv.Set(l)
+keys := d.MValue.GetDict()
+values := d.MValue.GetList()
 
-	return nil
+for i, key := range keys {
+valueDecoder := &decoder{
+MValue: values[i],
+// FIXME: ???
+RootValue: reflect.New(rt.Elem()),
+RootType:  rt.Elem(),
+}
+
+err := valueDecoder.decode()
+if err != nil {
+return err
+}
+
+m.SetMapIndex(reflect.ValueOf(key), valueDecoder.RootValue)
+}
+
+rv.Set(m)
+
+return nil
+}
+
+func (d *decoder) decodeSlice(rt reflect.Type(), rv reflect.Value) error {
+values := d.MValue.GetList()
+size := len(values)
+l := reflect.MakeSlice(rt, size, size)
+elemType := rt.Elem()
+
+// TODO: support byte array
+
+for i, pbVal := range values {
+valueDecoder := &decoder{
+MValue:    pbVal,
+RootValue: l.Index(i),
+RootType:  elemType,
+}
+
+err := valueDecoder.decode()
+if err != nil {
+return err
+}
+}
+
+rv.Set(l)
+
+return nil
 }

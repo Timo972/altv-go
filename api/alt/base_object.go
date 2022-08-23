@@ -37,11 +37,31 @@ const (
 )
 
 type BaseObject struct {
-	ptr  unsafe.Pointer
-	Type BaseObjectType
+	IBaseObject
+	ptr unsafe.Pointer
+	typ BaseObjectType
 }
 
-/*type Base interface {
+type IBaseObject interface {
+	Type() BaseObjectType
+	NativePointer() unsafe.Pointer
+	Valid() bool
+	Destroy()
+	HasMetaData(key string) bool
+	SetMetaData(key string, value interface{})
+	MetaData(key string, out interface{})
+	DeleteMetaData(key string)
+}
+
+func (b BaseObject) Type() BaseObjectType {
+	return b.typ
+}
+
+func (b BaseObject) NativePointer() unsafe.Pointer {
+	return b.ptr
+}
+
+/*typ Base interface {
 	HasMetaData(key string) bool
 	MetaData(key string, value interface{}) bool
 	SetMetaData(key string, value interface{})
@@ -58,34 +78,34 @@ func (b BaseObject) Valid() bool {
 	defer C.free(unsafe.Pointer(cName))
 
 	// if so add for other base object extenders
-	if b.Type == PlayerObject {
+	if b.typ == PlayerObject {
 		return int(C.player_is_valid(cName, b.ptr)) == 1
-	} else if b.Type == VoiceChannelObject {
+	} else if b.typ == VoiceChannelObject {
 		return int(C.voice_channel_is_valid(cName, b.ptr)) == 1
-	} else if b.Type == CheckpointObject {
+	} else if b.typ == CheckpointObject {
 		return int(C.checkpoint_is_valid(cName, b.ptr)) == 1
-	} else if b.Type == ColshapeObject {
+	} else if b.typ == ColshapeObject {
 		return int(C.col_shape_is_valid(cName, b.ptr)) == 1
-	} else if b.Type == VehicleObject {
+	} else if b.typ == VehicleObject {
 		return int(C.vehicle_is_valid(cName, b.ptr)) == 1
-	} else if b.Type == BlipObject {
+	} else if b.typ == BlipObject {
 		return int(C.blip_is_valid(cName, b.ptr)) == 1
 	}
 	return false
 }
 
 func (b BaseObject) Destroy() {
-	if b.Type == PlayerObject {
+	if b.typ == PlayerObject {
 		C.player_destroy(b.ptr)
-	} else if b.Type == VoiceChannelObject {
+	} else if b.typ == VoiceChannelObject {
 		C.voice_channel_destroy(b.ptr)
-	} else if b.Type == CheckpointObject {
+	} else if b.typ == CheckpointObject {
 		C.checkpoint_destroy(b.ptr)
-	} else if b.Type == ColshapeObject {
+	} else if b.typ == ColshapeObject {
 		C.col_shape_destroy(b.ptr)
-	} else if b.Type == VehicleObject {
+	} else if b.typ == VehicleObject {
 		C.vehicle_destroy(b.ptr)
-	} else if b.Type == BlipObject {
+	} else if b.typ == BlipObject {
 		C.blip_destroy(b.ptr)
 	}
 }
@@ -94,17 +114,17 @@ func (b BaseObject) HasMetaData(key string) bool {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
-	if b.Type == PlayerObject {
+	if b.typ == PlayerObject {
 		return int(C.player_has_meta_data(b.ptr, cKey)) == 1
-	} else if b.Type == VoiceChannelObject {
+	} else if b.typ == VoiceChannelObject {
 		return int(C.voice_channel_has_meta_data(b.ptr, cKey)) == 1
-	} else if b.Type == CheckpointObject {
+	} else if b.typ == CheckpointObject {
 		return int(C.checkpoint_has_meta_data(b.ptr, cKey)) == 1
-	} else if b.Type == ColshapeObject {
+	} else if b.typ == ColshapeObject {
 		return int(C.col_shape_has_meta_data(b.ptr, cKey)) == 1
-	} else if b.Type == VehicleObject {
+	} else if b.typ == VehicleObject {
 		return int(C.vehicle_has_meta_data(b.ptr, cKey)) == 1
-	} else if b.Type == BlipObject {
+	} else if b.typ == BlipObject {
 		return int(C.blip_has_meta_data(b.ptr, cKey)) == 1
 	}
 
@@ -116,17 +136,17 @@ func (b BaseObject) MetaData(key string, val interface{}) bool {
 	defer C.free(unsafe.Pointer(cKey))
 
 	var arr C.struct_array
-	if b.Type == PlayerObject {
+	if b.typ == PlayerObject {
 		arr = C.player_get_meta_data(b.ptr, cKey)
-	} else if b.Type == VoiceChannelObject {
+	} else if b.typ == VoiceChannelObject {
 		arr = C.voice_channel_get_meta_data(b.ptr, cKey)
-	} else if b.Type == CheckpointObject {
+	} else if b.typ == CheckpointObject {
 		arr = C.checkpoint_get_meta_data(b.ptr, cKey)
-	} else if b.Type == ColshapeObject {
+	} else if b.typ == ColshapeObject {
 		arr = C.col_shape_get_meta_data(b.ptr, cKey)
-	} else if b.Type == VehicleObject {
+	} else if b.typ == VehicleObject {
 		arr = C.vehicle_get_meta_data(b.ptr, cKey)
-	} else if b.Type == BlipObject {
+	} else if b.typ == BlipObject {
 		arr = C.blip_get_meta_data(b.ptr, cKey)
 	}
 
@@ -146,17 +166,17 @@ func (b BaseObject) SetMetaData(key string, value interface{}) bool {
 	defer C.free(arr.array)
 
 	bytes := (*C.uchar)(arr.array)
-	if b.Type == PlayerObject {
+	if b.typ == PlayerObject {
 		C.player_set_meta_data(b.ptr, cKey, bytes, arr.size)
-	} else if b.Type == VoiceChannelObject {
+	} else if b.typ == VoiceChannelObject {
 		C.voice_channel_set_meta_data(b.ptr, cKey, bytes, arr.size)
-	} else if b.Type == CheckpointObject {
+	} else if b.typ == CheckpointObject {
 		C.checkpoint_set_meta_data(b.ptr, cKey, bytes, arr.size)
-	} else if b.Type == ColshapeObject {
+	} else if b.typ == ColshapeObject {
 		C.col_shape_set_meta_data(b.ptr, cKey, bytes, arr.size)
-	} else if b.Type == VehicleObject {
+	} else if b.typ == VehicleObject {
 		C.vehicle_set_meta_data(b.ptr, cKey, bytes, arr.size)
-	} else if b.Type == BlipObject {
+	} else if b.typ == BlipObject {
 		C.blip_set_meta_data(b.ptr, cKey, bytes, arr.size)
 	}
 
@@ -167,17 +187,17 @@ func (b BaseObject) DeleteMetaData(key string) {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
-	if b.Type == PlayerObject {
+	if b.typ == PlayerObject {
 		C.player_delete_meta_data(b.ptr, cKey)
-	} else if b.Type == VoiceChannelObject {
+	} else if b.typ == VoiceChannelObject {
 		C.voice_channel_delete_meta_data(b.ptr, cKey)
-	} else if b.Type == CheckpointObject {
+	} else if b.typ == CheckpointObject {
 		C.checkpoint_delete_meta_data(b.ptr, cKey)
-	} else if b.Type == ColshapeObject {
+	} else if b.typ == ColshapeObject {
 		C.col_shape_delete_meta_data(b.ptr, cKey)
-	} else if b.Type == VehicleObject {
+	} else if b.typ == VehicleObject {
 		C.vehicle_delete_meta_data(b.ptr, cKey)
-	} else if b.Type == BlipObject {
+	} else if b.typ == BlipObject {
 		C.blip_delete_meta_data(b.ptr, cKey)
 	}
 }

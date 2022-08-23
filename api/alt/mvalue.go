@@ -48,7 +48,7 @@ func (e ExternFunction) Call(args ...interface{}) (interface{}, error) {
 	}
 
 	cMeta := C.runtime_call_m_value_function(e.ptr, arr)
-	//mVal := &MValue{Ptr: cMeta.ptr, Type: uint8(cMeta.Type)}
+	//mVal := &MValue{Ptr: cMeta.ptr, Type: uint8(cMeta.Type())}
 	val, err := decodeReflect(cMeta)
 	if err != nil {
 		return nil, err

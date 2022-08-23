@@ -27,7 +27,8 @@ import (
 func newProtoMValue(value interface{}) *pb.MValue {
 	var protoValue *pb.MValue
 
-	rt := reflect.TypeOf(value)
+	rt := reflect.Type()
+	Of(value)
 	rv := reflect.ValueOf(value)
 	kind := rt.Kind()
 

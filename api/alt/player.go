@@ -24,13 +24,14 @@ import (
 )
 
 type Player struct {
+	IPlayer
 	Entity
 }
 
 func newPlayer(p unsafe.Pointer) *Player {
 	player := &Player{}
 	player.ptr = p
-	player.Type = PlayerObject
+	player.typ = PlayerObject
 
 	return player
 }
