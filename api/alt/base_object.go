@@ -37,9 +37,9 @@ const (
 )
 
 type BaseObject struct {
-	IBaseObject
-	ptr unsafe.Pointer
-	typ BaseObjectType
+	ptr  unsafe.Pointer
+	typ  BaseObjectType
+	data map[string]interface{}
 }
 
 type IBaseObject interface {
@@ -48,8 +48,8 @@ type IBaseObject interface {
 	Valid() bool
 	Destroy()
 	HasMetaData(key string) bool
-	SetMetaData(key string, value interface{})
-	MetaData(key string, out interface{})
+	SetMetaData(key string, value interface{}) bool
+	MetaData(key string, out interface{}) bool
 	DeleteMetaData(key string)
 }
 

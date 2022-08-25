@@ -26,15 +26,14 @@ const (
 
 type WorldObject struct {
 	BaseObject
-	World
 }
 
 type World interface {
 	IBaseObject
-	Position() *Vector3
-	SetPosition()
+	Position() Vector3
+	SetPosition(pos Vector3)
 	Dimension() int32
-	SetDimension()
+	SetDimension(dim int32)
 }
 
 func (w WorldObject) Position() Vector3 {

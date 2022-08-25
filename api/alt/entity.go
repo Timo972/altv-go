@@ -25,7 +25,6 @@ import (
 
 type Entity struct {
 	WorldObject
-	IEntity
 	ID uint16
 }
 

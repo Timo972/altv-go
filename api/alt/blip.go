@@ -47,7 +47,7 @@ type Blip struct {
 func newBlip(b unsafe.Pointer) *Blip {
 	blip := &Blip{}
 	blip.ptr = b
-	blip.Type() = BlipObject
+	blip.typ = BlipObject
 	return blip
 }
 

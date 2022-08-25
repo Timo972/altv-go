@@ -54,7 +54,6 @@ func (f *factories) Vehicle(factory vehicleFactory) {
 
 type MyPlayer struct {
 	Player
-	IPlayer
 	loggedIn bool
 }
 

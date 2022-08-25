@@ -24,7 +24,6 @@ import (
 )
 
 type Player struct {
-	IPlayer
 	Entity
 }
 
