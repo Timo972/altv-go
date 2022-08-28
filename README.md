@@ -1,7 +1,34 @@
-# altv-go [![API](https://github.com/timo972/altv-go/actions/workflows/test-api.yml/badge.svg)](https://github.com/timo972/altv-go/actions/workflows/test-api.yml) [![Module](https://github.com/Timo972/altv-go/actions/workflows/test-module.yml/badge.svg)](https://github.com/Timo972/altv-go/actions/workflows/test-module.yml) [![Module](https://github.com/timo972/altv-go/actions/workflows/build-deploy-module.yml/badge.svg)](https://github.com/timo972/altv-go/actions/workflows/build-deploy-module.yml)
+<div align="center">
+  <h1>alt:V Go</h1>
+  <a href="https://github.com/timo972/altv-go/actions/workflows/test-api.yml">
+    <img src="https://github.com/timo972/altv-go/actions/workflows/test-api.yml/badge.svg" />
+  </a>
+	<a href="https://github.com/Timo972/altv-go/actions/workflows/test-module.yml">
+    <img src="https://github.com/Timo972/altv-go/actions/workflows/test-module.yml/badge.svg" />
+  </a>
+	<a href="https://github.com/timo972/altv-go/actions/workflows/build-deploy-module.yml">
+    <img src="https://github.com/timo972/altv-go/actions/workflows/build-deploy-module.yml/badge.svg" />
+  </a>
+  <a href="https://github.com/edgedb/edgedb/blob/master/LICENSE">
+    <img alt="license" src="https://img.shields.io/badge/license-MIT-blue" />
+  </a>
+  <br />
+  <br />
+  <a href="https://altv-go.tbeck.dev/guide/get-started">Get started</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://altv-go.tbeck.dev">Docs</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://altv.mp">alt:V</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://discord.altv.mp">Discord</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://twitter.com/altVMP">Twitter</a>
+  <br />
 
-Go package for alt:V Multiplayer.
-Runtime can be found [here](runtime).
+</div>
+<br />
+
+> Go package for alt:V Multiplayer. Runtime can be found [here](runtime).
 
 ## Requirements
 
