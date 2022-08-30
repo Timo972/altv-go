@@ -106,14 +106,15 @@ func (d *reflectDecoder) decode() (reflect.Value, error) {
 			Y: v.Vector2Value.GetY(),
 		})
 	} else if len(d.MValue.GetDict()) > 0 {
-		keys := d.MValue.GetDict()
-		values := d.MValue.GetList()
+		//keys := d.MValue.GetDict()
+		//values := d.MValue.GetList()
+		dict := d.MValue.GetDict()
 
 		data := make(map[string]interface{})
 
-		for i, key := range keys {
+		for k, v := range dict {
 			valueDecoder := &reflectDecoder{
-				MValue: values[i],
+				MValue: v,
 			}
 
 			value, err := valueDecoder.decode()
@@ -121,7 +122,7 @@ func (d *reflectDecoder) decode() (reflect.Value, error) {
 				return rv, err
 			}
 
-			data[key] = value.Interface()
+			data[k] = value.Interface()
 		}
 
 		rv = reflect.ValueOf(data)

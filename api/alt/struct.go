@@ -57,36 +57,40 @@ func structToProto(rt reflect.Type, rv reflect.Value) *pb.MValue {
 		// user struct
 
 		fieldCount := rv.NumField()
-		allCount := fieldCount + rv.NumMethod()
+		// allCount := fieldCount + rv.NumMethod()
 
-		keys := make([]string, allCount)
-		mvalues := make([]*pb.MValue, allCount)
+		//keys := make([]string, allCount)
+		//mvalues := make([]*pb.MValue, allCount)
+
+		protoValue = &pb.MValue{
+			Dict: make(map[string]*pb.MValue, fieldCount),
+		}
 
 		// export data
 		for i := 0; i < fieldCount; i++ {
 			field := rv.Field(i)
 			fieldType := rt.Field(i)
 
-			keys[i] = getFieldName(fieldType)
-			mvalues[i] = newProtoMValue(field.Interface())
-
+			key := getFieldName(fieldType)
+			//mvalues[i] = newProtoMValue(field.Interface())
+			protoValue.Dict[key] = newProtoMValue(field.Interface())
 		}
 
 		// export methods
-		for i := fieldCount; i < allCount; i++ {
-			method := rt.Method(i)
-			// this enabled means you can not export methods in camelCase - only PascalCase
-			// if !method.IsExported() {
-			// 	continue
-			// }
-			keys[i] = method.Type.Name()
-			mvalues[i] = newProtoMValue(method.Func.Interface())
-		}
+		// for i := fieldCount; i < allCount; i++ {
+		// 	method := rt.Method(i)
+		// 	// this enabled means you can not export methods in camelCase - only PascalCase
+		// 	// if !method.IsExported() {
+		// 	// 	continue
+		// 	// }
+		// 	keys[i] = method.Type.Name()
+		// 	mvalues[i] = newProtoMValue(method.Func.Interface())
+		// }
 
-		protoValue = &pb.MValue{
-			Dict: keys,
-			List: mvalues,
-		}
+		// protoValue = &pb.MValue{
+		// 	Dict: keys,
+		// 	List: mvalues,
+		// }
 	}
 
 	return protoValue

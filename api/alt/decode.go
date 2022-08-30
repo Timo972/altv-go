@@ -24,7 +24,6 @@ import (
 	"unsafe"
 
 	"github.com/timo972/altv-go/internal/pb"
-	"golang.org/x/exp/slices"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -314,8 +313,10 @@ func (d *decoder) decodeStruct(rt reflect.Type, rv reflect.Value) error {
 
 		rv.Set(v)
 	} else {
-		keys := d.MValue.GetDict()
-		values := d.MValue.GetList()
+		// keys := d.MValue.GetDict()
+		// values := d.MValue.GetList()
+
+		dict := d.MValue.GetDict()
 
 		fieldCount := rv.NumField()
 
@@ -324,14 +325,19 @@ func (d *decoder) decodeStruct(rt reflect.Type, rv reflect.Value) error {
 			fieldType := rt.Field(i)
 			name := getFieldName(fieldType)
 
-			i := slices.Index(keys, name)
-			if i < 0 || i >= len(values) {
+			//i := slices.Index(keys, name)
+			//if i < 0 || i >= len(dict) {
+			//	// field is not set
+			//	continue
+			//}
+			value, ok := dict[name]
+			if !ok {
 				// field is not set
 				continue
 			}
 
 			valueDecoder := &decoder{
-				MValue:    values[i],
+				MValue:    value,
 				RootValue: field,
 				RootType:  field.Type(),
 			}
@@ -349,12 +355,13 @@ func (d *decoder) decodeStruct(rt reflect.Type, rv reflect.Value) error {
 func (d *decoder) decodeMap(rt reflect.Type, rv reflect.Value) error {
 	m := reflect.MakeMap(rt)
 
-	keys := d.MValue.GetDict()
-	values := d.MValue.GetList()
+	//keys := d.MValue.GetDict()
+	//values := d.MValue.GetList()
+	dict := d.MValue.GetDict()
 
-	for i, key := range keys {
+	for k, v := range dict {
 		valueDecoder := &decoder{
-			MValue: values[i],
+			MValue: v,
 			// FIXME: ???
 			RootValue: reflect.New(rt.Elem()),
 			RootType:  rt.Elem(),
@@ -365,7 +372,7 @@ func (d *decoder) decodeMap(rt reflect.Type, rv reflect.Value) error {
 			return err
 		}
 
-		m.SetMapIndex(reflect.ValueOf(key), valueDecoder.RootValue)
+		m.SetMapIndex(reflect.ValueOf(k), valueDecoder.RootValue)
 	}
 
 	rv.Set(m)

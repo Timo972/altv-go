@@ -61,5 +61,6 @@ message MValue {
 
   // nested values
   repeated MValue list = 8;
-  repeated string dict = 9;
+  //repeated string dict = 9;
+  map<string, MValue> dict = 9;
 }
