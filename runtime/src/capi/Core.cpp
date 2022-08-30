@@ -146,12 +146,12 @@ EXPORT Array Core_GetSyncedMetaData(const char *key) {
 
 EXPORT Array Core_GetRequiredPermissions() {
     auto perms = alt::ICore::Instance().GetRequiredPermissions();
-    return Go::Runtime::GetInstance()->CreateArray<alt::Permission, unsigned char>(perms);
+    return Go::Runtime::CreateArray<alt::Permission, unsigned char>(perms);
 }
 
 EXPORT Array Core_GetOptionalPermissions() {
     auto perms = alt::ICore::Instance().GetOptionalPermissions();
-    return Go::Runtime::GetInstance()->CreateArray<alt::Permission, unsigned char>(perms);
+    return Go::Runtime::CreateArray<alt::Permission, unsigned char>(perms);
 }
 
 EXPORT void Core_DestroyBaseObject(void *h) {
@@ -363,6 +363,19 @@ EXPORT VehicleModelInfo Core_GetVehicleModelByHash(unsigned int hash) {
 
     m.extras = modelInfo.extras;
     m.defaultExtras = modelInfo.defaultExtras;
+
+    m.bones = Go::Runtime::CreateBoneArray(modelInfo.bones);
+
+    return m;
+}
+
+EXPORT PedModelInfo Core_GetPedModelByHash(unsigned int hash) {
+    auto modelInfo = alt::ICore::Instance().GetPedModelByHash(hash);
+
+    PedModelInfo m;
+    m.bones = Go::Runtime::CreateBoneArray(modelInfo.bones);
+    m.hash = modelInfo.hash;
+    m.name = modelInfo.name.c_str();
 
     return m;
 }

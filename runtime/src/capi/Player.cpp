@@ -180,7 +180,7 @@ EXPORT int Player_HasWeaponComponent(void *p, unsigned long weapon, unsigned lon
 EXPORT Array Player_GetCurrentWeaponComponents(void *p) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto components = player->GetCurrentWeaponComponents();
-    return Go::Runtime::GetInstance()->CreateArray<unsigned int, unsigned int>(components);
+    return Go::Runtime::CreateArray<unsigned int, unsigned int>(components);
 }
 
 EXPORT unsigned int Player_GetWeaponTintIndex(void *p, unsigned long weapon) {
@@ -741,7 +741,7 @@ EXPORT Array Player_GetWeapons(void *p) {
         Weapon w;
         w.hash = weapon.hash;
         w.tintIndex = weapon.tintIndex;
-        w.components = Go::Runtime::GetInstance()->CreateArray<uint32_t, unsigned int>(weapon.components);
+        w.components = Go::Runtime::CreateArray<uint32_t, unsigned int>(weapon.components);
 
         cweaps[i] = w;
     }
@@ -804,9 +804,9 @@ EXPORT float Player_GetStrafeSpeed(void *p) {
     return player->GetStrafeSpeed();
 }
 
-EXPORT const char *Player_GetDiscordId(void *p) {
+EXPORT long long Player_GetDiscordId(void *p) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
-    return player->GetDiscordId().c_str();
+    return player->GetDiscordId();
 }
 
 EXPORT unsigned int Player_GetInteriorLocation(void *p) {

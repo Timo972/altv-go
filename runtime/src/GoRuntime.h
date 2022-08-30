@@ -31,12 +31,14 @@ namespace Go {
 
         static Array ConfigNodeToProtoBytes(alt::config::Node node);
         static void ConfigNodeToProto(alt::config::Node node, MValue::MValue *out);
+        
+        static Array CreateBoneArray(std::vector<alt::BoneInfo> bones);
 
         // const char *SerializeConfig(alt::config::Node rootNode);
 
         // Array helper stuff
         template<class ClassInstance>
-        Array CreatePointerArray(alt::Array<alt::Ref<ClassInstance>> objects) {
+        static Array CreatePointerArray(alt::Array<alt::Ref<ClassInstance>> objects) {
             Array arr;
             arr.size = objects.GetSize();
 
@@ -55,7 +57,7 @@ namespace Go {
         }
 
         template<class ClassInstance>
-        Array CreatePointerArray(std::vector<alt::Ref<ClassInstance>> objects) {
+        static Array CreatePointerArray(std::vector<alt::Ref<ClassInstance>> objects) {
             Array arr;
             arr.size = objects.size();
 
@@ -74,7 +76,7 @@ namespace Go {
         }
 
         template<typename Type, typename TargetType>
-        Array CreateArray(alt::Array<Type> altArr) {
+        static Array CreateArray(alt::Array<Type> altArr) {
             Array arr;
             arr.size = altArr.GetSize();
 
@@ -93,7 +95,7 @@ namespace Go {
         }
 
         template<typename Type, typename TargetType>
-        Array CreateArray(std::unordered_set<Type> set) {
+        static Array CreateArray(std::unordered_set<Type> set) {
             Array arr;
 
             arr.size = set.size();
@@ -106,6 +108,25 @@ namespace Go {
             for (const auto &item: set) {
                 cset[i] = item;
                 i++;
+            }
+
+            arr.array = cset;
+
+            return arr;
+        }
+
+        template<typename Type, typename TargetType>
+        static Array CreateArray(std::vector<Type> set) {
+            Array arr;
+
+            arr.size = set.size();
+#ifdef _WIN32
+            auto cset = new TargetType[arr.size];
+#else
+            TargetType cset[arr.size];
+#endif
+            for (uint64_t i = 0; i < set.size; i++) {
+                cset[i] = item;
             }
 
             arr.array = cset;

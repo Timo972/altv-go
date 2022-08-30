@@ -71,7 +71,7 @@ ConnectionInfo Go::Runtime::GetConnectionInfo(alt::Ref <alt::IConnectionInfo> in
     conn.branch = info->GetBranch().c_str();
     conn.build = info->GetBuild();
     conn.cdnUrl = info->GetCdnUrl().c_str();
-    conn.discordUserID = info->GetDiscordUserID().c_str();
+    conn.discordUserID = info->GetDiscordUserID();
     conn.hwidExHash = info->GetHwIdExHash();
     conn.hwidHash = info->GetHwIdHash();
     conn.ip = info->GetIp().c_str();
@@ -81,6 +81,31 @@ ConnectionInfo Go::Runtime::GetConnectionInfo(alt::Ref <alt::IConnectionInfo> in
     conn.socialID = info->GetSocialId();
 
     return conn;
+}
+
+Array Go::Runtime::CreateBoneArray(std::vector<alt::BoneInfo> bones) {
+    Array arr;
+    arr.size = bones.size();
+
+#ifdef _WIN32
+    auto cArr = new BoneInfo[arr.size];
+#else
+    BoneInfo cArr[arr.size];
+#endif
+    
+
+    for (uint64_t i = 0; i < arr.size; i++) {
+        auto b = bones[i];
+        BoneInfo bone;
+        bone.id = b.id;
+        bone.index = b.index;
+        bone.name = b.name.c_str();
+        cArr[i] = bone;
+    }
+
+    arr.array = cArr;
+
+    return arr;
 }
 
 Array Go::Runtime::ConfigNodeToProtoBytes(alt::config::Node node) 

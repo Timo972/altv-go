@@ -83,7 +83,7 @@ typedef struct connectionInfo {
     const char *cdnUrl;
     unsigned long long passwordHash;
     const char *ip;
-    const char *discordUserID;
+    long long discordUserID;
 } ConnectionInfo;
 
 typedef struct weapon {
@@ -124,6 +124,7 @@ typedef struct vehicleModelInfo {
    // bool
    unsigned char hasArmoredWindows;
    unsigned char hasAutoAttachTrailer;
+   Array bones;
 
    unsigned char primaryColor;
    unsigned char secondaryColor;
@@ -136,6 +137,18 @@ typedef struct vehicleModelInfo {
    unsigned short extras;
    unsigned short defaultExtras;
 } VehicleModelInfo;
+
+typedef struct pedModelInfo {
+    unsigned int hash;
+    const char* name;
+    Array bones;
+} PedModelInfo;
+
+typedef struct boneInfo {
+    unsigned short id;
+    unsigned short index;
+    const char* name;
+} BoneInfo;
 
 /*
 typedef struct resourceInfo {

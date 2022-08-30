@@ -77,12 +77,12 @@ EXPORT Array Resource_GetDependants(void* r) {
 
 EXPORT Array Resource_GetRequiredPermissions(void* r) {
 	auto resource = reinterpret_cast<alt::IResource*>(r);
-	return Go::Runtime::GetInstance()->CreateArray<alt::Permission, unsigned char>(resource->GetRequiredPermissions());
+	return Go::Runtime::CreateArray<alt::Permission, unsigned char>(resource->GetRequiredPermissions());
 }
 
 EXPORT Array Resource_GetOptionalPermissions(void* r) {
 	auto resource = reinterpret_cast<alt::IResource*>(r);
-	return Go::Runtime::GetInstance()->CreateArray<alt::Permission, unsigned char>(resource->GetOptionalPermissions());
+	return Go::Runtime::CreateArray<alt::Permission, unsigned char>(resource->GetOptionalPermissions());
 }
 
 EXPORT const char* Resource_GetPath(void* r) {
