@@ -46,6 +46,7 @@ type VehicleModelInfo struct {
 	WheelsCount       uint8
 	ArmoredWindows    bool
 	AutoAttachTrailer bool
+	Bones             []BoneInfo
 	PrimaryColor      uint8
 	SecondaryColor    uint8
 	PearlColor        uint8
@@ -75,6 +76,7 @@ func newVehicleModelInfo(info C.struct_vehicleModelInfo) VehicleModelInfo {
 		WheelsCount:       uint8(info.wheelsCount),
 		ArmoredWindows:    uint8(info.hasArmoredWindows) == 1,
 		AutoAttachTrailer: uint8(info.hasAutoAttachTrailer) == 1,
+		Bones:             createBoneSlice(info.bones),
 		PrimaryColor:      uint8(info.primaryColor),
 		SecondaryColor:    uint8(info.secondaryColor),
 		PearlColor:        uint8(info.pearlColor),

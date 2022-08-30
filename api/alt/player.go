@@ -415,13 +415,13 @@ func (p Player) HairHighlightColor() uint8 {
 
 func (p Player) Weapons() []Weapon {
 	cWeapons := C.player_get_weapons(p.ptr)
+	defer C.free(unsafe.Pointer(cWeapons.array))
 	values, size := convertArray[C.struct_weapon](cWeapons)
 
 	weapons := make([]Weapon, size)
 
 	for i := 0; i < size; i++ {
-		weapon := newWeapon(values[i])
-		weapons = append(weapons, weapon)
+		weapons[i] = newWeapon(values[i])
 	}
 
 	return weapons
@@ -487,8 +487,8 @@ func (p Player) StrafeSpeed() float32 {
 	return float32(C.player_get_strafe_speed(p.ptr))
 }
 
-func (p Player) DiscordId() string {
-	return C.GoString(C.player_get_discord_id(p.ptr))
+func (p Player) DiscordId() int64 {
+	return int64(C.player_get_discord_id(p.ptr))
 }
 
 func (p Player) InteriorLocation() uint32 {

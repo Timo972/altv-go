@@ -34,6 +34,7 @@ const (
 	HttpClientObject
 	AudioObject
 	LocalPlayerObject
+	ObjectObject
 )
 
 type BaseObject struct {

@@ -34,7 +34,7 @@ type ConnectionInfo struct {
 	CDNUrl        string
 	PasswordHash  uint64
 	IP            string
-	DiscordUserID string
+	DiscordUserID int64
 }
 
 func newConnectionInfo(cHandle unsafe.Pointer, cInfo C.struct_connectionInfo) ConnectionInfo {
@@ -50,7 +50,7 @@ func newConnectionInfo(cHandle unsafe.Pointer, cInfo C.struct_connectionInfo) Co
 		SocialID:      uint64(cInfo.socialID),
 		IsDebug:       uint8(cInfo.isDebug) == 1,
 		IP:            C.GoString(cInfo.ip),
-		DiscordUserID: C.GoString(cInfo.discordUserID),
+		DiscordUserID: int64(cInfo.discordUserID),
 		PasswordHash:  uint64(cInfo.passwordHash),
 	}
 }

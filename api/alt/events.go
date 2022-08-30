@@ -82,6 +82,9 @@ const (
 	consoleCommandEvent
 	playerChangeAnimationEvent
 	playerChangeInteriorEvent
+
+	// is this client only?
+	playerWeaponShoot
 )
 
 type serverStartedListener = func()

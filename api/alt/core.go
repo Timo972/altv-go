@@ -230,6 +230,10 @@ func VehicleModelByHash(hash uint32) VehicleModelInfo {
 	return newVehicleModelInfo(C.core_get_vehicle_model_by_hash(C.uint(hash)))
 }
 
+func PedModelByHash(hash uint32) PedModelInfo {
+	return newPedModelInfo(C.core_get_ped_model_by_hash(C.uint(hash)))
+}
+
 func StopServer() {
 	C.core_stop_server()
 }
