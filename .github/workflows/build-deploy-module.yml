@@ -12,7 +12,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-18.04, windows-2019]
+        os: [ubuntu-20.04, windows-2019]
     name: Build ${{ matrix.os }}
     runs-on: ${{ matrix.os }} 
     steps:
@@ -64,7 +64,7 @@ jobs:
         working-directory: ./runtime
 
       - name: Build
-        if: matrix.os == 'ubuntu-18.04'
+        if: matrix.os == 'ubuntu-20.04'
         run: |
           sudo add-apt-repository ppa:ubuntu-toolchain-r/test
           sudo apt-get update
@@ -99,7 +99,7 @@ jobs:
       - name: Download linux artifacts
         uses: actions/download-artifact@v2
         with:
-          name: go-module-ubuntu-18.04
+          name: go-module-ubuntu-20.04
           path: dist-linux
 
       - name: Create Release
@@ -141,5 +141,5 @@ jobs:
         uses: geekyeggo/delete-artifact@v1
         with:
           name: |
-            go-module-ubuntu-18.04
+            go-module-ubuntu-20.04
             go-module-windows-2019

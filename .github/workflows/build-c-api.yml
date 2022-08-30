@@ -15,11 +15,11 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-20.04, windows-2019]
     name: Build ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    env:
-      working-directory: ./c-api
+    #env:
+    #  working-directory: ./c-api
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -28,13 +28,15 @@ jobs:
           fetch-depth: 0
       
       - name: Build windows
-        if: ${{ matrix.os }} == "windows-latest"
+        if: ${{ matrix.os }} == "windows-2019"
+        working-directory: ./c-api
         run: |
           ./build.bat
           copy build/out/capi.h lib/capi.h
 
       - name: Build linux
-        if: ${{ matrix.os }} == "ubuntu-latest"
+        if: ${{ matrix.os }} == "ubuntu-20.04"
+        working-directory: ./c-api
         run: | 
           ./build.sh
           cp build/out/capi.h lib/capi.h
