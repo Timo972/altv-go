@@ -28,14 +28,14 @@ jobs:
           fetch-depth: 0
       
       - name: Build windows
-        if: matrix.os == "windows-2019"
+        if: matrix.os == 'windows-2019'
         working-directory: ./c-api
         run: |
           ./build.bat
           copy build/out/capi.h lib/capi.h
 
       - name: Build linux
-        if: matrix.os == "ubuntu-20.04"
+        if: matrix.os == 'ubuntu-20.04'
         working-directory: ./c-api
         run: | 
           ./build.sh
