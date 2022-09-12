@@ -28,7 +28,11 @@
 </div>
 <br />
 
-> Go package for alt:V Multiplayer. Runtime can be found [here](runtime).
+> Go package for alt:V Multiplayer. Runtime can be found [here](runtime).	
+
+> ⚠️ notice: i am too busy to keep this module updated even though no one is interested in it / using it. 	
+> Create an issue or write me on Discord if you are interested or plan on using it, so i will continue updating / improving.
+> ✨ Contributions of any kind are always welcome!
 
 ## Requirements
 
