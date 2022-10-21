@@ -1,10 +1,11 @@
 #include "StartProjectileEvent.h"
+#include "GoRuntime.h"
 
 Go::StartProjectileEvent::StartProjectileEvent(ModuleLibrary *module) : IEvent(module) { }
 
 void Go::StartProjectileEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altStartProjectileEvent", int (*)(alt::IPlayer* player, Position pos, Position dir, unsigned int ammoHash, unsigned long weaponHash));
+    static auto call = GET_FUNC(Library, "altStartProjectileEvent", int (*)(Entity player, Position pos, Position dir, unsigned int ammoHash, unsigned long weaponHash));
 
     if (call == nullptr)
     {
@@ -13,7 +14,7 @@ void Go::StartProjectileEvent::Call(const alt::CEvent *ev)
     }
 
     auto event = dynamic_cast<const alt::CStartProjectileEvent *>(ev);
-    auto player = event->GetSource().Get();
+    auto player = Go::Runtime::GetEntity(event->GetSource());
     auto pos = event->GetStartPosition();
     auto dir = event->GetDirection();
     auto ammo = event->GetAmmoHash();

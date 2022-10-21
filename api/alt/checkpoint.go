@@ -28,7 +28,7 @@ type Checkpoint struct {
 func newCheckpoint(cp unsafe.Pointer) *Checkpoint {
 	checkpoint := &Checkpoint{}
 	checkpoint.ptr = cp
-	checkpoint.Type = CheckpointObject
+	checkpoint.Type() = CheckpointObject
 	return checkpoint
 }
 
@@ -38,7 +38,7 @@ func CreateCheckpoint(checkpointType uint8, x float32, y float32, z float32, rad
 	ptr := C.core_create_checkpoint(C.uchar(checkpointType), C.float(x), C.float(y), C.float(z), C.float(radius), C.float(height), C.uchar(color.R), C.uchar(color.G), C.uchar(color.B), C.uchar(color.A))
 	checkpoint := &Checkpoint{}
 	checkpoint.ptr = ptr
-	checkpoint.Type = CheckpointObject
+	checkpoint.Type() = CheckpointObject
 	return checkpoint
 }
 

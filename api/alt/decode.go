@@ -19,12 +19,12 @@ import "C"
 import (
 	"errors"
 	"fmt"
+	"golang.org/x/exp/slices"
 	"reflect"
 	"strconv"
 	"unsafe"
 
 	"github.com/timo972/altv-go/internal/pb"
-	"golang.org/x/exp/slices"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -248,21 +248,24 @@ func baseObjectToReflectValue(base *pb.BaseObject, isEntity bool) (reflect.Value
 	switch t {
 	case PlayerObject:
 		if isEntity {
+			// FIXME:
 			e := &Entity{}
 			e.ptr = ptr
-			e.Type = t
+			e.typ = t
 			v = reflect.ValueOf(e)
 		} else {
-			v = reflect.ValueOf(newPlayer(ptr))
+			// FIXME:
+			v = reflect.ValueOf(playerCache.GetOrCreate(ptr, 0))
 		}
 	case VehicleObject:
 		if isEntity {
 			e := &Entity{}
 			e.ptr = ptr
-			e.Type = t
+			e.typ = t
 			v = reflect.ValueOf(e)
 		} else {
-			v = reflect.ValueOf(newVehicle(ptr))
+			// FIXME:
+			v = reflect.ValueOf(vehicleCache.GetOrCreate(ptr, 0, 0))
 		}
 	case ColshapeObject:
 		v = reflect.ValueOf(newColShape(ptr))

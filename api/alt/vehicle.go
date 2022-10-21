@@ -196,7 +196,7 @@ type Vehicle struct {
 func newVehicle(p unsafe.Pointer) *Vehicle {
 	vehicle := &Vehicle{}
 	vehicle.ptr = p
-	vehicle.Type = VehicleObject
+	vehicle.Type() = VehicleObject
 
 	return vehicle
 }

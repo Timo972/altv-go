@@ -1,10 +1,11 @@
 #include "RemoveEntityEvent.h"
+#include "GoRuntime.h"
 
 Go::RemoveEntityEvent::RemoveEntityEvent(ModuleLibrary *module) : IEvent(module) { }
 
 void Go::RemoveEntityEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altRemoveEntityEvent", void (*)(alt::IEntity *entityObject));
+    static auto call = GET_FUNC(Library, "altRemoveEntityEvent", void (*)(Entity entityObject));
 
     if (call == nullptr)
     {
@@ -13,7 +14,7 @@ void Go::RemoveEntityEvent::Call(const alt::CEvent *ev)
     }
 
     auto event = dynamic_cast<const alt::CRemoveEntityEvent *>(ev);
-    auto entity = event->GetEntity().Get();
+    auto entity = Go::Runtime::GetEntity(event->GetEntity());
 
     call(entity);
 }

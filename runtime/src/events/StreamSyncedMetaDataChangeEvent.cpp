@@ -14,12 +14,11 @@ void Go::StreamSyncedMetaDataChangeEvent::Call(const alt::CEvent *ev)
     }
 
     auto event = dynamic_cast<const alt::CStreamSyncedMetaDataChangeEvent *>(ev);
-    auto entity = event->GetTarget();
     auto key = event->GetKey().c_str();
     auto newValueMeta = event->GetVal();
     auto oldValueMeta = event->GetOldVal();
 
-    Entity e = Go::Runtime::GetEntity(entity);
+    Entity e = Go::Runtime::GetEntity(event->GetTarget());
 
     auto newValue = Go::Runtime::MValueToProtoBytes(newValueMeta);
     auto oldValue = Go::Runtime::MValueToProtoBytes(oldValueMeta);

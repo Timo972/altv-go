@@ -62,8 +62,10 @@ typedef struct neonState {
 } VehicleNeonState;
 
 typedef struct entity {
-    unsigned char Type;
-    void *Ptr;
+    unsigned char typ;
+    void *ptr;
+    unsigned short id;
+    unsigned int model;
 } Entity;
 
 typedef struct array {

@@ -29,24 +29,25 @@ type WorldObject struct {
 }
 
 type World interface {
-	Position() *Vector3
-	SetPosition()
+	IBaseObject
+	Position() Vector3
+	SetPosition(pos Vector3)
 	Dimension() int32
-	SetDimension()
+	SetDimension(dim int32)
 }
 
 func (w WorldObject) Position() Vector3 {
 	var cPos C.struct_pos
 
-	if w.Type == PlayerObject {
+	if w.Type() == PlayerObject {
 		cPos = C.player_get_position(w.ptr)
-	} else if w.Type == CheckpointObject {
+	} else if w.Type() == CheckpointObject {
 		cPos = C.checkpoint_get_position(w.ptr)
-	} else if w.Type == ColshapeObject {
+	} else if w.Type() == ColshapeObject {
 		cPos = C.col_shape_get_position(w.ptr)
-	} else if w.Type == VehicleObject {
+	} else if w.Type() == VehicleObject {
 		cPos = C.vehicle_get_position(w.ptr)
-	} else if w.Type == BlipObject {
+	} else if w.Type() == BlipObject {
 		cPos = C.blip_get_position(w.ptr)
 	}
 
@@ -54,15 +55,15 @@ func (w WorldObject) Position() Vector3 {
 }
 
 func (w WorldObject) SetPosition(pos Vector3) {
-	if w.Type == PlayerObject {
+	if w.Type() == PlayerObject {
 		C.player_set_position(w.ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z))
-	} else if w.Type == CheckpointObject {
+	} else if w.Type() == CheckpointObject {
 		C.checkpoint_set_position(w.ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z))
-	} else if w.Type == ColshapeObject {
+	} else if w.Type() == ColshapeObject {
 		C.col_shape_set_position(w.ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z))
-	} else if w.Type == VehicleObject {
+	} else if w.Type() == VehicleObject {
 		C.vehicle_set_position(w.ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z))
-	} else if w.Type == BlipObject {
+	} else if w.Type() == BlipObject {
 		C.blip_set_position(w.ptr, C.float(pos.X), C.float(pos.Y), C.float(pos.Z))
 	}
 }
@@ -70,15 +71,15 @@ func (w WorldObject) SetPosition(pos Vector3) {
 func (w WorldObject) Dimension() int32 {
 	var dimension int32
 
-	if w.Type == PlayerObject {
+	if w.Type() == PlayerObject {
 		dimension = int32(C.player_get_dimension(w.ptr))
-	} else if w.Type == CheckpointObject {
+	} else if w.Type() == CheckpointObject {
 		dimension = int32(C.checkpoint_get_dimension(w.ptr))
-	} else if w.Type == ColshapeObject {
+	} else if w.Type() == ColshapeObject {
 		dimension = int32(C.col_shape_get_dimension(w.ptr))
-	} else if w.Type == VehicleObject {
+	} else if w.Type() == VehicleObject {
 		dimension = int32(C.vehicle_get_dimension(w.ptr))
-	} else if w.Type == BlipObject {
+	} else if w.Type() == BlipObject {
 		dimension = int32(C.blip_get_dimension(w.ptr))
 	}
 
@@ -86,15 +87,15 @@ func (w WorldObject) Dimension() int32 {
 }
 
 func (w WorldObject) SetDimension(dimension int32) {
-	if w.Type == PlayerObject {
+	if w.Type() == PlayerObject {
 		C.player_set_dimension(w.ptr, C.long(dimension))
-	} else if w.Type == CheckpointObject {
+	} else if w.Type() == CheckpointObject {
 		C.checkpoint_set_dimension(w.ptr, C.long(dimension))
-	} else if w.Type == ColshapeObject {
+	} else if w.Type() == ColshapeObject {
 		C.col_shape_set_dimension(w.ptr, C.long(dimension))
-	} else if w.Type == VehicleObject {
+	} else if w.Type() == VehicleObject {
 		C.vehicle_set_dimension(w.ptr, C.long(dimension))
-	} else if w.Type == BlipObject {
+	} else if w.Type() == BlipObject {
 		C.blip_set_dimension(w.ptr, C.long(dimension))
 	}
 }

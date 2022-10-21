@@ -45,7 +45,8 @@ func Export(export interface{}) error {
 	defer C.free(unsafe.Pointer(cResource))
 
 	rv := reflect.ValueOf(export)
-	rt := reflect.TypeOf(export)
+	rt := reflect.Type()
+	Of(export)
 
 	if rt.Kind() != reflect.Struct {
 		return errors.New("export must be a struct")
@@ -67,7 +68,7 @@ func Export(export interface{}) error {
 		// if !method.IsExported() {
 		// 	continue
 		// }
-		exportName := method.Type.Name()
+		exportName := method.Type().Name()
 
 		registerExport(cResource, exportName, method.Func)
 	}
