@@ -27,6 +27,14 @@ type Player struct {
 	Entity
 }
 
+func NewPlayer(p unsafe.Pointer) *Player {
+	player := &Player{}
+	player.ptr = p
+	player.Type = PlayerObject
+
+	return player
+}
+
 func newPlayer(p unsafe.Pointer) *Player {
 	player := &Player{}
 	player.ptr = p
