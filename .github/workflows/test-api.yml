@@ -2,14 +2,14 @@ name: Test Go API
 on: 
   push:
     paths:
-      - "api/*"
+      - "pkg/*"
       - "internal/*"
       - "c-api/*"
       - "go.mod"
       - "go.sum"
   pull_request:
     paths:
-      - "api/*"
+      - "pkg/*"
       - "internal/*"
       - "c-api/*"
       - "go.mod"
