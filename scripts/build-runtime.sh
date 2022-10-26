@@ -1,3 +1,6 @@
+#!/bin/bash
+cd runtime
+
 if [ ! -d build ]; then
     mkdir build
 fi

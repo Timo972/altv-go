@@ -1,4 +1,7 @@
 @echo off
+
+cd..\c-api
+
 IF NOT EXIST build\ (
     mkdir build
 )

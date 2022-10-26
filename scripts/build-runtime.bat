@@ -1,4 +1,7 @@
 @echo off
+
+cd..\runtime
+
 IF NOT EXIST build\ (
     mkdir build
 )

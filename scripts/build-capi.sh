@@ -1,3 +1,7 @@
+#!/bin/bash
+
+cd ./c-api
+
 if [ ! -d build ]; then
     mkdir build
 fi
