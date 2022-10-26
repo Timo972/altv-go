@@ -30,8 +30,11 @@
 
 > Go package for alt:V Multiplayer. Runtime can be found [here](runtime).	
 
-> ⚠️ notice: i am too busy to keep this module updated even though no one is interested in it / using it. 	
+<!-- > ⚠️ notice: i am too busy to keep this module updated even though no one is interested in it / using it. 	
 > Create an issue or write me on Discord if you are interested or plan on using it, so i will continue updating / improving.
+-->
+> ⚠️ Notice: updated occasionally, not actively maintained   
+> ⛔ Module is currently in development and not ready for production use - expect heavy api changes and bugs.  
 > ✨ Contributions of any kind are always welcome!
 
 ## Requirements
@@ -83,3 +86,6 @@ go build -o my-resource.dll -buildmode=c-shared
 export CGO_LDFLAGS="-g -ldl"
 go build -o my-resource.so -buildmode=c-shared
 ```
+
+## Help
+If you need help to get started, have a look at the [docs](https://altv-go.tbeck.dev) or contact me on Discord: `Timo9#4468` 
