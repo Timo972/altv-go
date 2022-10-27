@@ -3,7 +3,7 @@ package utils
 import (
 	"time"
 
-	"github.com/timo972/altv-go/api/alt"
+	"github.com/timo972/altv-go/pkg/alt"
 )
 
 type Benchmark struct {

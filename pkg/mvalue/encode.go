@@ -1,92 +1,94 @@
 package mvalue
 
+import "C"
 import (
+	"errors"
+	"github.com/timo972/altv-go/internal/module"
 	"runtime"
 	"unsafe"
 )
 
-type IMValue interface{}
-
-type MultiMValue interface {
-	AddValue(v interface{}) error
-}
-
-type MValueDict struct {
-	Keys   []string
-	Values []IMValue
-}
-
-type MValueList struct {
-	Values []IMValue
-}
-
-type MValue struct {
-	Type string
-	Val  unsafe.Pointer
-}
-
 type MValueWriter struct {
-	root    IMValue
-	i       int
+	root    *MValue
 	depth   int
-	current IMValue
+	current []*MValue
 }
 
 func (w *MValueWriter) BeginObject() {
 	if w.depth < 0 {
 		// root object
-		w.root = MValueDict{
-			Keys:   make([]string, 0),
-			Values: make([]IMValue, 0),
-		}
+		w.root = newMValueDict()
 
-		w.current = w.root
+		w.current[0] = w.root
 	} else {
-		// append object
-
-		w.current = MValueDict{
-			Keys:   make([]string, 0),
-			Values: make([]IMValue, 0),
-		}
+		// prepend object
+		w.current = append(w.current, newMValueDict())
 	}
 
 	w.depth++
 }
 
-func (w *MValueWriter) Name(key string) {
+func (w *MValueWriter) Name(key string) error {
 	// append key at depth & index
+	curr := w.current[len(w.current)-1]
+	if curr == nil {
+		return errors.New("")
+	}
+	if curr.Type != "dict" {
+		return errors.New("")
+	}
+
+	curr.Dict.Keys = append(curr.Dict.Keys, key)
+
+	return nil
 }
 
 func (w *MValueWriter) Value(v interface{}) error {
+	curr := w.current[len(w.current)-1]
+	if curr == nil {
+		return errors.New("")
+	}
+
 	mv, err := NewMValue(v)
 	if err != nil {
 		return err
 	}
 
 	// FIXME: use interface to push a value and skip this type switch (because we are basically doing the same here)
-	if d, ok := w.current.(MValueDict); ok {
-		d.Values = append(d.Values, mv)
-	} else if l, ok := w.current.(MValueList); ok {
-		l.Values = append(l.Values, mv)
+
+	if curr.Type == "dict" {
+		curr.Dict.Values = append(curr.Dict.Values, mv)
+	} else if curr.Type == "list" {
+		curr.List.Values = append(curr.List.Values, mv)
+	} else {
+		return errors.New("no parent for value")
 	}
 
-	// append value at depth & index
 	return nil
 }
 
-func (w *MValueWriter) pushParent() *IMValue {
+func (w *MValueWriter) pushParent() {
 	// get parent
-	parent := new(IMValue)
-	for i := 0; i <= w.depth; i++ {
-
+	parent := w.current[w.depth]
+	if parent == nil {
+		return
 	}
 
-	return nil
+	curr := w.current[len(w.current)-1]
+
+	if parent.Type == "dict" {
+		parent.Dict.Values = append(parent.Dict.Values, curr)
+	} else if parent.Type == "list" {
+		parent.List.Values = append(parent.List.Values, curr)
+	}
 }
 
 func (w *MValueWriter) EndObject() {
 	// push w.current to parent
 	w.pushParent()
+
+	// remove finished object from current stack
+	w.current = w.current[:len(w.current)-1]
 
 	w.depth--
 
@@ -97,15 +99,11 @@ func (w *MValueWriter) EndObject() {
 
 func (w *MValueWriter) BeginArray() {
 	if w.depth < 0 {
-		w.root = MValueList{
-			Values: make([]IMValue, 0),
-		}
-		w.current = w.root
+		w.root = newMValueList()
+		w.current[0] = w.root
 	} else {
-		// append mvalue list at depth & index
-		w.current = MValueList{
-			Values: make([]IMValue, 0),
-		}
+		// prepend mvalue list at depth & index
+		w.current = append(w.current, newMValueList())
 	}
 
 	w.depth++
@@ -125,26 +123,51 @@ func (w *MValueWriter) EndArray() {
 	w.EndObject()
 }
 
-type MValueReader struct {
-}
-
-type Serializable interface {
-	Read(reader *MValueReader)
-	OnWrite(writer *MValueWriter)
+func (wr *MValueWriter) Write(mv *MValue) {
+	mv = wr.root
 }
 
 func NewWriter() *MValueWriter {
 	return &MValueWriter{
-		depth: -1,
-		i:     -1,
+		depth:   -1,
+		current: make([]*MValue, 1),
 	}
 }
 
-func NewMValue(v interface{}) (MValue, error) {
-	if w, ok := v.(Serializable); ok {
-		// use the writer
+type SerializableValue interface {
+	int | uint | string | float32 | float64 | bool | []byte
+}
+
+func NewMValue(v any) (*MValue, error) {
+	mv := &MValue{}
+	switch t := v.(type) {
+	case int:
+		mv.Type = "int"
+		mv.Val = unsafe.Pointer(&t)
+	case uint:
+		mv.Type = "uint"
+		mv.Val = unsafe.Pointer(&t)
+	case string:
+		mv.Type = "string"
+		mv.Val = unsafe.Pointer(C.CString(t))
+	case bool:
+		mv.Type = "bool"
+		b := module.Bool2int(t)
+		mv.Val = unsafe.Pointer(&b)
+	case []byte:
+		mv.Type = "byteArray"
+		mv.Val = unsafe.Pointer(C.CBytes(t))
+		mv.ByteLength = len(t)
+	case float64:
+		mv.Type = "double"
+		mv.Val = unsafe.Pointer(&t)
+	case nil:
+		mv.Type = "nil"
+	case Serializable:
 		wr := NewWriter()
-		w.OnWrite(wr)
+		t.OnWrite(wr)
+		wr.Write(mv)
+		// TODO: list, baseobject, function, vector2, vector3, rgba
 	}
 
 	// call this for every value
@@ -152,10 +175,38 @@ func NewMValue(v interface{}) (MValue, error) {
 	// runtime.KeepAlive()
 	// runtime.SetFinalizer() ?
 
-	return MValue{}, nil
+	return mv, nil
 }
 
 func (m *MValue) Release() {
 	// free the pointer
 	// m.Val
+}
+
+func (m *MValue) testValue() any {
+	var v any
+
+	switch m.Type {
+	case "int":
+		v = *(*int)(m.Val)
+	case "uint":
+		v = *(*uint)(m.Val)
+	case "string":
+		v = C.GoString((*C.char)(m.Val))
+	case "bool":
+		v = *(*int)(m.Val) == 1
+	case "byteArray":
+		v = C.GoBytes(m.Val, C.int(m.ByteLength))
+	case "double":
+		v = *(*float64)(m.Val)
+	case "dict":
+	case "list":
+		x := make([]any, 0)
+		for _, mv := range m.List.Values {
+			x = append(x, mv.testValue())
+		}
+		v = x
+	}
+
+	return v
 }
