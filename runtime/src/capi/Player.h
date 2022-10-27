@@ -48,7 +48,7 @@ EXPORT float Player_GetMoveSpeed(void *p);
 EXPORT Position Player_GetAimPos(void *p);
 EXPORT Rotation Player_GetHeadRotation(void *p);
 EXPORT int Player_IsInVehicle(void *p);
-EXPORT void *Player_GetVehicle(void *p);
+EXPORT Entity Player_GetVehicle(void *p);
 EXPORT unsigned int Player_GetSeat(void *p);
 EXPORT Entity Player_GetEntityAimingAt(void *p);
 EXPORT Position Player_GetEntityAimOffset(void *p);
@@ -96,7 +96,7 @@ Player_AttachToEntity(void *p, Entity e, int otherBoneIndex, int myBoneIndex, Po
 EXPORT void Player_SetVisible(void *p, int toggle);
 EXPORT int Player_GetVisible(void *p);
 EXPORT unsigned long Player_GetID(void *p);
-EXPORT void *Player_GetNetworkOwner(void *p);
+EXPORT Entity Player_GetNetworkOwner(void *p);
 EXPORT void Player_SetNetworkOwner(void *p, void *owner, int disableMigration);
 EXPORT void Player_Destroy(void *p);
 EXPORT int Player_IsValid(const char* resourceName, void *p);

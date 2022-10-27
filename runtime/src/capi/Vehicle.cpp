@@ -180,9 +180,9 @@ EXPORT int Vehicle_GetVisible(void *v) {
     return vehicle->GetVisible();
 }
 
-EXPORT void *Vehicle_GetNetworkOwner(void *v) {
+EXPORT Entity Vehicle_GetNetworkOwner(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return vehicle->GetNetworkOwner().Get();
+    return Go::Runtime::GetEntity(vehicle->GetNetworkOwner());
 }
 
 EXPORT void Vehicle_SetNetworkOwner(void *v, void *o, int disableMigration) {
@@ -191,9 +191,9 @@ EXPORT void Vehicle_SetNetworkOwner(void *v, void *o, int disableMigration) {
     vehicle->SetNetworkOwner(owner, disableMigration);
 }
 
-EXPORT void *Vehicle_GetDriver(void *v) {
+EXPORT Entity Vehicle_GetDriver(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return vehicle->GetDriver().Get();
+    return Go::Runtime::GetEntity(vehicle->GetDriver());
 }
 
 EXPORT int Vehicle_IsDestroyed(void *v) {
@@ -870,14 +870,14 @@ EXPORT void Vehicle_SetManualEngineControl(void *v, int state) {
     vehicle->SetManualEngineControl(state);
 }
 
-EXPORT void *Vehicle_GetAttached(void *v) {
+EXPORT Entity Vehicle_GetAttached(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return vehicle->GetAttached().Get();
+    return Go::Runtime::GetEntity(vehicle->GetAttached());
 }
 
-EXPORT void *Vehicle_GetAttachedTo(void *v) {
+EXPORT Entity Vehicle_GetAttachedTo(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return vehicle->GetAttachedTo().Get();
+    return Go::Runtime::GetEntity(vehicle->GetAttachedTo());
 }
 
 EXPORT void Vehicle_Destroy(void *v) {
@@ -972,9 +972,9 @@ EXPORT void Vehicle_SetTrainTrackId(void *v, char trackId) {
     vehicle->SetTrainTrackId(trackId);
 }
 
-EXPORT void *Vehicle_GetTrainEngineId(void *v) {
+EXPORT Entity Vehicle_GetTrainEngineId(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return vehicle->GetTrainEngineId().Get();
+    return Go::Runtime::GetEntity(vehicle->GetTrainEngineId());
 }
 
 EXPORT void Vehicle_SetTrainEngineId(void *v, void *e) {
@@ -1083,9 +1083,9 @@ EXPORT void Vehicle_SetTrainCarriageConfigIndex(void *v, char carriageConfigInde
     vehicle->SetTrainCarriageConfigIndex(carriageConfigIndex);
 }
 
-EXPORT void *Vehicle_GetTrainLinkedToBackwardId(void *v) {
+EXPORT Entity Vehicle_GetTrainLinkedToBackwardId(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return vehicle->GetTrainLinkedToBackwardId().Get();
+    return Go::Runtime::GetEntity(vehicle->GetTrainLinkedToBackwardId());
 }
 
 EXPORT void Vehicle_SetTrainLinkedToBackwardId(void *v, void *e) {
@@ -1094,9 +1094,9 @@ EXPORT void Vehicle_SetTrainLinkedToBackwardId(void *v, void *e) {
     vehicle->SetTrainLinkedToBackwardId(train);
 }
 
-EXPORT void *Vehicle_GetTrainLinkedToForwardId(void *v) {
+EXPORT Entity Vehicle_GetTrainLinkedToForwardId(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return vehicle->GetTrainLinkedToForwardId().Get();
+    return Go::Runtime::GetEntity(vehicle->GetTrainLinkedToForwardId());
 }
 
 EXPORT void Vehicle_SetTrainLinkedToForwardId(void *v, void *e) {
@@ -1167,9 +1167,9 @@ EXPORT unsigned char Vehicle_HasTimedExplosion(void *v) {
     return vehicle->HasTimedExplosion();
 }
 
-EXPORT void *Vehicle_GetTimedExplosionCulprit(void *v) {
+EXPORT Entity Vehicle_GetTimedExplosionCulprit(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return vehicle->GetTimedExplosionCulprit().Get();
+    return Go::Runtime::GetEntity(vehicle->GetTimedExplosionCulprit());
 }
 
 EXPORT unsigned int Vehicle_GetTimedExplosionTime(void *v) {

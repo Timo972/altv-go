@@ -96,10 +96,10 @@ EXPORT int Blip_IsGlobal(void *b)
     return blip->IsGlobal();
 }
 
-EXPORT void *Blip_GetTarget(void *b)
+EXPORT Entity Blip_GetTarget(void *b)
 {
     auto blip = reinterpret_cast<alt::IBlip*>(b);
-    return blip->GetTarget().Get();
+    return Go::Runtime::GetEntity(blip->GetTarget());
 }
 
 EXPORT int Blip_IsAttached(void *b)

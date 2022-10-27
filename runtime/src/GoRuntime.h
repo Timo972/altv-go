@@ -36,17 +36,17 @@ namespace Go {
 
         // Array helper stuff
         template<class ClassInstance>
-        static Array CreatePointerArray(alt::Array<alt::Ref<ClassInstance>> objects) {
+        static Array CreateEntityArray(alt::Array<alt::Ref<ClassInstance>> objects) {
             Array arr;
             arr.size = objects.GetSize();
 
 #ifdef _WIN32
-            auto playerRefs = new void *[arr.size];
+            auto playerRefs = new Entity[arr.size];
 #else
-            void* playerRefs[arr.size];
+            Entity playerRefs[arr.size];
 #endif
             for (uint64_t i = 0; i < arr.size; i++) {
-                playerRefs[i] = objects[i].Get();
+                playerRefs[i] = GetBaseObject(objects[i]);
             }
 
             arr.array = playerRefs;
@@ -55,17 +55,17 @@ namespace Go {
         }
 
         template<class ClassInstance>
-        static Array CreatePointerArray(std::vector<alt::Ref<ClassInstance>> objects) {
+        static Array CreateEntityArray(std::vector<alt::Ref<ClassInstance>> objects) {
             Array arr;
             arr.size = objects.size();
 
 #ifdef _WIN32
-            auto playerRefs = new void *[arr.size];
+            auto playerRefs = new Entity[arr.size];
 #else
-            void* playerRefs[arr.size];
+            Entity playerRefs[arr.size];
 #endif
             for (uint64_t i = 0; i < arr.size; i++) {
-                playerRefs[i] = objects[i].Get();
+                playerRefs[i] = GetBaseObject(objects[i]);
             }
 
             arr.array = playerRefs;

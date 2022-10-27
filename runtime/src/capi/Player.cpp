@@ -273,9 +273,9 @@ EXPORT int Player_IsInVehicle(void *p) {
     return player->IsInVehicle();
 }
 
-EXPORT void *Player_GetVehicle(void *p) {
+EXPORT Entity Player_GetVehicle(void *p) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
-    return player->GetVehicle().Get();
+    return Go::Runtime::GetEntity(player->GetVehicle());
 }
 
 EXPORT unsigned int Player_GetSeat(void *p) {
@@ -529,9 +529,9 @@ EXPORT unsigned long Player_GetID(void *p) {
     return player->GetID();
 }
 
-EXPORT void *Player_GetNetworkOwner(void *p) {
+EXPORT Entity Player_GetNetworkOwner(void *p) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
-    return player->GetNetworkOwner().Get();
+    return Go::Runtime::GetEntity(player->GetNetworkOwner());
 }
 
 EXPORT void Player_SetNetworkOwner(void *p, void *o, int disableMigration) {

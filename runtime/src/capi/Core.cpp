@@ -21,16 +21,16 @@ EXPORT void Core_LogColored(const char *message) {
     alt::ICore::Instance().LogColored(message);
 }
 
-EXPORT void *Core_CreateVehicle(unsigned long model, float posX, float posY, float posZ,
+EXPORT Entity Core_CreateVehicle(unsigned long model, float posX, float posY, float posZ,
                                 float rotX, float rotY, float rotZ) {
     alt::Position position(posX, posY, posZ);
     alt::Rotation rotation(rotX, rotY, rotZ);
 
     auto vehicle = alt::ICore::Instance().CreateVehicle(model, position, rotation);
-    return vehicle.Get();
+    return Go::Runtime::GetEntity(vehicle);
 }
 
-EXPORT void *Core_CreateCheckpoint(unsigned char type, float x, float y, float z, float radius, float height, unsigned char r,
+EXPORT Entity Core_CreateCheckpoint(unsigned char type, float x, float y, float z, float radius, float height, unsigned char r,
                       unsigned char g, unsigned char b, unsigned char a) {
     alt::RGBA rgba(r, g, b, a);
     alt::Vector<float, 3, alt::PointLayout> pos;
@@ -39,12 +39,12 @@ EXPORT void *Core_CreateCheckpoint(unsigned char type, float x, float y, float z
     pos[2] = z;
 
     auto checkpoint = alt::ICore::Instance().CreateCheckpoint(type, pos, radius, height, rgba);
-    return checkpoint.Get();
+    return Go::Runtime::GetBaseObject(checkpoint);
 }
 
-EXPORT void *Core_CreateVoiceChannel(int spacial, float maxDistance) {
+EXPORT Entity Core_CreateVoiceChannel(int spacial, float maxDistance) {
     auto voiceChannel = alt::ICore::Instance().CreateVoiceChannel(spacial, maxDistance);
-    return voiceChannel.Get();
+    return Go::Runtime::GetBaseObject(voiceChannel);
 }
 
 EXPORT const char *Core_GetVersion() {
@@ -82,35 +82,18 @@ EXPORT Entity Core_GetEntityByID(unsigned short id) {
 
 EXPORT Array Core_GetEntities() {
     auto entities = alt::ICore::Instance().GetEntities();
-    Array arr;
-    arr.size = entities.GetSize();
-
-#ifdef _WIN32
-    auto entityRefs = new Entity[arr.size];
-#else
-    Entity entityRefs[arr.size];
-#endif
-
-    for (uint64_t i = 0; i < arr.size; i++) {
-        auto entity = entities[i];
-
-        entityRefs[i] = Go::Runtime::GetEntity(entity);
-    }
-
-    arr.array = entityRefs;
-
-    return arr;
+    return Go::Runtime::CreateEntityArray(entities);
 }
 
 EXPORT Array Core_GetPlayers() {
     auto entities = alt::ICore::Instance().GetPlayers();
-    return Go::Runtime::GetInstance()->CreatePointerArray(entities);
+    return Go::Runtime::CreateEntityArray(entities);
 }
 
 
 EXPORT Array Core_GetVehicles() {
     auto entities = alt::ICore::Instance().GetVehicles();
-    return Go::Runtime::CreatePointerArray(entities);
+    return Go::Runtime::CreateEntityArray(entities);
 }
 
 EXPORT int Core_HasMetaData(const char *key) {
@@ -190,7 +173,7 @@ EXPORT void Core_DeleteSyncedMetaData(const char *key) {
 EXPORT Array Core_GetPlayersByName(const char *name) {
     auto players = alt::ICore::Instance().GetPlayersByName(name);
 
-    return Go::Runtime::CreatePointerArray(players);
+    return Go::Runtime::CreateEntityArray(players);
 }
 
 EXPORT unsigned int Core_GetNetTime() {
@@ -205,39 +188,39 @@ EXPORT const char *Core_GetSDKHash() {
     return ALT_SDK_VERSION;
 }
 
-EXPORT void *Core_CreateColShapeSphere(float posX, float posY, float posZ, float radius) {
+EXPORT Entity Core_CreateColShapeSphere(float posX, float posY, float posZ, float radius) {
     alt::Position position(posX, posY, posZ);
 
     auto colShape = alt::ICore::Instance().CreateColShapeSphere(position, radius);
-    return colShape.Get();
+    return Go::Runtime::GetBaseObject(colShape);
 }
 
-EXPORT void *Core_CreateColShapeCircle(float posX, float posY, float posZ, float radius) {
+EXPORT Entity Core_CreateColShapeCircle(float posX, float posY, float posZ, float radius) {
     alt::Position position(posX, posY, posZ);
 
     auto colShape = alt::ICore::Instance().CreateColShapeCircle(position, radius);
-    return colShape.Get();
+    return Go::Runtime::GetBaseObject(colShape);
 }
 
-EXPORT void *Core_CreateColShapeRectangle(float x1, float y1, float x2, float y2, float z) {
+EXPORT Entity Core_CreateColShapeRectangle(float x1, float y1, float x2, float y2, float z) {
 
     auto colShape = alt::ICore::Instance().CreateColShapeRectangle(x1, y1, x2, y2, z);
-    return colShape.Get();
+    return Go::Runtime::GetBaseObject(colShape);
 }
 
-EXPORT void *Core_CreateColShapeCube(float posX1, float posY1, float posZ1, float posX2, float posY2, float posZ2) {
+EXPORT Entity Core_CreateColShapeCube(float posX1, float posY1, float posZ1, float posX2, float posY2, float posZ2) {
     alt::Position position(posX1, posY1, posZ1);
     alt::Position position2(posX2, posY2, posZ2);
 
     auto colShape = alt::ICore::Instance().CreateColShapeCube(position, position2);
-    return colShape.Get();
+    return Go::Runtime::GetBaseObject(colShape);
 }
 
-EXPORT void *Core_CreateColShapeCylinder(float posX, float posY, float posZ, float radius, float height) {
+EXPORT Entity Core_CreateColShapeCylinder(float posX, float posY, float posZ, float radius, float height) {
     alt::Position position(posX, posY, posZ);
 
     auto colShape = alt::ICore::Instance().CreateColShapeCylinder(position, radius, height);
-    return colShape.Get();
+    return Go::Runtime::GetBaseObject(colShape);
 }
 
 EXPORT void Core_TriggerLocalEvent(const char *ev, GoValueArgs data) {
@@ -274,31 +257,31 @@ EXPORT void Core_TriggerClientEventForAll(const char *ev, GoValueArgs data) {
     alt::ICore::Instance().TriggerClientEventForAll(ev, args);
 }
 
-EXPORT void *Core_CreatePointBlipPosition(float x, float y, float z) {
+EXPORT Entity Core_CreatePointBlipPosition(float x, float y, float z) {
     auto blip = alt::ICore::Instance().CreateBlip(nullptr, alt::IBlip::BlipType::DESTINATION, alt::Position(x, y, z));
-    return blip.Get();
+    return Go::Runtime::GetBaseObject(blip);
 }
 
-EXPORT void *Core_CreatePointBlipEntity(Entity entity) {
+EXPORT Entity Core_CreatePointBlipEntity(Entity entity) {
     auto blip = alt::ICore::Instance().CreateBlip(nullptr, alt::IBlip::BlipType::DESTINATION, Go::Runtime::GetEntityRef(entity));
-    return blip.Get();
+    return Go::Runtime::GetBaseObject(blip);
 }
 
-EXPORT void *Core_CreateAreaBlip(float x, float y, float z, float width, float height) {
+EXPORT Entity Core_CreateAreaBlip(float x, float y, float z, float width, float height) {
     auto blip = alt::ICore::Instance().CreateBlip(nullptr, alt::IBlip::BlipType::AREA, alt::Position(x, y, z));
     blip->SetScaleXY({width, height});
 
-    return blip.Get();
+    return Go::Runtime::GetBaseObject(blip);
 }
 
-EXPORT void *Core_CreateRadiusBlip(float x, float y, float z, float radius) {
+EXPORT Entity Core_CreateRadiusBlip(float x, float y, float z, float radius) {
     auto blip = alt::ICore::Instance().CreateBlip(nullptr, alt::IBlip::BlipType::RADIUS, alt::Position(x, y, z));
     blip->SetScaleXY({radius, radius});
 
-    return blip.Get();
+    return Go::Runtime::GetBaseObject(blip);
 }
 
-EXPORT void *Core_CreateColShapePolygon(float minZ, float maxZ, Array points) {
+EXPORT Entity Core_CreateColShapePolygon(float minZ, float maxZ, Array points) {
     std::vector<alt::Vector2f> p;
     auto data = reinterpret_cast<Vector2*>(points.array);
 
@@ -308,12 +291,12 @@ EXPORT void *Core_CreateColShapePolygon(float minZ, float maxZ, Array points) {
     }
 
     auto cs = alt::ICore::Instance().CreateColShapePolygon(minZ, maxZ, p);
-    return cs.Get();
+    return Go::Runtime::GetBaseObject(cs);
 }
 
 EXPORT Array Core_GetBlips() {
     auto blips = alt::ICore::Instance().GetBlips();
-    return Go::Runtime::GetInstance()->CreatePointerArray(blips);
+    return Go::Runtime::CreateEntityArray(blips);
 }
 
 EXPORT Array Core_GetAllResources() {

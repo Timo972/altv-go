@@ -13,12 +13,12 @@ EXPORT void Core_LogDebug(const char *message);
 EXPORT void Core_LogWarning(const char *message);
 EXPORT void Core_LogError(const char *message);
 EXPORT void Core_LogColored(const char *message);
-EXPORT void *Core_CreateVehicle(unsigned long model, float posX, float posY, float posZ,
+EXPORT Entity Core_CreateVehicle(unsigned long model, float posX, float posY, float posZ,
                                 float rotX, float rotY, float rotZ);
-EXPORT void *
+EXPORT Entity
 Core_CreateCheckpoint(unsigned char type, float x, float y, float z, float radius, float height, unsigned char r,
                       unsigned char g, unsigned char b, unsigned char a);
-EXPORT void *Core_CreateVoiceChannel(int spacial, float maxDistance);
+EXPORT Entity Core_CreateVoiceChannel(int spacial, float maxDistance);
 EXPORT const char *Core_GetVersion();
 EXPORT const char *Core_GetBranch();
 EXPORT int Core_IsDebug();
@@ -48,20 +48,20 @@ EXPORT Array Core_GetPlayersByName(const char *name);
 EXPORT unsigned int Core_GetNetTime();
 EXPORT void Core_SetPassword(const char *password);
 EXPORT const char *Core_GetSDKHash();
-EXPORT void *Core_CreateColShapeCylinder(float posX, float posY, float posZ, float radius, float height);
-EXPORT void *Core_CreateColShapeCube(float posX1, float posY1, float posZ1, float posX2, float posY2, float posZ2);
-EXPORT void *Core_CreateColShapeRectangle(float x1, float y1, float x2, float y2, float z);
-EXPORT void *Core_CreateColShapeCircle(float posX, float posY, float posZ, float radius);
-EXPORT void *Core_CreateColShapeSphere(float posX, float posY, float posZ, float radius);
+EXPORT Entity Core_CreateColShapeCylinder(float posX, float posY, float posZ, float radius, float height);
+EXPORT Entity Core_CreateColShapeCube(float posX1, float posY1, float posZ1, float posX2, float posY2, float posZ2);
+EXPORT Entity Core_CreateColShapeRectangle(float x1, float y1, float x2, float y2, float z);
+EXPORT Entity Core_CreateColShapeCircle(float posX, float posY, float posZ, float radius);
+EXPORT Entity Core_CreateColShapeSphere(float posX, float posY, float posZ, float radius);
 EXPORT void Core_TriggerLocalEvent(const char *ev, GoValueArgs args);
 EXPORT void Core_TriggerClientEvent(void *p, const char *ev, GoValueArgs args);
 EXPORT void Core_TriggerClientEventFor(Array clients, const char *ev, GoValueArgs args);
 EXPORT void Core_TriggerClientEventForAll(const char *ev, GoValueArgs args);
-EXPORT void *Core_CreatePointBlipPosition(float x, float y, float z);
-EXPORT void *Core_CreatePointBlipEntity(Entity entity);
-EXPORT void *Core_CreateAreaBlip(float x, float y, float z, float width, float height);
-EXPORT void *Core_CreateRadiusBlip(float x, float y, float z, float radius);
-EXPORT void *Core_CreateColShapePolygon(float minZ, float maxZ, Array points);
+EXPORT Entity Core_CreatePointBlipPosition(float x, float y, float z);
+EXPORT Entity Core_CreatePointBlipEntity(Entity entity);
+EXPORT Entity Core_CreateAreaBlip(float x, float y, float z, float width, float height);
+EXPORT Entity Core_CreateRadiusBlip(float x, float y, float z, float radius);
+EXPORT Entity Core_CreateColShapePolygon(float minZ, float maxZ, Array points);
 EXPORT Array Core_GetBlips();
 EXPORT Array Core_GetAllResources();
 EXPORT const char *Core_StringToSHA256(const char *str);

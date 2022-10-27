@@ -105,5 +105,5 @@ EXPORT Array VoiceChannel_GetPlayers(void *v) {
     auto channel = reinterpret_cast<alt::IVoiceChannel *>(v);
     auto players = channel->GetPlayers();
 
-    return Go::Runtime::GetInstance()->CreatePointerArray(players);
+    return Go::Runtime::CreateEntityArray(players);
 }
