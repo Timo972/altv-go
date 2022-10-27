@@ -10,8 +10,8 @@ extern "C"
     // BaseObject inherited
     EXPORT int Checkpoint_GetType(void *c);
     EXPORT int Checkpoint_HasMetaData(void* base, const char *key);
-    EXPORT Array Checkpoint_GetMetaData(void* base, const char *key);
-    EXPORT void Checkpoint_SetMetaData(void *base, const char *key, unsigned char* data, unsigned long long size);
+    EXPORT GoValue Checkpoint_GetMetaData(void* base, const char *key);
+    EXPORT void Checkpoint_SetMetaData(void *base, const char *key, GoValue data);
     EXPORT void Checkpoint_DeleteMetaData(void *base, const char *key);
     EXPORT void Checkpoint_Destroy(void *b);
     EXPORT int Checkpoint_IsValid(const char* resourceName, void *p);

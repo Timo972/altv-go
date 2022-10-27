@@ -15,20 +15,21 @@ EXPORT int Checkpoint_HasMetaData(void* base, const char *key)
     return baseObject->HasMetaData(key);
 }
 
-EXPORT Array Checkpoint_GetMetaData(void* base, const char *key)
+EXPORT GoValue Checkpoint_GetMetaData(void* base, const char *key)
 {
     auto baseObject = reinterpret_cast<alt::ICheckpoint*>(base);
     auto meta = baseObject->GetMetaData(key);
 
-    auto metaData = Go::Runtime::MValueToProtoBytes(meta);
+    GoValue data{};
+    Go::Runtime::MValueToGo(meta, &data);
 
-    return metaData;
+    return data;
 }
 
-EXPORT void Checkpoint_SetMetaData(void *base, const char *key, unsigned char* data, unsigned long long size)
+EXPORT void Checkpoint_SetMetaData(void *base, const char *key, GoValue data)
 {
     auto baseObject = reinterpret_cast<alt::ICheckpoint*>(base);
-    auto value = Go::Runtime::ProtoToMValue(data, size);
+    auto value = Go::Runtime::GoToMValue(data);
 
     baseObject->SetMetaData(key, value);
 }
