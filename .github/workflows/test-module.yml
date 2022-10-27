@@ -33,12 +33,6 @@ jobs:
       #- name: Git LFS Pull
       #  run: git lfs pull
 
-      - name: Install Protoc
-        uses: arduino/setup-protoc@v1
-        with:
-          version: "3.19.4"
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Build
         if: matrix.os == 'windows-2019'
         shell: cmd
