@@ -179,7 +179,7 @@ typedef struct externFunction {
 } ExternFunction;
 
 typedef struct goValue {
-    unsigned char type;
+    unsigned char typ;
     unsigned char boolValue;
     unsigned long long uintValue;
     long long intValue;

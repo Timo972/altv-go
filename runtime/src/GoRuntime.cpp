@@ -266,7 +266,7 @@ std::string Go::Runtime::PointerToString(void* p) {
 }
 
 alt::MValue Go::Runtime::GoToMValue(GoValue value) {
-    auto typ = static_cast<alt::IMValue::Type>(value.type);
+    auto typ = static_cast<alt::IMValue::Type>(value.typ);
 
     if (typ == alt::IMValue::Type::BOOL) {
         return alt::ICore::Instance().CreateMValueBool(value.boolValue == 1);
@@ -350,7 +350,7 @@ alt::MValue Go::Runtime::GoToMValue(GoValue value) {
 
 void Go::Runtime::MValueToGo(alt::MValue mValue, GoValue *value) {
     auto t = mValue->GetType();
-    value->type = static_cast<unsigned char>(t);
+    value->typ = static_cast<unsigned char>(t);
     switch (t) {
     case alt::IMValue::Type::BOOL: {
         value->boolValue = mValue.As<alt::IMValueBool>()->Value();
@@ -465,7 +465,7 @@ void Go::Runtime::MValueToGo(alt::MValue mValue, GoValue *value) {
 
 void Go::Runtime::MValueToGo(alt::MValueConst mValue, GoValue *value) {
     auto t = mValue->GetType();
-    value->type = static_cast<unsigned char>(t);
+    value->typ = static_cast<unsigned char>(t);
 
     switch (t) {
     case alt::IMValue::Type::BOOL: {
