@@ -1,5 +1,4 @@
 #pragma once
-#include "mvalue.pb.h"
 
 #define ALT_SERVER_API
 #ifndef GO_MODULE_VERSION
@@ -170,5 +169,36 @@ typedef struct resourceInfo {
 } ResourceInfo;
 */
 
+typedef struct internFunction {
+    char * resourceName;
+    unsigned long long id;
+} InternFunction;
+
+typedef struct externFunction {
+    void * ptr;
+} ExternFunction;
+
+typedef struct goValue {
+    unsigned char type;
+    unsigned char boolValue;
+    unsigned long long uintValue;
+    long long intValue;
+    double doubleValue;
+    char * stringValue;
+    struct goValue **list;
+    char ** keys;
+    unsigned char * bytes;
+    unsigned long long size;
+    Entity entityValue;
+    Position vectorValue;
+    RGBA rgbaValue;
+    InternFunction internFunc;
+    void * externFunc;
+} GoValue;
+
+typedef struct goValueArgs {
+    GoValue *args;
+    unsigned long long size;
+} GoValueArgs;
 
 #include "SDK.h"

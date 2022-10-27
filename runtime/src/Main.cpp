@@ -3,9 +3,6 @@
 #include "GoRuntime.h"
 
 EXPORT bool altMain(alt::ICore* core) {
-    // Make sure that protobuf headers and lib version match
-    GOOGLE_PROTOBUF_VERIFY_VERSION;
-
     alt::ICore::SetInstance(core);
 
     auto runtime = Go::Runtime::GetInstance();

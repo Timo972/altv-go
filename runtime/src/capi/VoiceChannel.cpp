@@ -12,20 +12,21 @@ EXPORT int VoiceChannel_HasMetaData(void *base, const char *key) {
     return baseObject->HasMetaData(key);
 }
 
-EXPORT Array VoiceChannel_GetMetaData(void *base, const char *key) {
+EXPORT GoValue VoiceChannel_GetMetaData(void *base, const char *key) {
 
     auto channel = reinterpret_cast<alt::IVoiceChannel *>(base);
     auto meta = channel->GetMetaData(key);
 
-    auto metaData = Go::Runtime::MValueToProtoBytes(meta);
+    GoValue data{};
+    Go::Runtime::MValueToGo(meta, &data);
 
-    return metaData;
+    return data;
 }
 
-EXPORT void VoiceChannel_SetMetaData(void *base, const char *key, unsigned char *data, unsigned long long size) {
+EXPORT void VoiceChannel_SetMetaData(void *base, const char *key, GoValue data) {
 
     auto channel = reinterpret_cast<alt::IVoiceChannel *>(base);
-    auto value = Go::Runtime::ProtoToMValue(data, size);
+    auto value = Go::Runtime::GoToMValue(data);
 
     channel->SetMetaData(key, value);
 }

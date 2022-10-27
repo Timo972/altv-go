@@ -23,14 +23,12 @@ namespace Go {
         alt::IResource::Impl *GetResource(const std::string &name);
 
         static Entity GetEntity(alt::Ref<alt::IEntity> entity);
+        static Entity GetBaseObject(alt::Ref<alt::IBaseObject> baseObject);
 
         static alt::IEntity *GetEntityRef(Entity entity);
         static alt::IBaseObject *GetBaseObjectRef(Entity baseObject);
 
         static ConnectionInfo GetConnectionInfo(alt::Ref<alt::IConnectionInfo> info);
-
-        static Array ConfigNodeToProtoBytes(alt::config::Node node);
-        static void ConfigNodeToProto(alt::config::Node node, MValue::MValue *out);
         
         static Array CreateBoneArray(std::vector<alt::BoneInfo> bones);
 
@@ -126,7 +124,7 @@ namespace Go {
             TargetType cset[arr.size];
 #endif
             for (uint64_t i = 0; i < set.size; i++) {
-                cset[i] = item;
+                cset[i] = dynamic_cast<TargetType>(set[i]);
             }
 
             arr.array = cset;
@@ -156,17 +154,12 @@ namespace Go {
 
         static std::string PointerToString(void* p);
 
-        // Protobuf MValue stuff
-        static alt::MValue ProtoToMValue(unsigned char *data, unsigned long long size);
-        static alt::MValue ProtoToMValue(MValue::MValue mValue);
+        static alt::MValue GoToMValue(GoValue value);
+        static void MValueToGo(alt::MValue value, GoValue * out);
+        static void MValueToGo(alt::MValueConst value, GoValue * out);
 
-        static Array MValueToProtoBytes(alt::MValue mValue);
-        static Array MValueToProtoBytes(alt::MValueConst mValue);
-        static void MValueToProto(alt::MValue mValue, MValue::MValue *out);
-        static void MValueToProto(alt::MValueConst mValue, MValue::MValue *out);
-
-        static Array MValueArgsToProtoBytes(alt::MValueArgs args);
-        static alt::MValueArgs ProtoToMValueArgs(Array data);
+        static alt::MValueArgs GoToMValueArgs(GoValueArgs args);
+        static GoValueArgs MValueArgsToGo(alt::MValueArgs args);
 
         static Go::Runtime *GetInstance();
     };

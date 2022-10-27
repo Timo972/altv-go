@@ -1,6 +1,5 @@
 #include "GoRuntime.h"
 #include "GoResource.h"
-#include <google/protobuf/text_format.h>
 // #include <cstdio>
 #include <cstdint>
 #include <sstream>
@@ -29,8 +28,7 @@ void Go::Runtime::DestroyImpl(alt::IResource::Impl *impl) {
 }
 
 void Go::Runtime::OnDispose() {
-    // Delete all global objects allocated by libprotobuf.
-    google::protobuf::ShutdownProtobufLibrary();
+
 }
 
 alt::IResource::Impl *Go::Runtime::GetResource(const std::string &name) {
@@ -52,42 +50,79 @@ Entity Go::Runtime::GetEntity(alt::Ref <alt::IEntity> entity) {
 
         switch (entityType) {
             case alt::IEntity::Type::PLAYER:
-                auto p = entity.As<alt::IPlayer>();
-                e.ptr = p.Get();
-                e.id = p->GetID();
+                e.ptr = entity.As<alt::IPlayer>().Get();
+                e.id = entity->GetID();
                 break;
             case alt::IEntity::Type::VEHICLE:
-                auto v = entity.As<alt::IVehicle>();
-                e.ptr = v.Get();
-                e.id = v->GetID();
-                e.model = v->GetModel();
+                e.ptr = entity.As<alt::IVehicle>().Get();
+                e.id = entity->GetID();
+                e.model = entity.As<alt::IVehicle>()->GetModel();
                 break;
             case alt::IEntity::Type::BLIP:
-                auto b = entity.As<alt::IBlip>();
-                e.ptr = b.Get();
+                e.ptr = entity.As<alt::IBlip>().Get();
                 break;
             case alt::IEntity::Type::CHECKPOINT:
-                auto c = entity.As<alt::ICheckpoint>();
-                e.ptr = c.Get();
+                e.ptr = entity.As<alt::ICheckpoint>().Get();
                 break;
             case alt::IEntity::Type::COLSHAPE:
-                auto c = entity.As<alt::IColShape>();
-                e.ptr = c.Get();
+                e.ptr = entity.As<alt::IColShape>().Get();
                 break;
             case alt::IEntity::Type::VOICE_CHANNEL:
-                auto c = entity.As<alt::IVoiceChannel>();
-                e.ptr = c.Get();
+                e.ptr = entity.As<alt::IVoiceChannel>().Get();
+                break;
+            default:
+                e.ptr = nullptr;
                 break;
         }
     } else {
-        e.Ptr = nullptr;
+        e.ptr = nullptr;
+    }
+
+    return e;
+}
+
+Entity Go::Runtime::GetBaseObject(alt::Ref<alt::IBaseObject> baseObject)  {
+    Entity e;
+
+    if (!baseObject.IsEmpty()) {
+        auto entityType = baseObject->GetType();
+        e.typ = static_cast<unsigned char>(entityType);
+
+        switch (entityType) {
+            case alt::IBaseObject::Type::PLAYER:
+                e.ptr = baseObject.As<alt::IPlayer>().Get();
+                e.id = baseObject.As<alt::IPlayer>()->GetID();
+                break;
+            case alt::IBaseObject::Type::VEHICLE:
+                e.ptr = baseObject.As<alt::IVehicle>().Get();
+                e.id = baseObject.As<alt::IVehicle>()->GetID();
+                e.model = baseObject.As<alt::IVehicle>()->GetModel();
+                break;
+            case alt::IBaseObject::Type::BLIP:
+                e.ptr = baseObject.As<alt::IBlip>().Get();
+                break;
+            case alt::IBaseObject::Type::CHECKPOINT:
+                e.ptr = baseObject.As<alt::ICheckpoint>().Get();
+                break;
+            case alt::IBaseObject::Type::COLSHAPE:
+                e.ptr = baseObject.As<alt::IColShape>().Get();
+                break;
+            case alt::IBaseObject::Type::VOICE_CHANNEL:
+                e.ptr = baseObject.As<alt::IVoiceChannel>().Get();
+                break;
+            default:
+                e.ptr = nullptr;
+                break;
+        }
+    } else {
+        e.ptr = nullptr;
     }
 
     return e;
 }
 
 ConnectionInfo Go::Runtime::GetConnectionInfo(alt::Ref <alt::IConnectionInfo> info) {
-    connectionInfo conn;
+    connectionInfo conn{};
     conn.authToken = info->GetAuthToken().c_str();
     conn.branch = info->GetBranch().c_str();
     conn.build = info->GetBuild();
@@ -129,7 +164,7 @@ Array Go::Runtime::CreateBoneArray(std::vector<alt::BoneInfo> bones) {
     return arr;
 }
 
-Array Go::Runtime::ConfigNodeToProtoBytes(alt::config::Node node) 
+/*Array Go::Runtime::ConfigNodeToProtoBytes(alt::config::Node node)
 {
     auto value = new MValue::MValue();
     ConfigNodeToProto(node, value);
@@ -185,7 +220,7 @@ void Go::Runtime::ConfigNodeToProto(alt::config::Node node, MValue::MValue *out)
     } else {
         out->set_nilvalue(true);
     }
-}
+}*/
 
 alt::IEntity *Go::Runtime::GetEntityRef(Entity entity) {
     auto type = static_cast<alt::IEntity::Type>(entity.typ);
@@ -218,9 +253,9 @@ alt::IBaseObject* Go::Runtime::GetBaseObjectRef(Entity baseObject) {
         return reinterpret_cast<alt::IVehicle*>(baseObject.ptr);
     case alt::IBaseObject::Type::VOICE_CHANNEL:
         return reinterpret_cast<alt::IVoiceChannel*>(baseObject.ptr);
+    default:
+        return nullptr;
     }
-
-    return nullptr;
 }
 
 std::string Go::Runtime::PointerToString(void* p) {
@@ -230,192 +265,176 @@ std::string Go::Runtime::PointerToString(void* p) {
     return ss.str();
 }
 
-alt::MValue Go::Runtime::ProtoToMValue(unsigned char *data, unsigned long long size) {
-    if (size == 0) {
-        return alt::ICore::Instance().CreateMValueNone();
-    }
+alt::MValue Go::Runtime::GoToMValue(GoValue value) {
+    auto typ = static_cast<alt::IMValue::Type>(value.type);
 
-    MValue::MValue mValue;
-    mValue.ParseFromArray(data, size);
-    return ProtoToMValue(mValue);
-}
-
-alt::MValue Go::Runtime::ProtoToMValue(MValue::MValue mValue) {
-    if (mValue.has_boolvalue()) {
-        return alt::ICore::Instance().CreateMValueBool(mValue.boolvalue());
-    } else if (mValue.has_uintvalue()) {
-        return alt::ICore::Instance().CreateMValueUInt(mValue.uintvalue());
-    } else if (mValue.has_intvalue()) {
-        return alt::ICore::Instance().CreateMValueInt(mValue.intvalue());
-    } else if (mValue.has_doublevalue()) {
-        return alt::ICore::Instance().CreateMValueDouble(mValue.doublevalue());
-    } else if (mValue.has_stringvalue()) {
-        return alt::ICore::Instance().CreateMValueString(mValue.stringvalue());
-    } else if (mValue.has_baseobjectvalue()) {
-        const auto &baseObject = mValue.baseobjectvalue();
+    if (typ == alt::IMValue::Type::BOOL) {
+        return alt::ICore::Instance().CreateMValueBool(value.boolValue == 1);
+    } else if (typ == alt::IMValue::Type::UINT) {
+        return alt::ICore::Instance().CreateMValueUInt(value.uintValue);
+    } else if (typ == alt::IMValue::Type::INT) {
+        return alt::ICore::Instance().CreateMValueInt(value.intValue);
+    } else if (typ == alt::IMValue::Type::DOUBLE) {
+        return alt::ICore::Instance().CreateMValueDouble(value.doubleValue);
+    } else if (typ == alt::IMValue::Type::STRING) {
+        return alt::ICore::Instance().CreateMValueString(std::string(value.stringValue, value.size));
+    } else if (typ == alt::IMValue::Type::BASE_OBJECT) {
+        return alt::ICore::Instance().CreateMValueBaseObject(GetBaseObjectRef(value.entityValue));
+        /*const auto &baseObject = mValue.baseobjectvalue();
         Entity e;
         e.Type = baseObject.type();
         sscanf(baseObject.ptr().c_str(), "%p", &e.Ptr);
 
         auto altBaseObject = GetBaseObjectRef(e);
-        return alt::ICore::Instance().CreateMValueBaseObject(altBaseObject);
-    } else if (mValue.has_bytesvalue()) {
-        auto bytes = mValue.bytesvalue();
-        return alt::ICore::Instance().CreateMValueByteArray(reinterpret_cast<const uint8_t *>(bytes.data()), bytes.size());
-    } else if (mValue.has_rgbavalue()) {
-        const auto &rgba = mValue.rgbavalue();
-        return alt::ICore::Instance().CreateMValueRGBA(alt::RGBA(rgba.r(), rgba.g(), rgba.b(), rgba.a()));
-    } else if (mValue.has_vector2value()) {
-        const auto &vector2 = mValue.vector2value();
+        return alt::ICore::Instance().CreateMValueBaseObject(altBaseObject);**/
+    } else if (typ == alt::IMValue::Type::BYTE_ARRAY) {
+        // auto bytes = mValue.bytesvalue();
+        // return alt::ICore::Instance().CreateMValueByteArray(reinterpret_cast<const uint8_t *>(bytes.data()), bytes.size());
+
+        return alt::ICore::Instance().CreateMValueByteArray(value.bytes, value.size);
+    } else if (typ == alt::IMValue::Type::RGBA) {
+        return alt::ICore::Instance().CreateMValueRGBA(alt::RGBA(value.rgbaValue.r, value.rgbaValue.g, value.rgbaValue.b, value.rgbaValue.a));
+    } else if (typ == alt::IMValue::Type::VECTOR2) {
         auto v2 = alt::Vector2f();
-        v2[0] = vector2.x();
-        v2[1] = vector2.y();
+        v2[0] = value.vectorValue.x;
+        v2[1] = value.vectorValue.y;
         return alt::ICore::Instance().CreateMValueVector2(v2);
-    } else if (mValue.has_vector3value()) {
-        const auto &vector3 = mValue.vector3value();
+    } else if (typ == alt::IMValue::Type::VECTOR3) {
         auto v3 = alt::Vector3f();
-        v3[0] = vector3.x();
-        v3[1] = vector3.y();
-        v3[2] = vector3.z();
+        v3[0] = value.vectorValue.x;
+        v3[1] = value.vectorValue.y;
+        v3[2] = value.vectorValue.z;
         return alt::ICore::Instance().CreateMValueVector3(v3);
-    } else if (mValue.has_internfunctionvalue()) {
-        const auto &func = mValue.internfunctionvalue();
-        auto resource = dynamic_cast<Go::Resource *>(Go::Runtime::GetInstance()->GetResource(func.resourcename()));
+    } else if (typ == alt::IMValue::Type::FUNCTION) {
+        auto resource = dynamic_cast<Go::Resource *>(Go::Runtime::GetInstance()->GetResource(value.internFunc.resourceName));
         if (resource == nullptr) {
             return alt::ICore::Instance().CreateMValueNil();
         }
 
-        auto goFunc = new Go::Function(resource->Module, func.id());
+        auto goFunc = new Go::Function(resource->Module, value.internFunc.id);
         return alt::ICore::Instance().CreateMValueFunction(goFunc);
-    } else if (mValue.dict_size() > 0) {
-        auto dictSize = mValue.dict_size();
+    } else if (typ == alt::IMValue::Type::DICT) {
         auto dict = alt::ICore::Instance().CreateMValueDict();
-
-        for (auto i = 0; i < dictSize; i++) {
+        // FIXME:
+        /*
+        for (auto i = 0; i < value.size; i++) {
             const auto &key = mValue.dict(i);
             const auto &value = mValue.list(i);
 
             auto val = ProtoToMValue(value);
 
             dict->Set(key, val);
-        }
+        }*/
 
         return dict;
-    } else if (mValue.list_size() > 0) {
-        auto listSize = mValue.list_size();
-        auto list = alt::ICore::Instance().CreateMValueList(listSize);
+    } else if (typ == alt::IMValue::Type::LIST) {
+        auto list = alt::ICore::Instance().CreateMValueList(value.size);
 
-        for (auto i = 0; i < listSize; i++) {
+        // FIXME:
+        /*
+        for (auto i = 0; i < value.size; i++) {
             const auto &value = mValue.list(i);
 
             auto val = ProtoToMValue(value);
 
             list->Set(i, val);
-        }
+        }*/
 
         return list;
-    } else if (mValue.has_nonevalue()) {
-        return alt::ICore::Instance().CreateMValueNone();
-    } else {
+    } else if (typ == alt::IMValue::Type::NIL) {
         return alt::ICore::Instance().CreateMValueNil();
+    } else {
+        return alt::ICore::Instance().CreateMValueNone();
     }
 }
 
-void Go::Runtime::MValueToProto(alt::MValue mValue, MValue::MValue *value) {
-    switch (mValue->GetType()) {
+void Go::Runtime::MValueToGo(alt::MValue mValue, GoValue *value) {
+    auto t = mValue->GetType();
+    value->type = static_cast<unsigned char>(t);
+    switch (t) {
     case alt::IMValue::Type::BOOL: {
-        auto b = mValue.As<alt::IMValueBool>();
-        value->set_boolvalue(b->Value());
+        value->boolValue = mValue.As<alt::IMValueBool>()->Value();
         break;
     }
     case alt::IMValue::Type::UINT: {
-        auto mValueUint = mValue.As<alt::IMValueUInt>();
-        value->set_uintvalue(mValueUint->Value());
+        value->uintValue = mValue.As<alt::IMValueUInt>()->Value();
         break;
     }
     case alt::IMValue::Type::INT: {
-        auto mValueInt = mValue.As<alt::IMValueInt>();
-        value->set_intvalue(mValueInt->Value());
+        value->intValue = mValue.As<alt::IMValueInt>()->Value();
         break;
     }
     case alt::IMValue::Type::DOUBLE: {
-        auto mValueDouble = mValue.As<alt::IMValueDouble>();
-        value->set_doublevalue(mValueDouble->Value());
+        value->doubleValue = mValue.As<alt::IMValueDouble>()->Value();
         break;
     }
     case alt::IMValue::Type::STRING: {
-        auto mValueString = mValue.As<alt::IMValueString>();
-        value->set_stringvalue(mValueString->Value());
+        auto str = mValue.As<alt::IMValueString>()->Value();
+        value->size = str.size();
+        // does this work? idk i am bad at c / c++
+        memcpy(value->stringValue, str.c_str(), str.size());
         break;
     }
     case alt::IMValue::Type::BASE_OBJECT: {
-        auto mValueBaseObject = mValue.As<alt::IMValueBaseObject>();
-        auto object = mValueBaseObject->Value();
-        auto base = value->mutable_baseobjectvalue();
-        base->set_ptr(PointerToString(object.Get()));
-        base->set_type(static_cast<uint32_t>(object->GetType()));
+        auto object = mValue.As<alt::IMValueBaseObject>()->Value();
+        value->entityValue = GetBaseObject(object);
         break;
     }
     case alt::IMValue::Type::BYTE_ARRAY: {
         auto mValueByteArray = mValue.As<alt::IMValueByteArray>();
-        const auto bytes = mValueByteArray->GetData();
-        const auto size = mValueByteArray->GetSize();
-
-        value->set_bytesvalue(bytes, size);
+        value->bytes = mValueByteArray->GetData();
+        value->size = mValueByteArray->GetSize();
         break;
     }
     case alt::IMValue::Type::RGBA: {
-        auto mValueRGBA = mValue.As<alt::IMValueRGBA>();
-        auto rgba = mValueRGBA->Value();
-        auto color = value->mutable_rgbavalue();
+        auto rgba = mValue.As<alt::IMValueRGBA>()->Value();
 
-        color->set_r(rgba.r);
-        color->set_g(rgba.g);
-        color->set_b(rgba.b);
-        color->set_a(rgba.a);
+        RGBA color{};
+        color.r = rgba.r;
+        color.g = rgba.g;
+        color.b = rgba.b;
+        color.a = rgba.a;
 
+        value->rgbaValue = color;
         break;
     }
     case alt::IMValue::Type::VECTOR2: {
-        auto mValueV2 = mValue.As<alt::IMValueVector2>();
-        auto v2 = mValueV2->Value();
-        auto vec = value->mutable_vector2value();
+        auto v2 = mValue.As<alt::IMValueVector2>()->Value();
 
-        vec->set_x(v2[0]);
-        vec->set_y(v2[1]);
+        Position vector{};
+        vector.x = v2[0];
+        vector.y = v2[1];
 
+        value->vectorValue = vector;
         break;
     }
     case alt::IMValue::Type::VECTOR3: {
-        auto mValueV3 = mValue.As<alt::IMValueVector3>();
-        auto v3 = mValueV3->Value();
-        auto vec = value->mutable_vector3value();
-        
-        vec->set_x(v3[0]);
-        vec->set_y(v3[1]);
-        vec->set_z(v3[2]);
+        auto v3 = mValue.As<alt::IMValueVector3>()->Value();
 
+        Position vector{};
+        vector.x = v3[0];
+        vector.y = v3[1];
+        vector.z = v3[2];
+
+        value->vectorValue = vector;
         break;
     }
     case alt::IMValue::Type::FUNCTION: {
-        auto mValueFunc = mValue.As<alt::IMValueFunction>();
-        
-        auto func = value->mutable_externfunctionvalue();
-        func->set_ptr(PointerToString(mValueFunc.Get()));
-
+        value->externFunc = mValue.As<alt::IMValueFunction>().Get();
         break;
     }
     case alt::IMValue::Type::DICT: {
         auto mValueDict = mValue.As<alt::IMValueDict>();
 
-        for (auto it = mValueDict->Begin(); it; it = mValueDict->Next()) {
+        // FIXME: todo
+        /*for (auto it = mValueDict->Begin(); it; it = mValueDict->Next()) {
             auto k = it->GetKey();
             value->add_dict(k.c_str());
             
             auto v = it->GetValue();
             auto lv = value->add_list();
             MValueToProto(v, lv);
-        }
+        }*/
 
         break;
     }
@@ -423,216 +442,175 @@ void Go::Runtime::MValueToProto(alt::MValue mValue, MValue::MValue *value) {
         auto mValueList = mValue.As<alt::IMValueList>();
 
         alt::Size size = mValueList->GetSize();
+        value->size = size;
+        // FIXME: create c array
         for (alt::Size i = 0; i < size; i++) {
-            auto mValue = mValueList->Get(i);
-            auto lv = value->add_list();
+            // auto lv = value->add_list();
 
-            MValueToProto(mValue, lv);
+            GoValue v{};
+            value->list[i] = &v;
+
+            MValueToGo(mValueList->Get(i), value->list[i]);
         }
 
         break;
     }
     case alt::IMValue::Type::NIL: {
-        value->set_nilvalue(true);
         break;
     }
     default:
-        value->set_nonevalue(true);
         break;
     }
 }
 
-void Go::Runtime::MValueToProto(alt::MValueConst mValue, MValue::MValue *value) {
-    switch (mValue->GetType()) {
+void Go::Runtime::MValueToGo(alt::MValueConst mValue, GoValue *value) {
+    auto t = mValue->GetType();
+    value->type = static_cast<unsigned char>(t);
+
+    switch (t) {
     case alt::IMValue::Type::BOOL: {
-        auto b = mValue.As<const alt::IMValueBool>();
-        value->set_boolvalue(b->Value());
+        value->boolValue = mValue.As<const alt::IMValueBool>()->Value();
         break;
     }
     case alt::IMValue::Type::UINT: {
-        auto mValueUint = mValue.As<const alt::IMValueUInt>();
-        value->set_uintvalue(mValueUint->Value());
+        value->uintValue = mValue.As<const alt::IMValueUInt>()->Value();
         break;
     }
     case alt::IMValue::Type::INT: {
-        auto mValueInt = mValue.As<const alt::IMValueInt>();
-        value->set_intvalue(mValueInt->Value());
+        value->intValue = mValue.As<const alt::IMValueInt>()->Value();
         break;
     }
     case alt::IMValue::Type::DOUBLE: {
-        auto mValueDouble = mValue.As<const alt::IMValueDouble>();
-        value->set_doublevalue(mValueDouble->Value());
+        value->doubleValue = mValue.As<const alt::IMValueDouble>()->Value();
         break;
     }
     case alt::IMValue::Type::STRING: {
-        auto mValueString = mValue.As<const alt::IMValueString>();
-        value->set_stringvalue(mValueString->Value());
+        auto str = mValue.As<const alt::IMValueString>()->Value();
+        value->size = str.size();
+        memcpy(value->stringValue, str.c_str(), str.size());
         break;
     }
     case alt::IMValue::Type::BASE_OBJECT: {
-        auto mValueBaseObject = mValue.As<const alt::IMValueBaseObject>();
-        auto object = mValueBaseObject->Value();
-        auto base = value->mutable_baseobjectvalue();
-
-        base->set_ptr(PointerToString(object.Get()));
-        base->set_type(static_cast<uint32_t>(object->GetType()));
-
+        auto object = mValue.As<const alt::IMValueBaseObject>()->Value();
+        value->entityValue = GetBaseObject(object);
         break;
     }
     case alt::IMValue::Type::BYTE_ARRAY: {
         auto mValueByteArray = mValue.As<const alt::IMValueByteArray>();
-        const auto bytes = mValueByteArray->GetData();
-        const auto size = mValueByteArray->GetSize();
-
-        value->set_bytesvalue(bytes, size);
+        value->bytes = const_cast<unsigned char*>(mValueByteArray->GetData());
+        value->size = mValueByteArray->GetSize();
         break;
     }
     case alt::IMValue::Type::RGBA: {
-        auto mValueRGBA = mValue.As<const alt::IMValueRGBA>();
-        auto rgba = mValueRGBA->Value();
-        auto color = value->mutable_rgbavalue();
-        
-        color->set_r(rgba.r);
-        color->set_g(rgba.g);
-        color->set_b(rgba.b);
-        color->set_a(rgba.a);
+        auto rgba = mValue.As<const alt::IMValueRGBA>()->Value();
+
+        RGBA color{};
+        color.r = rgba.r;
+        color.g = rgba.g;
+        color.b = rgba.b;
+        color.a = rgba.a;
+
+        value->rgbaValue = color;
 
         break;
     }
     case alt::IMValue::Type::VECTOR2: {
-        auto mValueV2 = mValue.As<const alt::IMValueVector2>();
-        auto v2 = mValueV2->Value();
-        auto vec = value->mutable_vector2value();
-        
-        vec->set_x(v2[0]);
-        vec->set_y(v2[1]);
+        auto v2 = mValue.As<const alt::IMValueVector2>()->Value();
 
+        Position vector{};
+        vector.x = v2[0];
+        vector.y = v2[1];
+
+        value->vectorValue = vector;
         break;
     }
     case alt::IMValue::Type::VECTOR3: {
-        auto mValueV3 = mValue.As<const alt::IMValueVector3>();
-        auto v3 = mValueV3->Value();
-        auto vec = value->mutable_vector3value();
+        auto v3 = mValue.As<const alt::IMValueVector3>()->Value();
 
-        vec->set_x(v3[0]);
-        vec->set_y(v3[1]);
-        vec->set_z(v3[2]);
+        Position vector{};
+        vector.x = v3[0];
+        vector.y = v3[1];
+        vector.z = v3[2];
 
+        value->vectorValue = vector;
         break;
     }
     case alt::IMValue::Type::FUNCTION: {
-        auto mValueFunc = mValue.As<const alt::IMValueFunction>();
-        auto func = value->mutable_externfunctionvalue();
-
-        func->set_ptr(PointerToString(const_cast<alt::IMValueFunction*>(mValueFunc.Get())));
-
+        value->externFunc = const_cast<alt::IMValueFunction*>(mValue.As<const alt::IMValueFunction>().Get());
         break;
     }
     case alt::IMValue::Type::DICT: {
         auto mValueDict = mValue.As<const alt::IMValueDict>();
 
-        for (auto it = mValueDict->Begin(); it; it = mValueDict->Next()) {
+        // FIXME:
+        /*for (auto it = mValueDict->Begin(); it; it = mValueDict->Next()) {
             auto k = it->GetKey();
             value->add_dict(k.c_str());
 
             alt::MValueConst v = it->GetValue();
             MValue::MValue* lv = value->add_list();
             MValueToProto(v, lv);
-        }
+        }*/
 
         break;
     }
     case alt::IMValue::Type::LIST: {
         auto mValueList = mValue.As<const alt::IMValueList>();
-
         alt::Size size = mValueList->GetSize();
-        for (alt::Size i = 0; i < size; i++) {
+
+        // FIXME:
+        /*for (alt::Size i = 0; i < size; i++) {
             auto mValue = mValueList->Get(i);
             MValue::MValue* lv = value->add_list();
             MValueToProto(mValue, lv);
-        }
+        }*/
         break;
     }
     case alt::IMValue::Type::NIL: {
-        value->set_nilvalue(true);
         break;
     }
     default:
-        value->set_nonevalue(true);
         break;
     }
 }
 
-Array Go::Runtime::MValueToProtoBytes(alt::MValue mValue) {
-    auto value = new MValue::MValue();
-    MValueToProto(mValue, value);
-
-    Array arr;
-    arr.size = value->ByteSizeLong();
-
-    unsigned char *byteArray = new unsigned char[arr.size];
-    value->SerializeToArray(byteArray, arr.size);
-    arr.array = byteArray;
-
-    return arr;
-}
-
-Array Go::Runtime::MValueToProtoBytes(alt::MValueConst mValue) {
-    auto value = new MValue::MValue();
-    MValueToProto(mValue, value);
-
-    Array arr;
-    arr.size = value->ByteSizeLong();
-
-    unsigned char* byteArray = new unsigned char[arr.size];
-    value->SerializeToArray(byteArray, arr.size);
-    arr.array = byteArray;
-
-    return arr;
-}
-
-Array Go::Runtime::MValueArgsToProtoBytes(alt::MValueArgs args) {
-    Array all;
+GoValueArgs Go::Runtime::MValueArgsToGo(alt::MValueArgs args) {
+    GoValueArgs all;
     all.size = args.GetSize();
 
 #ifdef _WIN32
-    auto constArgs = new Array[all.size];
+    auto constArgs = new GoValue[all.size];
 #else
-    Array constArgs[all.size];
+    GoValue constArgs[all.size];
 #endif
 
     for (auto i = 0; i < all.size; i++) {
         alt::MValueConst mValue = args[i];
-        auto bytes = MValueToProtoBytes(mValue);
-        constArgs[i] = bytes;
+
+        GoValue value{};
+        MValueToGo(mValue, &value);
+        constArgs[i] = value;
     }
 
-    all.array = constArgs;
+    all.args = constArgs;
 
     return all;
 }
 
-alt::MValueArgs Go::Runtime::ProtoToMValueArgs(Array data) {
+alt::MValueArgs Go::Runtime::GoToMValueArgs(GoValueArgs data) {
     alt::MValueArgs args;
 
-    if (!data.size || data.array == nullptr) {
+    if (!data.size || data.args == nullptr) {
         return args;
     }
 
-    auto byteArrays = reinterpret_cast<Array*>(data.array);
-
     for (auto i = 0; i < data.size; i++) {
-        Array arr = byteArrays[i];
-        auto data = reinterpret_cast<unsigned char*>(arr.array);
-
-        alt::MValue arg = ProtoToMValue(data, arr.size);
-
-        args.Push(arg);
+        args.Push(GoToMValue( data.args[i]));
     }
 
 // crashes
 //#ifdef _WIN32
-//    delete[] data.array;
+//    delete[] data.args;
 //#endif
 
     return args;

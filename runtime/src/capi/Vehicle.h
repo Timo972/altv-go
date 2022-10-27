@@ -7,16 +7,16 @@ extern "C"
 {
 #endif
 EXPORT int Vehicle_HasMetaData(void *base, const char *key);
-EXPORT Array Vehicle_GetMetaData(void *base, const char *key);
-EXPORT void Vehicle_SetMetaData(void *base, const char *key, unsigned char *data, unsigned long long size);
+EXPORT GoValue Vehicle_GetMetaData(void *base, const char *key);
+EXPORT void Vehicle_SetMetaData(void *base, const char *key, GoValue data);
 EXPORT void Vehicle_DeleteMetaData(void *base, const char *key);
 EXPORT int Vehicle_HasSyncedMetaData(void *base, const char *key);
-EXPORT Array Vehicle_GetSyncedMetaData(void *base, const char *key);
-EXPORT void Vehicle_SetSyncedMetaData(void *base, const char *key, unsigned char *data, unsigned long long size);
+EXPORT GoValue Vehicle_GetSyncedMetaData(void *base, const char *key);
+EXPORT void Vehicle_SetSyncedMetaData(void *base, const char *key, GoValue data);
 EXPORT void Vehicle_DeleteSyncedMetaData(void *base, const char *key);
 EXPORT int Vehicle_HasStreamSyncedMetaData(void *base, const char *key);
-EXPORT Array Vehicle_GetStreamSyncedMetaData(void *base, const char *key);
-EXPORT void Vehicle_SetStreamSyncedMetaData(void *base, const char *key, unsigned char *data, unsigned long long size);
+EXPORT GoValue Vehicle_GetStreamSyncedMetaData(void *base, const char *key);
+EXPORT void Vehicle_SetStreamSyncedMetaData(void *base, const char *key, GoValue data);
 EXPORT void Vehicle_DeleteStreamSyncedMetaData(void *base, const char *key);
 
 EXPORT Position Vehicle_GetPosition(void *v);

@@ -2,23 +2,22 @@
 #include "GoRuntime.h"
 
 alt::MValue Go::Function::Call(alt::MValueArgs args) const {
-    static auto call = GET_FUNC(Library, "altCallFunction", Array (*)(unsigned long long id, Array args));
+    static auto call = GET_FUNC(Library, "altCallFunction", GoValue (*)(unsigned long long id, GoValueArgs args));
 
     if (call == nullptr) {
         alt::ICore::Instance().LogError("Couldn't not call altCallFunction.");
         return alt::ICore::Instance().CreateMValueNone();
     }
 
-    auto data = Go::Runtime::MValueArgsToProtoBytes(args);
+    auto data = Go::Runtime::MValueArgsToGo(args);
 
-    Array proto = call(id, data);
+    GoValue res = call(id, data);
 
 #ifdef _WIN32
     delete[] data.array;
 #endif
 
-    auto bytes = reinterpret_cast<unsigned char*>(proto.array);
-    return Go::Runtime::ProtoToMValue(bytes, proto.size);
+    return Go::Runtime::GoToMValue(res);
 }
 
 void Go::ExportsManager::AddExport(const char *exportName, alt::MValue data) {
