@@ -16,6 +16,9 @@ endif()
 file(GLOB_RECURSE PROJECT_SOURCE_FILES "src/*.h" "src/*.hpp" "src/*.cpp"
         "src/events/*.h" "src/events/*.hpp" "src/events/*.cpp")
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
+
 # cpp-sdk dependency
 include("vendors/cpp-sdk/CMakeLists.txt")
 include_directories("vendors/cpp-sdk")
