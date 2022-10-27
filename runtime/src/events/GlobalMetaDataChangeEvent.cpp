@@ -5,7 +5,7 @@ Go::GlobalMetaDataChangeEvent::GlobalMetaDataChangeEvent(ModuleLibrary *module) 
 
 void Go::GlobalMetaDataChangeEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altGlobalMetaDataChangeEvent", void (*)(const char* key, Array newValue, Array oldValue));
+    static auto call = GET_FUNC(Library, "altGlobalMetaDataChangeEvent", void (*)(const char* key, GoValue oldValue, GoValue newValue));
 
     if (call == nullptr)
     {
@@ -18,10 +18,12 @@ void Go::GlobalMetaDataChangeEvent::Call(const alt::CEvent *ev)
     auto newValueMeta = event->GetVal();
     auto oldValueMeta = event->GetOldVal();
 
-    auto newValue = Go::Runtime::MValueToProtoBytes(newValueMeta);
-    auto oldValue = Go::Runtime::MValueToProtoBytes(oldValueMeta);
+    GoValue oldV{};
+    GoValue newV{};
+    Go::Runtime::MValueToGo(oldValueMeta, &oldV);
+    Go::Runtime::MValueToGo(newValueMeta, &newV);
 
-    call(key, newValue, oldValue);
+    call(key, oldV, newV);
 
 #ifdef _WIN32
     delete[] newValue.array;

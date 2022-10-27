@@ -5,7 +5,7 @@ Go::StreamSyncedMetaDataChangeEvent::StreamSyncedMetaDataChangeEvent(ModuleLibra
 
 void Go::StreamSyncedMetaDataChangeEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altStreamSyncedMetaDataChangeEvent", void (*)(Entity entity, const char* key, Array newValue, Array oldValue));
+    static auto call = GET_FUNC(Library, "altStreamSyncedMetaDataChangeEvent", void (*)(Entity entity, const char* key, GoValue oldValue, GoValue newValue));
 
     if (call == nullptr)
     {
@@ -20,10 +20,12 @@ void Go::StreamSyncedMetaDataChangeEvent::Call(const alt::CEvent *ev)
 
     Entity e = Go::Runtime::GetEntity(event->GetTarget());
 
-    auto newValue = Go::Runtime::MValueToProtoBytes(newValueMeta);
-    auto oldValue = Go::Runtime::MValueToProtoBytes(oldValueMeta);
+    GoValue newValue{};
+    GoValue oldValue{};
+    Go::Runtime::MValueToGo(newValueMeta, &newValue);
+    Go::Runtime::MValueToGo(oldValueMeta, &oldValue);
 
-    call(e, key, newValue, oldValue);
+    call(e, key, oldValue, newValue);
 
 #ifdef _WIN32
     delete[] newValue.array;

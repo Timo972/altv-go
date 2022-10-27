@@ -15,11 +15,8 @@ void Go::ColShapeEvent::Call(const alt::CEvent *ev)
     auto event = dynamic_cast<const alt::CColShapeEvent *>(ev);
     auto state = event->GetState();
 
-    auto colShape = Go::Runtime::GetEntity(event->GetTarget());
+    auto colShape = Go::Runtime::GetBaseObject(event->GetTarget());
     auto entity = Go::Runtime::GetEntity(event->GetEntity());
 
-    Entity e = Go::Runtime::GetEntity(entity);
-
-
-    call(colShape, e, state);
+    call(colShape, entity, state);
 }
