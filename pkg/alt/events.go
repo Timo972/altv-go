@@ -474,32 +474,32 @@ func Emit(eventName string, args ...interface{}) error {
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	arr, err := encodeArgs(args)
+	/*arr, err := encodeArgs(args)
 	// TODO: for C.free
 	if err != nil {
 		return err
 	}
 
-	C.core_trigger_local_event(cEvent, arr)
+	C.core_trigger_local_event(cEvent, arr)*/
 
 	return nil
 }
 
-func EmitClient(player *Player, eventName string, args ...interface{}) error {
+func EmitClient(player IPlayer, eventName string, args ...interface{}) error {
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	arr, err := encodeArgs(args)
+	/*arr, err := encodeArgs(args)
 	defer C.free(unsafe.Pointer(arr.array))
 	if err != nil {
 		return err
 	}
 
-	C.core_trigger_client_event(player.ptr, cEvent, arr)
+	C.core_trigger_client_event(player.ptr, cEvent, arr)*/
 	return nil
 }
 
-func EmitClients(players []*Player, eventName string, args ...interface{}) error {
+func EmitClients(players []IPlayer, eventName string, args ...interface{}) error {
 	clientSize := uint64(len(players))
 
 	if clientSize < 1 {
@@ -509,7 +509,7 @@ func EmitClients(players []*Player, eventName string, args ...interface{}) error
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	arr, err := encodeArgs(args)
+	/*arr, err := encodeArgs(args)
 	defer C.free(unsafe.Pointer(arr.array))
 	if err != nil {
 		return err
@@ -526,7 +526,7 @@ func EmitClients(players []*Player, eventName string, args ...interface{}) error
 	C.core_trigger_client_event_for(C.struct_array{
 		array: clientArrayPtr,
 		size:  C.ulonglong(clientSize),
-	}, cEvent, arr)
+	}, cEvent, arr)*/
 
 	return nil
 }
@@ -535,19 +535,19 @@ func EmitAllClients(eventName string, args ...interface{}) error {
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	arr, err := encodeArgs(args)
+	/*arr, err := encodeArgs(args)
 	defer C.free(unsafe.Pointer(arr.array))
 	if err != nil {
 		return err
 	}
 
-	C.core_trigger_client_event_for_all(cEvent, arr)
+	C.core_trigger_client_event_for_all(cEvent, arr)*/
 	return nil
 }
 
 //export altServerScriptEvent
-func altServerScriptEvent(cName *C.char, arr C.struct_array) {
-	name := C.GoString(cName)
+func altServerScriptEvent(cName *C.char, arr C.struct_goValueArgs) {
+	/*name := C.GoString(cName)
 	eventName := reflect.ValueOf(name)
 
 	args, err := decodeArgs(arr)
@@ -573,12 +573,12 @@ func altServerScriptEvent(cName *C.char, arr C.struct_array) {
 
 	for _, event := range On.serverScriptEvents[name] {
 		event.Call(args)
-	}
+	}*/
 }
 
 //export altClientScriptEvent
-func altClientScriptEvent(p unsafe.Pointer, cName *C.char, arr C.struct_array) {
-	name := C.GoString(cName)
+func altClientScriptEvent(p C.struct_entity, cName *C.char, arr C.struct_goValueArgs) {
+	/*name := C.GoString(cName)
 	eventName := reflect.ValueOf(name)
 	target := reflect.ValueOf(newPlayer(p))
 
@@ -606,7 +606,7 @@ func altClientScriptEvent(p unsafe.Pointer, cName *C.char, arr C.struct_array) {
 
 	for _, event := range On.clientScriptEvents[name] {
 		event.Call(targetArgs)
-	}
+	}*/
 }
 
 //export altServerStartedEvent
@@ -627,7 +627,7 @@ func altServerStartedEvent() {
 }
 
 //export altPlayerConnectEvent
-func altPlayerConnectEvent(p unsafe.Pointer) {
+func altPlayerConnectEvent(p C.struct_entity) {
 	player := getPlayer(p)
 
 	for i, event := range Once.playerConnectEvents {
@@ -666,7 +666,7 @@ func altConsoleCommandEvent(cName *C.char, cArray C.struct_array) {
 }
 
 //export altPlayerDisconnectEvent
-func altPlayerDisconnectEvent(p unsafe.Pointer, cReason *C.char) {
+func altPlayerDisconnectEvent(p C.struct_entity, cReason *C.char) {
 	reason := C.GoString(cReason)
 	player := getPlayer(p)
 
@@ -686,7 +686,7 @@ func altPlayerDisconnectEvent(p unsafe.Pointer, cReason *C.char) {
 }
 
 //export altExplosionEvent
-func altExplosionEvent(p unsafe.Pointer, e C.struct_entity, pos C.struct_pos, explosionType C.short, explosionFX C.uint) C.int {
+func altExplosionEvent(p C.struct_entity, e C.struct_entity, pos C.struct_pos, explosionType C.short, explosionFX C.uint) C.int {
 	player := getPlayer(p)
 	goPos := Vector3{X: float32(pos.x), Y: float32(pos.y), Z: float32(pos.z)}
 	expType := int16(explosionType)
@@ -719,7 +719,7 @@ func altExplosionEvent(p unsafe.Pointer, e C.struct_entity, pos C.struct_pos, ex
 }
 
 //export altPlayerChangeVehicleSeatEvent
-func altPlayerChangeVehicleSeatEvent(p unsafe.Pointer, v unsafe.Pointer, old C.uchar, new C.uchar) {
+func altPlayerChangeVehicleSeatEvent(p C.struct_entity, v C.struct_entity, old C.uchar, new C.uchar) {
 	player := getPlayer(p)
 	vehicle := getVehicle(v)
 	oSeat := uint8(old)
@@ -741,7 +741,7 @@ func altPlayerChangeVehicleSeatEvent(p unsafe.Pointer, v unsafe.Pointer, old C.u
 }
 
 //export altPlayerDamageEvent
-func altPlayerDamageEvent(p unsafe.Pointer, e C.struct_entity, healthDmg C.ushort, armourDmg C.ushort, weap C.ulong) {
+func altPlayerDamageEvent(p C.struct_entity, e C.struct_entity, healthDmg C.ushort, armourDmg C.ushort, weap C.ulong) {
 	player := getPlayer(p)
 	healthDamage := uint16(healthDmg)
 	armourDamage := uint16(armourDmg)
@@ -937,7 +937,7 @@ func altWeaponDamageEvent(p C.struct_entity, e C.struct_entity, weap C.ulong, dm
 }
 
 //export altPlayerEnteringVehicleEvent
-func altPlayerEnteringVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.ushort) {
+func altPlayerEnteringVehicleEvent(p C.struct_entity, v C.struct_entity, s C.ushort) {
 	player := getPlayer(p)
 	vehicle := getVehicle(v)
 	seat := uint8(s)
@@ -958,7 +958,7 @@ func altPlayerEnteringVehicleEvent(p unsafe.Pointer, v unsafe.Pointer, s C.ushor
 }
 
 //export altColShapeEvent
-func altColShapeEvent(c unsafe.Pointer, e C.struct_entity, s C.int) {
+func altColShapeEvent(c C.struct_entity, e C.struct_entity, s C.int) {
 	colShape := getColShape(c)
 	state := int(s) == 1
 	entity := getEntity(e)
@@ -990,7 +990,7 @@ func altColShapeEvent(c unsafe.Pointer, e C.struct_entity, s C.int) {
 }
 
 //export altFireEvent
-func altFireEvent(p unsafe.Pointer, f C.struct_array) C.int {
+func altFireEvent(p C.struct_entity, f C.struct_array) C.int {
 	player := getPlayer(p)
 
 	cFireInfoStructs, size := convertArray[C.struct_fireInfo](f)
@@ -1027,8 +1027,8 @@ func altFireEvent(p unsafe.Pointer, f C.struct_array) C.int {
 }
 
 //export altGlobalMetaDataChangeEvent
-func altGlobalMetaDataChangeEvent(k *C.char, nVal C.struct_array, oVal C.struct_array) {
-	key := C.GoString(k)
+func altGlobalMetaDataChangeEvent(k *C.char, oVal C.struct_goValue, nVal C.struct_goValue) {
+	/*key := C.GoString(k)
 
 	oldValue, err := decodeReflect(oVal)
 	if err != nil {
@@ -1054,12 +1054,12 @@ func altGlobalMetaDataChangeEvent(k *C.char, nVal C.struct_array, oVal C.struct_
 	re := len(Once.globalMetaDataChangeEvents) + len(On.globalMetaDataChangeEvents)
 	if re < 1 {
 		unregisterOnEvent(CurrentResource.Name(), globalMetaChange)
-	}
+	}*/
 }
 
 //export altGlobalSyncedMetaDataChangeEvent
-func altGlobalSyncedMetaDataChangeEvent(k *C.char, nVal C.struct_array, oVal C.struct_array) {
-	key := C.GoString(k)
+func altGlobalSyncedMetaDataChangeEvent(k *C.char, oVal C.struct_goValue, nVal C.struct_goValue) {
+	/*key := C.GoString(k)
 
 	// FIXME:
 	var oldValue interface{}
@@ -1077,12 +1077,12 @@ func altGlobalSyncedMetaDataChangeEvent(k *C.char, nVal C.struct_array, oVal C.s
 	re := len(Once.globalSyncedMetaDataChangeEvents) + len(On.globalSyncedMetaDataChangeEvents)
 	if re < 1 {
 		unregisterOnEvent(CurrentResource.Name(), globalSyncedMetaChange)
-	}
+	}*/
 }
 
 //export altLocalSyncedMetaDataChangeEvent
-func altLocalSyncedMetaDataChangeEvent(p unsafe.Pointer, cKey *C.char, cNewValue C.struct_array, cOldValue C.struct_array) {
-	player := getPlayer(p)
+func altLocalSyncedMetaDataChangeEvent(p C.struct_entity, cKey *C.char, cOldValue C.struct_goValue, cNewValue C.struct_goValue) {
+	/*player := getPlayer(p)
 	key := C.GoString(cKey)
 
 	// FIXME:
@@ -1101,11 +1101,11 @@ func altLocalSyncedMetaDataChangeEvent(p unsafe.Pointer, cKey *C.char, cNewValue
 	re := len(Once.localSyncedMetaDataChangeEvents) + len(On.localSyncedMetaDataChangeEvents)
 	if re < 1 {
 		unregisterOnEvent(CurrentResource.Name(), localSyncedMetaChange)
-	}
+	}*/
 }
 
 //export altMetaDataChangeEvent
-func altMetaDataChangeEvent(cKey *C.char, cNewValue C.struct_array, cOldValue C.struct_array) {
+func altMetaDataChangeEvent(cKey *C.char, cOldValue C.struct_goValue, cNewValue C.struct_goValue) {
 	key := C.GoString(cKey)
 
 	// FIXME:
@@ -1128,7 +1128,7 @@ func altMetaDataChangeEvent(cKey *C.char, cNewValue C.struct_array, cOldValue C.
 }
 
 //export altNetOwnerChangeEvent
-func altNetOwnerChangeEvent(e C.struct_entity, o unsafe.Pointer, oo unsafe.Pointer) {
+func altNetOwnerChangeEvent(e C.struct_entity, o C.struct_entity, oo C.struct_entity) {
 	owner := getPlayer(o)
 	oldOwner := getPlayer(oo)
 	entity := getEntity(e)
@@ -1149,7 +1149,7 @@ func altNetOwnerChangeEvent(e C.struct_entity, o unsafe.Pointer, oo unsafe.Point
 }
 
 //export altPlayerWeaponChangeEvent
-func altPlayerWeaponChangeEvent(p unsafe.Pointer, oWeap C.ulong, nWeap C.ulong) C.int {
+func altPlayerWeaponChangeEvent(p C.struct_entity, oWeap C.ulong, nWeap C.ulong) C.int {
 	player := getPlayer(p)
 	oldWeapon := uint32(oWeap)
 	newWeapon := uint32(nWeap)
@@ -1180,7 +1180,7 @@ func altPlayerWeaponChangeEvent(p unsafe.Pointer, oWeap C.ulong, nWeap C.ulong) 
 }
 
 //export altPlayerRequestControlEvent
-func altPlayerRequestControlEvent(p unsafe.Pointer, e C.struct_entity) C.int {
+func altPlayerRequestControlEvent(p C.struct_entity, e C.struct_entity) C.int {
 	player := getPlayer(p)
 	entity := getEntity(e)
 
@@ -1268,7 +1268,7 @@ func altConnectionQueueRemoveEvent(cHandle unsafe.Pointer, cInfo C.struct_connec
 }
 
 //export altStartProjectileEvent
-func altStartProjectileEvent(p unsafe.Pointer, pos C.struct_pos, dir C.struct_pos, aHash C.uint, wHash C.ulong) C.int {
+func altStartProjectileEvent(p C.struct_entity, pos C.struct_pos, dir C.struct_pos, aHash C.uint, wHash C.ulong) C.int {
 	player := getPlayer(p)
 	position := Vector3{X: float32(pos.x), Y: float32(pos.y), Z: float32(pos.z)}
 	direction := Vector3{X: float32(dir.x), Y: float32(dir.y), Z: float32(dir.z)}
@@ -1301,7 +1301,7 @@ func altStartProjectileEvent(p unsafe.Pointer, pos C.struct_pos, dir C.struct_po
 }
 
 //export altStreamSyncedMetaDataChangeEvent
-func altStreamSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.struct_array, oVal C.struct_array) {
+func altStreamSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, oVal C.struct_goValue, nVal C.struct_goValue) {
 	key := C.GoString(k)
 
 	// FIXME:
@@ -1326,7 +1326,7 @@ func altStreamSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.str
 }
 
 //export altSyncedMetaDataChangeEvent
-func altSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.struct_array, oVal C.struct_array) {
+func altSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, oVal C.struct_goValue, nVal C.struct_goValue) {
 	key := C.GoString(k)
 
 	// FIXME:
@@ -1351,7 +1351,7 @@ func altSyncedMetaDataChangeEvent(e C.struct_entity, k *C.char, nVal C.struct_ar
 }
 
 //export altVehicleAttachEvent
-func altVehicleAttachEvent(v unsafe.Pointer, a unsafe.Pointer) {
+func altVehicleAttachEvent(v C.struct_entity, a C.struct_entity) {
 	vehicle := getVehicle(v)
 	attached := getVehicle(a)
 
@@ -1371,7 +1371,7 @@ func altVehicleAttachEvent(v unsafe.Pointer, a unsafe.Pointer) {
 }
 
 //export altVehicleDetachEvent
-func altVehicleDetachEvent(v unsafe.Pointer, a unsafe.Pointer) {
+func altVehicleDetachEvent(v C.struct_entity, a C.struct_entity) {
 	vehicle := getVehicle(v)
 	attached := getVehicle(a)
 
@@ -1391,7 +1391,7 @@ func altVehicleDetachEvent(v unsafe.Pointer, a unsafe.Pointer) {
 }
 
 //export altVehicleDestroyEvent
-func altVehicleDestroyEvent(v unsafe.Pointer) {
+func altVehicleDestroyEvent(v C.struct_entity) {
 	vehicle := getVehicle(v)
 
 	for i, event := range Once.vehicleDestroyEvents {
@@ -1410,7 +1410,7 @@ func altVehicleDestroyEvent(v unsafe.Pointer) {
 }
 
 //export altVehicleDamageEvent
-func altVehicleDamageEvent(v unsafe.Pointer, e C.struct_entity, body C.uint, additional C.uint, engine C.uint, tank C.uint, width C.uint) {
+func altVehicleDamageEvent(v C.struct_entity, e C.struct_entity, body C.uint, additional C.uint, engine C.uint, tank C.uint, width C.uint) {
 	vehicle := getVehicle(v)
 	entity := getEntity(e)
 	bodyDamage := uint32(body)
@@ -1435,7 +1435,7 @@ func altVehicleDamageEvent(v unsafe.Pointer, e C.struct_entity, body C.uint, add
 }
 
 //export altPlayerChangeAnimationEvent
-func altPlayerChangeAnimationEvent(p unsafe.Pointer, oldAnimDict C.uint, oldAnimName C.uint, newAnimDict C.uint, newAnimName C.uint) {
+func altPlayerChangeAnimationEvent(p C.struct_entity, oldAnimDict C.uint, oldAnimName C.uint, newAnimDict C.uint, newAnimName C.uint) {
 	player := getPlayer(p)
 	oad := uint32(oldAnimDict)
 	oan := uint32(oldAnimName)
@@ -1458,7 +1458,7 @@ func altPlayerChangeAnimationEvent(p unsafe.Pointer, oldAnimDict C.uint, oldAnim
 }
 
 //export altPlayerChangeInteriorEvent
-func altPlayerChangeInteriorEvent(p unsafe.Pointer, oldInterior C.uint, newInterior C.uint) {
+func altPlayerChangeInteriorEvent(p C.struct_entity, oldInterior C.uint, newInterior C.uint) {
 	player := getPlayer(p)
 	oi := uint32(oldInterior)
 	ni := uint32(newInterior)

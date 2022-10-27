@@ -193,18 +193,10 @@ type Vehicle struct {
 	Entity
 }
 
-func newVehicle(p unsafe.Pointer) *Vehicle {
-	vehicle := &Vehicle{}
-	vehicle.ptr = p
-	vehicle.Type() = VehicleObject
+func newVehicleArray(arr C.struct_array) []IVehicle {
+	values, size := convertArray[C.struct_entity](arr)
 
-	return vehicle
-}
-
-func newVehicleArray(arr C.struct_array) []*Vehicle {
-	values, size := convertArray[unsafe.Pointer](arr)
-
-	vehicles := make([]*Vehicle, size)
+	vehicles := make([]IVehicle, size)
 
 	if size == 0 {
 		return vehicles
@@ -212,21 +204,21 @@ func newVehicleArray(arr C.struct_array) []*Vehicle {
 
 	for i := 0; i < size; i++ {
 		v := values[i]
-		vehicles[i] = newVehicle(v)
+		vehicles[i] = getVehicle(v)
 	}
 
 	return vehicles
 }
 
-func CreateVehicle(model uint32, pos Vector3, rot Vector3) (*Vehicle, error) {
-	vehicle := C.core_create_vehicle(C.ulong(model), C.float(pos.X), C.float(pos.Y), C.float(pos.Z),
+func CreateVehicle(model uint32, pos Vector3, rot Vector3) (IVehicle, error) {
+	e := C.core_create_vehicle(C.ulong(model), C.float(pos.X), C.float(pos.Y), C.float(pos.Z),
 		C.float(rot.X), C.float(rot.Y), C.float(rot.Z))
 
-	if vehicle == nil {
+	veh := getVehicle(e)
+
+	if veh.NativePointer() == nil {
 		return nil, fmt.Errorf("failed to create vehicle: %v is not a proper model hash", model)
 	}
-
-	veh := newVehicle(vehicle)
 
 	if !veh.Valid() {
 		return nil, errors.New("could not create vehicle")
@@ -239,13 +231,9 @@ func (v Vehicle) String() string {
 	return fmt.Sprintf("Vehicle{}")
 }
 
-func (v Vehicle) Driver() *Player {
-	cPtr := C.vehicle_get_driver(v.ptr)
-	if cPtr == nil {
-		return nil
-	}
-	player := newPlayer(unsafe.Pointer(cPtr))
-	return player
+func (v Vehicle) Driver() IPlayer {
+	e := C.vehicle_get_driver(v.ptr)
+	return getPlayer(e)
 }
 
 func (v Vehicle) IsDestroyed() bool {
@@ -758,20 +746,14 @@ func (v Vehicle) SetManualEngineControl(state bool) {
 	C.vehicle_set_manual_engine_control(v.ptr, C.int(module.Bool2int(state)))
 }
 
-func (v Vehicle) Attached() *Vehicle {
-	ptr := C.vehicle_get_attached(v.ptr)
-	if ptr == nil {
-		return nil
-	}
-	return newVehicle(ptr)
+func (v Vehicle) Attached() IVehicle {
+	e := C.vehicle_get_attached(v.ptr)
+	return getVehicle(e)
 }
 
-func (v Vehicle) AttachedTo() *Vehicle {
-	ptr := C.vehicle_get_attached_to(v.ptr)
-	if ptr == nil {
-		return nil
-	}
-	return newVehicle(ptr)
+func (v Vehicle) AttachedTo() IVehicle {
+	e := C.vehicle_get_attached_to(v.ptr)
+	return getVehicle(e)
 }
 
 func (v Vehicle) LoadDamageDataFromBase64(base64 string) {
@@ -826,17 +808,13 @@ func (v Vehicle) SetTrainTrackId(trackId int8) {
 	C.vehicle_set_train_track_id(v.ptr, C.char(trackId))
 }
 
-func (v Vehicle) TrainEngine() *Vehicle {
-	ptr := C.vehicle_get_train_engine_id(v.ptr)
-	if ptr == nil {
-		return nil
-	}
-
-	return newVehicle(ptr)
+func (v Vehicle) TrainEngine() IVehicle {
+	e := C.vehicle_get_train_engine_id(v.ptr)
+	return getVehicle(e)
 }
 
-func (v Vehicle) SetTrainEngine(engine *Vehicle) {
-	C.vehicle_set_train_engine_id(v.ptr, engine.ptr)
+func (v Vehicle) SetTrainEngine(engine IVehicle) {
+	C.vehicle_set_train_engine_id(v.ptr, engine.NativePointer())
 }
 
 func (v Vehicle) TrainConfigIndex() int8 {
@@ -919,30 +897,23 @@ func (v Vehicle) SetTrainCarriageConfigIndex(configIndex int8) {
 	C.vehicle_set_train_carriage_config_index(v.ptr, C.char(configIndex))
 }
 
-func (v Vehicle) TrainLinkedToBackward() *Vehicle {
-	ptr := C.vehicle_get_train_linked_to_backward_id(v.ptr)
-	if ptr == nil {
-		return nil
-	}
+func (v Vehicle) TrainLinkedToBackward() IVehicle {
+	e := C.vehicle_get_train_linked_to_backward_id(v.ptr)
 
-	return newVehicle(ptr)
+	return getVehicle(e)
 }
 
-func (v Vehicle) SetTrainLinkedToBackward(linkedToBackward *Vehicle) {
-	C.vehicle_set_train_linked_to_backward_id(v.ptr, linkedToBackward.ptr)
+func (v Vehicle) SetTrainLinkedToBackward(linkedToBackward IVehicle) {
+	C.vehicle_set_train_linked_to_backward_id(v.ptr, linkedToBackward.NativePointer())
 }
 
-func (v Vehicle) TrainLinkedToForward() *Vehicle {
-	ptr := C.vehicle_get_train_linked_to_forward_id(v.ptr)
-	if ptr == nil {
-		return nil
-	}
-
-	return newVehicle(ptr)
+func (v Vehicle) TrainLinkedToForward() IVehicle {
+	e := C.vehicle_get_train_linked_to_forward_id(v.ptr)
+	return getVehicle(e)
 }
 
-func (v Vehicle) SetTrainLinkedToForward(linkedToForward *Vehicle) {
-	C.vehicle_set_train_linked_to_forward_id(v.ptr, linkedToForward.ptr)
+func (v Vehicle) SetTrainLinkedToForward(linkedToForward IVehicle) {
+	C.vehicle_set_train_linked_to_forward_id(v.ptr, linkedToForward.NativePointer())
 }
 
 func (v Vehicle) SetTrainUnk1(unk1 bool) {
@@ -977,7 +948,7 @@ func (v Vehicle) SetBoatAnchorActive(active bool) {
 	C.vehicle_set_boat_anchor_active(v.ptr, C.int(module.Bool2int(active)))
 }
 
-func (v Vehicle) SetSearchLight(state bool, entity *Entity) bool {
+func (v Vehicle) SetSearchLight(state bool, entity IEntity) bool {
 	return int(C.vehicle_set_search_light(v.ptr, C.int(module.Bool2int(state)), newCEntity(entity))) == 1
 }
 
@@ -993,17 +964,17 @@ func (v Vehicle) HasTimedExplosion() bool {
 	return uint8(C.vehicle_has_timed_explosion(v.ptr)) == 1
 }
 
-func (v Vehicle) TimedExplosionCulprit() *Player {
+func (v Vehicle) TimedExplosionCulprit() IPlayer {
 	p := C.vehicle_get_timed_explosion_culprit(v.ptr)
-	return newPlayer(p)
+	return getPlayer(p)
 }
 
 func (v Vehicle) TimedExplosionTime() uint32 {
 	return uint32(C.vehicle_get_timed_explosion_time(v.ptr))
 }
 
-func (v Vehicle) SetTimedExplosion(state bool, culprit *Player, time uint32) {
-	C.vehicle_set_timed_explosion(v.ptr, C.uchar(module.Bool2int(state)), culprit.ptr, C.uint(time))
+func (v Vehicle) SetTimedExplosion(state bool, culprit IPlayer, time uint32) {
+	C.vehicle_set_timed_explosion(v.ptr, C.uchar(module.Bool2int(state)), culprit.NativePointer(), C.uint(time))
 }
 
 func (v Vehicle) IsTowingDisabled() bool {

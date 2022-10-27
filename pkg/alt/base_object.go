@@ -49,8 +49,8 @@ type IBaseObject interface {
 	Valid() bool
 	Destroy()
 	HasMetaData(key string) bool
-	SetMetaData(key string, value interface{}) bool
-	MetaData(key string, out interface{}) bool
+	SetMetaData(key string, value interface{}) error
+	MetaData(key string, out interface{}) error
 	DeleteMetaData(key string)
 }
 
@@ -132,11 +132,11 @@ func (b BaseObject) HasMetaData(key string) bool {
 	return false
 }
 
-func (b BaseObject) MetaData(key string, val interface{}) bool {
+func (b BaseObject) MetaData(key string, val interface{}) error {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
-	var arr C.struct_array
+	/*var arr C.struct_array
 	if b.typ == PlayerObject {
 		arr = C.player_get_meta_data(b.ptr, cKey)
 	} else if b.typ == VoiceChannelObject {
@@ -151,16 +151,16 @@ func (b BaseObject) MetaData(key string, val interface{}) bool {
 		arr = C.blip_get_meta_data(b.ptr, cKey)
 	}
 
-	err := decode(arr, val)
+	err := decode(arr, val)*/
 
-	return err == nil
+	return nil
 }
 
-func (b BaseObject) SetMetaData(key string, value interface{}) bool {
+func (b BaseObject) SetMetaData(key string, value interface{}) error {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
-	arr, err := encode(value)
+	/*arr, err := encode(value)
 	if err != nil {
 		return false
 	}
@@ -179,9 +179,9 @@ func (b BaseObject) SetMetaData(key string, value interface{}) bool {
 		C.vehicle_set_meta_data(b.ptr, cKey, bytes, arr.size)
 	} else if b.typ == BlipObject {
 		C.blip_set_meta_data(b.ptr, cKey, bytes, arr.size)
-	}
+	}*/
 
-	return true
+	return nil
 }
 
 func (b BaseObject) DeleteMetaData(key string) {

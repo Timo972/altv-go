@@ -44,26 +44,19 @@ type Blip struct {
 	WorldObject
 }
 
-func newBlip(b unsafe.Pointer) *Blip {
-	blip := &Blip{}
-	blip.ptr = b
-	blip.typ = BlipObject
-	return blip
+func CreatePointBlip(x float32, y float32, z float32) IBlip {
+	return getBlip(C.core_create_point_blip_position(C.float(x), C.float(y), C.float(z)))
+}
+func CreateEntityBlip(entity IEntity) IBlip {
+	return getBlip(C.core_create_point_blip_entity(newCEntity(entity)))
 }
 
-func CreatePointBlip(x float32, y float32, z float32) *Blip {
-	return newBlip(C.core_create_point_blip_position(C.float(x), C.float(y), C.float(z)))
-}
-func CreateEntityBlip(entity IEntity) *Blip {
-	return newBlip(C.core_create_point_blip_entity(newCEntity(entity)))
+func CreateRadiusBlip(x float32, y float32, z float32, radius float32) IBlip {
+	return getBlip(C.core_create_radius_blip(C.float(x), C.float(y), C.float(z), C.float(radius)))
 }
 
-func CreateRadiusBlip(x float32, y float32, z float32, radius float32) *Blip {
-	return newBlip(C.core_create_radius_blip(C.float(x), C.float(y), C.float(z), C.float(radius)))
-}
-
-func CreateAreaBlip(x float32, y float32, z float32, width float32, height float32) *Blip {
-	return newBlip(C.core_create_area_blip(C.float(x), C.float(y), C.float(z), C.float(width), C.float(height)))
+func CreateAreaBlip(x float32, y float32, z float32, width float32, height float32) IBlip {
+	return getBlip(C.core_create_area_blip(C.float(x), C.float(y), C.float(z), C.float(width), C.float(height)))
 }
 
 func (b Blip) String() string {
@@ -74,19 +67,19 @@ func (b Blip) IsGlobal() bool {
 	return int(C.blip_is_global(b.ptr)) == 1
 }
 
-func (b Blip) Target() *Player {
-	return newPlayer(C.blip_get_target(b.ptr))
+func (b Blip) Target() IPlayer {
+	return getPlayer(C.blip_get_target(b.ptr))
 }
 
 func (b Blip) IsAttached() bool {
 	return int(C.blip_is_attached(b.ptr)) == 1
 }
 
-func (b Blip) AttachedTo() *Entity {
-	return newEntity(C.blip_attached_to(b.ptr))
+func (b Blip) AttachedTo() IEntity {
+	return getEntity(C.blip_attached_to(b.ptr))
 }
 
-func (b Blip) AttachTo(entity *Entity) {
+func (b Blip) AttachTo(entity IEntity) {
 	C.blip_attach_to(b.ptr, newCEntity(entity))
 }
 

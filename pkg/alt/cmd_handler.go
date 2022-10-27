@@ -6,7 +6,7 @@ type Invoker struct {
 
 type Cmd interface {
 	Name() string
-	Execute(p *Player)
+	Execute(p IPlayer)
 }
 
 func (i Invoker) RegisterCmd(c Cmd) {
@@ -20,7 +20,7 @@ func (i Invoker) RegisterCmd(c Cmd) {
 	i.commands[c.Name()] = c
 }
 
-func (i Invoker) ExecuteCmd(p *Player, name string) {
+func (i Invoker) ExecuteCmd(p IPlayer, name string) {
 	cmd, exists := i.commands[name]
 
 	if !exists {

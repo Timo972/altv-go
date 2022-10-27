@@ -17,14 +17,11 @@ package alt
 */
 import "C"
 import (
-	"errors"
-	"fmt"
 	"reflect"
-	"unsafe"
 )
 
 func registerExport(cResource *C.char, exportName string, field reflect.Value) error {
-	pv, err := encode(field.Interface())
+	/*pv, err := encode(field.Interface())
 	if err != nil {
 		return err
 	}
@@ -35,13 +32,13 @@ func registerExport(cResource *C.char, exportName string, field reflect.Value) e
 	exp := int(C.runtime_register_alt_export(cResource, cExportName, (*C.uchar)(pv.array), pv.size)) == 1
 	if !exp {
 		return fmt.Errorf("failed to register export '%s'", exportName)
-	}
+	}*/
 	return nil
 }
 
 // Export exports a struct
 func Export(export interface{}) error {
-	cResource := C.CString(CurrentResource.Name())
+	/*cResource := C.CString(CurrentResource.Name())
 	defer C.free(unsafe.Pointer(cResource))
 
 	rv := reflect.ValueOf(export)
@@ -71,13 +68,13 @@ func Export(export interface{}) error {
 		exportName := method.Type().Name()
 
 		registerExport(cResource, exportName, method.Func)
-	}
+	}*/
 
 	return nil
 }
 
-func Import[ValueType any](resource string, name string) (value ValueType, _ error) {
-	cTargetResource := C.CString(resource)
+func Import(resource string, name string, out any) error {
+	/*cTargetResource := C.CString(resource)
 	defer C.free(unsafe.Pointer(cTargetResource))
 	cExport := C.CString(name)
 	defer C.free(unsafe.Pointer(cExport))
@@ -94,7 +91,7 @@ func Import[ValueType any](resource string, name string) (value ValueType, _ err
 	}
 	//if cMetaData.ptr == nil {
 	//	return value, fmt.Errorf("failed to get export '%s' of resource '%s'; Make sure you set dependencies correctly", name, resource)
-	//}
+	//}*/
 
-	return value, nil
+	return nil
 }

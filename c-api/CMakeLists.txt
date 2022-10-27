@@ -17,7 +17,7 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/out/capi.h ${CMAKE_CURRENT
 )
 # Copy header to lib directory
 # FIXME:
-# configure_file(${CMAKE_CURRENT_BINARY_DIR}/out/capi.h ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/../capi.h COPYONLY)
+#configure_file(${CMAKE_CURRENT_BINARY_DIR}/out/capi.h ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/../capi.h COPYONLY)
 
 # Aggiungere l'origine all'eseguibile di questo progetto.
 add_library (capi STATIC "./out/capi.c" "./out/capi.h")

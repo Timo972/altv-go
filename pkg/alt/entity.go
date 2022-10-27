@@ -33,28 +33,14 @@ type IEntity interface {
 	AltEntity()
 }
 
-func newEntity(e C.struct_entity) *Entity {
-	t := BaseObjectType(e.typ)
-
-	if t != PlayerObject && t != VehicleObject {
-		return nil
-	}
-
-	entity := &Entity{}
-	entity.ptr = e.Ptr
-	entity.typ = t
-
-	return entity
-}
-
-func newEntityArray(arr C.struct_array) []*Entity {
+func newEntityArray(arr C.struct_array) []IEntity {
 	size := int(arr.size)
 	// FIXME: may causes a crash because it frees to early
 	defer C.free(unsafe.Pointer(arr.array))
 
 	cArray := (*[1 << 28]C.struct_entity)(arr.array)[:size:size]
 
-	entities := make([]*Entity, size)
+	entities := make([]IEntity, size)
 
 	if size == 0 {
 		return entities
@@ -62,7 +48,7 @@ func newEntityArray(arr C.struct_array) []*Entity {
 
 	for i := 0; i < size; i++ {
 		p := cArray[i]
-		entities[i] = newEntity(p)
+		entities[i] = getEntity(p)
 	}
 
 	return entities
@@ -70,8 +56,8 @@ func newEntityArray(arr C.struct_array) []*Entity {
 
 func newCEntity(e IEntity) C.struct_entity {
 	return C.struct_entity{
-		Ptr:  e.NativePointer(),
-		Type: C.uchar(e.Type()),
+		ptr: e.NativePointer(),
+		typ: C.uchar(e.Type()),
 	}
 }
 
@@ -90,20 +76,20 @@ func (e Entity) IsVehicle() bool {
 	return e.Type() == VehicleObject
 }
 
-func (e Entity) AsPlayer() *Player {
+func (e Entity) AsPlayer() IPlayer {
 	if e.Type() != PlayerObject {
 		return nil
 	}
-
-	return newPlayer(e.ptr)
+	
+	return e
 }
 
-func (e Entity) AsVehicle() *Vehicle {
+func (e Entity) AsVehicle() IVehicle {
 	if e.Type() != VehicleObject {
 		return nil
 	}
 
-	return newVehicle(e.ptr)
+	return e
 }
 
 func (e Entity) Model() uint32 {
@@ -157,21 +143,21 @@ func (e Entity) Visible() bool {
 	return 0
 }*/
 
-func (e Entity) NetworkOwner() *Player {
-	var cPtr unsafe.Pointer
+func (e Entity) NetworkOwner() IPlayer {
+	var cPtr C.struct_entity
 	if e.Type() == PlayerObject {
-		cPtr = unsafe.Pointer(C.player_get_network_owner(e.ptr))
+		cPtr = C.player_get_network_owner(e.ptr)
 	} else if e.Type() == VehicleObject {
-		cPtr = unsafe.Pointer(C.vehicle_get_network_owner(e.ptr))
+		cPtr = C.vehicle_get_network_owner(e.ptr)
 	}
-	return newPlayer(cPtr)
+	return getPlayer(cPtr)
 }
 
-func (e Entity) SetNetworkOwner(owner *Player, disableMigration bool) {
+func (e Entity) SetNetworkOwner(owner IPlayer, disableMigration bool) {
 	if e.Type() == PlayerObject {
-		C.player_set_network_owner(e.ptr, owner.ptr, C.int(module.Bool2int(disableMigration)))
+		C.player_set_network_owner(e.ptr, owner.NativePointer(), C.int(module.Bool2int(disableMigration)))
 	} else if e.Type() == VehicleObject {
-		C.vehicle_set_network_owner(e.ptr, owner.ptr, C.int(module.Bool2int(disableMigration)))
+		C.vehicle_set_network_owner(e.ptr, owner.NativePointer(), C.int(module.Bool2int(disableMigration)))
 	}
 }
 
@@ -208,20 +194,20 @@ func (e Entity) HasSyncedMetaData(key string) bool {
 	return false
 }
 
-func (e Entity) SyncedMetaData(key string, val interface{}) bool {
+func (e Entity) SyncedMetaData(key string, val interface{}) error {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
-	var meta C.struct_array
+	/*var meta C.struct_array
 	if e.Type() == PlayerObject {
 		meta = C.player_get_synced_meta_data(e.ptr, cKey)
 	} else if e.Type() == VehicleObject {
 		meta = C.vehicle_get_synced_meta_data(e.ptr, cKey)
-	}
+	}*/
 
-	err := decode(meta, val)
+	// err := decode(meta, val)
 
-	return err == nil
+	return nil
 }
 
 func (e Entity) HasStreamSyncedMetaData(key string) bool {
@@ -239,27 +225,27 @@ func (e Entity) HasStreamSyncedMetaData(key string) bool {
 	return false
 }
 
-func (e Entity) StreamSyncedMetaData(key string, value interface{}) bool {
+func (e Entity) StreamSyncedMetaData(key string, value interface{}) error {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
-	var meta C.struct_array
+	/*var meta C.struct_array
 	if e.Type() == PlayerObject {
 		meta = C.player_get_stream_synced_meta_data(e.ptr, cKey)
 	} else if e.Type() == VehicleObject {
 		meta = C.vehicle_get_stream_synced_meta_data(e.ptr, cKey)
 	}
 
-	err := decode(meta, value)
+	err := decode(meta, value)*/
 
-	return err == nil
+	return nil
 }
 
-func (e Entity) SetSyncedMetaData(key string, value interface{}) bool {
+func (e Entity) SetSyncedMetaData(key string, value interface{}) error {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
-	arr, err := encode(value)
+	/*arr, err := encode(value)
 	if err != nil {
 		return false
 	}
@@ -271,9 +257,9 @@ func (e Entity) SetSyncedMetaData(key string, value interface{}) bool {
 		C.player_set_synced_meta_data(e.ptr, cKey, bytes, arr.size)
 	} else if e.Type() == VehicleObject {
 		C.vehicle_set_synced_meta_data(e.ptr, cKey, bytes, arr.size)
-	}
+	}*/
 
-	return true
+	return nil
 }
 
 func (e Entity) DeleteSyncedMetaData(key string) {
@@ -289,11 +275,11 @@ func (e Entity) DeleteSyncedMetaData(key string) {
 	}
 }
 
-func (e Entity) SetStreamSyncedMetaData(key string, value interface{}) bool {
+func (e Entity) SetStreamSyncedMetaData(key string, value interface{}) error {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
-	arr, err := encode(value)
+	/*arr, err := encode(value)
 	if err != nil {
 		return false
 	}
@@ -305,9 +291,9 @@ func (e Entity) SetStreamSyncedMetaData(key string, value interface{}) bool {
 		C.player_set_stream_synced_meta_data(e.ptr, cKey, bytes, arr.size)
 	} else if e.Type() == VehicleObject {
 		C.vehicle_set_stream_synced_meta_data(e.ptr, cKey, bytes, arr.size)
-	}
+	}*/
 
-	return true
+	return nil
 }
 
 func (e Entity) DeleteStreamSyncedMetaData(key string) {

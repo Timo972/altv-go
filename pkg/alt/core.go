@@ -51,8 +51,8 @@ func (f *fileApi) Read(path string) string {
 	return uint32(C.core_hash(cStr))
 }*/
 
-func EntityByID(id uint16) *Entity {
-	return newEntity(C.core_get_entity_by_i_d(C.ushort(id)))
+func EntityByID(id uint16) IEntity {
+	return getEntity(C.core_get_entity_by_i_d(C.ushort(id)))
 }
 
 func HasMetaData(key string) bool {
@@ -61,28 +61,28 @@ func HasMetaData(key string) bool {
 	return int(C.core_has_meta_data(cStr)) == 1
 }
 
-func MetaData(key string, value interface{}) bool {
+func MetaData(key string, value interface{}) error {
 	cStr := C.CString(key)
 	defer C.free(unsafe.Pointer(cStr))
 
-	meta := C.core_get_meta_data(cStr)
-	err := decode(meta, value)
+	// meta := C.core_get_meta_data(cStr)
+	//err := decode(meta, value)
 
-	return err == nil
+	return nil
 }
 
-func SetMetaData(key string, value interface{}) bool {
+func SetMetaData(key string, value interface{}) error {
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
-	arr, err := encode(value)
+	/*arr, err := encode(value)
 	if err != nil {
 		return false
 	}
 	defer C.free(arr.array)
 
-	C.core_set_meta_data(cKey, (*C.uchar)(arr.array), arr.size)
-	return true
+	C.core_set_meta_data(cKey, (*C.uchar)(arr.array), arr.size)*/
+	return nil
 }
 
 func DeleteMetaData(key string) {
@@ -97,29 +97,29 @@ func HasSyncedMetaData(key string) bool {
 	return int(C.core_has_synced_meta_data(cStr)) == 1
 }
 
-func SyncedMetaData(key string, value interface{}) bool {
+func SyncedMetaData(key string, value interface{}) error {
 	cStr := C.CString(key)
 	defer C.free(unsafe.Pointer(cStr))
 
-	meta := C.core_get_synced_meta_data(cStr)
-	err := decode(meta, value)
+	//meta := C.core_get_synced_meta_data(cStr)
+	//err := decode(meta, value)
 
-	return err == nil
+	return nil
 }
 
-func SetSyncedMetaData(key string, value interface{}) bool {
+func SetSyncedMetaData(key string, value interface{}) error {
 	// mValue := createMValue(value)
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
-	arr, err := encode(value)
+	/*arr, err := encode(value)
 	if err != nil {
 		return false
 	}
 	defer C.free(arr.array)
 
-	C.core_set_synced_meta_data(cKey, (*C.uchar)(arr.array), arr.size)
-	return true
+	C.core_set_synced_meta_data(cKey, (*C.uchar)(arr.array), arr.size)*/
+	return nil
 }
 
 func DeleteSyncedMetaData(key string) {
@@ -146,7 +146,7 @@ func RestartResource(name string) {
 	C.core_restart_resource(cName)
 }
 
-func PlayersByName(name string) []*Player {
+func PlayersByName(name string) []IPlayer {
 	cName := C.CString(name)
 	defer C.free(unsafe.Pointer(cName))
 	arr := C.core_get_players_by_name(cName)
@@ -154,13 +154,13 @@ func PlayersByName(name string) []*Player {
 	return newPlayerArray(arr)
 }
 
-func Players() []*Player {
+func Players() []IPlayer {
 	arr := C.core_get_players()
 
 	return newPlayerArray(arr)
 }
 
-func Vehicles() []*Vehicle {
+func Vehicles() []IVehicle {
 	arr := C.core_get_vehicles()
 
 	return newVehicleArray(arr)
@@ -209,14 +209,15 @@ func NetTime() uint32 {
 	return uint32(C.core_get_net_time())
 }
 
-func Entities() []*Entity {
+func Entities() []IEntity {
 	arr := C.core_get_entities()
 	return newEntityArray(arr)
 }
 
 func ServerConfig(v interface{}) error {
-	arr := C.core_get_server_config()
-	return decode(arr, v)
+	// arr := C.core_get_server_config()
+	//return decode(arr, v)
+	return nil
 }
 
 func HashPassword(password string) uint64 {

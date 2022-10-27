@@ -18,8 +18,6 @@ package alt
 import "C"
 import (
 	"fmt"
-	"unsafe"
-
 	"github.com/timo972/altv-go/internal/module"
 )
 
@@ -27,35 +25,28 @@ type ColShape struct {
 	WorldObject
 }
 
-func newColShape(c unsafe.Pointer) *ColShape {
-	colShape := &ColShape{}
-	colShape.ptr = c
-	colShape.Type() = ColshapeObject
-	return colShape
-}
-
-func CreateColShapeCircle(x float32, y float32, z float32, radius float32) *ColShape {
+func CreateColShapeCircle(x float32, y float32, z float32, radius float32) IColShape {
 	ptr := C.core_create_col_shape_circle(C.float(x), C.float(y), C.float(z), C.float(radius))
-	return newColShape(ptr)
+	return getColShape(ptr)
 }
-func CreateColShapeCube(x1 float32, y1 float32, z1 float32, x2 float32, y2 float32, z2 float32) *ColShape {
+func CreateColShapeCube(x1 float32, y1 float32, z1 float32, x2 float32, y2 float32, z2 float32) IColShape {
 	ptr := C.core_create_col_shape_cube(C.float(x1), C.float(y1), C.float(z1), C.float(x2), C.float(y2), C.float(z2))
-	return newColShape(ptr)
+	return getColShape(ptr)
 }
-func CreateColShapeCylinder(x float32, y float32, z float32, radius float32, height float32) *ColShape {
+func CreateColShapeCylinder(x float32, y float32, z float32, radius float32, height float32) IColShape {
 	ptr := C.core_create_col_shape_cylinder(C.float(x), C.float(y), C.float(z), C.float(radius), C.float(height))
-	return newColShape(ptr)
+	return getColShape(ptr)
 }
-func CreateColShapeRectangle(x1 float32, y1 float32, x2 float32, y2 float32, z float32) *ColShape {
+func CreateColShapeRectangle(x1 float32, y1 float32, x2 float32, y2 float32, z float32) IColShape {
 	ptr := C.core_create_col_shape_rectangle(C.float(x1), C.float(y1), C.float(x2), C.float(y2), C.float(z))
-	return newColShape(ptr)
+	return getColShape(ptr)
 }
-func CreateColShapeSphere(x float32, y float32, z float32, radius float32) *ColShape {
+func CreateColShapeSphere(x float32, y float32, z float32, radius float32) IColShape {
 	ptr := C.core_create_col_shape_sphere(C.float(x), C.float(y), C.float(z), C.float(radius))
-	return newColShape(ptr)
+	return getColShape(ptr)
 }
 
-func CreateColShapePolygon(minZ float32, maxZ float32, points []Vector2) *ColShape {
+func CreateColShapePolygon(minZ float32, maxZ float32, points []Vector2) IColShape {
 	size := len(points)
 	cPoints := C.malloc(C.size_t(size) * C.size_t(C.sizeof_Vector2))
 	v2Array := (*[1 << 30]C.struct_vector2)(cPoints)
@@ -73,7 +64,7 @@ func CreateColShapePolygon(minZ float32, maxZ float32, points []Vector2) *ColSha
 		array: cPoints,
 	})
 
-	return newColShape(ptr)
+	return getColShape(ptr)
 }
 
 func (c ColShape) String() string {

@@ -57,14 +57,14 @@ type IResource interface {
 	Name() string
 	Main() string
 	Exports(out interface{}) error
-	ExportsInterface() (interface{}, error)
+	// ExportsInterface() (interface{}, error)
 	Dependencies() []string
 	Dependants() []string
 	RequiredPermissions() []Permission
 	OptionalPermissions() []Permission
 	Path() string
 	Config(out interface{}) error
-	ConfigInterface() (interface{}, error)
+	// ConfigInterface() (interface{}, error)
 }
 
 var CurrentResource IResource
@@ -162,16 +162,17 @@ func (r publicResource) Main() string {
 }
 
 func (r publicResource) Exports(out interface{}) error {
-	data := C.resource_get_exports(r.ptr)
+	//data := C.resource_get_exports(r.ptr)
 
-	return decode(data, out)
+	//return decode(data, out)
+	return nil
 }
 
-func (r publicResource) ExportsInterface() (interface{}, error) {
-	data := C.resource_get_exports(r.ptr)
+/*func (r publicResource) ExportsInterface() (interface{}, error) {
+	//data := C.resource_get_exports(r.ptr)
 
-	return decodeReflect(data)
-}
+	//return decodeReflect(data)
+}*/
 
 func (r publicResource) Dependencies() []string {
 	cDeps := C.resource_get_dependencies(r.ptr)
@@ -204,11 +205,12 @@ func (r localResource) Path() string {
 }
 
 func (r publicResource) Config(out interface{}) error {
-	data := C.resource_get_config(r.ptr)
-	return decode(data, out)
+	//data := C.resource_get_config(r.ptr)
+	//return decode(data, out)
+	return nil
 }
 
-func (r publicResource) ConfigInterface() (interface{}, error) {
+/*func (r publicResource) ConfigInterface() (interface{}, error) {
 	data := C.resource_get_config(r.ptr)
 	return decodeReflect(data)
-}
+}*/

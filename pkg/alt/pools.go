@@ -37,13 +37,9 @@ func (p *pool[T, TF]) Has(ptr unsafe.Pointer) bool {
 	return ok
 }
 
-func (p *pool[T, TF]) Get(ptr unsafe.Pointer) T {
-	e, ok := p.entities[ptr]
-	if !ok {
-		return nil
-	}
-
-	return e
+func (p *pool[T, TF]) Get(ptr unsafe.Pointer) (T, bool) {
+	t, ok := p.entities[ptr]
+	return t, ok
 }
 
 type playerPool struct {
@@ -71,8 +67,8 @@ type blipPool struct {
 }
 
 func (p *playerPool) GetOrCreate(ptr unsafe.Pointer, id uint16) IPlayer {
-	if p.Has(ptr) {
-		return p.Get(ptr)
+	if pl, ok := p.Get(ptr); ok {
+		return pl
 	}
 
 	e := Factories.player(ptr, id)
@@ -82,8 +78,8 @@ func (p *playerPool) GetOrCreate(ptr unsafe.Pointer, id uint16) IPlayer {
 }
 
 func (v *vehiclePool) GetOrCreate(ptr unsafe.Pointer, id uint16, model uint32) IVehicle {
-	if v.Has(ptr) {
-		return v.Get(ptr)
+	if ve, ok := v.Get(ptr); ok {
+		return ve
 	}
 
 	e := Factories.vehicle(ptr, id, model)
@@ -93,8 +89,8 @@ func (v *vehiclePool) GetOrCreate(ptr unsafe.Pointer, id uint16, model uint32) I
 }
 
 func (c *colShapePool) GetOrCreate(ptr unsafe.Pointer) IColShape {
-	if c.Has(ptr) {
-		return c.Get(ptr)
+	if cs, ok := c.Get(ptr); ok {
+		return cs
 	}
 
 	e := Factories.colShape(ptr)
@@ -104,8 +100,8 @@ func (c *colShapePool) GetOrCreate(ptr unsafe.Pointer) IColShape {
 }
 
 func (c *checkpointPool) GetOrCreate(ptr unsafe.Pointer) ICheckpoint {
-	if c.Has(ptr) {
-		return c.Get(ptr)
+	if cp, ok := c.Get(ptr); ok {
+		return cp
 	}
 
 	e := Factories.checkpoint(ptr)
@@ -115,8 +111,8 @@ func (c *checkpointPool) GetOrCreate(ptr unsafe.Pointer) ICheckpoint {
 }
 
 func (v *voiceChannelPool) GetOrCreate(ptr unsafe.Pointer) IVoiceChannel {
-	if v.Has(ptr) {
-		return v.Get(ptr)
+	if vc, ok := v.Get(ptr); ok {
+		return vc
 	}
 
 	e := Factories.voiceChannel(ptr)
@@ -126,8 +122,8 @@ func (v *voiceChannelPool) GetOrCreate(ptr unsafe.Pointer) IVoiceChannel {
 }
 
 func (b *blipPool) GetOrCreate(ptr unsafe.Pointer) IBlip {
-	if b.Has(ptr) {
-		return b.Get(ptr)
+	if bl, ok := b.Get(ptr); ok {
+		return bl
 	}
 
 	e := Factories.blip(ptr)

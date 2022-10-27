@@ -27,19 +27,11 @@ type Player struct {
 	Entity
 }
 
-func newPlayer(p unsafe.Pointer) *Player {
-	player := &Player{}
-	player.ptr = p
-	player.typ = PlayerObject
-
-	return player
-}
-
-func newPlayerArray(arr C.struct_array) []*Player {
-	values, size := convertArray[unsafe.Pointer](arr)
+func newPlayerArray(arr C.struct_array) []IPlayer {
+	values, size := convertArray[C.struct_entity](arr)
 	//defer C.free(unsafe.Pointer(arr.array))
 
-	players := make([]*Player, size)
+	players := make([]IPlayer, size)
 
 	if size == 0 {
 		return players
@@ -47,7 +39,7 @@ func newPlayerArray(arr C.struct_array) []*Player {
 
 	for i := 0; i < size; i++ {
 		p := values[i]
-		players[i] = newPlayer(p)
+		players[i] = getPlayer(p)
 	}
 
 	return players
@@ -155,21 +147,17 @@ func (p Player) IsInVehicle() bool {
 	return int(C.player_is_in_vehicle(p.ptr)) == 1
 }
 
-func (p Player) Vehicle() *Vehicle {
-	cPtr := C.player_get_vehicle(p.ptr)
-	if cPtr == nil {
-		return nil
-	}
-	veh := newVehicle(unsafe.Pointer(cPtr))
-	return veh
+func (p Player) Vehicle() IVehicle {
+	v := C.player_get_vehicle(p.ptr)
+	return getVehicle(v)
 }
 
 func (p Player) Seat() uint8 {
 	return uint8(C.player_get_seat(p.ptr))
 }
 
-func (p Player) EntityAimingAt() *Entity {
-	return newEntity(C.player_get_entity_aiming_at(p.ptr))
+func (p Player) EntityAimingAt() IEntity {
+	return getEntity(C.player_get_entity_aiming_at(p.ptr))
 }
 
 func (p Player) EntityAimOffset() Vector3 {
@@ -315,7 +303,7 @@ func (p Player) MaxArmour() uint16 {
 	return uint16(C.player_get_max_armour(p.ptr))
 }
 
-func (p *Player) Emit(eventName string, args ...interface{}) {
+func (p Player) Emit(eventName string, args ...interface{}) {
 	EmitClient(p, eventName, args...)
 }
 
@@ -433,8 +421,8 @@ func (p Player) HasLocalMetaData(key string) bool {
 	return int(C.player_has_local_meta_data(p.ptr, cKey)) == 1
 }
 
-func (p Player) SetLocalMetaData(key string, value interface{}) bool {
-	cKey := C.CString(key)
+func (p Player) SetLocalMetaData(key string, value interface{}) error {
+	/*cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
 	arr, err := encode(value)
@@ -445,19 +433,19 @@ func (p Player) SetLocalMetaData(key string, value interface{}) bool {
 
 	bytes := (*C.uchar)(arr.array)
 
-	C.player_set_local_meta_data(p.ptr, cKey, bytes, arr.size)
+	C.player_set_local_meta_data(p.ptr, cKey, bytes, arr.size)*/
 
-	return true
+	return nil
 }
 
-func (p Player) LocalMetaData(key string, value interface{}) bool {
-	cKey := C.CString(key)
+func (p Player) LocalMetaData(key string, value interface{}) error {
+	/*cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
 
 	cMeta := C.player_get_local_meta_data(p.ptr, cKey)
-	err := decode(cMeta, value)
+	err := decode(cMeta, value)*/
 
-	return err == nil
+	return nil
 }
 
 func (p Player) DeleteLocalMetaData(key string) {
