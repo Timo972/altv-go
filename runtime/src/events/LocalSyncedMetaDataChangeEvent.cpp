@@ -25,8 +25,5 @@ void Go::LocalSyncedMetaDataChangeEvent::Call(const alt::CEvent *ev) {
 
     call(player, key, oldValue, newValue);
 
-#ifdef _WIN32
-    delete[] newValue.array;
-    delete[] oldValue.array;
-#endif
+    // TODO: free GoValues
 }

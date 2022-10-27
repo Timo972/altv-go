@@ -20,7 +20,5 @@ void Go::ServerScriptEvent::Call(const alt::CEvent *ev) {
 
     call(name, data);
 
-#ifdef _WIN32
-    delete[] data.array;
-#endif
+    // TODO: free GoValueArgs
 }

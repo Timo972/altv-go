@@ -21,7 +21,5 @@ void Go::ClientScriptEvent::Call(const alt::CEvent *ev) {
 
     call(player, name, data);
 
-#ifdef _WIN32
-    delete[] data.array;
-#endif
+    // TODO: free GoValueArgs
 }

@@ -13,9 +13,7 @@ alt::MValue Go::Function::Call(alt::MValueArgs args) const {
 
     GoValue res = call(id, data);
 
-#ifdef _WIN32
-    delete[] data.array;
-#endif
+    // TODO: free GoValueArgs
 
     return Go::Runtime::GoToMValue(res);
 }
