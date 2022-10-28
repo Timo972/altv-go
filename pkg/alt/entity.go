@@ -25,12 +25,21 @@ import (
 
 type Entity struct {
 	WorldObject
-	ID uint16
+	id uint16
 }
 
 type IEntity interface {
 	World
 	AltEntity()
+	Model() uint32
+	IsPlayer() bool
+	IsVehicle() bool
+	Detach()
+	AttachToEntity(entity IEntity, otherBoneIndex int16, myBoneIndex int16, position Vector3, rotation Vector3, collision bool, noFixedRotation bool)
+	SetVisible(toggle bool)
+	Visible() bool
+	NetworkOwner() IPlayer
+	ID() uint16
 }
 
 func newEntityArray(arr C.struct_array) []IEntity {
@@ -76,11 +85,11 @@ func (e Entity) IsVehicle() bool {
 	return e.Type() == VehicleObject
 }
 
-func (e Entity) AsPlayer() IPlayer {
+/*func (e Entity) AsPlayer() IPlayer {
 	if e.Type() != PlayerObject {
 		return nil
 	}
-	
+
 	return e
 }
 
@@ -90,7 +99,7 @@ func (e Entity) AsVehicle() IVehicle {
 	}
 
 	return e
-}
+}*/
 
 func (e Entity) Model() uint32 {
 	if e.Type() == PlayerObject {
@@ -134,14 +143,15 @@ func (e Entity) Visible() bool {
 	return false
 }
 
-/*func (e Entity) ID() uint16 {
-	if e.Type() == PlayerObject {
+func (e Entity) ID() uint16 {
+	return e.id
+	/*if e.Type() == PlayerObject {
 		return uint16(C.player_get_i_d(e.ptr))
 	} else if e.Type() == VehicleObject {
 		return uint16(C.vehicle_get_i_d(e.ptr))
 	}
-	return 0
-}*/
+	return 0*/
+}
 
 func (e Entity) NetworkOwner() IPlayer {
 	var cPtr C.struct_entity

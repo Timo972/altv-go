@@ -4,6 +4,9 @@ import "unsafe"
 
 type IPlayer interface {
 	IEntity
+	Name() string
+	SetModel(model uint32)
+	Spawn(pos Vector3, delay uint32)
 }
 
 type IVehicle interface {
@@ -57,10 +60,18 @@ type MyPlayer struct {
 	loggedIn bool
 }
 
-func myPlayerFactory(ptr unsafe.Pointer, id uint16) IPlayer {
-	p := MyPlayer{}
+func NewPlayer(ptr unsafe.Pointer, id uint16) Player {
+	p := Player{}
 	p.ptr = ptr
-	p.ID = id
+	p.id = id
+
+	return p
+}
+
+func myPlayerFactory(ptr unsafe.Pointer, id uint16) IPlayer {
+	p := MyPlayer{
+		Player: NewPlayer(ptr, id),
+	}
 	p.loggedIn = false
 	return p
 }
