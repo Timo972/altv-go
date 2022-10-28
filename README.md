@@ -89,3 +89,37 @@ go build -o my-resource.so -buildmode=c-shared
 
 ## Help
 If you need help to get started, have a look at the [docs](https://altv-go.tbeck.dev) or contact me on Discord: `Timo9#4468` 
+
+## Internal
+Old CGO
+/*
+#cgo windows CFLAGS: -I../../c-api/lib
+#cgo windows LDFLAGS: -L../../c-api/lib/win32 -lcapi
+
+#cgo linux CFLAGS: -I../../c-api/lib
+#cgo linux LDFLAGS: -g -L../../c-api/lib/linux -lcapi -ldl
+
+#ifndef GOLANG_APP
+#define GOLANG_APP
+
+#include <stdlib.h>
+#include "capi.h"
+
+#endif
+*/
+
+SAMPGO CGO
+/*
+#cgo windows CFLAGS: -I../../lib
+#cgo windows LDFLAGS: -Wl,--subsystem,windows,--kill-at
+
+#cgo linux CFLAGS: -I../../lib
+#cgo linux LDFLAGS: -g -ldl
+
+#ifndef GOLANG_APP
+#define GOLANG_APP
+
+#include "capi.h"
+
+#endif
+*/

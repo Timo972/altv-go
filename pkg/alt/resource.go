@@ -5,7 +5,7 @@ package alt
 #cgo windows LDFLAGS: -L../../c-api/lib/win32 -lcapi
 
 #cgo linux CFLAGS: -I../../c-api/lib
-#cgo linux LDFLAGS: -g -L../../c-api/lib/linux -lcapi  -ldl
+#cgo linux LDFLAGS: -g -L../../c-api/lib/linux -lcapi -ldl
 
 #ifndef GOLANG_APP
 #define GOLANG_APP
@@ -70,7 +70,7 @@ type IResource interface {
 var CurrentResource IResource
 
 //export initGoResource
-func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, version *C.char) {
+func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, version *C.char) C.int {
 	CurrentResource = &localResource{
 		name: C.GoString(name),
 		path: C.GoString(path),
@@ -81,7 +81,7 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, version *C.c
 
 	v := C.GoString(version)
 
-	cstr := C.CString("go-module")
+	cstr := C.CString("libgo-module")
 	defer C.free(unsafe.Pointer(cstr))
 
 	log.SetFlags(log.Ltime)
@@ -102,10 +102,13 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, version *C.c
 		log.Fatalf("Version mismatch: %s != %s", v, info.Main.Version)
 	}
 
-	moduleLoaded := int(C.load_module(cstr))
-	if moduleLoaded == 0 {
+	status := C.load_module(cstr)
+	if int(status) == 0 {
 		log.Fatal("Couldn't locate go-module library.")
+		// fmt.Println("[ERROR] couldn't locate go-module library")
 	}
+
+	return status
 }
 
 func ResourceByName(name string) IResource {
