@@ -1,3 +1,8 @@
 .idea
 .vscode
 build
+test/altv-server
+test/resources/test/resource.so
+test/modules/*
+test/data/*
+test/server.log

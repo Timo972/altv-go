@@ -1,0 +1,2 @@
+modules = [ 'go-module' ]
+resources = [ 'test' ]
