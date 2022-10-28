@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ./c-api
+cd ./internal/c-api
 
 if [ ! -d build ]; then
     mkdir build

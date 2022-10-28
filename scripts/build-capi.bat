@@ -1,6 +1,6 @@
 @echo off
 
-cd..\c-api
+cd.\internal\c-api
 
 IF NOT EXIST build\ (
     mkdir build

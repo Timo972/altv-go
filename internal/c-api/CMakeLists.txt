@@ -13,7 +13,7 @@ MESSAGE(STATUS "Compiling altv-go-capi:" ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 
 # Generate c-api header & source files
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/out/capi.h ${CMAKE_CURRENT_BINARY_DIR}/out/capi.c
-    COMMAND node ../../runtime/tools/pkg-capi.js
+    COMMAND node ../../../runtime/tools/pkg-capi.js
 )
 # Copy header to lib directory
 # FIXME:
