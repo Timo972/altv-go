@@ -1,19 +1,8 @@
 package alt
 
 /*
-#cgo windows CFLAGS: -I../../c-api/lib
-#cgo windows LDFLAGS: -L../../c-api/lib/win32 -lcapi
-
-#cgo linux CFLAGS: -I../../c-api/lib
-#cgo linux LDFLAGS: -g -L../../c-api/lib/linux -lcapi -ldl
-
-#ifndef GOLANG_APP
-#define GOLANG_APP
-
 #include <stdlib.h>
 #include "capi.h"
-
-#endif
 */
 import "C"
 import (
@@ -81,14 +70,15 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, version *C.c
 
 	v := C.GoString(version)
 
-	cstr := C.CString("libgo-module")
+	lib := "go-module"
+	cstr := C.CString(lib)
 	defer C.free(unsafe.Pointer(cstr))
 
 	log.SetFlags(log.Ltime)
 
 	info, ok := runtime.ReadBuildInfo()
 	if !ok {
-		log.Fatal("Couldn't read build info")
+		log.Fatal("couldn't read build info")
 	}
 
 	switch {
@@ -97,16 +87,18 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, version *C.c
 	case info.Main.Version == "(devel)":
 		fmt.Printf("Using module version: %s together with pkg debug version\n", v)
 	case v == info.Main.Version:
-		fmt.Printf("Using version: %s\n", info.Main.Version)
+		//fmt.Printf("Using version: %s\n", info.Main.Version)
 	default:
-		log.Fatalf("Version mismatch: %s != %s", v, info.Main.Version)
+		log.Fatalf("Go Version mismatch: %s != %s", v, info.Main.Version)
 	}
 
 	status := C.load_module(cstr)
 	if int(status) == 0 {
-		log.Fatal("Couldn't locate go-module library.")
+		log.Fatalf("couldn't locate %s library", lib)
 		// fmt.Println("[ERROR] couldn't locate go-module library")
 	}
+
+	print("C.load_module(str) =", int(status))
 
 	return status
 }

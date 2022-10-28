@@ -1,11 +1,11 @@
 package alt
 
 /*
-#cgo windows CFLAGS: -I../../c-api/lib
-#cgo windows LDFLAGS: -L../../c-api/lib/win32 -lcapi
+#cgo windows CFLAGS: -I../../lib
+#cgo windows LDFLAGS: -Wl,--subsystem,windows,--kill-at
 
-#cgo linux CFLAGS: -I../../c-api/lib
-#cgo linux LDFLAGS: -g -L../../c-api/lib/linux -lcapi  -ldl
+#cgo linux CFLAGS: -I../../lib
+
 
 #ifndef GOLANG_APP
 #define GOLANG_APP

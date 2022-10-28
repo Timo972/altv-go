@@ -1,5 +1,6 @@
 
 #include "capi.h"
+#include <stdio.h>
 
 Module module;
 
@@ -3595,7 +3596,11 @@ Array voice_channel_get_players(void *v)
 
 int load_module(const char *path)
 {
+    printf("Hello World!\n");
+    printf("attempting to load lib: %s\n", path);
     module = LOAD_LIB(path);
+
+    printf("module not found: %d\n", module == NULL);
 
     if (module == NULL)
     {
