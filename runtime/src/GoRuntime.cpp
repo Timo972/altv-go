@@ -402,7 +402,12 @@ void Go::Runtime::MValueToGo(alt::MValue mValue, GoValue *value) {
     case alt::IMValue::Type::DICT: {
         auto mValueDict = mValue.As<alt::IMValueDict>();
         value->size = mValueDict->GetSize();
-
+#ifdef _WIN32
+        value->list = new GoValue[value->size];
+#else
+        GoValue list[value->size];
+        value->list = list;
+#endif
         uint64_t i = 0;
         for (auto it = mValueDict->Begin(); it; it = mValueDict->Next()) {
             auto key = it->GetKey();
@@ -419,7 +424,12 @@ void Go::Runtime::MValueToGo(alt::MValue mValue, GoValue *value) {
 
         alt::Size size = mValueList->GetSize();
         value->size = size;
-        // FIXME: create c array
+#ifdef _WIN32
+        value->list = new GoValue[size];
+#else
+        GoValue list[size];
+        value->list = list;
+#endif
         for (alt::Size i = 0; i < size; i++) {
             value->list[i] = GoValue{};
             MValueToGo(mValueList->Get(i), &value->list[i]);
@@ -514,8 +524,12 @@ void Go::Runtime::MValueToGo(alt::MValueConst mValue, GoValue *value) {
     case alt::IMValue::Type::DICT: {
         auto mValueDict = mValue.As<const alt::IMValueDict>();
         value->size = mValueDict->GetSize();
-
-        // FIXME:
+#ifdef _WIN32
+        value->list = new GoValue[value->size];
+#else
+        GoValue list[value->size];
+        value->list = list;
+#endif
         uint64_t i = 0;
         for (auto it = mValueDict->Begin(); it; it = mValueDict->Next()) {
             auto key = it->GetKey();
@@ -531,7 +545,12 @@ void Go::Runtime::MValueToGo(alt::MValueConst mValue, GoValue *value) {
         auto mValueList = mValue.As<const alt::IMValueList>();
         alt::Size size = mValueList->GetSize();
         value->size = size;
-        // FIXME: create c array
+#ifdef _WIN32
+        value->list = new GoValue[size];
+#else
+        GoValue list[size];
+        value->list = list;
+#endif
         for (alt::Size i = 0; i < size; i++) {
             value->list[i] = GoValue{};
             MValueToGo(mValueList->Get(i), &value->list[i]);
