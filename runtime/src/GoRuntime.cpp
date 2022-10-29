@@ -280,17 +280,7 @@ alt::MValue Go::Runtime::GoToMValue(GoValue value) {
         return alt::ICore::Instance().CreateMValueString(std::string(value.stringValue, value.size));
     } else if (typ == alt::IMValue::Type::BASE_OBJECT) {
         return alt::ICore::Instance().CreateMValueBaseObject(GetBaseObjectRef(value.entityValue));
-        /*const auto &baseObject = mValue.baseobjectvalue();
-        Entity e;
-        e.Type = baseObject.type();
-        sscanf(baseObject.ptr().c_str(), "%p", &e.Ptr);
-
-        auto altBaseObject = GetBaseObjectRef(e);
-        return alt::ICore::Instance().CreateMValueBaseObject(altBaseObject);**/
     } else if (typ == alt::IMValue::Type::BYTE_ARRAY) {
-        // auto bytes = mValue.bytesvalue();
-        // return alt::ICore::Instance().CreateMValueByteArray(reinterpret_cast<const uint8_t *>(bytes.data()), bytes.size());
-
         return alt::ICore::Instance().CreateMValueByteArray(value.bytes, value.size);
     } else if (typ == alt::IMValue::Type::RGBA) {
         return alt::ICore::Instance().CreateMValueRGBA(alt::RGBA(value.rgbaValue.r, value.rgbaValue.g, value.rgbaValue.b, value.rgbaValue.a));
@@ -315,30 +305,16 @@ alt::MValue Go::Runtime::GoToMValue(GoValue value) {
         return alt::ICore::Instance().CreateMValueFunction(goFunc);
     } else if (typ == alt::IMValue::Type::DICT) {
         auto dict = alt::ICore::Instance().CreateMValueDict();
-        // FIXME:
-        /*
-        for (auto i = 0; i < value.size; i++) {
-            const auto &key = mValue.dict(i);
-            const auto &value = mValue.list(i);
 
-            auto val = ProtoToMValue(value);
-
-            dict->Set(key, val);
-        }*/
+        for (auto i = 0; i < value.size; i++)
+            dict->Set(value.keys[i], GoToMValue(value.list[i]));
 
         return dict;
     } else if (typ == alt::IMValue::Type::LIST) {
         auto list = alt::ICore::Instance().CreateMValueList(value.size);
 
-        // FIXME:
-        /*
-        for (auto i = 0; i < value.size; i++) {
-            const auto &value = mValue.list(i);
-
-            auto val = ProtoToMValue(value);
-
-            list->Set(i, val);
-        }*/
+        for (auto i = 0; i < value.size; i++)
+            list->Set(i, GoToMValue(value.list[i]));
 
         return list;
     } else if (typ == alt::IMValue::Type::NIL) {
@@ -425,16 +401,16 @@ void Go::Runtime::MValueToGo(alt::MValue mValue, GoValue *value) {
     }
     case alt::IMValue::Type::DICT: {
         auto mValueDict = mValue.As<alt::IMValueDict>();
+        value->size = mValueDict->GetSize();
 
-        // FIXME: todo
-        /*for (auto it = mValueDict->Begin(); it; it = mValueDict->Next()) {
-            auto k = it->GetKey();
-            value->add_dict(k.c_str());
-            
-            auto v = it->GetValue();
-            auto lv = value->add_list();
-            MValueToProto(v, lv);
-        }*/
+        uint64_t i = 0;
+        for (auto it = mValueDict->Begin(); it; it = mValueDict->Next()) {
+            auto key = it->GetKey();
+            memcpy(value->keys[i], key.c_str(), key.size());
+            // TODO: check if this works
+            MValueToGo(it->GetValue(), &value->list[i]);
+            i++;
+        }
 
         break;
     }
@@ -445,12 +421,8 @@ void Go::Runtime::MValueToGo(alt::MValue mValue, GoValue *value) {
         value->size = size;
         // FIXME: create c array
         for (alt::Size i = 0; i < size; i++) {
-            // auto lv = value->add_list();
-
-            GoValue v{};
-            value->list[i] = &v;
-
-            MValueToGo(mValueList->Get(i), value->list[i]);
+            value->list[i] = GoValue{};
+            MValueToGo(mValueList->Get(i), &value->list[i]);
         }
 
         break;
@@ -541,29 +513,29 @@ void Go::Runtime::MValueToGo(alt::MValueConst mValue, GoValue *value) {
     }
     case alt::IMValue::Type::DICT: {
         auto mValueDict = mValue.As<const alt::IMValueDict>();
+        value->size = mValueDict->GetSize();
 
         // FIXME:
-        /*for (auto it = mValueDict->Begin(); it; it = mValueDict->Next()) {
-            auto k = it->GetKey();
-            value->add_dict(k.c_str());
-
-            alt::MValueConst v = it->GetValue();
-            MValue::MValue* lv = value->add_list();
-            MValueToProto(v, lv);
-        }*/
+        uint64_t i = 0;
+        for (auto it = mValueDict->Begin(); it; it = mValueDict->Next()) {
+            auto key = it->GetKey();
+            memcpy(value->keys[i], key.c_str(), key.size());
+            // TODO: check if this works
+            MValueToGo(it->GetValue(), &value->list[i]);
+            i++;
+        }
 
         break;
     }
     case alt::IMValue::Type::LIST: {
         auto mValueList = mValue.As<const alt::IMValueList>();
         alt::Size size = mValueList->GetSize();
-
-        // FIXME:
-        /*for (alt::Size i = 0; i < size; i++) {
-            auto mValue = mValueList->Get(i);
-            MValue::MValue* lv = value->add_list();
-            MValueToProto(mValue, lv);
-        }*/
+        value->size = size;
+        // FIXME: create c array
+        for (alt::Size i = 0; i < size; i++) {
+            value->list[i] = GoValue{};
+            MValueToGo(mValueList->Get(i), &value->list[i]);
+        }
         break;
     }
     case alt::IMValue::Type::NIL: {

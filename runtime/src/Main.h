@@ -185,7 +185,7 @@ typedef struct goValue {
     long long intValue;
     double doubleValue;
     char * stringValue;
-    struct goValue **list;
+    struct goValue *list;
     char ** keys;
     unsigned char * bytes;
     unsigned long long size;
