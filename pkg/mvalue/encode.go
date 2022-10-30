@@ -8,6 +8,8 @@ import (
 	"unsafe"
 )
 
+// FIXME: use compile pattern like goccy/go-json to improve conversion time for reoccurring objects & use C.struct_goValue instead of this weird shit
+
 type MValueWriter struct {
 	root    *MValue
 	depth   int

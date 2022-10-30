@@ -1,51 +1,39 @@
 package mvalue
 
-import "unsafe"
+import "C"
+
+type MValueType = uint8
+
+const (
+	None MValueType = iota
+	Nil
+	Bool
+	Int
+	Uint
+	Double
+	String
+	List
+	Dict
+	BaseObject
+	Function
+	Vector3
+	RGBA
+	ByteArray
+	Vector2
+)
 
 type Serializable interface {
 	OnRead(reader *MValueReader)
 	OnWrite(writer *MValueWriter)
 }
 
-type MultiMValue interface {
-	AddValue(v *MValue) error
-}
-
-type MValueDict struct {
-	MValueList
-	Keys []string
-}
-
-func newMValueDict() *MValue {
-	return &MValue{
-		Type: "dict",
-		Dict: &MValueDict{
-			Keys: make([]string, 0),
-			MValueList: MValueList{
-				Values: make([]*MValue, 0),
-			},
-		},
-	}
-}
-
-type MValueList struct {
-	Values []*MValue
-}
-
-func newMValueList() *MValue {
-	return &MValue{
-		Type: "list",
-		List: &MValueList{
-			Values: make([]*MValue, 0),
-		},
-	}
-}
-
 type MValue struct {
-	Type string
-	Val  unsafe.Pointer
+	Type  MValueType
+	Value interface{}
+}
 
-	Dict       *MValueDict
-	List       *MValueList
-	ByteLength int
+func (m *MValue) ToC() C.struct_goValue {
+	return C.struct_goValue{
+		typ: C.uchar(m.Type),
+	}
 }
