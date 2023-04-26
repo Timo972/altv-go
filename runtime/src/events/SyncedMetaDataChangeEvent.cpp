@@ -18,7 +18,7 @@ void Go::SyncedMetaDataChangeEvent::Call(const alt::CEvent *ev)
     auto newValueMeta = event->GetVal();
     auto oldValueMeta = event->GetOldVal();
 
-    Entity e = Go::Runtime::GetEntity(entity);
+    Entity e = Go::Runtime::GetBaseObject(entity);
 
     GoValue newValue{};
     GoValue oldValue{};

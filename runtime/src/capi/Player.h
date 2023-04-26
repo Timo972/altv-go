@@ -86,7 +86,7 @@ EXPORT void Player_SetProps(void *p, unsigned int component, unsigned int drawab
 EXPORT void
 Player_SetDlcProps(void *p, unsigned int component, unsigned int drawable, unsigned int texture, unsigned long dlc);
 EXPORT void Player_ClearProps(void *p, unsigned int component);
-EXPORT int Player_IsEntityInStreamingRange(void *p, Entity entity);
+EXPORT int Player_IsEntityInStreamingRange(void *p, unsigned short entityId);
 EXPORT unsigned int Player_GetMaxHealth(void *p);
 EXPORT unsigned int Player_GetMaxArmour(void *p);
 EXPORT void Player_Detach(void *p);

@@ -17,7 +17,7 @@ EXPORT Entity Core_CreateVehicle(unsigned long model, float posX, float posY, fl
                                 float rotX, float rotY, float rotZ);
 EXPORT Entity
 Core_CreateCheckpoint(unsigned char type, float x, float y, float z, float radius, float height, unsigned char r,
-                      unsigned char g, unsigned char b, unsigned char a);
+                      unsigned char g, unsigned char b, unsigned char a, unsigned long streamingDistance);
 EXPORT Entity Core_CreateVoiceChannel(int spacial, float maxDistance);
 EXPORT const char *Core_GetVersion();
 EXPORT const char *Core_GetBranch();
@@ -26,7 +26,7 @@ EXPORT unsigned long Core_Hash(const char *str);
 EXPORT int Core_FileExists(const char *path);
 EXPORT const char *Core_ReadFile(const char *path);
 EXPORT Entity Core_GetEntityByID(unsigned short id);
-EXPORT Entity Core_GetBaseObjectByID(unsigned int id);
+EXPORT Entity Core_GetBaseObjectByID(unsigned char type, unsigned int id);
 EXPORT Array Core_GetEntities();
 EXPORT Array Core_GetPlayers();
 EXPORT Array Core_GetVehicles();

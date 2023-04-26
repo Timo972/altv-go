@@ -18,7 +18,7 @@ void Go::FireEvent::Call(const alt::CEvent *ev)
     auto fires = event->GetFires();
 
     Array cFireArr;
-    cFireArr.size = fires.GetSize();
+    cFireArr.size = fires.size();
 
 #ifdef _WIN32
     auto args = new FireInfo [cFireArr.size];

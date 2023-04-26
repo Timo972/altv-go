@@ -41,7 +41,6 @@ bool Go::Resource::Start() {
     RegisterEventHandler(Go::EventType::PLAYER_ENTER_VEHICLE, new PlayerEnterVehicleEvent(Module));
     RegisterEventHandler(Go::EventType::PLAYER_LEAVE_VEHICLE, new PlayerLeaveVehicleEvent(Module));
     RegisterEventHandler(Go::EventType::PLAYER_CHANGE_VEHICLE_SEAT, new PlayerChangeVehicleSeatEvent(Module));
-    RegisterEventHandler(Go::EventType::REMOVE_ENTITY_EVENT, new RemoveEntityEvent(Module));
     RegisterEventHandler(Go::EventType::CONSOLE_COMMAND_EVENT, new ConsoleCommandEvent(Module));
     RegisterEventHandler(Go::EventType::WEAPON_DAMAGE_EVENT, new WeaponDamageEvent(Module));
     RegisterEventHandler(Go::EventType::EXPLOSION_EVENT, new ExplosionEvent(Module));
@@ -64,7 +63,6 @@ bool Go::Resource::Start() {
     RegisterEventHandler(Go::EventType::SERVER_SCRIPT_EVENT, new ServerScriptEvent(Module));
     RegisterEventHandler(Go::EventType::CLIENT_SCRIPT_EVENT, new ClientScriptEvent(Module));
     RegisterEventHandler(Go::EventType::VEHICLE_DAMAGE, new VehicleDamageEvent(Module));
-    RegisterEventHandler(Go::EventType::PLAYER_BEFORE_CONNECT, new PlayerBeforeConnectEvent(Module));
     RegisterEventHandler(Go::EventType::CONNECTION_QUEUE_ADD, new ConnectionQueueAddEvent(Module));
     RegisterEventHandler(Go::EventType::CONNECTION_QUEUE_REMOVE, new ConnectionQueueRemoveEvent(Module));
     RegisterEventHandler(Go::EventType::SERVER_STARTED, new ServerStartedEvent(Module));

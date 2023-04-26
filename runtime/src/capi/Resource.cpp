@@ -42,7 +42,7 @@ EXPORT Array Resource_GetDependencies(void* r) {
 	auto resource = reinterpret_cast<alt::IResource*>(r);
 	auto deps = resource->GetDependencies();
 	Array arr;
-	arr.size = deps.GetSize();
+	arr.size = deps.size();
 
 #ifdef _WIN32
 	auto d = new const char* [arr.size];
@@ -64,7 +64,7 @@ EXPORT Array Resource_GetDependants(void* r) {
 
 	auto deps = resource->GetDependants();
 	Array arr;
-	arr.size = deps.GetSize();
+	arr.size = deps.size();
 
 #ifdef _WIN32
 	auto d = new const char* [arr.size];

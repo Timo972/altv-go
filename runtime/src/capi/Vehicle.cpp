@@ -1203,16 +1203,6 @@ EXPORT void Vehicle_SetRocketRefuelSpeed(void *v, float speed) {
     vehicle->SetRocketRefuelSpeed(speed);
 }
 
-EXPORT unsigned int Vehicle_GetBombCount(void *v) {
-    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return vehicle->GetBombCount();
-}
-
-EXPORT void Vehicle_SetBombCount(void *v, unsigned int count) {
-    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    vehicle->SetBombCount(count);
-}
-
 EXPORT unsigned int Vehicle_GetCounterMeasureCount(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
     return vehicle->GetCounterMeasureCount();
@@ -1231,16 +1221,6 @@ EXPORT float Vehicle_GetScriptMaxSpeed(void *v) {
 EXPORT void Vehicle_SetScriptMaxSpeed(void *v, float speed) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
     vehicle->SetScriptMaxSpeed(speed);
-}
-
-EXPORT unsigned char Vehicle_GetWeaponsDisabled(void *v) {
-    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return vehicle->GetWeaponsDisabled();
-}
-
-EXPORT void Vehicle_SetWeaponsDisabled(void *v, unsigned char state) {
-    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    vehicle->SetWeaponsDisabled(state);
 }
 
 EXPORT int Vehicle_GetWeaponCapacity(void *v, unsigned char index) {
@@ -1271,24 +1251,4 @@ EXPORT unsigned char Vehicle_GetHybridExtraState(void *v) {
 EXPORT void Vehicle_SetHybridExtraState(void *v, unsigned char state) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
     vehicle->SetHybridExtraState(state);
-}
-
-EXPORT float Vehicle_GetDamageModifier(void *v) {
-    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return vehicle->GetDamageModifier();
-}
-
-EXPORT void Vehicle_SetDamageModifier(void *v, float damageModifier) {
-    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    vehicle->SetDamageModifier(damageModifier);
-}
-
-EXPORT float Vehicle_GetDamageMultiplier(void *v) {
-    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return vehicle->GetDamageMultiplier();
-}
-
-EXPORT void Vehicle_SetDamageMultiplier(void *v, float damageMultiplier) {
-    auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    vehicle->SetDamageMultiplier(damageMultiplier);
 }

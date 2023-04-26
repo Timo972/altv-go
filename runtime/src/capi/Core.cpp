@@ -31,14 +31,14 @@ EXPORT Entity Core_CreateVehicle(unsigned long model, float posX, float posY, fl
 }
 
 EXPORT Entity Core_CreateCheckpoint(unsigned char type, float x, float y, float z, float radius, float height, unsigned char r,
-                      unsigned char g, unsigned char b, unsigned char a) {
+                      unsigned char g, unsigned char b, unsigned char a, unsigned long streamingDistance) {
     alt::RGBA rgba(r, g, b, a);
     alt::Vector<float, 3, alt::PointLayout> pos;
     pos[0] = x;
     pos[1] = y;
     pos[2] = z;
 
-    auto checkpoint = alt::ICore::Instance().CreateCheckpoint(type, pos, radius, height, rgba);
+    auto checkpoint = alt::ICore::Instance().CreateCheckpoint(type, pos, radius, height, rgba, streamingDistance);
     return Go::Runtime::GetBaseObject(checkpoint);
 }
 
@@ -81,7 +81,7 @@ EXPORT Entity Core_GetEntityByID(unsigned short id) {
 }
 
 EXPORT Entity Core_GetBaseObjectByID(unsigned char type, unsigned int id) {
-    auto baseObject = alt::ICore::Instance().GetBaseObjectByID(static_cast<alt::IBaseObject::Type>(type);, id);
+    auto baseObject = alt::ICore::Instance().GetBaseObjectByID(static_cast<alt::IBaseObject::Type>(type), id);
 
     return Go::Runtime::GetBaseObject(baseObject);
 }
@@ -240,16 +240,16 @@ EXPORT void Core_TriggerClientEvent(void *p, const char *ev, GoValueArgs data) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto args = Go::Runtime::GoToMValueArgs(data);
     // call event
-    alt::ICore::Instance().TriggerClientEvent(alt::Ref<alt::IPlayer>(player), ev, args);
+    alt::ICore::Instance().TriggerClientEvent(player, ev, args);
 }
 
 EXPORT void Core_TriggerClientEventFor(Array clients, const char *ev, GoValueArgs data) {
-    alt::Array<alt::Ref<alt::IPlayer>> players;
+    std::vector<alt::IPlayer*> players;
 
     auto playerRefs = reinterpret_cast<alt::IPlayer**>(clients.array);
 
     for (unsigned long long i = 0; i < clients.size; i++) {
-        players.Push(alt::Ref<alt::IPlayer>(playerRefs[i]));
+        players.push_back(playerRefs[i]);
     }
 
     auto args = Go::Runtime::GoToMValueArgs(data);

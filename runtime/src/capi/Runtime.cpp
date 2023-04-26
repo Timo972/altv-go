@@ -99,9 +99,9 @@ EXPORT GoValue Runtime_GetAltExport(const char *targetResourceName, const char *
     return data;
 }
 
-EXPORT void Connection_Accept(void* handle) {
+EXPORT void Connection_Accept(void* handle, unsigned char sendNames) {
     auto conn = reinterpret_cast<alt::IConnectionInfo*>(handle);
-    conn->Accept();
+    conn->Accept(sendNames);
 }
 
 EXPORT void Connection_Decline(void* handle, const char* reason) {

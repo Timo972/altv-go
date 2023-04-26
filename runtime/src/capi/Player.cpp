@@ -181,7 +181,7 @@ EXPORT int Player_HasWeaponComponent(void *p, unsigned long weapon, unsigned lon
 EXPORT Array Player_GetCurrentWeaponComponents(void *p) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto components = player->GetCurrentWeaponComponents();
-    return Go::Runtime::CreateArray<unsigned int, unsigned int>(components);
+    return Go::Runtime::CreateArray<uint32_t, unsigned int>(components);
 }
 
 EXPORT unsigned int Player_GetWeaponTintIndex(void *p, unsigned long weapon) {
@@ -483,10 +483,9 @@ EXPORT void Player_ClearProps(void *p, unsigned int component) {
     player->ClearProps(component);
 }
 
-EXPORT int Player_IsEntityInStreamingRange(void *p, Entity e) {
+EXPORT int Player_IsEntityInStreamingRange(void *p, unsigned short id) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
-    auto entity = Go::Runtime::GetEntityRef(e);
-    return player->IsEntityInStreamingRange(entity);
+    return player->IsEntityInStreamingRange(id);
 }
 
 EXPORT unsigned int Player_GetMaxHealth(void *p) {
@@ -576,7 +575,7 @@ EXPORT void Player_SetIntoVehicle(void *p, void *v, unsigned char seat) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
 
-    player->SetIntoVehicle(alt::Ref<alt::IVehicle>(vehicle), seat);
+    player->SetIntoVehicle(vehicle, seat);
 }
 
 EXPORT int Player_IsFrozen(void *p) {
@@ -731,7 +730,7 @@ EXPORT Array Player_GetWeapons(void *p) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto weapons = player->GetWeapons();
 
-    auto size = weapons.GetSize();
+    auto size = weapons.size();
 #ifdef _WIN32
     auto cweaps = new Weapon[size];
 #else

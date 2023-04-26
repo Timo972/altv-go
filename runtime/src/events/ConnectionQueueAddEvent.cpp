@@ -15,7 +15,7 @@ void Go::ConnectionQueueAddEvent::Call(const alt::CEvent *ev) {
     auto info = event->GetConnectionInfo();
     auto conn = Go::Runtime::GetConnectionInfo(info);
 
-    int cancel = call(info.Get(), conn);
+    int cancel = call(info, conn);
 
     if (cancel == 0) {
         event->Cancel();

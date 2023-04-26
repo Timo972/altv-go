@@ -22,40 +22,20 @@ namespace Go {
 
         alt::IResource::Impl *GetResource(const std::string &name);
 
-        static Entity GetEntity(alt::Ref<alt::IEntity> entity);
-        static Entity GetBaseObject(alt::Ref<alt::IBaseObject> baseObject);
+        static Entity GetEntity(alt::IEntity* entity);
+        static Entity GetBaseObject(alt::IBaseObject* baseObject);
 
         static alt::IEntity *GetEntityRef(Entity entity);
         static alt::IBaseObject *GetBaseObjectRef(Entity baseObject);
 
-        static ConnectionInfo GetConnectionInfo(alt::Ref<alt::IConnectionInfo> info);
+        static ConnectionInfo GetConnectionInfo(alt::IConnectionInfo* info);
         
         static Array CreateBoneArray(std::vector<alt::BoneInfo> bones);
 
         // const char *SerializeConfig(alt::config::Node rootNode);
 
-        // Array helper stuff
         template<class ClassInstance>
-        static Array CreateEntityArray(alt::Array<alt::Ref<ClassInstance>> objects) {
-            Array arr;
-            arr.size = objects.GetSize();
-
-#ifdef _WIN32
-            auto playerRefs = new Entity[arr.size];
-#else
-            Entity playerRefs[arr.size];
-#endif
-            for (uint64_t i = 0; i < arr.size; i++) {
-                playerRefs[i] = GetBaseObject(objects[i]);
-            }
-
-            arr.array = playerRefs;
-
-            return arr;
-        }
-
-        template<class ClassInstance>
-        static Array CreateEntityArray(std::vector<alt::Ref<ClassInstance>> objects) {
+        static Array CreateEntityArray(std::vector<ClassInstance*> objects) {
             Array arr;
             arr.size = objects.size();
 
@@ -123,34 +103,14 @@ namespace Go {
 #else
             TargetType cset[arr.size];
 #endif
-            for (uint64_t i = 0; i < set.size; i++) {
-                cset[i] = dynamic_cast<TargetType>(set[i]);
+            for (uint64_t i = 0; i < set.size(); i++) {
+                cset[i] = static_cast<TargetType>(set[i]);
             }
 
             arr.array = cset;
 
             return arr;
         }
-
-/*        template<typename Type, typename TargetType>
-        Array CreateArray(std::vector<Type> vec) {
-            Array arr;
-
-            arr.size = vec.size();
-#ifdef _WIN32
-            auto cset = new TargetType[arr.size];
-#else
-            TargetType cset[size];
-#endif
-            for (uint64_t i = 0; i < arr.size; i++) {
-                cset[i] = vec[i];
-                i++;
-            }
-
-            arr.array = cset;
-
-            return arr;
-        }*/
 
         static std::string PointerToString(void* p);
 
