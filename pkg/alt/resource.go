@@ -10,6 +10,8 @@ import (
 	"log"
 	runtime "runtime/debug"
 	"unsafe"
+
+	"github.com/timo972/altv-go/internal/lib"
 )
 
 /*type resource struct {
@@ -70,8 +72,7 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, version *C.c
 
 	v := C.GoString(version)
 
-	lib := "go-module"
-	cstr := C.CString(lib)
+	cstr := C.CString(lib.MODULE_NAME)
 	defer C.free(unsafe.Pointer(cstr))
 
 	log.SetFlags(log.Ltime)
@@ -94,7 +95,7 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, version *C.c
 
 	status := C.load_module(cstr)
 	if int(status) == 0 {
-		log.Fatalf("couldn't locate %s library", lib)
+		log.Fatalf("couldn't locate %s library", lib.MODULE_NAME)
 		// fmt.Println("[ERROR] couldn't locate go-module library")
 	}
 

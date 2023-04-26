@@ -3,20 +3,35 @@ package mvalue
 import "C"
 import (
 	"errors"
-	"github.com/timo972/altv-go/internal/module"
+	"reflect"
 	"runtime"
 	"unsafe"
+
+	"github.com/timo972/altv-go/internal/module"
 )
 
 // FIXME: use compile pattern like goccy/go-json to improve conversion time for reoccurring objects & use C.struct_goValue instead of this weird shit
 
-type MValueWriter struct {
+type Writer interface {
+	BeginObject()
+	EndObject()
+	Name(name string)
+	Value(value any)
+	BeginArray()
+	EndArray()
+}
+
+type Writable interface {
+	ToMValue(writer Writer)
+}
+
+type writer struct {
 	root    *MValue
 	depth   int
 	current []*MValue
 }
 
-func (w *MValueWriter) BeginObject() {
+func (w *writer) BeginObject() {
 	if w.depth < 0 {
 		// root object
 		w.root = newMValueDict()
@@ -30,7 +45,7 @@ func (w *MValueWriter) BeginObject() {
 	w.depth++
 }
 
-func (w *MValueWriter) Name(key string) error {
+func (w *writer) Name(key string) error {
 	// append key at depth & index
 	curr := w.current[len(w.current)-1]
 	if curr == nil {
@@ -45,7 +60,7 @@ func (w *MValueWriter) Name(key string) error {
 	return nil
 }
 
-func (w *MValueWriter) Value(v interface{}) error {
+func (w *writer) Value(v interface{}) error {
 	curr := w.current[len(w.current)-1]
 	if curr == nil {
 		return errors.New("")
@@ -69,7 +84,7 @@ func (w *MValueWriter) Value(v interface{}) error {
 	return nil
 }
 
-func (w *MValueWriter) pushParent() {
+func (w *writer) pushParent() {
 	// get parent
 	parent := w.current[w.depth]
 	if parent == nil {
@@ -85,7 +100,7 @@ func (w *MValueWriter) pushParent() {
 	}
 }
 
-func (w *MValueWriter) EndObject() {
+func (w *writer) EndObject() {
 	// push w.current to parent
 	w.pushParent()
 
@@ -99,7 +114,7 @@ func (w *MValueWriter) EndObject() {
 	}
 }
 
-func (w *MValueWriter) BeginArray() {
+func (w *writer) BeginArray() {
 	if w.depth < 0 {
 		w.root = newMValueList()
 		w.current[0] = w.root
@@ -111,7 +126,7 @@ func (w *MValueWriter) BeginArray() {
 	w.depth++
 }
 
-func (w *MValueWriter) EndArray() {
+func (w *writer) EndArray() {
 	// push w.current to parent
 
 	// end mvalue list
@@ -125,12 +140,12 @@ func (w *MValueWriter) EndArray() {
 	w.EndObject()
 }
 
-func (wr *MValueWriter) Write(mv *MValue) {
+func (wr *writer) Write(mv *MValue) {
 	mv = wr.root
 }
 
-func NewWriter() *MValueWriter {
-	return &MValueWriter{
+func NewWriter() *writer {
+	return &writer{
 		depth:   -1,
 		current: make([]*MValue, 1),
 	}
@@ -138,6 +153,33 @@ func NewWriter() *MValueWriter {
 
 type SerializableValue interface {
 	int | uint | string | float32 | float64 | bool | []byte
+}
+
+func Marshal[Value SerializableValue](value Value) ([]byte, error) {
+	typ := reflect.TypeOf(value)
+	k := typ.Kind()
+
+	switch k {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return nil, nil
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return nil, nil
+	case reflect.String:
+		return nil, nil
+	case reflect.Float32, reflect.Float64:
+		return nil, nil
+	case reflect.Bool:
+		return nil, nil
+	case reflect.Slice:
+		return nil, nil
+	case reflect.Struct:
+		return nil, nil
+	case reflect.Ptr:
+		return nil, nil
+
+	}
+
+	return nil, nil
 }
 
 func NewMValue(v any) (*MValue, error) {
