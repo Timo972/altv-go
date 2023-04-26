@@ -47,15 +47,14 @@ Entity Go::Runtime::GetEntity(alt::Ref <alt::IEntity> entity) {
     if (!entity.IsEmpty()) {
         auto entityType = entity->GetType();
         e.typ = static_cast<unsigned char>(entityType);
+        e.id = entity->GetID();
 
         switch (entityType) {
             case alt::IEntity::Type::PLAYER:
                 e.ptr = entity.As<alt::IPlayer>().Get();
-                e.id = entity->GetID();
                 break;
             case alt::IEntity::Type::VEHICLE:
                 e.ptr = entity.As<alt::IVehicle>().Get();
-                e.id = entity->GetID();
                 e.model = entity.As<alt::IVehicle>()->GetModel();
                 break;
             case alt::IEntity::Type::BLIP:
@@ -69,6 +68,27 @@ Entity Go::Runtime::GetEntity(alt::Ref <alt::IEntity> entity) {
                 break;
             case alt::IEntity::Type::VOICE_CHANNEL:
                 e.ptr = entity.As<alt::IVoiceChannel>().Get();
+                break;
+            case alt::IEntity::Type::PED:
+                e.ptr = entity.As<alt::IPed>().Get();
+                break;
+            case alt::IEntity::Type::MARKER:
+                e.ptr = entity.As<alt::IMarker>().Get();
+                break;
+            case alt::IEntity::Type::VIRTUAL_ENTITY:
+                e.ptr = entity.As<alt::IVirtualEntity>().Get();
+                break;
+            case alt::IEntity::Type::VIRTUAL_ENTITY_GROUP:
+                e.ptr = entity.As<alt::IVirtualEntityGroup>().Get();
+                break;
+            case alt::IEntity::Type::NETWORK_OBJECT:
+                e.ptr = entity.As<alt::INetworkObject>().Get();
+                break;
+            case alt::IEntity::Type::OBJECT:
+                e.ptr = entity.As<alt::IObject>().Get();
+                break;
+            case alt::IEntity::Type::TEXT_LABEL:
+                e.ptr = entity.As<alt::ITextLabel>().Get();
                 break;
             default:
                 e.ptr = nullptr;
@@ -100,15 +120,43 @@ Entity Go::Runtime::GetBaseObject(alt::Ref<alt::IBaseObject> baseObject)  {
                 break;
             case alt::IBaseObject::Type::BLIP:
                 e.ptr = baseObject.As<alt::IBlip>().Get();
+                e.id = baseObject.As<alt::IBlip>()->GetID();
                 break;
             case alt::IBaseObject::Type::CHECKPOINT:
                 e.ptr = baseObject.As<alt::ICheckpoint>().Get();
+                e.id = baseObject.As<alt::ICheckpoint>()->GetID();
                 break;
             case alt::IBaseObject::Type::COLSHAPE:
                 e.ptr = baseObject.As<alt::IColShape>().Get();
+                e.id = baseObject.As<alt::IColShape>()->GetID();
                 break;
             case alt::IBaseObject::Type::VOICE_CHANNEL:
                 e.ptr = baseObject.As<alt::IVoiceChannel>().Get();
+                e.id = baseObject.As<alt::IVoiceChannel>()->GetID();
+                break;
+            case alt::IBaseObject::Type::MARKER:
+                e.ptr = baseObject.As<alt::IMarker>().Get();
+                e.id = baseObject.As<alt::IMarker>()->GetID();
+                break;
+            case alt::IBaseObject::Type::PED:
+                e.ptr = baseObject.As<alt::IPed>().Get();
+                e.id = baseObject.As<alt::IPed>()->GetID();
+                break;
+            case alt::IBaseObject::Type::VIRTUAL_ENTITY:
+                e.ptr = baseObject.As<alt::IVirtualEntity>().Get();
+                e.id = baseObject.As<alt::IVirtualEntity>()->GetID();
+                break;
+            case alt::IBaseObject::Type::VIRTUAL_ENTITY_GROUP:
+                e.ptr = baseObject.As<alt::IVirtualEntityGroup>().Get();
+                e.id = baseObject.As<alt::IVirtualEntityGroup>()->GetID();
+                break;
+            case alt::IBaseObject::Type::NETWORK_OBJECT:
+                e.ptr = baseObject.As<alt::INetworkObject>().Get();
+                e.id = baseObject.As<alt::INetworkObject>()->GetID();
+                break;
+            case alt::IBaseObject::Type::TEXT_LABEL:
+                e.ptr = baseObject.As<alt::ITextLabel>().Get();
+                e.id = baseObject.As<alt::ITextLabel>()->GetID();
                 break;
             default:
                 e.ptr = nullptr;
