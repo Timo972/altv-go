@@ -616,14 +616,12 @@ capi_connection_is_accepted g_call_connection_is_accepted;
 
 int load_module(const char *path)
 {
-    printf("Hello World from C!\n");
-    printf("attempting to load lib: %s\n", path);
+    printf("attempting to load lib: '%s'\n", path);
     module = LOAD_LIB(path);
-
-    printf("module not found: %d\n", module == NULL);
 
     if (module == NULL)
     {
+        printf("module '%s' not found: %s\n", path, dlerror());
         return 0;
     }
 

@@ -6,11 +6,11 @@ import (
 )
 
 type simpleStruct struct {
-	Serializable
+	Writable
 	test bool
 }
 
-func (s *simpleStruct) OnWrite(writer *MValueWriter) {
+func (s *simpleStruct) OnWrite(writer Writer) {
 	writer.BeginObject()
 	writer.Name("test")
 	writer.Value(s.test)
@@ -32,32 +32,32 @@ func TestNewMValue(t *testing.T) {
 	tests := []struct {
 		name     string
 		arg      any
-		wantType string
+		wantType MValueType
 	}{
 		{
 			name:     "int",
 			arg:      -3,
-			wantType: "int",
+			wantType: Int,
 		},
 		{
 			name:     "uint",
 			arg:      uint(3),
-			wantType: "uint",
+			wantType: Uint,
 		},
 		{
 			name:     "string",
 			arg:      "altvrocks",
-			wantType: "string",
+			wantType: String,
 		},
 		{
 			name:     "bool",
 			arg:      true,
-			wantType: "bool",
+			wantType: Bool,
 		},
 		{
 			name:     "double",
 			arg:      float64(3.6),
-			wantType: "double",
+			wantType: Double,
 		},
 		/*{
 			name:     "simple struct",

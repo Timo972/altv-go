@@ -22,9 +22,9 @@ const (
 	Vector2
 )
 
-type Serializable interface {
-	OnRead(reader *MValueReader)
-	OnWrite(writer *MValueWriter)
+type Convertable interface {
+	OnRead(reader *Reader)
+	OnWrite(writer *Writer)
 }
 
 type MValue struct {

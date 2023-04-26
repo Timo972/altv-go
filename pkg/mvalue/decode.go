@@ -2,7 +2,7 @@ package mvalue
 
 import "C"
 
-type MValueReader struct {
+type Reader interface {
 }
 
 func Decode(data C.struct_goValue, out interface{}) error {
