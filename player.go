@@ -1,5 +1,6 @@
 package altv
 
+// #include "capi.h"
 import "C"
 import (
 	"unsafe"
@@ -30,5 +31,5 @@ func NewPlayer(ptr unsafe.Pointer, id uint32) Player {
 }
 
 func PlayerByID(id uint32) (Player, error) {
-	return GetBaseObject[Player](C.core_get_entity_by_i_d(C.uint(id)))
+	return getBaseObject[Player](C.core_get_base_object_by_i_d(C.uchar(BaseTypePlayer), C.uint(id)))
 }

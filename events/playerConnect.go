@@ -1,8 +1,11 @@
 package events
 
+// #include "capi.h"
 import "C"
 import (
 	"fmt"
+	"unsafe"
+
 	"github.com/timo972/altv-go"
 	"golang.org/x/exp/slices"
 )
@@ -21,7 +24,7 @@ func (unsub *unsubscriber) PlayerConnect(id int) error {
 		return ErrInvalidEventID
 	}
 
-	unsub.sub.serverStartedEvents = slices.Delete(unsub.sub.playerConnectEvents, id, 1)
+	unsub.sub.playerConnectEvents = slices.Delete(unsub.sub.playerConnectEvents, id, 1)
 	checkPlayerConnect()
 	return nil
 }
@@ -35,7 +38,7 @@ func checkPlayerConnect() {
 
 //export altPlayerConnectEvent
 func altPlayerConnectEvent(e C.struct_entity) {
-	p, err := altv.GetBaseObject[altv.Player](e)
+	p, err := altv.GetBaseObject[altv.Player](altv.BaseObjectType(e.typ), unsafe.Pointer(e.ptr), uint32(e.id))
 	if err != nil {
 		altv.LogError(fmt.Sprintf("[Go] failed to %v", err))
 		return
