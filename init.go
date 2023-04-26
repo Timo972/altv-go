@@ -76,6 +76,7 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, ver *C.char)
 	return status
 }
 
+// WaitReady waits until the alt:V api is ready to be used.
 func WaitReady() {
 	ready.Wait()
 }

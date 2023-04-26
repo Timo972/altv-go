@@ -20,21 +20,34 @@ type localResource struct {
 }
 
 type Resource interface {
+	// IsStarted returns true if the resource is started.
 	IsStarted() bool
+	// Type returns the resource type. e.g. js, jsv2, cs, go, ...
 	Type() string
+	// Name returns the resource name.
 	Name() string
+	// Main returns the resource main file.
 	Main() string
+	// Exports populates the given struct with the resource exports.
 	Exports(out interface{}) error
+	// Dependencies returns resource names the resource depends on.
 	Dependencies() []string
+	// Dependants returns resource names that depend on this resource.
 	Dependants() []string
+	// RequiredPermissions returns the required permissions the player has to grant for this resource.
 	RequiredPermissions() []Permission
+	// OptionalPermissions returns the optional permissions the player can grant for this resource.
 	OptionalPermissions() []Permission
+	// Path returns the resource path.
 	Path() string
+	// Config populates the given struct with the resource config.
 	Config(out interface{}) error
 }
 
+// CurrentResource is the resource you are scripting in.
 var CurrentResource Resource
 
+// ResourceByName returns a resource by it's name.
 func ResourceByName(name string) Resource {
 	str := C.CString(name)
 	defer C.free(unsafe.Pointer(str))
@@ -46,6 +59,7 @@ func ResourceByName(name string) Resource {
 	}
 }
 
+// AllResources returns all resources.
 func AllResources() []Resource {
 	arr := C.core_get_all_resources()
 	size := int(arr.size)
