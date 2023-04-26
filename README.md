@@ -51,28 +51,44 @@ Do not try to initialize stuff inside as it won't get called.
 package main
 
 import "C"
-import "github.com/timo972/altv-go/api/alt"
+import (
+    "github.com/timo972/altv-go"
+	"github.com/timo972/altv-go/events"
+)
 
 func init() {
-	// You may want to initialize something here
+	// You may want to initialize something here.
+    // However the alt:V api is limited due to the reason 
+    // that the package did not load the go-module's c-api yet!
+    // As of now you can only use the event features here.
+
+    // e.g.
+    events.On.ServerStarted(func () {
+        altv.LogInfo("Server Started")
+    })
 }
 
+// main function is left blank on purpose and must be included before building process
 func main() {
 	// You dont want to initialize something here because this wont work
 }
 
 //export OnStart
 func OnStart() {
-	alt.LogInfo("Resource Started")
+    // Full alt:V api is available. Do whatever you want.
+
+	altv.LogInfo("Resource Started")
 }
 
 //export OnStop
 func OnStop() {
-	alt.LogInfo("Resource Stopped")
+	altv.LogInfo("Resource Stopped")
 }
 ```
 
-## Build
+For more examples take a look at the [altv-go-examples]() repository.
+
+## Building
 
 #### Windows
 
@@ -80,46 +96,11 @@ func OnStop() {
 go build -o my-resource.dll -buildmode=c-shared
 ```
 
-#### Linux (currently broken)
+#### Linux
 
 ```
-export CGO_LDFLAGS="-g -ldl"
 go build -o my-resource.so -buildmode=c-shared
 ```
 
 ## Help
 If you need help to get started, have a look at the [docs](https://altv-go.tbeck.dev) or contact me on Discord: `Timo9#4468` 
-
-## Internal
-Old CGO
-/*
-#cgo windows CFLAGS: -I../../c-api/lib
-#cgo windows LDFLAGS: -L../../c-api/lib/win32 -lcapi
-
-#cgo linux CFLAGS: -I../../c-api/lib
-#cgo linux LDFLAGS: -g -L../../c-api/lib/linux -lcapi -ldl
-
-#ifndef GOLANG_APP
-#define GOLANG_APP
-
-#include <stdlib.h>
-#include "capi.h"
-
-#endif
-*/
-
-SAMPGO CGO
-/*
-#cgo windows CFLAGS: -I../../lib
-#cgo windows LDFLAGS: -Wl,--subsystem,windows,--kill-at
-
-#cgo linux CFLAGS: -I../../lib
-#cgo linux LDFLAGS: -g -ldl
-
-#ifndef GOLANG_APP
-#define GOLANG_APP
-
-#include "capi.h"
-
-#endif
-*/
