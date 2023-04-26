@@ -63,10 +63,10 @@ class Resource : public alt::IResource::Impl, public Go::EventsManager, public G
         ~Resource() override = default;
         bool Start() override;
         bool Stop() override;
-        bool OnEvent(const alt::CEvent *ev) override;
+        void OnEvent(const alt::CEvent *ev) override;
         void OnTick() override;
-        void OnCreateBaseObject(alt::Ref<alt::IBaseObject> handle) override;
-        void OnRemoveBaseObject(alt::Ref<alt::IBaseObject> handle) override;
+        void OnCreateBaseObject(alt::IBaseObject* handle) override;
+        void OnRemoveBaseObject(alt::IBaseObject* handle) override;
 
         inline bool AddEntity(alt::IBaseObject* baseObject)
         {

@@ -30,5 +30,5 @@ func NewPlayer(ptr unsafe.Pointer, id uint32) Player {
 }
 
 func PlayerByID(id uint32) (Player, error) {
-	return GetBaseObject[Player](C.core_get_player_by_i_d(C.uint(id)))
+	return GetBaseObject[Player](C.core_get_entity_by_i_d(C.uint(id)))
 }

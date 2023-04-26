@@ -400,8 +400,9 @@ void Go::Runtime::MValueToGo(alt::MValue mValue, GoValue *value) {
         break;
     }
     case alt::IMValue::Type::BASE_OBJECT: {
-        auto object = mValue.As<alt::IMValueBaseObject>()->Value();
-        value->entityValue = GetBaseObject(object);
+        // TODO:
+        // auto object = mValue.As<alt::IMValueBaseObject>()->Value();
+        // value->entityValue = GetBaseObject(object);
         break;
     }
     case alt::IMValue::Type::BYTE_ARRAY: {
@@ -521,8 +522,9 @@ void Go::Runtime::MValueToGo(alt::MValueConst mValue, GoValue *value) {
         break;
     }
     case alt::IMValue::Type::BASE_OBJECT: {
-        auto object = mValue.As<const alt::IMValueBaseObject>()->Value();
-        value->entityValue = GetBaseObject(object);
+        // TODO:
+        //auto object = mValue.As<const alt::IMValueBaseObject>()->Value();
+        // value->entityValue = GetBaseObject(object);
         break;
     }
     case alt::IMValue::Type::BYTE_ARRAY: {
@@ -615,7 +617,7 @@ void Go::Runtime::MValueToGo(alt::MValueConst mValue, GoValue *value) {
 
 GoValueArgs Go::Runtime::MValueArgsToGo(alt::MValueArgs args) {
     GoValueArgs all;
-    all.size = args.GetSize();
+    all.size = args.size();
 
 #ifdef _WIN32
     auto constArgs = new GoValue[all.size];
@@ -644,7 +646,7 @@ alt::MValueArgs Go::Runtime::GoToMValueArgs(GoValueArgs data) {
     }
 
     for (auto i = 0; i < data.size; i++) {
-        args.Push(GoToMValue( data.args[i]));
+        args.push_back(GoToMValue( data.args[i]));
     }
 
 // crashes

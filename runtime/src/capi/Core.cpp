@@ -80,6 +80,12 @@ EXPORT Entity Core_GetEntityByID(unsigned short id) {
     return Go::Runtime::GetEntity(entity);
 }
 
+EXPORT Entity Core_GetBaseObjectByID(unsigned char type, unsigned int id) {
+    auto baseObject = alt::ICore::Instance().GetBaseObjectByID(static_cast<alt::IBaseObject::Type>(type);, id);
+
+    return Go::Runtime::GetBaseObject(baseObject);
+}
+
 EXPORT Array Core_GetEntities() {
     auto entities = alt::ICore::Instance().GetEntities();
     return Go::Runtime::CreateEntityArray(entities);

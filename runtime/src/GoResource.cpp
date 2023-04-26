@@ -92,23 +92,18 @@ bool Go::Resource::Stop() {
     return true;
 }
 
-bool Go::Resource::OnEvent(const alt::CEvent *ev) {
+void Go::Resource::OnEvent(const alt::CEvent *ev) {
     auto type = ev->GetType();
 
-    //if (!IsEventRegistered(type)) {
-    //    return false;
-    //}
-
     NotifyEvent(ev, _resource->GetName().c_str());
-    return true;
 }
 
 void Go::Resource::OnTick() {}
 
-void Go::Resource::OnCreateBaseObject(alt::Ref<alt::IBaseObject> handle) {
-    this->AddEntity(handle.Get());
+void Go::Resource::OnCreateBaseObject(alt::IBaseObject* handle) {
+    this->AddEntity(handle);
 }
 
-void Go::Resource::OnRemoveBaseObject(alt::Ref<alt::IBaseObject> handle) {
-    this->RemoveEntity(handle.Get());
+void Go::Resource::OnRemoveBaseObject(alt::IBaseObject* handle) {
+    this->RemoveEntity(handle);
 }

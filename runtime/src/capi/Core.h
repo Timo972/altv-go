@@ -26,6 +26,7 @@ EXPORT unsigned long Core_Hash(const char *str);
 EXPORT int Core_FileExists(const char *path);
 EXPORT const char *Core_ReadFile(const char *path);
 EXPORT Entity Core_GetEntityByID(unsigned short id);
+EXPORT Entity Core_GetBaseObjectByID(unsigned int id);
 EXPORT Array Core_GetEntities();
 EXPORT Array Core_GetPlayers();
 EXPORT Array Core_GetVehicles();
