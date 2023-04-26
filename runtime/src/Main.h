@@ -63,7 +63,7 @@ typedef struct neonState {
 typedef struct entity {
     unsigned char typ;
     void *ptr;
-    unsigned short id;
+    unsigned int id;
     unsigned int model;
 } Entity;
 

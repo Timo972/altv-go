@@ -1,0 +1,57 @@
+package events
+
+import "C"
+import (
+	"fmt"
+	"github.com/timo972/altv-go"
+	"golang.org/x/exp/slices"
+)
+
+type playerConnectListener = func(p altv.Player)
+
+func (e *subscriber) PlayerConnect(listener playerConnectListener) int {
+	e.playerConnectEvents = append(e.playerConnectEvents, listener)
+	registerOnEvent(playerConnect)
+
+	return len(e.playerConnectEvents) - 1
+}
+
+func (unsub *unsubscriber) PlayerConnect(id int) error {
+	if id < 0 || id >= len(unsub.sub.playerConnectEvents) {
+		return ErrInvalidEventID
+	}
+
+	unsub.sub.serverStartedEvents = slices.Delete(unsub.sub.playerConnectEvents, id, 1)
+	checkPlayerConnect()
+	return nil
+}
+
+func checkPlayerConnect() {
+	lisCount := len(on.playerConnectEvents) + len(once.playerConnectEvents)
+	if lisCount < 1 {
+		go unregisterOnEvent(playerConnect)
+	}
+}
+
+//export altPlayerConnectEvent
+func altPlayerConnectEvent(e C.struct_entity) {
+	p, err := altv.GetBaseObject[altv.Player](e)
+	if err != nil {
+		altv.LogError(fmt.Sprintf("[Go] failed to %v", err))
+		return
+	}
+
+	for i, event := range once.playerConnectEvents {
+		event(p)
+		once.playerConnectEvents = slices.Delete(once.playerConnectEvents, i, 1)
+	}
+
+	for _, event := range on.playerConnectEvents {
+		event(p)
+	}
+
+	re := len(once.playerConnectEvents) + len(on.playerConnectEvents)
+	if re < 1 {
+		unregisterOnEvent(playerConnect)
+	}
+}

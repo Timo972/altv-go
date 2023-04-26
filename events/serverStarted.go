@@ -13,7 +13,7 @@ func (sub *subscriber) ServerStarted(listener serverStartedListener) int {
 	fmt.Println("subscribing to serverStarted")
 	sub.serverStartedEvents = append(sub.serverStartedEvents, listener)
 	go registerOnEvent(serverStarted)
-	return len(sub.serverStartedEvents)
+	return len(sub.serverStartedEvents) - 1
 }
 
 func (unsub *unsubscriber) ServerStarted(id int) error {
