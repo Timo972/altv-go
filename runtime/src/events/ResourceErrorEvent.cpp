@@ -4,7 +4,7 @@ Go::ResourceErrorEvent::ResourceErrorEvent(ModuleLibrary *module) : IEvent(modul
 
 void Go::ResourceErrorEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altResourceErrorEvent", void (*)(const char* name));
+    static auto call = GET_FUNC(Library, "altResourceErrorEvent", void (*)(char* name));
 
     if (call == nullptr)
     {
@@ -12,10 +12,10 @@ void Go::ResourceErrorEvent::Call(const alt::CEvent *ev)
         return;
     }
 
-    auto event = dynamic_cast<const alt::CResourceErrorEvent *>(ev);
-    auto resource = event->GetResource();
+    auto event = static_cast<const alt::CResourceErrorEvent *>(ev);
 
+    auto resource = event->GetResource();
     auto name = resource->GetName().c_str();
 
-    call(name);
+    call(const_cast<char *>(name));
 }

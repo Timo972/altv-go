@@ -14,7 +14,7 @@ type playerConnectListener = func(p altv.Player)
 
 func (e *subscriber) PlayerConnect(listener playerConnectListener) int {
 	e.playerConnectEvents = append(e.playerConnectEvents, listener)
-	registerOnEvent(playerConnect)
+	go registerOnEvent(playerConnect)
 
 	return len(e.playerConnectEvents) - 1
 }
@@ -55,6 +55,6 @@ func altPlayerConnectEvent(e C.struct_entity) {
 
 	re := len(once.playerConnectEvents) + len(on.playerConnectEvents)
 	if re < 1 {
-		unregisterOnEvent(playerConnect)
+		go unregisterOnEvent(playerConnect)
 	}
 }

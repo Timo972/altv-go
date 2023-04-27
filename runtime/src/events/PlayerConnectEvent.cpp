@@ -13,7 +13,7 @@ void Go::PlayerConnectEvent::Call(const alt::CEvent *ev)
         return;
     }
 
-    auto event = dynamic_cast<const alt::CPlayerConnectEvent *>(ev);
+    auto event = static_cast<const alt::CPlayerConnectEvent *>(ev);
     auto player = Go::Runtime::GetEntity(event->GetTarget());
 
     call(player);
