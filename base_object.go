@@ -35,6 +35,7 @@ const (
 )
 
 type BaseObject interface {
+	ID() uint32
 	Type() BaseObjectType
 	Ptr() unsafe.Pointer
 	Valid() bool
@@ -45,6 +46,10 @@ type baseObject struct {
 	id  uint32
 	ptr unsafe.Pointer
 	typ BaseObjectType
+}
+
+func (b *baseObject) ID() uint32 {
+	return b.id
 }
 
 func (b *baseObject) Type() BaseObjectType {

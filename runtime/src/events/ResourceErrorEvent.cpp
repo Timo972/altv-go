@@ -8,7 +8,7 @@ void Go::ResourceErrorEvent::Call(const alt::CEvent *ev)
 
     if (call == nullptr)
     {
-        alt::ICore::Instance().LogError("Couldn't not call ResourceErrorEvent.");
+        alt::ICore::Instance().LogError("Could not call ResourceErrorEvent.");
         return;
     }
 
