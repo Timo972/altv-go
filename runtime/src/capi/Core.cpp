@@ -235,6 +235,13 @@ EXPORT void Core_TriggerLocalEvent(const char *ev, GoValueArgs data) {
     alt::ICore::Instance().TriggerLocalEvent(ev, args);
 }
 
+EXPORT void Core_TriggerLocalEventRaw(const char* ev, char* bytes, unsigned long long size) {
+    alt::MValueArgs args;
+    auto data = alt::ICore::Instance().CreateMValueByteArray(reinterpret_cast<uint8_t*>(bytes), static_cast<alt::Size>(size));
+    args.push_back(data);
+    alt::ICore::Instance().TriggerLocalEvent(ev, args);
+}
+
 EXPORT void Core_TriggerClientEvent(void *p, const char *ev, GoValueArgs data) {
 
     auto player = reinterpret_cast<alt::IPlayer *>(p);

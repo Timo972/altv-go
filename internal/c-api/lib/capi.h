@@ -533,6 +533,7 @@ typedef Entity (*capi_core_create_col_shape_rectangle)(float x1, float y1, float
 typedef Entity (*capi_core_create_col_shape_circle)(float posX, float posY, float posZ, float radius);
 typedef Entity (*capi_core_create_col_shape_sphere)(float posX, float posY, float posZ, float radius);
 typedef void (*capi_core_trigger_local_event)(const char *ev, GoValueArgs args);
+typedef void (*capi_core_trigger_local_event_raw)(const char* ev, char* bytes, unsigned long long size);
 typedef void (*capi_core_trigger_client_event)(void *p, const char *ev, GoValueArgs args);
 typedef void (*capi_core_trigger_client_event_for)(Array clients, const char *ev, GoValueArgs args);
 typedef void (*capi_core_trigger_client_event_for_all)(const char *ev, GoValueArgs args);
@@ -599,6 +600,7 @@ Entity core_create_col_shape_rectangle(float x1, float y1, float x2, float y2, f
 Entity core_create_col_shape_circle(float posX, float posY, float posZ, float radius);
 Entity core_create_col_shape_sphere(float posX, float posY, float posZ, float radius);
 void core_trigger_local_event(const char *ev, GoValueArgs args);
+void core_trigger_local_event_raw(const char* ev, char* bytes, unsigned long long size);
 void core_trigger_client_event(void *p, const char *ev, GoValueArgs args);
 void core_trigger_client_event_for(Array clients, const char *ev, GoValueArgs args);
 void core_trigger_client_event_for_all(const char *ev, GoValueArgs args);

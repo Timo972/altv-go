@@ -55,6 +55,7 @@ EXPORT Entity Core_CreateColShapeRectangle(float x1, float y1, float x2, float y
 EXPORT Entity Core_CreateColShapeCircle(float posX, float posY, float posZ, float radius);
 EXPORT Entity Core_CreateColShapeSphere(float posX, float posY, float posZ, float radius);
 EXPORT void Core_TriggerLocalEvent(const char *ev, GoValueArgs args);
+EXPORT void Core_TriggerLocalEventRaw(const char* ev, char* bytes, unsigned long long size);
 EXPORT void Core_TriggerClientEvent(void *p, const char *ev, GoValueArgs args);
 EXPORT void Core_TriggerClientEventFor(Array clients, const char *ev, GoValueArgs args);
 EXPORT void Core_TriggerClientEventForAll(const char *ev, GoValueArgs args);
