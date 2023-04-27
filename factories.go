@@ -37,7 +37,9 @@ func getOrCreateBaseObject[Type BaseObject](typ BaseObjectType, ptr unsafe.Point
 				return object, ErrInvalidFactory
 			}
 
-			return factory(ptr, id, model).(Type), nil
+			object = factory(ptr, id, model).(Type)
+			baseObjectCache.Store(id, object)
+			return object, nil
 		}
 
 		factory, ok := f.(BaseFactory[Type])
@@ -45,8 +47,12 @@ func getOrCreateBaseObject[Type BaseObject](typ BaseObjectType, ptr unsafe.Point
 			return object, ErrInvalidFactory
 		}
 
-		return factory(ptr, id), nil
+		object = factory(ptr, id)
+		baseObjectCache.Store(id, object)
+		return object, nil
 	}
+
+	fmt.Printf("loaded baseObject typ %v id %v from cache\n", typ, id)
 
 	return b.(Type), nil
 }
