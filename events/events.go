@@ -84,10 +84,12 @@ const (
 )
 
 type subscriber struct {
-	serverStartedEvents []serverStartedListener
-	playerConnectEvents []playerConnectListener
-	resourceErrorEvents []resourceErrorListener
-	once                bool
+	serverStartedEvents         []serverStartedListener
+	playerConnectEvents         []playerConnectListener
+	resourceErrorEvents         []resourceErrorListener
+	connectionQueueAddEvents    []connectionQueueAddListener
+	connectionQueueRemoveEvents []connectionQueueRemoveListener
+	once                        bool
 }
 
 type unsubscriber struct {
@@ -98,12 +100,16 @@ type EventSubscriber interface {
 	ServerStarted(serverStartedListener) int
 	PlayerConnect(playerConnectListener) int
 	ResourceError(resourceErrorListener) int
+	ConnectionQueueAdd(connectionQueueAddListener) int
+	ConnectionQueueRemove(connectionQueueRemoveListener) int
 }
 
 type EventUnsubscriber interface {
 	ServerStarted(int) error
 	PlayerConnect(int) error
 	ResourceError(int) error
+	ConnectionQueueAdd(int) error
+	ConnectionQueueRemove(int) error
 }
 
 var (
