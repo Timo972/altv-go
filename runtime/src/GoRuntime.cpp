@@ -183,6 +183,9 @@ ConnectionInfo Go::Runtime::GetConnectionInfo(alt::IConnectionInfo* info) {
     conn.name = info->GetName().c_str();
     conn.passwordHash = info->GetPasswordHash();
     conn.socialID = info->GetSocialId();
+    conn.id = info->GetID();
+    conn.socialName = info->GetSocialName().c_str();
+    conn.cloudAuthHash = info->GetCloudAuthHash().c_str();
 
     return conn;
 }
