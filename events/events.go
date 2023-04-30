@@ -22,8 +22,9 @@ const (
 	serverStarted
 
 	playerConnect
-	playerBeforeConnect
 	playerDisconnect
+	playerConnectDenied
+	playerSpawn
 
 	connectionQueueAdd
 	connectionQueueRemove
@@ -62,19 +63,24 @@ const (
 
 	vehicleAttach
 	vehicleDetach
+	vehicleHorn
+	vehicleSiren
 	netOwnerChange
 
-	removeEntityEvent
 	createBaseObjectEvent
 	removeBaseObjectEvent
+
 	dataNodeReceivedEvent
 
 	consoleCommandEvent
+
 	playerChangeAnimationEvent
+
 	playerChangeInteriorEvent
 
-	// is this client only?
-	playerWeaponShoot
+	playerWeaponShootEvent
+
+	playerDimensionChangeEvent
 )
 
 type subscriber struct {
