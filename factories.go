@@ -71,7 +71,6 @@ func SetVehicleFactory(factory VehicleFactory) {
 }
 
 func init() {
-	fmt.Println("init factories")
 	SetPlayerFactory(NewPlayer)
 	SetVehicleFactory(NewVehicle)
 }
