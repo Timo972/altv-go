@@ -73,8 +73,10 @@ typedef struct array {
 } Array;
 
 typedef struct connectionInfo {
+    unsigned int id;
     const char *name;
     unsigned long long socialID;
+    const char *socialName;
     unsigned long long hwidHash;
     unsigned long long hwidExHash;
     const char *authToken;
@@ -85,6 +87,7 @@ typedef struct connectionInfo {
     unsigned long long passwordHash;
     const char *ip;
     long long discordUserID;
+    const char *cloudAuthHash;
 } ConnectionInfo;
 
 typedef struct weapon {

@@ -92,8 +92,10 @@ typedef struct array {
 } Array;
 
 typedef struct connectionInfo {
+    unsigned int id;
     const char *name;
     unsigned long long socialID;
+    const char *socialName;
     unsigned long long hwidHash;
     unsigned long long hwidExHash;
     const char *authToken;
@@ -104,6 +106,7 @@ typedef struct connectionInfo {
     unsigned long long passwordHash;
     const char *ip;
     long long discordUserID;
+    const char *cloudAuthHash;
 } ConnectionInfo;
 
 typedef struct weapon {
@@ -218,12 +221,12 @@ typedef struct goValueArgs {
     unsigned long long size;
 } GoValueArgs;
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/BaseObject.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/BaseObject.h Module.h
 
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/BaseObject.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/BaseObject.h Module.h
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/Blip.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/Blip.h Module.h
 typedef int (*capi_blip_get_type)(void *c);
 typedef int (*capi_blip_has_meta_data)(void *base, const char *key);
 typedef GoValue (*capi_blip_get_meta_data)(void *base, const char *key);
@@ -306,7 +309,7 @@ typedef void (*capi_blip_set_shrinked)(void *b, int val);
 typedef void (*capi_blip_fade)(void *b, unsigned int opacity, unsigned int duration);
 
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/Blip.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/Blip.h Module.h
 int blip_get_type(void *c);
 int blip_has_meta_data(void *base, const char *key);
 GoValue blip_get_meta_data(void *base, const char *key);
@@ -388,7 +391,7 @@ void blip_set_as_high_detail(void *b, int val);
 void blip_set_shrinked(void *b, int val);
 void blip_fade(void *b, unsigned int opacity, unsigned int duration);
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/Checkpoint.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/Checkpoint.h Module.h
 typedef int (*capi_checkpoint_get_type)(void *c);
 typedef int (*capi_checkpoint_has_meta_data)(void* base, const char *key);
 typedef GoValue (*capi_checkpoint_get_meta_data)(void* base, const char *key);
@@ -418,7 +421,7 @@ typedef void (*capi_checkpoint_set_color)(void *c, unsigned char r, unsigned cha
 typedef void (*capi_checkpoint_set_next_position)(void *c, float x, float y, float z);
 
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/Checkpoint.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/Checkpoint.h Module.h
 int checkpoint_get_type(void *c);
 int checkpoint_has_meta_data(void* base, const char *key);
 GoValue checkpoint_get_meta_data(void* base, const char *key);
@@ -447,7 +450,7 @@ void checkpoint_set_radius(void *c, float radius);
 void checkpoint_set_color(void *c, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 void checkpoint_set_next_position(void *c, float x, float y, float z);
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/ColShape.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/ColShape.h Module.h
 typedef int (*capi_col_shape_get_type)(void *c);
 typedef int (*capi_col_shape_has_meta_data)(void* base, const char *key);
 typedef GoValue (*capi_col_shape_get_meta_data)(void* base, const char *key);
@@ -467,7 +470,7 @@ typedef int (*capi_col_shape_is_players_only)(void *c);
 typedef unsigned char (*capi_col_shape_is_entity_id_in)(void *c, unsigned short id);
 
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/ColShape.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/ColShape.h Module.h
 int col_shape_get_type(void *c);
 int col_shape_has_meta_data(void* base, const char *key);
 GoValue col_shape_get_meta_data(void* base, const char *key);
@@ -486,7 +489,7 @@ void col_shape_set_players_only(void *c, int state);
 int col_shape_is_players_only(void *c);
 unsigned char col_shape_is_entity_id_in(void *c, unsigned short id);
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/Core.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/Core.h Module.h
 typedef void (*capi_core_log_info)(const char *message);
 typedef void (*capi_core_log_debug)(const char *message);
 typedef void (*capi_core_log_warning)(const char *message);
@@ -553,7 +556,7 @@ typedef unsigned long long (*capi_core_hash_server_password)(const char *passwor
 typedef void* (*capi_core_get_resource_by_name)(const char *resourceName);
 
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/Core.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/Core.h Module.h
 void core_log_info(const char *message);
 void core_log_debug(const char *message);
 void core_log_warning(const char *message);
@@ -619,7 +622,7 @@ GoValue core_get_server_config();
 unsigned long long core_hash_server_password(const char *password);
 void* core_get_resource_by_name(const char *resourceName);
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/Player.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/Player.h Module.h
 typedef const char * (*capi_player_get_name)(void *p);
 typedef int (*capi_player_has_meta_data)(void *base, const char *key);
 typedef GoValue (*capi_player_get_meta_data)(void *base, const char *key);
@@ -756,7 +759,7 @@ typedef unsigned int (*capi_player_get_last_damaged_body_part)(void *p);
 typedef void (*capi_player_set_last_damaged_body_part)(void *p, unsigned int bodyPart);
 
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/Player.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/Player.h Module.h
 const char * player_get_name(void *p);
 int player_has_meta_data(void *base, const char *key);
 GoValue player_get_meta_data(void *base, const char *key);
@@ -892,7 +895,7 @@ unsigned int player_get_interior_location(void *p);
 unsigned int player_get_last_damaged_body_part(void *p);
 void player_set_last_damaged_body_part(void *p, unsigned int bodyPart);
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/Resource.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/Resource.h Module.h
 typedef unsigned char (*capi_resource_is_started)(void *r);
 typedef const char * (*capi_resource_get_type)(void *r);
 typedef const char * (*capi_resource_get_name)(void* r);
@@ -906,7 +909,7 @@ typedef Array (*capi_resource_get_optional_permissions)(void *r);
 typedef const char * (*capi_resource_get_path)(void *r);
 
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/Resource.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/Resource.h Module.h
 unsigned char resource_is_started(void *r);
 const char * resource_get_type(void *r);
 const char * resource_get_name(void* r);
@@ -919,7 +922,7 @@ Array resource_get_required_permissions(void *r);
 Array resource_get_optional_permissions(void *r);
 const char * resource_get_path(void *r);
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/Runtime.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/Runtime.h Module.h
 typedef int (*capi_runtime_register_alt_event)(const char *resourceName, unsigned short eventType);
 typedef int (*capi_runtime_unregister_alt_event)(const char *resourceName, unsigned short eventType);
 typedef int (*capi_runtime_register_alt_export)(const char *resourceName, const char *exportName, GoValue value);
@@ -931,7 +934,7 @@ typedef void (*capi_connection_decline)(void *handle, const char *reason);
 typedef int (*capi_connection_is_accepted)(void *handle);
 
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/Runtime.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/Runtime.h Module.h
 int runtime_register_alt_event(const char *resourceName, unsigned short eventType);
 int runtime_unregister_alt_event(const char *resourceName, unsigned short eventType);
 int runtime_register_alt_export(const char *resourceName, const char *exportName, GoValue value);
@@ -942,7 +945,7 @@ void connection_accept(void *handle, unsigned char sendNames);
 void connection_decline(void *handle, const char *reason);
 int connection_is_accepted(void *handle);
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/Vehicle.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/Vehicle.h Module.h
 typedef int (*capi_vehicle_has_meta_data)(void *base, const char *key);
 typedef GoValue (*capi_vehicle_get_meta_data)(void *base, const char *key);
 typedef void (*capi_vehicle_set_meta_data)(void *base, const char *key, GoValue data);
@@ -1173,7 +1176,7 @@ typedef unsigned char (*capi_vehicle_get_hybrid_extra_state)(void *v);
 typedef void (*capi_vehicle_set_hybrid_extra_state)(void *v, unsigned char state);
 
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/Vehicle.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/Vehicle.h Module.h
 int vehicle_has_meta_data(void *base, const char *key);
 GoValue vehicle_get_meta_data(void *base, const char *key);
 void vehicle_set_meta_data(void *base, const char *key, GoValue data);
@@ -1403,7 +1406,7 @@ void vehicle_set_hybrid_extra_active(void *v, unsigned char state);
 unsigned char vehicle_get_hybrid_extra_state(void *v);
 void vehicle_set_hybrid_extra_state(void *v, unsigned char state);
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/VoiceChannel.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/VoiceChannel.h Module.h
 typedef int (*capi_voice_channel_is_valid)(const char* resourceName, void *p);
 typedef int (*capi_voice_channel_get_type)(void *c);
 typedef int (*capi_voice_channel_has_meta_data)(void* base, const char *key);
@@ -1423,7 +1426,7 @@ typedef unsigned long long (*capi_voice_channel_get_player_count)(void *v);
 typedef Array (*capi_voice_channel_get_players)(void *v);
 
 
-// /home/timo/dev/altv/altv-go/runtime/src/capi/VoiceChannel.h Module.h
+// /home/timo/dev/os/altv/altv-go/runtime/src/capi/VoiceChannel.h Module.h
 int voice_channel_is_valid(const char* resourceName, void *p);
 int voice_channel_get_type(void *c);
 int voice_channel_has_meta_data(void* base, const char *key);
