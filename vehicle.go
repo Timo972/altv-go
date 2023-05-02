@@ -3,7 +3,6 @@ package altv
 // #include "capi.h"
 import "C"
 import (
-	"context"
 	"unsafe"
 )
 
@@ -13,22 +12,17 @@ type Vehicle interface {
 
 type vehicle struct {
 	entity
+	model uint32
 }
 
 func NewVehicle(ptr unsafe.Pointer, id uint32, model uint32) Vehicle {
-	vContext, vCancel := context.WithCancelCause(context.Background())
 	v := &vehicle{
 		entity{
 			worldObject{
-				baseObject{
-					ptr:        ptr,
-					id:         id,
-					typ:        BaseTypeVehicle,
-					ctx:        vContext,
-					cancelFunc: vCancel,
-				},
+				baseObject: newBaseObject(BaseTypeVehicle, ptr, id),
 			},
 		},
+		model,
 	}
 
 	return v
@@ -44,4 +38,8 @@ func CreateVehicle(model uint32, pos Vector3, rot Vector3) (Vehicle, error) {
 	e := C.core_create_vehicle(C.ulong(model), C.float(pos.X), C.float(pos.Y), C.float(pos.Z), C.float(rot.X), C.float(rot.Y), C.float(rot.Z))
 
 	return getBaseObject[Vehicle](e)
+}
+
+func (v *vehicle) Model() uint32 {
+	return v.model
 }

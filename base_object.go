@@ -103,6 +103,17 @@ func (b *baseObject) cancel(err error) {
 	b.cancelFunc(err)
 }
 
+func newBaseObject(typ BaseObjectType, ptr unsafe.Pointer, id uint32) baseObject {
+	ctx, cancel := context.WithCancelCause(context.Background())
+	return baseObject{
+		ptr:        ptr,
+		id:         id,
+		typ:        typ,
+		ctx:        ctx,
+		cancelFunc: cancel,
+	}
+}
+
 //export altCreateBaseObject
 func altCreateBaseObject(entity C.struct_entity) {
 	fmt.Printf("altCreateBaseObject\n")

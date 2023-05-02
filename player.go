@@ -3,7 +3,6 @@ package altv
 // #include "capi.h"
 import "C"
 import (
-	"context"
 	"unsafe"
 )
 
@@ -18,17 +17,10 @@ type player struct {
 }
 
 func NewPlayer(ptr unsafe.Pointer, id uint32) Player {
-	pContext, pCancel := context.WithCancelCause(context.Background())
 	p := &player{
 		entity{
 			worldObject{
-				baseObject{
-					ptr:        ptr,
-					id:         id,
-					typ:        BaseTypePlayer,
-					ctx:        pContext,
-					cancelFunc: pCancel,
-				},
+				baseObject: newBaseObject(BaseTypePlayer, ptr, id),
 			},
 		},
 	}
