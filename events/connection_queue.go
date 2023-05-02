@@ -6,6 +6,8 @@ import (
 	"github.com/timo972/altv-go"
 	"golang.org/x/exp/slices"
 )
+
+// #include "capi.h"
 import "C"
 
 type connectionQueueAddListener = func(connectionInfo altv.ConnectionInfo)

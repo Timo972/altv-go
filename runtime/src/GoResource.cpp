@@ -100,8 +100,24 @@ void Go::Resource::OnTick() {}
 
 void Go::Resource::OnCreateBaseObject(alt::IBaseObject* handle) {
     this->AddEntity(handle);
+    Entity object = Go::Runtime::GetBaseObject(handle);
+
+    static auto addEntity = GET_FUNC(Module, "altCreateBaseObject", void(*)(Entity));
+    if (addEntity == nullptr) {
+        alt::ICore::Instance().LogError("Could not call altCreateBaseObject.");
+        return;
+    }
+    addEntity(object);
 }
 
 void Go::Resource::OnRemoveBaseObject(alt::IBaseObject* handle) {
     this->RemoveEntity(handle);
+    Entity object = Go::Runtime::GetBaseObject(handle);
+
+    static auto removeEntity = GET_FUNC(Module, "altRemoveBaseObject", void(*)(Entity));
+    if (removeEntity == nullptr) {
+        alt::ICore::Instance().LogError("Could not call altRemoveBaseObject.");
+        return;
+    }
+    removeEntity(object);
 }

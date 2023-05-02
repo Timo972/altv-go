@@ -3,6 +3,7 @@ package altv
 // #include "capi.h"
 import "C"
 import (
+	"context"
 	"unsafe"
 )
 
@@ -15,19 +16,22 @@ type vehicle struct {
 }
 
 func NewVehicle(ptr unsafe.Pointer, id uint32, model uint32) Vehicle {
-	p := &player{
+	vContext, vCancel := context.WithCancelCause(context.Background())
+	v := &vehicle{
 		entity{
 			worldObject{
 				baseObject{
-					ptr: ptr,
-					id:  id,
-					typ: BaseTypeVehicle,
+					ptr:        ptr,
+					id:         id,
+					typ:        BaseTypeVehicle,
+					ctx:        vContext,
+					cancelFunc: vCancel,
 				},
 			},
 		},
 	}
 
-	return p
+	return v
 }
 
 func VehicleByID(id uint32) (Vehicle, error) {

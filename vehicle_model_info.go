@@ -9,24 +9,24 @@ import "C"
 type VehicleModelType = uint8
 
 const (
-	Invalid VehicleModelType = iota
-	Ped
-	Automobile
-	Plane
-	Trailer
-	QuadBike
-	SubmarineCar
-	AmphibiousAutomobile
-	AmphibiousQuadBike
-	Heli
-	Blimp
-	Autogyro
-	Bike
-	BMX
-	Boat
-	Train
-	Submarine
-	Object
+	VehicleInvalid VehicleModelType = iota
+	VehiclePed
+	VehicleAutomobile
+	VehiclePlane
+	VehicleTrailer
+	VehicleQuadBike
+	VehicleSubmarineCar
+	VehicleAmphibiousAutomobile
+	VehicleAmphibiousQuadBike
+	VehicleHeli
+	VehicleBlimp
+	VehicleAutogyro
+	VehicleBike
+	VehicleBMX
+	VehicleBoat
+	VehicleTrain
+	VehicleSubmarine
+	VehicleObject
 )
 
 type VehicleModelInfo struct {
