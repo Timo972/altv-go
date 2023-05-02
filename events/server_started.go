@@ -7,7 +7,7 @@ import (
 )
 import "C"
 
-type serverStartedListener = func()
+type serverStartedListener func()
 
 func (sub *subscriber) ServerStarted(listener serverStartedListener) int {
 	fmt.Println("subscribing to serverStarted")

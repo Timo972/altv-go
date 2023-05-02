@@ -10,7 +10,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-type playerConnectListener = func(p altv.Player)
+type playerConnectListener func(p altv.Player)
 
 func (e *subscriber) PlayerConnect(listener playerConnectListener) int {
 	e.playerConnectEvents = append(e.playerConnectEvents, listener)

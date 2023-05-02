@@ -7,6 +7,9 @@ import (
 	"errors"
 	"fmt"
 	"unsafe"
+
+	"github.com/goccy/go-json"
+	"github.com/timo972/altv-go/mvalue"
 )
 
 var ErrInvalidBaseObject = errors.New("base object is invalid")
@@ -41,6 +44,8 @@ const (
 )
 
 type BaseObject interface {
+	json.Marshaler
+	json.Unmarshaler
 	ID() uint32
 	Type() BaseObjectType
 	Ptr() unsafe.Pointer
@@ -56,6 +61,34 @@ type baseObject struct {
 	typ        BaseObjectType
 	ctx        context.Context
 	cancelFunc context.CancelCauseFunc
+}
+
+type jsonBaseObject struct {
+	ID   uint32         `json:"id"`
+	Type BaseObjectType `json:"type"`
+	Ptr  string         `json:"ptr"`
+}
+
+func (b *baseObject) MarshalJSON() ([]byte, error) {
+	return json.Marshal(jsonBaseObject{ID: b.id, Type: b.typ})
+}
+
+func (b *baseObject) UnmarshalJSON(data []byte) error {
+	var obj jsonBaseObject
+	if err := json.Unmarshal(data, &obj); err != nil {
+		return err
+	}
+
+	ptr, err := mvalue.ParsePointer(obj.Ptr)
+	if err != nil {
+		return err
+	}
+
+	b.id = obj.ID
+	b.typ = obj.Type
+	b.ptr = ptr
+
+	return nil
 }
 
 func (b *baseObject) ID() uint32 {

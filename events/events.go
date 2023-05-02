@@ -89,6 +89,8 @@ type subscriber struct {
 	resourceErrorEvents         []resourceErrorListener
 	connectionQueueAddEvents    []connectionQueueAddListener
 	connectionQueueRemoveEvents []connectionQueueRemoveListener
+	serverScriptEvents          map[string][]serverEventListener
+	clientScriptEvents          map[string][]clientEventListener
 	once                        bool
 }
 
@@ -102,6 +104,8 @@ type EventSubscriber interface {
 	ResourceError(resourceErrorListener) int
 	ConnectionQueueAdd(connectionQueueAddListener) int
 	ConnectionQueueRemove(connectionQueueRemoveListener) int
+	ServerEvent(eventName string, listener serverEventListener) int
+	ClientEvent(eventName string, listener clientEventListener) int
 }
 
 type EventUnsubscriber interface {
@@ -110,6 +114,8 @@ type EventUnsubscriber interface {
 	ResourceError(int) error
 	ConnectionQueueAdd(int) error
 	ConnectionQueueRemove(int) error
+	ServerEvent(eventName string, id int) error
+	ClientEvent(eventName string, id int) error
 }
 
 var (

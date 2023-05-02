@@ -10,8 +10,8 @@ import (
 // #include "capi.h"
 import "C"
 
-type connectionQueueAddListener = func(connectionInfo altv.ConnectionInfo)
-type connectionQueueRemoveListener = func(connectionInfo altv.ConnectionInfo)
+type connectionQueueAddListener func(connectionInfo altv.ConnectionInfo)
+type connectionQueueRemoveListener func(connectionInfo altv.ConnectionInfo)
 
 func checkConnectionQueueAdd() {
 	lisCount := len(on.connectionQueueAddEvents) + len(once.connectionQueueAddEvents)
