@@ -12,7 +12,7 @@ func TestBaseObjectMarshal(t *testing.T) {
 		typ    BaseObjectType
 		output string
 	}{
-		{13, BaseTypePlayer, `{"id":13,"type":0,"ptr":""}`},
+		{13, BaseTypePlayer, `{"$type":0,"id":13,"type":0,"ptr":""}`},
 	}
 
 	for _, testCase := range testCases {

@@ -2,12 +2,35 @@ package altv
 
 // #include "capi.h"
 import "C"
+import (
+	"github.com/goccy/go-json"
+	"github.com/timo972/altv-go/mvalue"
+)
 
 type RGBA struct {
-	R uint8
-	G uint8
-	B uint8
-	A uint8
+	json.Marshaler
+	R uint8 `json:"r"`
+	G uint8 `json:"g"`
+	B uint8 `json:"b"`
+	A uint8 `json:"a"`
+}
+
+type rgbaData struct {
+	mvalue.SpecialType
+	R uint8 `json:"r"`
+	G uint8 `json:"g"`
+	B uint8 `json:"b"`
+	A uint8 `json:"a"`
+}
+
+func (c RGBA) MarshalJSON() ([]byte, error) {
+	return json.Marshal(rgbaData{
+		SpecialType: mvalue.SpecialType{Type: mvalue.TypeRGBA},
+		R:           c.R,
+		G:           c.G,
+		B:           c.B,
+		A:           c.A,
+	})
 }
 
 func newRGBA(cRGBA C.struct_rgba) RGBA {

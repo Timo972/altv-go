@@ -73,6 +73,7 @@ type BaseObjectData[T BaseObject] struct {
 }
 
 type baseObjectData struct {
+	mvalue.SpecialType
 	ID    uint32         `json:"id"`
 	Type  BaseObjectType `json:"type"`
 	Ptr   string         `json:"ptr"`
@@ -80,7 +81,7 @@ type baseObjectData struct {
 }
 
 func (b *BaseObjectData[T]) MarshalJSON() ([]byte, error) {
-	return json.Marshal(baseObjectData{b.ID, b.Type, "", b.Model})
+	return json.Marshal(baseObjectData{ID: b.ID, Type: b.Type, Ptr: "", Model: b.Model, SpecialType: mvalue.SpecialType{Type: mvalue.TypeBaseObject}})
 }
 
 func (b *BaseObjectData[T]) UnmarshalJSON(data []byte) error {
