@@ -23,6 +23,9 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 include("vendors/cpp-sdk/CMakeLists.txt")
 include_directories("vendors/cpp-sdk")
 
+# rapidjson dependency
+include_directories("vendors/rapidjson/include/rapidjson")
+
 # go-module headers
 include_directories(
         "src"

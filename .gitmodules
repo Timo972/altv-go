@@ -1,3 +1,6 @@
 [submodule "runtime/vendors/cpp-sdk"]
 	path = runtime/vendors/cpp-sdk
 	url = https://github.com/altmp/cpp-sdk.git
+[submodule "runtime/vendors/rapidjson"]
+	path = runtime/vendors/rapidjson
+	url = https://github.com/Tencent/rapidjson.git
