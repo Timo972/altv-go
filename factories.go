@@ -44,6 +44,7 @@ func getOrCreateBaseObject[Type BaseObject](typ BaseObjectType, ptr unsafe.Point
 
 		factory, ok := f.(BaseFactory[Type])
 		if !ok {
+			fmt.Printf("factory is not BaseFactory[Type]: %T != %T\n", factory, f)
 			return object, ErrInvalidFactory
 		}
 
@@ -58,11 +59,10 @@ func getOrCreateBaseObject[Type BaseObject](typ BaseObjectType, ptr unsafe.Point
 }
 
 type BaseFactory[Type BaseObject] func(ptr unsafe.Pointer, id uint32) Type
-type PlayerFactory BaseFactory[Player]
 type VehicleFactory func(ptr unsafe.Pointer, id uint32, model uint32) Vehicle
 
 // SetPlayerFactory sets the factory used by the package to create player struct instances
-func SetPlayerFactory(factory PlayerFactory) {
+func SetPlayerFactory(factory BaseFactory[Player]) {
 	factories.Store(BaseTypePlayer, factory)
 }
 

@@ -41,9 +41,15 @@ func TestBaseObjectUnmarshal(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		var obj baseObject
+		var objData BaseObjectData[Player]
 
-		err := mvalue.Unmarshal([]byte(testCase.input), &obj)
+		err := mvalue.Unmarshal([]byte(testCase.input), &objData)
+		if err != nil {
+			t.Error(err)
+			continue
+		}
+
+		obj, err := objData.Obj()
 		if err != nil {
 			t.Error(err)
 			continue
@@ -51,10 +57,17 @@ func TestBaseObjectUnmarshal(t *testing.T) {
 
 		if obj.ID() != testCase.id {
 			t.Errorf("id = %d; want %d", obj.ID(), testCase.id)
+			continue
 		}
 
 		if obj.Type() != testCase.typ {
 			t.Errorf("typ = %d; want %d", obj.Type(), testCase.typ)
+			continue
+		}
+
+		if !obj.Valid() {
+			t.Errorf("valid = false; want true")
+			continue
 		}
 	}
 }

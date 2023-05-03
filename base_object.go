@@ -45,7 +45,7 @@ const (
 
 type BaseObject interface {
 	json.Marshaler
-	json.Unmarshaler
+	// json.Unmarshaler
 	ID() uint32
 	Type() BaseObjectType
 	Ptr() unsafe.Pointer
@@ -63,32 +63,48 @@ type baseObject struct {
 	cancelFunc context.CancelCauseFunc
 }
 
-type jsonBaseObject struct {
-	ID   uint32         `json:"id"`
-	Type BaseObjectType `json:"type"`
-	Ptr  string         `json:"ptr"`
+type BaseObjectData[T BaseObject] struct {
+	json.Marshaler
+	json.Unmarshaler
+	ID    uint32
+	Type  BaseObjectType
+	ptr   unsafe.Pointer
+	Model uint32
+}
+
+type baseObjectData struct {
+	ID    uint32         `json:"id"`
+	Type  BaseObjectType `json:"type"`
+	Ptr   string         `json:"ptr"`
+	Model uint32         `json:"model,omitempty"`
+}
+
+func (b *BaseObjectData[T]) MarshalJSON() ([]byte, error) {
+	return json.Marshal(baseObjectData{b.ID, b.Type, "", b.Model})
+}
+
+func (b *BaseObjectData[T]) UnmarshalJSON(data []byte) error {
+	var obj baseObjectData
+	var err error
+	if err = json.Unmarshal(data, &obj); err != nil {
+		return err
+	}
+
+	if b.ptr, err = mvalue.ParsePointer(obj.Ptr); err != nil {
+		return err
+	}
+	b.ID = obj.ID
+	b.Type = obj.Type
+	b.Model = obj.Model
+	return nil
+}
+
+func (b *BaseObjectData[T]) Obj() (T, error) {
+	return GetBaseObject[T](b.Type, b.ptr, b.ID, b.Model)
 }
 
 func (b *baseObject) MarshalJSON() ([]byte, error) {
-	return json.Marshal(jsonBaseObject{ID: b.id, Type: b.typ})
-}
-
-func (b *baseObject) UnmarshalJSON(data []byte) error {
-	var obj jsonBaseObject
-	if err := json.Unmarshal(data, &obj); err != nil {
-		return err
-	}
-
-	ptr, err := mvalue.ParsePointer(obj.Ptr)
-	if err != nil {
-		return err
-	}
-
-	b.id = obj.ID
-	b.typ = obj.Type
-	b.ptr = ptr
-
-	return nil
+	return json.Marshal(baseObjectData{ID: b.id, Type: b.typ})
 }
 
 func (b *baseObject) ID() uint32 {
@@ -104,6 +120,10 @@ func (b *baseObject) Ptr() unsafe.Pointer {
 }
 
 func (b *baseObject) Valid() bool {
+	if b.ctx == nil {
+		return false
+	}
+
 	// TODO: check if base object still exists
 	// probably check where pointer is pointing to
 	if err := b.ctx.Err(); err != nil {

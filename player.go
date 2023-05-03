@@ -28,6 +28,10 @@ func NewPlayer(ptr unsafe.Pointer, id uint32) Player {
 	return p
 }
 
+func EmptyPlayer() Player {
+	return &player{}
+}
+
 func PlayerByID(id uint32) (Player, error) {
 	return getBaseObject[Player](C.core_get_base_object_by_i_d(C.uchar(BaseTypePlayer), C.uint(id)))
 }
