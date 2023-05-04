@@ -15,20 +15,18 @@ EXPORT int Blip_HasMetaData(void* base, const char *key)
     return baseObject->HasMetaData(key);
 }
 
-EXPORT GoValue Blip_GetMetaData(void* base, const char *key)
+EXPORT Array Blip_GetMetaData(void* base, const char *key)
 {
     auto baseObject = reinterpret_cast<alt::IBlip*>(base);
     auto meta = baseObject->GetMetaData(key);
 
-    GoValue data{};
-    Go::Runtime::MValueToGo(meta, &data);
-    return data;
+    return Go::Runtime::EncodeMValue(meta);
 }
 
-EXPORT void Blip_SetMetaData(void *base, const char *key, GoValue data)
+EXPORT void Blip_SetMetaData(void *base, const char *key, Array data)
 {
     auto baseObject = reinterpret_cast<alt::IBlip*>(base);
-    auto value = Go::Runtime::GoToMValue(data);
+    auto value = Go::Runtime::DecodeMValue(data);
 
     baseObject->SetMetaData(key, value);
 }

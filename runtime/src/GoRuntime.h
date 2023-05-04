@@ -114,12 +114,12 @@ namespace Go {
 
         static std::string PointerToString(void* p);
 
-        static alt::MValue GoToMValue(GoValue value);
-        static void MValueToGo(alt::MValue value, GoValue * out);
-        static void MValueToGo(alt::MValueConst value, GoValue * out);
+        // MValue to JSON and back
+        static alt::MValue DecodeMValue(Array data);
+        static Array EncodeMValue(alt::MValue value);
 
-        static alt::MValueArgs GoToMValueArgs(GoValueArgs args);
-        static GoValueArgs MValueArgsToGo(alt::MValueArgs args);
+        static alt::MValueArgs DecodeMValueArgs(Array args);
+        static Array EncodeMValueArgs(alt::MValueArgs args);
 
         static Go::Runtime *GetInstance();
     };

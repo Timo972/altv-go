@@ -8,6 +8,7 @@ import (
 	"unsafe"
 
 	"github.com/timo972/altv-go/internal/lib"
+	"github.com/timo972/altv-go/mvalue"
 )
 
 // #cgo CFLAGS: -I./internal/c-api/lib
@@ -68,6 +69,8 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, ver *C.char)
 	}
 
 	fmt.Println("resource initialized")
+
+	mvalue.SetResourceName(CurrentResource.Name())
 
 	ready.Done()
 

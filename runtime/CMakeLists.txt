@@ -24,7 +24,7 @@ include("vendors/cpp-sdk/CMakeLists.txt")
 include_directories("vendors/cpp-sdk")
 
 # rapidjson dependency
-include_directories("vendors/rapidjson/include/rapidjson")
+include_directories("vendors/rapidjson/include")
 
 # go-module headers
 include_directories(

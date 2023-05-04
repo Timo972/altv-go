@@ -16,6 +16,7 @@ type ImportFunc struct {
 type exportFuncData struct {
 	SpecialType
 	ID           int        `json:"id"`
+	ResourceName string     `json:"resourceName"`
 	exportedFunc ExportFunc `json:"-"`
 }
 
@@ -30,6 +31,7 @@ func (f ExportFunc) MarshalJSON() ([]byte, error) {
 	data := &exportFuncData{
 		SpecialType:  SpecialType{Type: TypeFunction},
 		ID:           len(exported),
+		ResourceName: resourceName,
 		exportedFunc: f,
 	}
 	exported = append(exported, data)
@@ -48,4 +50,8 @@ func (f *ImportFunc) UnmarshalJSON(raw []byte) error {
 
 func CallFunc(f *ImportFunc, args ...any) any {
 	return nil
+}
+
+func SetResourceName(name string) {
+	resourceName = name
 }

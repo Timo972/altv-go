@@ -10,8 +10,8 @@ extern "C"
 // BaseObject inherited
 EXPORT int Blip_GetType(void *c);
 EXPORT int Blip_HasMetaData(void *base, const char *key);
-EXPORT GoValue Blip_GetMetaData(void *base, const char *key);
-EXPORT void Blip_SetMetaData(void *base, const char *key, GoValue data);
+EXPORT Array Blip_GetMetaData(void *base, const char *key);
+EXPORT void Blip_SetMetaData(void *base, const char *key, Array data);
 EXPORT void Blip_DeleteMetaData(void *base, const char *key);
 EXPORT void Blip_Destroy(void *b);
 EXPORT int Blip_IsValid(const char *resourceName, void *p);
