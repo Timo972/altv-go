@@ -8,16 +8,16 @@ extern "C"
 #endif
 EXPORT const char *Player_GetName(void *p);
 EXPORT int Player_HasMetaData(void *base, const char *key);
-EXPORT GoValue Player_GetMetaData(void *base, const char *key);
-EXPORT void Player_SetMetaData(void *base, const char *key, GoValue data);
+EXPORT Array Player_GetMetaData(void *base, const char *key);
+EXPORT void Player_SetMetaData(void *base, const char *key, Array data);
 EXPORT void Player_DeleteMetaData(void *base, const char *key);
 EXPORT int Player_HasSyncedMetaData(void *base, const char *key);
-EXPORT GoValue Player_GetSyncedMetaData(void *base, const char *key);
-EXPORT void Player_SetSyncedMetaData(void *base, const char *key, GoValue data);
+EXPORT Array Player_GetSyncedMetaData(void *base, const char *key);
+EXPORT void Player_SetSyncedMetaData(void *base, const char *key, Array data);
 EXPORT void Player_DeleteSyncedMetaData(void *base, const char *key);
 EXPORT int Player_HasStreamSyncedMetaData(void *base, const char *key);
-EXPORT GoValue Player_GetStreamSyncedMetaData(void *base, const char *key);
-EXPORT void Player_SetStreamSyncedMetaData(void *base, const char *key, GoValue data);
+EXPORT Array Player_GetStreamSyncedMetaData(void *base, const char *key);
+EXPORT void Player_SetStreamSyncedMetaData(void *base, const char *key, Array data);
 EXPORT void Player_DeleteStreamSyncedMetaData(void *base, const char *key);
 EXPORT Position Player_GetPosition(void *p);
 EXPORT void Player_SetPosition(void *p, float x, float y, float z);
@@ -139,8 +139,8 @@ EXPORT unsigned char Player_GetHairHighlightColor(void *p);
 EXPORT Array Player_GetWeapons(void *p);
 
 EXPORT int Player_HasLocalMetaData(void *p, const char *key);
-EXPORT void Player_SetLocalMetaData(void *p, const char *key, GoValue data);
-EXPORT GoValue Player_GetLocalMetaData(void *p, const char *key);
+EXPORT void Player_SetLocalMetaData(void *p, const char *key, Array data);
+EXPORT Array Player_GetLocalMetaData(void *p, const char *key);
 EXPORT void Player_DeleteLocalMetaData(void *p, const char *key);
 
 EXPORT unsigned int Player_GetCurrentAnimationDict(void *p);

@@ -380,9 +380,13 @@ alt::MValue Go::Runtime::DecodeMValue(Array value) {
         return list;
     } else if (d.IsNull()) {
         return alt::ICore::Instance().CreateMValueNil();
-    } else {
-        return alt::ICore::Instance().CreateMValueNone();
     }
+
+    return alt::ICore::Instance().CreateMValueNone();
+}
+
+Array Go::Runtime::EncodeMValue(alt::MValueConst mValue) {
+    return Array{};
 }
 
 Array Go::Runtime::EncodeMValue(alt::MValue mValue) {
@@ -509,7 +513,7 @@ Array Go::Runtime::EncodeMValue(alt::MValue mValue) {
 }
 
 /*
-void Go::Runtime::MValueToGo(alt::MValueConst mValue, GoValue *value) {
+void Go::Runtime::EncodeMValue(alt::MValueConst mValue, GoValue *value) {
     auto t = mValue->GetType();
     value->typ = static_cast<unsigned char>(t);
 
@@ -630,7 +634,7 @@ void Go::Runtime::MValueToGo(alt::MValueConst mValue, GoValue *value) {
     }
 }
 
-GoValueArgs Go::Runtime::MValueArgsToGo(alt::MValueArgs args) {
+GoValueArgs Go::Runtime::EncodeMValueArgs(alt::MValueArgs args) {
     GoValueArgs all;
     all.size = args.size();
 
@@ -653,7 +657,7 @@ GoValueArgs Go::Runtime::MValueArgsToGo(alt::MValueArgs args) {
     return all;
 }
 
-alt::MValueArgs Go::Runtime::GoToMValueArgs(GoValueArgs data) {
+alt::MValueArgs Go::Runtime::DecodeMValueArgs(GoValueArgs data) {
     alt::MValueArgs args;
 
     if (!data.size || data.args == nullptr) {

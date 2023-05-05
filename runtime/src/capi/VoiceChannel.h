@@ -10,8 +10,8 @@ extern "C"
     // BaseObject inherited
     EXPORT int VoiceChannel_GetType(void *c);
     EXPORT int VoiceChannel_HasMetaData(void* base, const char *key);
-    EXPORT GoValue VoiceChannel_GetMetaData(void* base, const char *key);
-    EXPORT void VoiceChannel_SetMetaData(void *base, const char *key, GoValue data);
+    EXPORT Array VoiceChannel_GetMetaData(void* base, const char *key);
+    EXPORT void VoiceChannel_SetMetaData(void *base, const char *key, Array data);
     EXPORT void VoiceChannel_DeleteMetaData(void *base, const char *key);
     EXPORT void VoiceChannel_Destroy(void *b);
 

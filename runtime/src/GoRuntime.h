@@ -116,6 +116,7 @@ namespace Go {
 
         // MValue to JSON and back
         static alt::MValue DecodeMValue(Array data);
+        static Array EncodeMValue(alt::MValueConst value);
         static Array EncodeMValue(alt::MValue value);
 
         static alt::MValueArgs DecodeMValueArgs(Array args);

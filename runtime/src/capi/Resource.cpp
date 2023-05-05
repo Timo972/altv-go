@@ -21,21 +21,19 @@ EXPORT const char* Resource_GetMain(void* r) {
 	return resource->GetMain().c_str();
 }
 
-EXPORT GoValue Resource_GetConfig(void* r) {
+EXPORT Array Resource_GetConfig(void* r) {
 	auto resource = reinterpret_cast<alt::IResource*>(r);
 	//return Go::Runtime::ConfigNodeToProtoBytes(resource->GetConfig());
     // FIXME:
-    GoValue config{};
+    Array config{};
     return config;
 }
 
-EXPORT GoValue Resource_GetExports(void* r) {
+EXPORT Array Resource_GetExports(void* r) {
 	auto resource = reinterpret_cast<alt::IResource*>(r);
 	alt::MValue e = resource->GetExports();
 
-    GoValue exports{};
-    Go::Runtime::MValueToGo(e, &exports);
-	return exports;
+    return Go::Runtime::EncodeMValue(e);
 }
 
 EXPORT Array Resource_GetDependencies(void* r) {

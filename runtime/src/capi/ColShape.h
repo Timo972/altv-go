@@ -10,8 +10,8 @@ extern "C"
     // BaseObject inherited
     EXPORT int ColShape_GetType(void *c);
     EXPORT int ColShape_HasMetaData(void* base, const char *key);
-    EXPORT GoValue ColShape_GetMetaData(void* base, const char *key);
-    EXPORT void ColShape_SetMetaData(void *base, const char *key, GoValue data);
+    EXPORT Array ColShape_GetMetaData(void* base, const char *key);
+    EXPORT void ColShape_SetMetaData(void *base, const char *key, Array data);
     EXPORT void ColShape_DeleteMetaData(void *base, const char *key);
     EXPORT void ColShape_Destroy(void *b);
     EXPORT int ColShape_IsValid(const char* resourceName, void *p);

@@ -5,7 +5,7 @@ Go::GlobalSyncedMetaDataChangeEvent::GlobalSyncedMetaDataChangeEvent(ModuleLibra
 
 void Go::GlobalSyncedMetaDataChangeEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altGlobalSyncedMetaDataChangeEvent", void (*)(const char* key, GoValue oldValue, GoValue newValue));
+    static auto call = GET_FUNC(Library, "altGlobalSyncedMetaDataChangeEvent", void (*)(const char* key, Array oldValue, Array newValue));
 
     if (call == nullptr)
     {
@@ -18,12 +18,10 @@ void Go::GlobalSyncedMetaDataChangeEvent::Call(const alt::CEvent *ev)
     auto newValueMeta = event->GetVal();
     auto oldValueMeta = event->GetOldVal();
 
-    GoValue newValue{};
-    GoValue oldValue{};
-    Go::Runtime::MValueToGo(newValueMeta, &newValue);
-    Go::Runtime::MValueToGo(oldValueMeta, &oldValue);
+    Array newValue = Go::Runtime::EncodeMValue(newValueMeta);
+    Array oldValue = Go::Runtime::EncodeMValue(oldValueMeta);
 
     call(key, oldValue, newValue);
 
-    // TODO: free GoValues
+    // TODO: free Arrays
 }

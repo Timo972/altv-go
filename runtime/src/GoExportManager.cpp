@@ -9,13 +9,13 @@ alt::MValue Go::Function::Call(alt::MValueArgs args) const {
         return alt::ICore::Instance().CreateMValueNone();
     }
 
-    // auto data = Go::Runtime::MValueArgsToGo(args);
+    // auto data = Go::Runtime::EncodeMValueArgs(args);
 
     // Array res = call(id, data);
 
-    // TODO: free GoValueArgs
+    // TODO: free Array
 
-    // return Go::Runtime::GoToMValue(res);
+    // return Go::Runtime::DecodeMValue(res);
     return alt::ICore::Instance().CreateMValueNone();
 }
 

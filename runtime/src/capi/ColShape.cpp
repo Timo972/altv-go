@@ -15,21 +15,21 @@ EXPORT int ColShape_HasMetaData(void* base, const char *key)
     return baseObject->HasMetaData(key);
 }
 
-EXPORT GoValue ColShape_GetMetaData(void* base, const char *key)
+EXPORT Array ColShape_GetMetaData(void* base, const char *key)
 {
     auto baseObject = reinterpret_cast<alt::IColShape*>(base);
     auto meta = baseObject->GetMetaData(key);
 
-    GoValue data{};
-    Go::Runtime::MValueToGo(meta, &data);
+    Array data{};
+    data = Go::Runtime::EncodeMValue(meta);
 
     return data;
 }
 
-EXPORT void ColShape_SetMetaData(void *base, const char *key, GoValue data)
+EXPORT void ColShape_SetMetaData(void *base, const char *key, Array data)
 {
     auto baseObject = reinterpret_cast<alt::IColShape*>(base);
-    auto value = Go::Runtime::GoToMValue(data);
+    auto value = Go::Runtime::DecodeMValue(data);
 
     baseObject->SetMetaData(key, value);
 }

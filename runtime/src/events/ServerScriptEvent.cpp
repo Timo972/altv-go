@@ -4,7 +4,7 @@
 Go::ServerScriptEvent::ServerScriptEvent(ModuleLibrary *module) : IEvent(module) {}
 
 void Go::ServerScriptEvent::Call(const alt::CEvent *ev) {
-    static auto call = GET_FUNC(Library, "altServerScriptEvent", bool (*)(const char *name, GoValueArgs args));
+    static auto call = GET_FUNC(Library, "altServerScriptEvent", bool (*)(const char *name, Array args));
 
     if (call == nullptr)
     {
@@ -16,9 +16,9 @@ void Go::ServerScriptEvent::Call(const alt::CEvent *ev) {
     auto name = event->GetName().c_str();
     const auto& args = event->GetArgs();
  
-    auto data = Go::Runtime::MValueArgsToGo(args);
+    auto data = Go::Runtime::EncodeMValueArgs(args);
 
     call(name, data);
 
-    // TODO: free GoValueArgs
+    // TODO: free ArrayArgs
 }

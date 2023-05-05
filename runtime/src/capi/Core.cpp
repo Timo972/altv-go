@@ -106,17 +106,17 @@ EXPORT int Core_HasMetaData(const char *key) {
     return alt::ICore::Instance().HasMetaData(key);
 }
 
-EXPORT GoValue Core_GetMetaData(const char *key) {
+EXPORT Array Core_GetMetaData(const char *key) {
     auto meta = alt::ICore::Instance().GetMetaData(key);
 
-    GoValue data{};
-    Go::Runtime::MValueToGo(meta, &data);
+    Array data{};
+    data = Go::Runtime::EncodeMValue(meta);
 
     return data;
 }
 
-EXPORT void Core_SetMetaData(const char *key, GoValue data) {
-    auto value = Go::Runtime::GoToMValue(data);
+EXPORT void Core_SetMetaData(const char *key, Array data) {
+    auto value = Go::Runtime::DecodeMValue(data);
     alt::ICore::Instance().SetMetaData(key, value);
 }
 
@@ -128,10 +128,10 @@ EXPORT int Core_HasSyncedMetaData(const char *key) {
     return alt::ICore::Instance().HasSyncedMetaData(key);
 }
 
-EXPORT GoValue Core_GetSyncedMetaData(const char *key) {
+EXPORT Array Core_GetSyncedMetaData(const char *key) {
     auto meta = alt::ICore::Instance().GetSyncedMetaData(key);
-    GoValue data{};
-    Go::Runtime::MValueToGo(meta, &data);
+    Array data{};
+    data = Go::Runtime::EncodeMValue(meta);
 
     return data;
 }
@@ -167,8 +167,8 @@ EXPORT void Core_RestartResource(const char *name) {
     alt::ICore::Instance().RestartResource(name);
 }
 
-EXPORT void Core_SetSyncedMetaData(const char *key, GoValue data) {
-    auto value = Go::Runtime::GoToMValue(data);
+EXPORT void Core_SetSyncedMetaData(const char *key, Array data) {
+    auto value = Go::Runtime::DecodeMValue(data);
     alt::ICore::Instance().SetSyncedMetaData(key, value);
 }
 
@@ -229,8 +229,8 @@ EXPORT Entity Core_CreateColShapeCylinder(float posX, float posY, float posZ, fl
     return Go::Runtime::GetBaseObject(colShape);
 }
 
-EXPORT void Core_TriggerLocalEvent(const char *ev, GoValueArgs data) {
-    auto args = Go::Runtime::GoToMValueArgs(data);
+EXPORT void Core_TriggerLocalEvent(const char *ev, Array data) {
+    auto args = Go::Runtime::DecodeMValueArgs(data);
     // call event
     alt::ICore::Instance().TriggerLocalEvent(ev, args);
 }
@@ -242,15 +242,15 @@ EXPORT void Core_TriggerLocalEventRaw(const char* ev, char* bytes, unsigned long
     alt::ICore::Instance().TriggerLocalEvent(ev, args);
 }
 
-EXPORT void Core_TriggerClientEvent(void *p, const char *ev, GoValueArgs data) {
+EXPORT void Core_TriggerClientEvent(void *p, const char *ev, Array data) {
 
     auto player = reinterpret_cast<alt::IPlayer *>(p);
-    auto args = Go::Runtime::GoToMValueArgs(data);
+    auto args = Go::Runtime::DecodeMValueArgs(data);
     // call event
     alt::ICore::Instance().TriggerClientEvent(player, ev, args);
 }
 
-EXPORT void Core_TriggerClientEventFor(Array clients, const char *ev, GoValueArgs data) {
+EXPORT void Core_TriggerClientEventFor(Array clients, const char *ev, Array data) {
     std::vector<alt::IPlayer*> players;
 
     auto playerRefs = reinterpret_cast<alt::IPlayer**>(clients.array);
@@ -259,13 +259,13 @@ EXPORT void Core_TriggerClientEventFor(Array clients, const char *ev, GoValueArg
         players.push_back(playerRefs[i]);
     }
 
-    auto args = Go::Runtime::GoToMValueArgs(data);
+    auto args = Go::Runtime::DecodeMValueArgs(data);
 
     alt::ICore::Instance().TriggerClientEvent(players, ev, args);
 }
 
-EXPORT void Core_TriggerClientEventForAll(const char *ev, GoValueArgs data) {
-    auto args = Go::Runtime::GoToMValueArgs(data);
+EXPORT void Core_TriggerClientEventForAll(const char *ev, Array data) {
+    auto args = Go::Runtime::DecodeMValueArgs(data);
 
     alt::ICore::Instance().TriggerClientEventForAll(ev, args);
 }
@@ -379,11 +379,11 @@ EXPORT PedModelInfo Core_GetPedModelByHash(unsigned int hash) {
     return m;
 }
 
-EXPORT GoValue Core_GetServerConfig() {
+EXPORT Array Core_GetServerConfig() {
     auto c = alt::ICore::Instance().GetServerConfig();
 
     // FIXME:
-    GoValue config{};
+    Array config{};
 
     return config;//Go::Runtime::ConfigNodeToProtoBytes(config);
 }

@@ -12,19 +12,19 @@ EXPORT int Player_HasMetaData(void *base, const char *key) {
     return baseObject->HasMetaData(key);
 }
 
-EXPORT GoValue Player_GetMetaData(void *base, const char *key) {
+EXPORT Array Player_GetMetaData(void *base, const char *key) {
     auto baseObject = reinterpret_cast<alt::IPlayer *>(base);
     auto meta = baseObject->GetMetaData(key);
 
-    GoValue data{};
-    Go::Runtime::MValueToGo(meta, &data);
+    Array data{};
+    data = Go::Runtime::EncodeMValue(meta);
 
     return data;
 }
 
-EXPORT void Player_SetMetaData(void *base, const char *key, GoValue data) {
+EXPORT void Player_SetMetaData(void *base, const char *key, Array data) {
     auto baseObject = reinterpret_cast<alt::IPlayer *>(base);
-    auto value = Go::Runtime::GoToMValue(data);
+    auto value = Go::Runtime::DecodeMValue(data);
 
     baseObject->SetMetaData(key, value);
 }
@@ -41,18 +41,18 @@ EXPORT int Player_HasSyncedMetaData(void *base, const char *key) {
 }
 
 
-EXPORT GoValue Player_GetSyncedMetaData(void *base, const char *key) {
+EXPORT Array Player_GetSyncedMetaData(void *base, const char *key) {
     auto baseObject = reinterpret_cast<alt::IPlayer *>(base);
     auto meta = baseObject->GetSyncedMetaData(key);
 
-    GoValue data{};
-    Go::Runtime::MValueToGo(meta, &data);
+    Array data{};
+    data = Go::Runtime::EncodeMValue(meta);
     return data;
 }
 
-EXPORT void Player_SetSyncedMetaData(void *base, const char *key, GoValue data) {
+EXPORT void Player_SetSyncedMetaData(void *base, const char *key, Array data) {
     auto baseObject = reinterpret_cast<alt::IPlayer *>(base);
-    auto value = Go::Runtime::GoToMValue(data);
+    auto value = Go::Runtime::DecodeMValue(data);
 
     baseObject->SetSyncedMetaData(key, value);
 }
@@ -69,18 +69,18 @@ EXPORT int Player_HasStreamSyncedMetaData(void *base, const char *key) {
 }
 
 
-EXPORT GoValue Player_GetStreamSyncedMetaData(void *base, const char *key) {
+EXPORT Array Player_GetStreamSyncedMetaData(void *base, const char *key) {
     auto baseObject = reinterpret_cast<alt::IPlayer *>(base);
     auto meta = baseObject->GetStreamSyncedMetaData(key);
 
-    GoValue data{};
-    Go::Runtime::MValueToGo(meta, &data);
+    Array data{};
+    data = Go::Runtime::EncodeMValue(meta);
     return data;
 }
 
-EXPORT void Player_SetStreamSyncedMetaData(void *base, const char *key, GoValue data) {
+EXPORT void Player_SetStreamSyncedMetaData(void *base, const char *key, Array data) {
     auto baseObject = reinterpret_cast<alt::IPlayer *>(base);
-    auto value = Go::Runtime::GoToMValue(data);
+    auto value = Go::Runtime::DecodeMValue(data);
 
     baseObject->SetStreamSyncedMetaData(key, value);
 }
@@ -758,19 +758,19 @@ EXPORT int Player_HasLocalMetaData(void *p, const char *key) {
     return player->HasLocalMetaData(key);
 }
 
-EXPORT void Player_SetLocalMetaData(void *p, const char *key, GoValue data) {
+EXPORT void Player_SetLocalMetaData(void *p, const char *key, Array data) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
-    auto meta = Go::Runtime::GoToMValue(data);
+    auto meta = Go::Runtime::DecodeMValue(data);
 
     player->SetLocalMetaData(key, meta);
 }
 
-EXPORT GoValue Player_GetLocalMetaData(void *p, const char *key) {
+EXPORT Array Player_GetLocalMetaData(void *p, const char *key) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto meta = player->GetLocalMetaData(key);
 
-    GoValue data{};
-    Go::Runtime::MValueToGo(meta, &data);
+    Array data{};
+    data = Go::Runtime::EncodeMValue(meta);
     return data;
 }
 
