@@ -2,6 +2,7 @@ package mvalue
 
 import "github.com/goccy/go-json"
 
+// ByteArray is a wrapper for byte slices. Use this if you want to send byte slices to the client. If you send a byte slice without this wrapper, it will be converted to a string.
 type ByteArray struct {
 	json.Marshaler
 	json.Unmarshaler

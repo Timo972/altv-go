@@ -5,6 +5,7 @@ import (
 	"unsafe"
 )
 
+// ParsePointer parses an unsafe.Pointer from a string.
 func ParsePointer(ptrStr string) (unsafe.Pointer, error) {
 	if ptrStr == "" {
 		// return nil pointer

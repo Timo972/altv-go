@@ -23,6 +23,7 @@ EXPORT void Vehicle_SetMetaData(void *base, const char *key, Array data) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(base);
     auto value = Go::Runtime::DecodeMValue(data);
 
+    std::cout << "Vehicle_SetMetaData: " << key << " -> " << value->ToString() << std::endl;
     vehicle->SetMetaData(key, value);
 }
 

@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"unsafe"
 
 	"github.com/goccy/go-json"
@@ -52,6 +53,8 @@ type BaseObject interface {
 	Valid() bool
 	Destroy()
 	Context() context.Context
+	SetMetaData(key string, value interface{}) error
+	MetaData(key string, value interface{}) error
 	cancel(error)
 }
 
@@ -155,6 +158,32 @@ func (b *baseObject) Context() context.Context {
 
 func (b *baseObject) cancel(err error) {
 	b.cancelFunc(err)
+}
+
+func (b *baseObject) SetMetaData(key string, v interface{}) error {
+	raw, err := mvalue.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("SetMetaData: %s -> %s\n", key, string(raw))
+
+	data := C.struct_array{
+		array: unsafe.Pointer(C.CBytes(raw)),
+		size:  C.ulonglong(len(raw)),
+	}
+
+	if b.typ == BaseTypePlayer {
+		C.player_set_meta_data(b.ptr, C.CString(key), data)
+	} else if b.typ == BaseTypeVehicle {
+		C.vehicle_set_meta_data(b.ptr, C.CString(key), data)
+	}
+
+	return nil
+}
+
+func (b *baseObject) MetaData(key string, v interface{}) error {
+	return nil
 }
 
 func newBaseObject(typ BaseObjectType, ptr unsafe.Pointer, id uint32) baseObject {

@@ -1,6 +1,8 @@
 package mvalue
 
-import "github.com/goccy/go-json"
+import (
+	"github.com/goccy/go-json"
+)
 
 type MValueType uint8
 
@@ -28,5 +30,4 @@ type SpecialType struct {
 
 func Marshal(v any) ([]byte, error) {
 	return json.Marshal(v)
-	// return nil, nil
 }

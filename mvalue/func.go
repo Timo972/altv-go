@@ -48,10 +48,12 @@ func (f *ImportFunc) UnmarshalJSON(raw []byte) error {
 	return err
 }
 
+// CallFunc calls the exported function of another resource with the given arguments.
 func CallFunc(f *ImportFunc, args ...any) any {
 	return nil
 }
 
+// SetResourceName sets the resource name for the exported functions. Do not use this by yourself or you might break function exporting!
 func SetResourceName(name string) {
 	resourceName = name
 }
