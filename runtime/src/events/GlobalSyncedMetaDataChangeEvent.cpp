@@ -18,8 +18,8 @@ void Go::GlobalSyncedMetaDataChangeEvent::Call(const alt::CEvent *ev)
     auto newValueMeta = event->GetVal();
     auto oldValueMeta = event->GetOldVal();
 
-    Array newValue = Go::Runtime::EncodeMValue(newValueMeta);
-    Array oldValue = Go::Runtime::EncodeMValue(oldValueMeta);
+    auto newValue = Go::Runtime::EncodeMValue(newValueMeta);
+    auto oldValue = Go::Runtime::EncodeMValue(oldValueMeta);
 
     call(key, oldValue, newValue);
 

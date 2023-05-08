@@ -20,8 +20,8 @@ void Go::SyncedMetaDataChangeEvent::Call(const alt::CEvent *ev)
 
     Entity e = Go::Runtime::GetBaseObject(entity);
 
-    Array newValue = Go::Runtime::EncodeMValue(newValueMeta);
-    Array oldValue = Go::Runtime::EncodeMValue(oldValueMeta);
+    auto newValue = Go::Runtime::EncodeMValue(newValueMeta);
+    auto oldValue = Go::Runtime::EncodeMValue(oldValueMeta);
 
     call(e, key, oldValue, newValue);
 

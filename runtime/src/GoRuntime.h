@@ -39,11 +39,8 @@ namespace Go {
             Array arr;
             arr.size = objects.size();
 
-#ifdef _WIN32
-            auto playerRefs = new Entity[arr.size];
-#else
-            Entity playerRefs[arr.size];
-#endif
+            auto playerRefs = AllocateArray<Entity>(arr.size);
+
             for (uint64_t i = 0; i < arr.size; i++) {
                 playerRefs[i] = GetBaseObject(objects[i]);
             }
@@ -57,12 +54,8 @@ namespace Go {
         static Array CreateArray(alt::Array<Type> altArr) {
             Array arr;
             arr.size = altArr.GetSize();
+            auto cArray = AllocateArray<TargetType>(arr.size);
 
-#ifdef _WIN32
-            auto cArray = new TargetType[arr.size];
-#else
-            TargetType cArray[arr.size];
-#endif
             for (uint64_t i = 0; i < arr.size; i++) {
                 cArray[i] = static_cast<TargetType>(altArr[i]);
             }
@@ -75,13 +68,9 @@ namespace Go {
         template<typename Type, typename TargetType>
         static Array CreateArray(std::unordered_set<Type> set) {
             Array arr;
-
             arr.size = set.size();
-#ifdef _WIN32
-            auto cset = new TargetType[arr.size];
-#else
-            TargetType cset[arr.size];
-#endif
+            auto cset = AllocateArray<TargetType>(arr.size);
+
             uint64_t i = 0;
             for (const auto &item: set) {
                 cset[i] = item;
@@ -96,13 +85,9 @@ namespace Go {
         template<typename Type, typename TargetType>
         static Array CreateArray(std::vector<Type> set) {
             Array arr;
-
             arr.size = set.size();
-#ifdef _WIN32
-            auto cset = new TargetType[arr.size];
-#else
-            TargetType cset[arr.size];
-#endif
+            auto cset = AllocateArray<TargetType>(arr.size);
+
             for (uint64_t i = 0; i < set.size(); i++) {
                 cset[i] = static_cast<TargetType>(set[i]);
             }
@@ -114,10 +99,22 @@ namespace Go {
 
         static std::string PointerToString(void* p);
 
+        // FIXME: do i want to free only on windows or all platforms? this auto frees on linux and breaks everything
+        template<typename T>
+        static T* AllocateArray(size_t size) {
+            #ifdef _WIN32
+                auto arr = new T[size];
+            #else
+                T arr[size];
+            #endif
+
+            return arr;
+        }
+
         // MValue to JSON and back
         static alt::MValue DecodeMValue(Array data);
         static Array EncodeMValue(alt::MValueConst value);
-        static Array EncodeMValue(alt::MValue value);
+        // static Array EncodeMValue(alt::MValue value);
 
         static alt::MValueArgs DecodeMValueArgs(Array args);
         static Array EncodeMValueArgs(alt::MValueArgs args);

@@ -39,14 +39,10 @@ EXPORT Array Resource_GetExports(void* r) {
 EXPORT Array Resource_GetDependencies(void* r) {
 	auto resource = reinterpret_cast<alt::IResource*>(r);
 	auto deps = resource->GetDependencies();
+
 	Array arr;
 	arr.size = deps.size();
-
-#ifdef _WIN32
-	auto d = new const char* [arr.size];
-#else
-	const char* d[arr.size];
-#endif
+	auto d = Go::Runtime::AllocateArray<const char*>(arr.size);
 
 	for (auto i = 0; i < arr.size; i++) {
 		d[i] = deps[i].c_str();
@@ -59,16 +55,11 @@ EXPORT Array Resource_GetDependencies(void* r) {
 
 EXPORT Array Resource_GetDependants(void* r) {
 	auto resource = reinterpret_cast<alt::IResource*>(r);
-
 	auto deps = resource->GetDependants();
+
 	Array arr;
 	arr.size = deps.size();
-
-#ifdef _WIN32
-	auto d = new const char* [arr.size];
-#else
-	const char* d[arr.size];
-#endif
+	auto d = Go::Runtime::AllocateArray<const char*>(arr.size);
 
 	for (auto i = 0; i < arr.size; i++) {
 		d[i] = deps[i].c_str();

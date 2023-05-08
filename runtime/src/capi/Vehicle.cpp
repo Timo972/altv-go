@@ -8,14 +8,9 @@ EXPORT int Vehicle_HasMetaData(void *base, const char *key) {
 }
 
 EXPORT Array Vehicle_GetMetaData(void *base, const char *key) {
-
     auto vehicle = reinterpret_cast<alt::IVehicle *>(base);
     auto meta = vehicle->GetMetaData(key);
-
-    Array data{};
-    data = Go::Runtime::EncodeMValue(meta);
-
-    return data;
+    return Go::Runtime::EncodeMValue(meta);
 }
 
 EXPORT void Vehicle_SetMetaData(void *base, const char *key, Array data) {
@@ -40,14 +35,9 @@ EXPORT int Vehicle_HasSyncedMetaData(void *base, const char *key) {
 }
 
 EXPORT Array Vehicle_GetSyncedMetaData(void *base, const char *key) {
-
     auto vehicle = reinterpret_cast<alt::IVehicle *>(base);
     auto meta = vehicle->GetSyncedMetaData(key);
-
-    Array data{};
-    data = Go::Runtime::EncodeMValue(meta);
-
-    return data;
+    return Go::Runtime::EncodeMValue(meta);
 }
 
 EXPORT void Vehicle_SetSyncedMetaData(void *base, const char *key, Array data) {
@@ -71,14 +61,9 @@ EXPORT int Vehicle_HasStreamSyncedMetaData(void *base, const char *key) {
 }
 
 EXPORT Array Vehicle_GetStreamSyncedMetaData(void *base, const char *key) {
-
     auto vehicle = reinterpret_cast<alt::IVehicle *>(base);
     auto meta = vehicle->GetStreamSyncedMetaData(key);
-
-    Array data{};
-    data = Go::Runtime::EncodeMValue(meta);
-
-    return data;
+    return Go::Runtime::EncodeMValue(meta);
 }
 
 EXPORT void Vehicle_SetStreamSyncedMetaData(void *base, const char *key, Array data) {

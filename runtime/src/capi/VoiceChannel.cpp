@@ -16,11 +16,7 @@ EXPORT Array VoiceChannel_GetMetaData(void *base, const char *key) {
 
     auto channel = reinterpret_cast<alt::IVoiceChannel *>(base);
     auto meta = channel->GetMetaData(key);
-
-    Array data{};
-    data = Go::Runtime::EncodeMValue(meta);
-
-    return data;
+    return Go::Runtime::EncodeMValue(meta);
 }
 
 EXPORT void VoiceChannel_SetMetaData(void *base, const char *key, Array data) {

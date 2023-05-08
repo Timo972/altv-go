@@ -15,11 +15,7 @@ EXPORT int Player_HasMetaData(void *base, const char *key) {
 EXPORT Array Player_GetMetaData(void *base, const char *key) {
     auto baseObject = reinterpret_cast<alt::IPlayer *>(base);
     auto meta = baseObject->GetMetaData(key);
-
-    Array data{};
-    data = Go::Runtime::EncodeMValue(meta);
-
-    return data;
+    return Go::Runtime::EncodeMValue(meta);
 }
 
 EXPORT void Player_SetMetaData(void *base, const char *key, Array data) {
@@ -44,10 +40,7 @@ EXPORT int Player_HasSyncedMetaData(void *base, const char *key) {
 EXPORT Array Player_GetSyncedMetaData(void *base, const char *key) {
     auto baseObject = reinterpret_cast<alt::IPlayer *>(base);
     auto meta = baseObject->GetSyncedMetaData(key);
-
-    Array data{};
-    data = Go::Runtime::EncodeMValue(meta);
-    return data;
+    return Go::Runtime::EncodeMValue(meta);
 }
 
 EXPORT void Player_SetSyncedMetaData(void *base, const char *key, Array data) {
@@ -72,10 +65,7 @@ EXPORT int Player_HasStreamSyncedMetaData(void *base, const char *key) {
 EXPORT Array Player_GetStreamSyncedMetaData(void *base, const char *key) {
     auto baseObject = reinterpret_cast<alt::IPlayer *>(base);
     auto meta = baseObject->GetStreamSyncedMetaData(key);
-
-    Array data{};
-    data = Go::Runtime::EncodeMValue(meta);
-    return data;
+    return Go::Runtime::EncodeMValue(meta);
 }
 
 EXPORT void Player_SetStreamSyncedMetaData(void *base, const char *key, Array data) {
@@ -731,11 +721,8 @@ EXPORT Array Player_GetWeapons(void *p) {
     auto weapons = player->GetWeapons();
 
     auto size = weapons.size();
-#ifdef _WIN32
-    auto cweaps = new Weapon[size];
-#else
-    Weapon cweaps[size];
-#endif
+    auto cweaps = Go::Runtime::AllocateArray<Weapon>(size);
+
     for (uint64_t i = 0; i < size; i++) {
         auto weapon = weapons[i];
         Weapon w;
@@ -768,10 +755,7 @@ EXPORT void Player_SetLocalMetaData(void *p, const char *key, Array data) {
 EXPORT Array Player_GetLocalMetaData(void *p, const char *key) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto meta = player->GetLocalMetaData(key);
-
-    Array data{};
-    data = Go::Runtime::EncodeMValue(meta);
-    return data;
+    return Go::Runtime::EncodeMValue(meta);
 }
 
 EXPORT void Player_DeleteLocalMetaData(void *p, const char *key) {

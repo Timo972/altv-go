@@ -4,6 +4,9 @@
 #include <cstdint>
 #include <sstream>
 #include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/memorybuffer.h"
 
 Go::Runtime *Go::Runtime::Instance = nullptr;
 
@@ -213,11 +216,7 @@ Array Go::Runtime::CreateBoneArray(std::vector<alt::BoneInfo> bones)
     Array arr;
     arr.size = bones.size();
 
-#ifdef _WIN32
-    auto cArr = new BoneInfo[arr.size];
-#else
-    BoneInfo cArr[arr.size];
-#endif
+    auto cArr = AllocateArray<BoneInfo>(arr.size);
 
     for (uint64_t i = 0; i < arr.size; i++)
     {
@@ -321,7 +320,7 @@ alt::MValue Go::Runtime::DecodeMValue(Array value)
         rapidjson::Value &$type = d["$type"];
 
         if (!$type.Empty() && $type.IsInt())
-        {   
+        {
             std::cout << "is custom mvalue" << std::endl;
             auto typ = static_cast<alt::IMValue::Type>($type.GetInt());
 
@@ -457,15 +456,104 @@ alt::MValue Go::Runtime::DecodeMValue(Array value)
     return alt::ICore::Instance().CreateMValueNone();
 }
 
+/*Array Go::Runtime::EncodeMValue(alt::MValueConst mValue) {
+    return Array{};
+}*/
+
 Array Go::Runtime::EncodeMValue(alt::MValueConst mValue)
 {
-    return Array{};
+    rapidjson::Document d;
+
+    auto type = mValue->GetType();
+
+    if (type == alt::IMValue::Type::BOOL)
+    {
+        auto value = mValue.As<alt::IMValueBool>()->Value();
+        d.SetBool(value);
+    }
+    else if (type == alt::IMValue::Type::UINT)
+    {
+        auto value = mValue.As<alt::IMValueUInt>()->Value();
+        d.SetUint64(value);
+    }
+    else if (type == alt::IMValue::Type::INT)
+    {
+        auto value = mValue.As<alt::IMValueInt>()->Value();
+        d.SetInt64(value);
+    }
+    else if (type == alt::IMValue::Type::DOUBLE)
+    {
+        auto value = mValue.As<alt::IMValueDouble>()->Value();
+        d.SetDouble(value);
+    }
+    else if (type == alt::IMValue::Type::STRING)
+    {
+        auto value = mValue.As<alt::IMValueString>()->Value();
+        d.SetString(value.c_str(), value.size());
+    }
+    else if (type == alt::IMValue::Type::BASE_OBJECT)
+    {
+        auto baseObject = mValue.As<alt::IMValueBaseObject>()->Value();
+        Entity data = GetBaseObject(baseObject.get());
+        auto ptr = PointerToString(data.ptr);
+        d.SetObject();
+        d.AddMember(rapidjson::Value("$type"), rapidjson::Value(static_cast<int>(alt::IMValue::Type::BASE_OBJECT)), d.GetAllocator());
+        d.AddMember(rapidjson::Value("id"), rapidjson::Value(data.id), d.GetAllocator());
+        d.AddMember(rapidjson::Value("type"), rapidjson::Value(data.typ), d.GetAllocator());
+        d.AddMember(rapidjson::Value("ptr"), rapidjson::Value(ptr.c_str(), ptr.size()), d.GetAllocator());
+        d.AddMember(rapidjson::Value("model"), rapidjson::Value(data.model), d.GetAllocator());
+    }
+    else if (type == alt::IMValue::Type::RGBA)
+    {
+        auto value = mValue.As<alt::IMValueRGBA>()->Value();
+        d.SetObject();
+        d.AddMember(rapidjson::Value("$type"), rapidjson::Value(static_cast<int>(alt::IMValue::Type::RGBA)), d.GetAllocator());
+        d.AddMember(rapidjson::Value("r"), rapidjson::Value(value.r), d.GetAllocator());
+        d.AddMember(rapidjson::Value("g"), rapidjson::Value(value.g), d.GetAllocator());
+        d.AddMember(rapidjson::Value("b"), rapidjson::Value(value.b), d.GetAllocator());
+        d.AddMember(rapidjson::Value("a"), rapidjson::Value(value.a), d.GetAllocator());
+    }
+
+
+    rapidjson::MemoryBuffer buf;
+    rapidjson::Writer<rapidjson::MemoryBuffer> writer(buf);
+
+    rapidjson::StringBuffer strBuf;
+    rapidjson::Writer<rapidjson::StringBuffer> strWriter(strBuf);
+
+    d.Accept(writer);
+    d.Accept(strWriter);
+
+    std::cout << "-------------------" << std::endl;
+    std::cout << "encoded mvalue" << std::endl;
+    std::cout << "membuf: " << buf.GetBuffer() << std::endl;
+    std::cout << "strbuf: " << strBuf.GetString() << std::endl;
+    std::cout << "-------------------" << std::endl;
+    /*Array arr;
+    arr.array = reinterpret_cast<void *>(const_cast<char *>(strBuf.GetString()));//reinterpret_cast<void *>(const_cast<char *>(buf.GetBuffer()));
+    arr.size = strBuf.GetSize();//buf.GetSize();
+    return arr;*/
+
+    // auto str = strBuf.GetString();
+    /*char* data;
+    memcpy(data, strBuf.GetString(), strBuf.GetSize());
+
+    return data;*/
+
+    auto data = AllocateArray<char>(strBuf.GetSize());
+    Array arr;
+    memcpy(data, strBuf.GetString(), strBuf.GetSize());
+    arr.array = data;
+    arr.size = strBuf.GetSize();
+
+    std::cout << "copied" << std::endl;
+
+    return arr;
 }
 
-Array Go::Runtime::EncodeMValue(alt::MValue mValue)
+/*Array Go::Runtime::EncodeMValue(alt::MValue mValue)
 {
-    return Array{};
-    /*auto t = mValue->GetType();
+    auto t = mValue->GetType();
     value->typ = static_cast<unsigned char>(t);
     switch (t) {
     case alt::IMValue::Type::BOOL: {
@@ -583,8 +671,8 @@ Array Go::Runtime::EncodeMValue(alt::MValue mValue)
     }
     default:
         break;
-    }*/
-}
+    }
+}*/
 
 /*
 void Go::Runtime::EncodeMValue(alt::MValueConst mValue, GoValue *value) {

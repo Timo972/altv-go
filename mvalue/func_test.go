@@ -12,7 +12,7 @@ func TestFuncMarshal(t *testing.T) {
 	}{
 		{func(ctx *FuncCtx) any {
 			return nil
-		}, `{"$type":10,"id":0}`},
+		}, `{"$type":10,"id":0,"resourceName":""}`},
 	}
 
 	for _, testCase := range testCases {

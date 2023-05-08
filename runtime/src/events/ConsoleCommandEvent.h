@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Main.h"
+#include "GoRuntime.h"
 #include "Library.h"
 #include "GoEventFactory.h"
 

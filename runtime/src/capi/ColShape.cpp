@@ -19,11 +19,7 @@ EXPORT Array ColShape_GetMetaData(void* base, const char *key)
 {
     auto baseObject = reinterpret_cast<alt::IColShape*>(base);
     auto meta = baseObject->GetMetaData(key);
-
-    Array data{};
-    data = Go::Runtime::EncodeMValue(meta);
-
-    return data;
+    return Go::Runtime::EncodeMValue(meta);
 }
 
 EXPORT void ColShape_SetMetaData(void *base, const char *key, Array data)

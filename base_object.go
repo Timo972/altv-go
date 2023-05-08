@@ -1,6 +1,7 @@
 package altv
 
 // #include "capi.h"
+// #include <stdlib.h>
 import "C"
 import (
 	"context"
@@ -173,17 +174,32 @@ func (b *baseObject) SetMetaData(key string, v interface{}) error {
 		size:  C.ulonglong(len(raw)),
 	}
 
+	cKey := C.CString(key)
+	defer C.free(unsafe.Pointer(cKey))
 	if b.typ == BaseTypePlayer {
-		C.player_set_meta_data(b.ptr, C.CString(key), data)
+		C.player_set_meta_data(b.ptr, cKey, data)
 	} else if b.typ == BaseTypeVehicle {
-		C.vehicle_set_meta_data(b.ptr, C.CString(key), data)
+		C.vehicle_set_meta_data(b.ptr, cKey, data)
 	}
 
 	return nil
 }
 
 func (b *baseObject) MetaData(key string, v interface{}) error {
-	return nil
+	var cArr C.struct_array
+	cKey := C.CString(key)
+	defer C.free(unsafe.Pointer(cKey))
+	if b.typ == BaseTypePlayer {
+		cArr = C.player_get_meta_data(b.ptr, cKey)
+	} else if b.typ == BaseTypeVehicle {
+		cArr = C.vehicle_get_meta_data(b.ptr, cKey)
+	}
+
+	data := C.GoBytes(cArr.array, C.int(cArr.size))
+
+	log.Printf("MetaData: %s -> %s\n", key, string(data))
+
+	return mvalue.Unmarshal(data, v)
 }
 
 func newBaseObject(typ BaseObjectType, ptr unsafe.Pointer, id uint32) baseObject {

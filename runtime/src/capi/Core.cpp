@@ -108,11 +108,7 @@ EXPORT int Core_HasMetaData(const char *key) {
 
 EXPORT Array Core_GetMetaData(const char *key) {
     auto meta = alt::ICore::Instance().GetMetaData(key);
-
-    Array data{};
-    data = Go::Runtime::EncodeMValue(meta);
-
-    return data;
+    return Go::Runtime::EncodeMValue(meta);
 }
 
 EXPORT void Core_SetMetaData(const char *key, Array data) {
@@ -130,10 +126,7 @@ EXPORT int Core_HasSyncedMetaData(const char *key) {
 
 EXPORT Array Core_GetSyncedMetaData(const char *key) {
     auto meta = alt::ICore::Instance().GetSyncedMetaData(key);
-    Array data{};
-    data = Go::Runtime::EncodeMValue(meta);
-
-    return data;
+    return Go::Runtime::EncodeMValue(meta);
 }
 
 EXPORT Array Core_GetRequiredPermissions() {
@@ -314,14 +307,11 @@ EXPORT Array Core_GetBlips() {
 
 EXPORT Array Core_GetAllResources() {
     auto resources = alt::ICore::Instance().GetAllResources();
+    
     Array arr;
     arr.size = resources.size();
+    auto entityRefs = Go::Runtime::AllocateArray<void *>(arr.size);
 
-#ifdef _WIN32
-    auto entityRefs = new void *[arr.size];
-#else
-    void *entityRefs[arr.size];
-#endif
     for (uint64_t i = 0; i < arr.size; i++) {
         entityRefs[i] = resources.at(i);
     }

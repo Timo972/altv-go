@@ -19,12 +19,7 @@ void Go::FireEvent::Call(const alt::CEvent *ev)
 
     Array cFireArr;
     cFireArr.size = fires.size();
-
-#ifdef _WIN32
-    auto args = new FireInfo [cFireArr.size];
-#else
-    FireInfo args[cFireArr.size];
-#endif
+    auto args = Go::Runtime::AllocateArray<FireInfo>(cFireArr.size);
 
     for (uint64_t i = 0; i < cFireArr.size; i++) {
         auto fire = fires[i];

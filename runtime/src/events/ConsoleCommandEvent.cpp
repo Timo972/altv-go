@@ -17,12 +17,7 @@ void Go::ConsoleCommandEvent::Call(const alt::CEvent *ev)
     auto args = event->GetArgs();
 
     auto size = args.size();
-
-#ifdef _WIN32
-    auto constArgs = new const char* [size];
-#else
-    const char* constArgs[size];
-#endif
+    auto constArgs = Go::Runtime::AllocateArray<const char*>(size);
 
     for (uint64_t i = 0; i < size; i++) {
         constArgs[i] = args[i].c_str();
