@@ -531,13 +531,33 @@ rapidjson::Document Go::Runtime::EncodeMValueToJSON(alt::MValueConst mValue)
         d.AddMember(rapidjson::Value("b"), rapidjson::Value(value.b), d.GetAllocator());
         d.AddMember(rapidjson::Value("a"), rapidjson::Value(value.a), d.GetAllocator());
     } else if (type == alt::IMValue::Type::FUNCTION) {
-
+        auto value = mValue.As<alt::IMValueFunction>();
+        std::string ptr = PointerToString(const_cast<alt::IMValueFunction *>(value.Get()));
+        d.SetObject();
+        auto alloc = d.GetAllocator();
+        d.AddMember(rapidjson::Value("$type"), rapidjson::Value(static_cast<int>(alt::IMValue::Type::FUNCTION)), alloc);
+        d.AddMember(rapidjson::Value("ptr"), rapidjson::Value(ptr.c_str(), ptr.size()), alloc);
     } else if (type == alt::IMValue::Type::VECTOR2) {
-
+        auto value = mValue.As<alt::IMValueVector2>()->Value();
+        d.SetObject();
+        auto alloc = d.GetAllocator();
+        d.AddMember(rapidjson::Value("$type"), rapidjson::Value(static_cast<int>(alt::IMValue::Type::VECTOR2)), alloc);
+        d.AddMember(rapidjson::Value("x"), rapidjson::Value(value[0]), alloc);
+        d.AddMember(rapidjson::Value("y"), rapidjson::Value(value[1]), alloc);
     } else if (type == alt::IMValue::Type::VECTOR3) {
-
+        auto value = mValue.As<alt::IMValueVector3>()->Value();
+        d.SetObject();
+        auto alloc = d.GetAllocator();
+        d.AddMember(rapidjson::Value("$type"), rapidjson::Value(static_cast<int>(alt::IMValue::Type::VECTOR3)), alloc);
+        d.AddMember(rapidjson::Value("x"), rapidjson::Value(value[0]), alloc);
+        d.AddMember(rapidjson::Value("y"), rapidjson::Value(value[1]), alloc);
+        d.AddMember(rapidjson::Value("z"), rapidjson::Value(value[2]), alloc);
     } else if (type == alt::IMValue::Type::BYTE_ARRAY) {
-
+        auto value = mValue.As<alt::IMValueByteArray>();
+        d.SetObject();
+        auto alloc = d.GetAllocator();
+        d.AddMember(rapidjson::Value("$type"), rapidjson::Value(static_cast<int>(alt::IMValue::Type::BYTE_ARRAY)), alloc);
+        d.AddMember(rapidjson::Value("data"), rapidjson::Value(reinterpret_cast<const char *>(value->GetData()), value->GetSize()), alloc);
     } else if (type == alt::IMValue::Type::DICT) {
         auto dict = mValue.As<alt::IMValueDict>();
         auto alloc = d.GetAllocator();
