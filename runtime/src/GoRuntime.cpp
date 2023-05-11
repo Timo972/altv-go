@@ -216,7 +216,7 @@ Array Go::Runtime::CreateBoneArray(std::vector<alt::BoneInfo> bones)
     Array arr;
     arr.size = bones.size();
 
-    auto cArr = AllocateArray<BoneInfo>(arr.size);
+    auto cArr = new BoneInfo[arr.size];
 
     for (uint64_t i = 0; i < arr.size; i++)
     {
@@ -540,11 +540,13 @@ Array Go::Runtime::EncodeMValue(alt::MValueConst mValue)
 
     return data;*/
 
-    auto data = AllocateArray<char>(strBuf.GetSize());
+    auto size = strBuf.GetSize();
+    auto data = new char[size];
+     
     Array arr;
-    memcpy(data, strBuf.GetString(), strBuf.GetSize());
+    memcpy(data, strBuf.GetString(), size);
     arr.array = data;
-    arr.size = strBuf.GetSize();
+    arr.size = size;
 
     std::cout << "copied" << std::endl;
 

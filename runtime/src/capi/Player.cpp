@@ -721,7 +721,7 @@ EXPORT Array Player_GetWeapons(void *p) {
     auto weapons = player->GetWeapons();
 
     auto size = weapons.size();
-    auto cweaps = Go::Runtime::AllocateArray<Weapon>(size);
+    auto cweaps = new Weapon[size];
 
     for (uint64_t i = 0; i < size; i++) {
         auto weapon = weapons[i];

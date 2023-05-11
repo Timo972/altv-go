@@ -96,9 +96,43 @@ EXPORT Array Core_GetPlayers() {
     return Go::Runtime::CreateEntityArray(entities);
 }
 
-
 EXPORT Array Core_GetVehicles() {
     auto entities = alt::ICore::Instance().GetVehicles();
+    return Go::Runtime::CreateEntityArray(entities);
+}
+
+EXPORT Array Core_GetColShapes() {
+    auto entities = alt::ICore::Instance().GetColShapes();
+    return Go::Runtime::CreateEntityArray(entities);
+}
+
+EXPORT Array Core_GetCheckpoints() {
+    auto entities = alt::ICore::Instance().GetCheckpoints();
+    return Go::Runtime::CreateEntityArray(entities);
+}
+
+EXPORT Array Core_GetVirtualEntities() {
+    auto entities = alt::ICore::Instance().GetVirtualEntities();
+    return Go::Runtime::CreateEntityArray(entities);
+}
+
+EXPORT Array Core_GetVirtualEntityGroups() {
+    auto entities = alt::ICore::Instance().GetVirtualEntityGroups();
+    return Go::Runtime::CreateEntityArray(entities);
+}
+
+EXPORT Array Core_GetMarkers() {
+    auto entities = alt::ICore::Instance().GetMarkers();
+    return Go::Runtime::CreateEntityArray(entities);
+}
+
+EXPORT Array Core_GetNetworkObjects() {
+    auto entities = alt::ICore::Instance().GetNetworkObjects();
+    return Go::Runtime::CreateEntityArray(entities);
+}
+
+EXPORT Array Core_GetPeds() {
+    auto entities = alt::ICore::Instance().GetPeds();
     return Go::Runtime::CreateEntityArray(entities);
 }
 
@@ -171,7 +205,6 @@ EXPORT void Core_DeleteSyncedMetaData(const char *key) {
 
 EXPORT Array Core_GetPlayersByName(const char *name) {
     auto players = alt::ICore::Instance().GetPlayersByName(name);
-
     return Go::Runtime::CreateEntityArray(players);
 }
 
@@ -310,7 +343,7 @@ EXPORT Array Core_GetAllResources() {
     
     Array arr;
     arr.size = resources.size();
-    auto entityRefs = Go::Runtime::AllocateArray<void *>(arr.size);
+    auto entityRefs = new void*[arr.size];
 
     for (uint64_t i = 0; i < arr.size; i++) {
         entityRefs[i] = resources.at(i);

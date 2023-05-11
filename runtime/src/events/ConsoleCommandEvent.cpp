@@ -16,21 +16,5 @@ void Go::ConsoleCommandEvent::Call(const alt::CEvent *ev)
     auto name = event->GetName();
     auto args = event->GetArgs();
 
-    auto size = args.size();
-    auto constArgs = Go::Runtime::AllocateArray<const char*>(size);
-
-    for (uint64_t i = 0; i < size; i++) {
-        constArgs[i] = args[i].c_str();
-    }
-
-    Array arr;
-    arr.size = size;
-    arr.array = constArgs;
-
-    call(name.c_str(), arr);
-
-// freeing is done in altv-go-pkg (convertArray)
-// #ifdef _WIN32
-//     delete[] constArgs;
-// #endif
+    call(name.c_str(), Go::Runtime::CreateStringArray(args));
 }
