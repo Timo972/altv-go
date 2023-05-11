@@ -7,17 +7,32 @@ package altv
 */
 import "C"
 import (
+	"errors"
 	"fmt"
 	"math"
+
+	"github.com/goccy/go-json"
+	"github.com/timo972/altv-go/mvalue"
 )
 
+type vectorData struct {
+	mvalue.SpecialType
+	X float32 `json:"x"`
+	Y float32 `json:"y"`
+	Z float32 `json:"z,omitempty"`
+}
+
 type Vector3 struct {
+	json.Marshaler
+	json.Unmarshaler
 	X float32
 	Y float32
 	Z float32
 }
 
 type Vector2 struct {
+	json.Marshaler
+	json.Unmarshaler
 	X float32
 	Y float32
 }
@@ -58,6 +73,60 @@ func newCRotation(v Vector3) C.struct_rot {
 		pitch: C.float(v.Y),
 		yaw:   C.float(v.Z),
 	}
+}
+
+func (v Vector3) MarshalJSON() ([]byte, error) {
+	return json.Marshal(vectorData{
+		SpecialType: mvalue.SpecialType{
+			Type: mvalue.TypeVector3,
+		},
+		X: v.X,
+		Y: v.Y,
+		Z: v.Z,
+	})
+}
+
+func (v *Vector3) UnmarshalJSON(raw []byte) error {
+	var data vectorData
+	if err := json.Unmarshal(raw, &data); err != nil {
+		return err
+	}
+
+	if data.Type != mvalue.TypeVector3 {
+		return errors.New("invalid type")
+	}
+
+	v.X = data.X
+	v.Y = data.Y
+	v.Z = data.Z
+
+	return nil
+}
+
+func (v Vector2) MarshalJSON() ([]byte, error) {
+	return json.Marshal(vectorData{
+		SpecialType: mvalue.SpecialType{
+			Type: mvalue.TypeVector2,
+		},
+		X: v.X,
+		Y: v.Y,
+	})
+}
+
+func (v *Vector2) UnmarshalJSON(raw []byte) error {
+	var data vectorData
+	if err := json.Unmarshal(raw, &data); err != nil {
+		return err
+	}
+
+	if data.Type != mvalue.TypeVector2 {
+		return errors.New("invalid type")
+	}
+
+	v.X = data.X
+	v.Y = data.Y
+
+	return nil
 }
 
 func (v Vector3) String() string {
