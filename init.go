@@ -3,7 +3,6 @@ package altv
 import (
 	"fmt"
 	"log"
-	"os"
 	"sync"
 	"unsafe"
 
@@ -20,7 +19,8 @@ import (
 import "C"
 
 var ready = sync.WaitGroup{}
-var sig = make(chan os.Signal, 1)
+
+// var sig = make(chan os.Signal, 1)
 
 func init() {
 	ready.Add(1)
