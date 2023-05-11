@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 
+#include "rapidjson/document.h"
 #include "Main.h"
 
 namespace Go {
@@ -114,6 +115,9 @@ namespace Go {
 
         // MValue to JSON and back
         static alt::MValue DecodeMValue(Array data);
+        static alt::MValue DecodeMValue(rapidjson::Value& value);
+
+        static rapidjson::Document EncodeMValueToJSON(alt::MValueConst value);
         static Array EncodeMValue(alt::MValueConst value);
         // static Array EncodeMValue(alt::MValue value);
 

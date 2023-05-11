@@ -3,7 +3,6 @@
 // #include <cstdio>
 #include <cstdint>
 #include <sstream>
-#include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/memorybuffer.h"
@@ -281,40 +280,41 @@ std::string Go::Runtime::PointerToString(void *p)
     return ss.str();
 }
 
-alt::MValue Go::Runtime::DecodeMValue(Array value)
+alt::MValue Go::Runtime::DecodeMValue(rapidjson::Value &d)
 {
-    auto data = reinterpret_cast<const char *>(value.array);
+    alt::ICore &core = alt::ICore::Instance();
 
-    std::cout << "-------------------" << std::endl;
-    std::cout << "decoding mvalue" << std::endl;
-    std::cout << data << std::endl;
-
-    rapidjson::Document d;
-    d.Parse(data, value.size);
-    // call GetType for IsObject check to work. dont ask why
-    d.GetType();
+    if (d.IsNull())
+    {
+        return core.CreateMValueNil();
+    }
 
     if (d.IsBool())
     {
-        return alt::ICore::Instance().CreateMValueBool(d.GetBool());
+        return core.CreateMValueBool(d.GetBool());
     }
-    else if (d.IsUint64())
+
+    if (d.IsUint64())
     {
-        return alt::ICore::Instance().CreateMValueUInt(d.GetUint64());
+        return core.CreateMValueUInt(d.GetUint64());
     }
-    else if (d.IsInt64())
+
+    if (d.IsInt64())
     {
-        return alt::ICore::Instance().CreateMValueInt(d.GetInt64());
+        return core.CreateMValueInt(d.GetInt64());
     }
-    else if (d.IsDouble())
+
+    if (d.IsDouble())
     {
-        return alt::ICore::Instance().CreateMValueDouble(d.GetDouble());
+        return core.CreateMValueDouble(d.GetDouble());
     }
-    else if (d.IsString())
+
+    if (d.IsString())
     {
-        return alt::ICore::Instance().CreateMValueString(std::string(d.GetString(), d.GetStringLength()));
+        return core.CreateMValueString(std::string(d.GetString(), d.GetStringLength()));
     }
-    else if (d.IsObject())
+
+    if (d.IsObject())
     {
         std::cout << "is object" << std::endl;
         rapidjson::Value &$type = d["$type"];
@@ -331,11 +331,11 @@ alt::MValue Go::Runtime::DecodeMValue(Array value)
 
                 if (id.Empty() || type.Empty())
                 {
-                    alt::ICore::Instance().LogError("Invalid BaseObject MValue");
-                    return alt::ICore::Instance().CreateMValueNone();
+                    core.LogError("Invalid BaseObject MValue");
+                    return core.CreateMValueNone();
                 }
 
-                return alt::ICore::Instance().CreateMValueBaseObject(alt::ICore::Instance().GetBaseObjectByID(static_cast<alt::IBaseObject::Type>(type.GetInt()), id.GetUint()));
+                return core.CreateMValueBaseObject(core.GetBaseObjectByID(static_cast<alt::IBaseObject::Type>(type.GetInt()), id.GetUint()));
             }
             else if (typ == alt::IMValue::Type::BYTE_ARRAY)
             {
@@ -343,11 +343,11 @@ alt::MValue Go::Runtime::DecodeMValue(Array value)
 
                 if (data.Empty() || !data.IsString())
                 {
-                    alt::ICore::Instance().LogError("Invalid ByteArray MValue");
-                    return alt::ICore::Instance().CreateMValueNone();
+                    core.LogError("Invalid ByteArray MValue");
+                    return core.CreateMValueNone();
                 }
 
-                return alt::ICore::Instance().CreateMValueByteArray(reinterpret_cast<const uint8_t *>(data.GetString()), static_cast<alt::Size>(data.GetStringLength()));
+                return core.CreateMValueByteArray(reinterpret_cast<const uint8_t *>(data.GetString()), static_cast<alt::Size>(data.GetStringLength()));
             }
             else if (typ == alt::IMValue::Type::RGBA)
             {
@@ -358,11 +358,11 @@ alt::MValue Go::Runtime::DecodeMValue(Array value)
 
                 if (r.Empty() || !r.IsUint() || g.Empty() || !g.IsUint() || b.Empty() || !b.IsUint() || a.Empty() || !a.IsUint())
                 {
-                    alt::ICore::Instance().LogError("Invalid RGBA MValue");
-                    return alt::ICore::Instance().CreateMValueNone();
+                    core.LogError("Invalid RGBA MValue");
+                    return core.CreateMValueNone();
                 }
 
-                return alt::ICore::Instance().CreateMValueRGBA(alt::RGBA(r.GetUint(), g.GetUint(), b.GetUint(), a.GetUint()));
+                return core.CreateMValueRGBA(alt::RGBA(r.GetUint(), g.GetUint(), b.GetUint(), a.GetUint()));
             }
             else if (typ == alt::IMValue::Type::VECTOR2)
             {
@@ -371,14 +371,14 @@ alt::MValue Go::Runtime::DecodeMValue(Array value)
 
                 if (x.Empty() || !x.IsFloat() || y.Empty() || !y.IsFloat())
                 {
-                    alt::ICore::Instance().LogError("Invalid Vector2 MValue");
-                    return alt::ICore::Instance().CreateMValueNone();
+                    core.LogError("Invalid Vector2 MValue");
+                    return core.CreateMValueNone();
                 }
 
                 auto v2 = alt::Vector2f();
                 v2[0] = x.GetFloat();
                 v2[1] = y.GetFloat();
-                return alt::ICore::Instance().CreateMValueVector2(v2);
+                return core.CreateMValueVector2(v2);
             }
             else if (typ == alt::IMValue::Type::VECTOR3)
             {
@@ -388,15 +388,15 @@ alt::MValue Go::Runtime::DecodeMValue(Array value)
 
                 if (x.Empty() || !x.IsFloat() || y.Empty() || !y.IsFloat() || z.Empty() || z.IsFloat())
                 {
-                    alt::ICore::Instance().LogError("Invalid Vector3 MValue");
-                    return alt::ICore::Instance().CreateMValueNone();
+                    core.LogError("Invalid Vector3 MValue");
+                    return core.CreateMValueNone();
                 }
 
                 auto v3 = alt::Vector3f();
                 v3[0] = x.GetFloat();
                 v3[1] = y.GetFloat();
                 v3[2] = z.GetFloat();
-                return alt::ICore::Instance().CreateMValueVector3(v3);
+                return core.CreateMValueVector3(v3);
             }
             else if (typ == alt::IMValue::Type::FUNCTION)
             {
@@ -405,67 +405,85 @@ alt::MValue Go::Runtime::DecodeMValue(Array value)
 
                 if (id.Empty() || !id.IsInt() || resourceName.Empty() || resourceName.IsString())
                 {
-                    alt::ICore::Instance().LogError("Invalid (exported) Function MValue");
-                    return alt::ICore::Instance().CreateMValueNone();
+                    core.LogError("Invalid (exported) Function MValue");
+                    return core.CreateMValueNone();
                 }
 
                 auto resource = dynamic_cast<Go::Resource *>(Go::Runtime::GetInstance()->GetResource(resourceName.GetString()));
                 if (resource == nullptr)
                 {
-                    alt::ICore::Instance().LogError("Unable to get resource; Failed to export Function MValue");
-                    return alt::ICore::Instance().CreateMValueNone();
+                    core.LogError("Unable to get resource; Failed to export Function MValue");
+                    return core.CreateMValueNone();
                 }
 
                 auto goFunc = new Go::Function(resource->Module, id.GetInt());
-                return alt::ICore::Instance().CreateMValueFunction(goFunc);
+                return core.CreateMValueFunction(goFunc);
             }
         }
         else
         {
-            auto dict = alt::ICore::Instance().CreateMValueDict();
+            auto dict = core.CreateMValueDict();
 
             auto obj = d.GetObject();
 
             for (auto it = obj.begin(); it != obj.end(); it++)
             {
+                dict->Set(it->name.GetString(), DecodeMValue(it->value));
             }
 
             return dict;
         }
     }
-    else if (d.IsArray())
-    {
-        auto list = alt::ICore::Instance().CreateMValueList(value.size);
 
+    if (d.IsArray())
+    {
         auto arr = d.GetArray();
+        auto list = alt::ICore::Instance().CreateMValueList();
 
         for (auto it = arr.begin(); it != arr.end(); it++)
         {
+            list->Push(DecodeMValue(*it));
         }
 
         return list;
     }
-    else if (d.IsNull())
-    {
-        std::cout << "is null" << std::endl;
-        return alt::ICore::Instance().CreateMValueNil();
-    }
 
-    alt::ICore::Instance().LogWarning("Unknown MValue type");
+    core.LogWarning("Unknown MValue type");
 
-    return alt::ICore::Instance().CreateMValueNone();
+    return core.CreateMValueNone();
 }
 
-/*Array Go::Runtime::EncodeMValue(alt::MValueConst mValue) {
-    return Array{};
-}*/
+alt::MValue Go::Runtime::DecodeMValue(Array value)
+{
+    alt::ICore &core = alt::ICore::Instance();
+    auto data = reinterpret_cast<const char *>(value.array);
 
-Array Go::Runtime::EncodeMValue(alt::MValueConst mValue)
+    std::cout << "-------------------" << std::endl;
+    std::cout << "decoding mvalue" << std::endl;
+    std::cout << data << std::endl;
+
+    rapidjson::Document d;
+    d.Parse(data, value.size);
+    // call GetType for IsObject check to work. dont ask why
+    d.GetType();
+
+    return DecodeMValue(d);
+}
+
+rapidjson::Document Go::Runtime::EncodeMValueToJSON(alt::MValueConst mValue)
 {
     rapidjson::Document d;
 
     auto type = mValue->GetType();
 
+    if (type == alt::IMValue::Type::NONE)
+    {
+        d.SetNull();
+    }
+    else if (type == alt::IMValue::Type::NIL)
+    {
+        d.SetNull();
+    }
     if (type == alt::IMValue::Type::BOOL)
     {
         auto value = mValue.As<alt::IMValueBool>()->Value();
@@ -512,8 +530,39 @@ Array Go::Runtime::EncodeMValue(alt::MValueConst mValue)
         d.AddMember(rapidjson::Value("g"), rapidjson::Value(value.g), d.GetAllocator());
         d.AddMember(rapidjson::Value("b"), rapidjson::Value(value.b), d.GetAllocator());
         d.AddMember(rapidjson::Value("a"), rapidjson::Value(value.a), d.GetAllocator());
+    } else if (type == alt::IMValue::Type::FUNCTION) {
+
+    } else if (type == alt::IMValue::Type::VECTOR2) {
+
+    } else if (type == alt::IMValue::Type::VECTOR3) {
+
+    } else if (type == alt::IMValue::Type::BYTE_ARRAY) {
+
+    } else if (type == alt::IMValue::Type::DICT) {
+        auto dict = mValue.As<alt::IMValueDict>();
+        auto alloc = d.GetAllocator();
+        d.SetObject();
+
+        for (auto it = dict->Begin(); it != nullptr; it = dict->Next()) {
+            std::string key = it->GetKey();
+            d.AddMember(rapidjson::Value(key.c_str(), key.size()), EncodeMValueToJSON(it->GetValue()), alloc);
+        }
+    } else if (type == alt::IMValue::Type::LIST) {
+        auto list = mValue.As<alt::IMValueList>();
+        auto alloc = d.GetAllocator();
+        d.SetArray();
+
+        for (alt::Size i = 0; i < list->GetSize(); i++) {
+            d.PushBack(EncodeMValueToJSON(list->Get(i)), alloc);
+        }
     }
 
+    return d;
+}
+
+Array Go::Runtime::EncodeMValue(alt::MValueConst mValue)
+{
+    rapidjson::Document d = EncodeMValueToJSON(mValue);
 
     rapidjson::MemoryBuffer buf;
     rapidjson::Writer<rapidjson::MemoryBuffer> writer(buf);
@@ -529,20 +578,10 @@ Array Go::Runtime::EncodeMValue(alt::MValueConst mValue)
     std::cout << "membuf: " << buf.GetBuffer() << std::endl;
     std::cout << "strbuf: " << strBuf.GetString() << std::endl;
     std::cout << "-------------------" << std::endl;
-    /*Array arr;
-    arr.array = reinterpret_cast<void *>(const_cast<char *>(strBuf.GetString()));//reinterpret_cast<void *>(const_cast<char *>(buf.GetBuffer()));
-    arr.size = strBuf.GetSize();//buf.GetSize();
-    return arr;*/
-
-    // auto str = strBuf.GetString();
-    /*char* data;
-    memcpy(data, strBuf.GetString(), strBuf.GetSize());
-
-    return data;*/
 
     auto size = strBuf.GetSize();
     auto data = new char[size];
-     
+
     Array arr;
     memcpy(data, strBuf.GetString(), size);
     arr.array = data;
