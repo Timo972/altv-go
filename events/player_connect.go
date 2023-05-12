@@ -40,7 +40,7 @@ func checkPlayerConnect() {
 func altPlayerConnectEvent(e C.struct_entity) {
 	p, err := altv.GetBaseObject[altv.Player](altv.BaseObjectType(e.typ), unsafe.Pointer(e.ptr), uint32(e.id), 0)
 	if err != nil {
-		altv.LogError(fmt.Sprintf("[Go] failed to %v", err))
+		altv.LogError(fmt.Sprintf("[Go] PlayerConnect: %v", err))
 		return
 	}
 
@@ -53,8 +53,5 @@ func altPlayerConnectEvent(e C.struct_entity) {
 		event(p)
 	}
 
-	re := len(once.playerConnectEvents) + len(on.playerConnectEvents)
-	if re < 1 {
-		go unregisterOnEvent(playerConnect)
-	}
+	checkPlayerConnect()
 }

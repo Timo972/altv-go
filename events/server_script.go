@@ -46,7 +46,7 @@ func (unsub *unsubscriber) ServerEvent(eventName string, id int) error {
 }
 
 //export altServerScriptEvent
-func altServerScriptEvent(cName *C.char, arr C.struct_goValueArgs) {
+func altServerScriptEvent(cName *C.char, arr C.struct_array) {
 	evt := C.GoString(cName)
 	ctx := getCtx()
 

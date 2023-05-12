@@ -89,9 +89,12 @@ type subscriber struct {
 	resourceErrorEvents         []resourceErrorListener
 	connectionQueueAddEvents    []connectionQueueAddListener
 	connectionQueueRemoveEvents []connectionQueueRemoveListener
-	serverScriptEvents          map[string][]serverEventListener
-	clientScriptEvents          map[string][]clientEventListener
-	once                        bool
+
+	playerDamageEvents []playerDamageListener
+
+	serverScriptEvents map[string][]serverEventListener
+	clientScriptEvents map[string][]clientEventListener
+	once               bool
 }
 
 type unsubscriber struct {
@@ -104,6 +107,7 @@ type EventSubscriber interface {
 	ResourceError(resourceErrorListener) int
 	ConnectionQueueAdd(connectionQueueAddListener) int
 	ConnectionQueueRemove(connectionQueueRemoveListener) int
+	PlayerDamage(playerDamageListener) int
 	ServerEvent(eventName string, listener serverEventListener) int
 	ClientEvent(eventName string, listener clientEventListener) int
 }
@@ -114,6 +118,7 @@ type EventUnsubscriber interface {
 	ResourceError(int) error
 	ConnectionQueueAdd(int) error
 	ConnectionQueueRemove(int) error
+	PlayerDamage(int) error
 	ServerEvent(eventName string, id int) error
 	ClientEvent(eventName string, id int) error
 }
