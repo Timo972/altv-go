@@ -11,14 +11,13 @@ import (
 
 // array converts an array struct to C Value slice
 // pointer is free'd afterwards
-func convertArray[V any](a C.struct_array) ([]V, int) {
+func convertArray[V any](a C.struct_array) ([]V, int, func()) {
 	size := int(a.size)
-	// FIXME: may causes a crash because it frees to early
-	// defer C.free(unsafe.Pointer(a.array))
-
 	cArray := (*[1 << 28]V)(a.array)[:size:size]
 
-	return cArray, size
+	return cArray, size, func() {
+		C.free(unsafe.Pointer(a.array))
+	}
 }
 
 func newStringArray(ptr unsafe.Pointer, size int) []string {

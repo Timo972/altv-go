@@ -87,6 +87,10 @@ bool Go::Resource::Stop() {
     }
 
     stop();
+
+    // TODO: UNLOAD_LIB(Module)
+    // https://github.com/golang/go/issues/11100
+
     return true;
 }
 

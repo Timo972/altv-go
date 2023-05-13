@@ -56,7 +56,7 @@ type BaseObject interface {
 	Context() context.Context
 	SetMetaData(key string, value interface{}) error
 	MetaData(key string, value interface{}) error
-	cancel(error)
+	CancelCtx(error)
 }
 
 type baseObject struct {
@@ -157,7 +157,7 @@ func (b *baseObject) Context() context.Context {
 	return b.ctx
 }
 
-func (b *baseObject) cancel(err error) {
+func (b *baseObject) CancelCtx(err error) {
 	b.cancelFunc(err)
 }
 
@@ -240,6 +240,23 @@ func altRemoveBaseObject(entity C.struct_entity) {
 		return
 	}
 
-	obj.cancel(ErrInvalidBaseObject)
+	obj.CancelCtx(ErrInvalidBaseObject)
 	baseObjectCache.Delete(id)
+}
+
+func newBaseObjectArray[T BaseObject](arr C.struct_array) []T {
+	values, size, free := convertArray[C.struct_entity](arr)
+	defer free()
+	slice := make([]T, size)
+
+	var err error
+	for i := 0; i < size; i++ {
+		slice[i], err = getBaseObject[T](values[i])
+		if err != nil {
+			LogError(fmt.Sprintf("[Go] newBaseObjectArray: %s", err.Error()))
+			continue
+		}
+	}
+
+	return slice
 }
