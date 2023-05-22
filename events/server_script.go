@@ -48,7 +48,10 @@ func (unsub *unsubscriber) ServerEvent(eventName string, id int) error {
 //export altServerScriptEvent
 func altServerScriptEvent(cName *C.char, arr C.struct_array) {
 	evt := C.GoString(cName)
-	ctx := getCtx()
+	ctx := ctxPool.Get().(*Ctx)
+	ctx.defaults()
+
+	// TODO: copy c array to ctx buffers
 
 	for _, event := range once.serverScriptEvents[evt] {
 		event(ctx)
@@ -58,6 +61,9 @@ func altServerScriptEvent(cName *C.char, arr C.struct_array) {
 	for _, event := range on.serverScriptEvents[evt] {
 		event(ctx)
 	}
+
+	ctx.reset()
+	ctxPool.Put(ctx)
 
 	checkServerEvent(evt)
 }

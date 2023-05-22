@@ -1,11 +1,10 @@
 package events
 
 import (
-	"github.com/timo972/altv-go"
 	"golang.org/x/exp/slices"
 )
 
-type clientEventListener func(p altv.Player, ctx Ctx)
+type clientEventListener func(ctx *ClientCtx)
 
 func checkClientEvent(eventName string) {
 	lisCount := len(on.clientScriptEvents[eventName]) + len(once.clientScriptEvents[eventName])
