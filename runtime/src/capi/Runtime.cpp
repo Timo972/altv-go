@@ -46,10 +46,9 @@ EXPORT void *Runtime_CreateMValueFunction(const char *resourceName, unsigned lon
 
     auto func = new Go::Function(resource->Module, id);
     auto mValueFunc = alt::ICore::Instance().CreateMValueFunction(func);
-    auto defaultMVal = mValueFunc.As<alt::IMValue>();
-    defaultMVal->AddRef();
+    auto defaultMVal = std::dynamic_pointer_cast<alt::IMValue>(mValueFunc);
 
-    return defaultMVal.Get();
+    return defaultMVal.get();
 }
 
 EXPORT Array Runtime_CallMValueFunction(void *ptr, Array data) {
@@ -76,8 +75,8 @@ EXPORT Array Runtime_GetAltExport(const char *targetResourceName, const char *ex
     }
 
     alt::MValueDict exports = targetResource->GetExports();
-
-    if (exports.IsEmpty()) {
+    
+    if (exports->GetSize() < 1) {
         std::stringstream ss;
         ss << "Failed to get export: " << exportName << " of resource: " << targetResourceName
            << ". Did you forgot to specify dependencies?";

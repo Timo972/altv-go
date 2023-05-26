@@ -486,32 +486,32 @@ rapidjson::Document Go::Runtime::EncodeMValueToJSON(alt::MValueConst mValue)
     }
     if (type == alt::IMValue::Type::BOOL)
     {
-        auto value = mValue.As<alt::IMValueBool>()->Value();
+        bool value = std::dynamic_pointer_cast<const alt::IMValueBool>(mValue)->Value();
         d.SetBool(value);
     }
     else if (type == alt::IMValue::Type::UINT)
     {
-        auto value = mValue.As<alt::IMValueUInt>()->Value();
+        uint64_t value = std::dynamic_pointer_cast<const alt::IMValueUInt>(mValue)->Value();
         d.SetUint64(value);
     }
     else if (type == alt::IMValue::Type::INT)
     {
-        auto value = mValue.As<alt::IMValueInt>()->Value();
+        int64_t value = std::dynamic_pointer_cast<const alt::IMValueInt>(mValue)->Value();
         d.SetInt64(value);
     }
     else if (type == alt::IMValue::Type::DOUBLE)
     {
-        auto value = mValue.As<alt::IMValueDouble>()->Value();
+        double value = std::dynamic_pointer_cast<const alt::IMValueDouble>(mValue)->Value();
         d.SetDouble(value);
     }
     else if (type == alt::IMValue::Type::STRING)
     {
-        auto value = mValue.As<alt::IMValueString>()->Value();
+        std::string value = std::dynamic_pointer_cast<const alt::IMValueString>(mValue)->Value();
         d.SetString(value.c_str(), value.size());
     }
     else if (type == alt::IMValue::Type::BASE_OBJECT)
     {
-        auto baseObject = mValue.As<alt::IMValueBaseObject>()->Value();
+        auto baseObject = std::dynamic_pointer_cast<const alt::IMValueBaseObject>(mValue)->Value();
         Entity data = GetBaseObject(baseObject.get());
         auto ptr = PointerToString(data.ptr);
         d.SetObject();
@@ -523,7 +523,7 @@ rapidjson::Document Go::Runtime::EncodeMValueToJSON(alt::MValueConst mValue)
     }
     else if (type == alt::IMValue::Type::RGBA)
     {
-        auto value = mValue.As<alt::IMValueRGBA>()->Value();
+        alt::RGBA value = std::dynamic_pointer_cast<const alt::IMValueRGBA>(mValue)->Value();
         d.SetObject();
         d.AddMember(rapidjson::Value("$type"), rapidjson::Value(static_cast<int>(alt::IMValue::Type::RGBA)), d.GetAllocator());
         d.AddMember(rapidjson::Value("r"), rapidjson::Value(value.r), d.GetAllocator());
@@ -531,21 +531,21 @@ rapidjson::Document Go::Runtime::EncodeMValueToJSON(alt::MValueConst mValue)
         d.AddMember(rapidjson::Value("b"), rapidjson::Value(value.b), d.GetAllocator());
         d.AddMember(rapidjson::Value("a"), rapidjson::Value(value.a), d.GetAllocator());
     } else if (type == alt::IMValue::Type::FUNCTION) {
-        auto value = mValue.As<alt::IMValueFunction>();
-        std::string ptr = PointerToString(const_cast<alt::IMValueFunction *>(value.Get()));
+        auto value = std::dynamic_pointer_cast<const alt::IMValueFunction>(mValue);
+        std::string ptr = PointerToString(const_cast<alt::IMValueFunction *>(value.get()));
         d.SetObject();
         auto alloc = d.GetAllocator();
         d.AddMember(rapidjson::Value("$type"), rapidjson::Value(static_cast<int>(alt::IMValue::Type::FUNCTION)), alloc);
         d.AddMember(rapidjson::Value("ptr"), rapidjson::Value(ptr.c_str(), ptr.size()), alloc);
     } else if (type == alt::IMValue::Type::VECTOR2) {
-        auto value = mValue.As<alt::IMValueVector2>()->Value();
+        auto value = std::dynamic_pointer_cast<const alt::IMValueVector2>(mValue)->Value();
         d.SetObject();
         auto alloc = d.GetAllocator();
         d.AddMember(rapidjson::Value("$type"), rapidjson::Value(static_cast<int>(alt::IMValue::Type::VECTOR2)), alloc);
         d.AddMember(rapidjson::Value("x"), rapidjson::Value(value[0]), alloc);
         d.AddMember(rapidjson::Value("y"), rapidjson::Value(value[1]), alloc);
     } else if (type == alt::IMValue::Type::VECTOR3) {
-        auto value = mValue.As<alt::IMValueVector3>()->Value();
+        auto value = std::dynamic_pointer_cast<const alt::IMValueVector3>(mValue)->Value();
         d.SetObject();
         auto alloc = d.GetAllocator();
         d.AddMember(rapidjson::Value("$type"), rapidjson::Value(static_cast<int>(alt::IMValue::Type::VECTOR3)), alloc);
@@ -553,13 +553,13 @@ rapidjson::Document Go::Runtime::EncodeMValueToJSON(alt::MValueConst mValue)
         d.AddMember(rapidjson::Value("y"), rapidjson::Value(value[1]), alloc);
         d.AddMember(rapidjson::Value("z"), rapidjson::Value(value[2]), alloc);
     } else if (type == alt::IMValue::Type::BYTE_ARRAY) {
-        auto value = mValue.As<alt::IMValueByteArray>();
+        auto value = std::dynamic_pointer_cast<const alt::IMValueByteArray>(mValue);
         d.SetObject();
         auto alloc = d.GetAllocator();
         d.AddMember(rapidjson::Value("$type"), rapidjson::Value(static_cast<int>(alt::IMValue::Type::BYTE_ARRAY)), alloc);
         d.AddMember(rapidjson::Value("data"), rapidjson::Value(reinterpret_cast<const char *>(value->GetData()), value->GetSize()), alloc);
     } else if (type == alt::IMValue::Type::DICT) {
-        auto dict = mValue.As<alt::IMValueDict>();
+        auto dict = std::dynamic_pointer_cast<const alt::IMValueDict>(mValue);
         auto alloc = d.GetAllocator();
         d.SetObject();
 
@@ -568,7 +568,7 @@ rapidjson::Document Go::Runtime::EncodeMValueToJSON(alt::MValueConst mValue)
             d.AddMember(rapidjson::Value(key.c_str(), key.size()), EncodeMValueToJSON(it->GetValue()), alloc);
         }
     } else if (type == alt::IMValue::Type::LIST) {
-        auto list = mValue.As<alt::IMValueList>();
+        auto list = std::dynamic_pointer_cast<const alt::IMValueList>(mValue);
         auto alloc = d.GetAllocator();
         d.SetArray();
 
