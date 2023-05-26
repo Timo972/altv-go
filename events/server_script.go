@@ -51,7 +51,7 @@ func altServerScriptEvent(cName *C.char, arr C.struct_array) {
 	ctx := ctxPool.Get().(*Ctx)
 	ctx.defaults()
 
-	// TODO: copy c array to ctx buffers
+	ctx.copyArgs(arr)
 
 	for _, event := range once.serverScriptEvents[evt] {
 		event(ctx)
