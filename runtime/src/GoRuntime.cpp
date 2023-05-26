@@ -612,6 +612,28 @@ Array Go::Runtime::EncodeMValue(alt::MValueConst mValue)
     return arr;
 }
 
+Array Go::Runtime::EncodeMValueArgs(alt::MValueArgs args) {
+    Array cbufs;
+    cbufs.size = args.size();
+    auto bufs = new Array[cbufs.size];
+    for (auto i = 0; i < cbufs.size; i++) {
+        bufs[i] = EncodeMValue(args[i]);
+    }
+    cbufs.array = bufs;
+    return cbufs;
+}
+
+alt::MValueArgs Go::Runtime::DecodeMValueArgs(Array cbufs) {
+    auto bufs = reinterpret_cast<Array *>(cbufs.array);
+    alt::MValueArgs args;
+    
+    for (auto i = 0; i < cbufs.size; i++) {
+        args.push_back(DecodeMValue(bufs[i]));
+    }
+
+    return args;
+}
+
 /*Array Go::Runtime::EncodeMValue(alt::MValue mValue)
 {
     auto t = mValue->GetType();
