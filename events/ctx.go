@@ -29,6 +29,7 @@ type Ctx struct {
 
 type ClientCtx struct {
 	Ctx
+	p altv.Player
 }
 
 func (c *Ctx) reset() {
@@ -77,6 +78,7 @@ func (c *Ctx) Value(i int, v interface{}) error {
 
 func (c *ClientCtx) reset() {
 	c.Ctx.reset()
+	c.p = nil
 }
 
 // Player returns the player that triggered the event

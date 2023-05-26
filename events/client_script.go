@@ -1,8 +1,14 @@
 package events
 
 import (
+	"github.com/timo972/altv-go"
 	"golang.org/x/exp/slices"
+	"unsafe"
+	"fmt"
 )
+
+// #include "capi.h"
+import "C"
 
 type clientEventListener func(ctx *ClientCtx)
 
@@ -40,4 +46,35 @@ func (unsub *unsubscriber) ClientEvent(eventName string, id int) error {
 	unsub.sub.clientScriptEvents[eventName] = slices.Delete(listeners, id, 1)
 	checkClientEvent(eventName)
 	return nil
+}
+
+
+//export altClientScriptEvent
+func altClientScriptEvent(e C.struct_entity, cName *C.char, arr C.struct_array) {
+	evt := C.GoString(cName)
+	ctx := clientCtxPool.Get().(*ClientCtx)
+	ctx.defaults()
+
+	var err error
+	ctx.p, err = altv.GetBaseObject[altv.Player](altv.BaseObjectType(e.typ), unsafe.Pointer(e.ptr), uint32(e.id), 0)
+	if err != nil {
+		altv.LogError(fmt.Sprintf("[Go] ClientScriptEvent: %v", err))
+		return
+	}
+
+	ctx.copyArgs(arr)
+	
+	for _, event := range once.clientScriptEvents[evt] {
+		event(ctx)
+	}
+	once.clientScriptEvents[evt] = make([]clientEventListener, 0)
+
+	for _, event := range on.clientScriptEvents[evt] {
+		event(ctx)
+	}
+
+	ctx.reset()
+	ctxPool.Put(ctx)
+
+	checkClientEvent(evt)
 }
