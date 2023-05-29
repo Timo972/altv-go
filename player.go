@@ -29,9 +29,9 @@ func NewPlayer(ptr unsafe.Pointer, id uint32) Player {
 	return p
 }
 
-func EmptyPlayer() Player {
+/*func EmptyPlayer() Player {
 	return &player{}
-}
+}*/
 
 func Players() []Player {
 	arr := C.core_get_players()
