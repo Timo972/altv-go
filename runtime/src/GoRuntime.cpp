@@ -508,7 +508,7 @@ rapidjson::Document Go::Runtime::EncodeMValueToJSON(alt::MValueConst mValue)
     else if (type == alt::IMValue::Type::STRING)
     {
         std::string value = std::dynamic_pointer_cast<const alt::IMValueString>(mValue)->Value();
-        d.SetString(value.c_str(), value.size());
+        d.SetString(value.c_str(), value.size(), d.GetAllocator());
     }
     else if (type == alt::IMValue::Type::BASE_OBJECT)
     {
