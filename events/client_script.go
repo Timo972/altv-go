@@ -1,10 +1,11 @@
 package events
 
 import (
+	"fmt"
+	"unsafe"
+
 	"github.com/timo972/altv-go"
 	"golang.org/x/exp/slices"
-	"unsafe"
-	"fmt"
 )
 
 // #include "capi.h"
@@ -12,8 +13,20 @@ import "C"
 
 type clientEventListener func(ctx *ClientCtx)
 
+func numClientEventListeners(eventName string) int {
+	count := 0
+	if events, ok := on.clientScriptEvents[eventName]; ok {
+		count += len(events)
+	}
+	if events, ok := once.clientScriptEvents[eventName]; ok {
+		count += len(events)
+	}
+
+	return count
+}
+
 func checkClientEvent(eventName string) {
-	lisCount := len(on.clientScriptEvents[eventName]) + len(once.clientScriptEvents[eventName])
+	lisCount := numClientEventListeners(eventName)
 	if lisCount < 1 {
 		go unregisterOnEvent(clientScriptEvent)
 	}
@@ -48,10 +61,15 @@ func (unsub *unsubscriber) ClientEvent(eventName string, id int) error {
 	return nil
 }
 
-
 //export altClientScriptEvent
 func altClientScriptEvent(e C.struct_entity, cName *C.char, arr C.struct_array) {
 	evt := C.GoString(cName)
+
+	if lisCount := numClientEventListeners(evt); lisCount < 1 {
+		//TODO: free C.struct_array
+		return
+	}
+
 	ctx := clientCtxPool.Get().(*ClientCtx)
 	ctx.defaults()
 
@@ -63,14 +81,18 @@ func altClientScriptEvent(e C.struct_entity, cName *C.char, arr C.struct_array) 
 	}
 
 	ctx.copyArgs(arr)
-	
-	for _, event := range once.clientScriptEvents[evt] {
-		event(ctx)
-	}
-	once.clientScriptEvents[evt] = make([]clientEventListener, 0)
 
-	for _, event := range on.clientScriptEvents[evt] {
-		event(ctx)
+	if events, ok := once.clientScriptEvents[evt]; ok {
+		for _, event := range events {
+			event(ctx)
+		}
+		once.clientScriptEvents[evt] = make([]clientEventListener, 0)
+	}
+
+	if events, ok := on.clientScriptEvents[evt]; ok {
+		for _, event := range events {
+			event(ctx)
+		}
 	}
 
 	ctx.reset()

@@ -9,8 +9,20 @@ import "C"
 
 type serverEventListener func(ctx *Ctx)
 
+func numServerEventListeners(eventName string) int {
+	count := 0
+	if events, ok := on.serverScriptEvents[eventName]; ok {
+		count += len(events)
+	}
+	if events, ok := once.serverScriptEvents[eventName]; ok {
+		count += len(events)
+	}
+
+	return count
+}
+
 func checkServerEvent(eventName string) {
-	lisCount := len(on.serverScriptEvents[eventName]) + len(once.serverScriptEvents[eventName])
+	lisCount := numServerEventListeners(eventName)
 	if lisCount < 1 {
 		go unregisterOnEvent(serverScriptEvent)
 	}
@@ -48,18 +60,28 @@ func (unsub *unsubscriber) ServerEvent(eventName string, id int) error {
 //export altServerScriptEvent
 func altServerScriptEvent(cName *C.char, arr C.struct_array) {
 	evt := C.GoString(cName)
+
+	if lisCount := numServerEventListeners(evt); lisCount < 1 {
+		// TODO: free C.struct_array
+		return
+	}
+
 	ctx := ctxPool.Get().(*Ctx)
 	ctx.defaults()
 
 	ctx.copyArgs(arr)
 
-	for _, event := range once.serverScriptEvents[evt] {
-		event(ctx)
+	if events, ok := once.serverScriptEvents[evt]; ok {
+		for _, event := range events {
+			event(ctx)
+		}
+		once.serverScriptEvents[evt] = make([]serverEventListener, 0)
 	}
-	once.serverScriptEvents[evt] = make([]serverEventListener, 0)
 
-	for _, event := range on.serverScriptEvents[evt] {
-		event(ctx)
+	if events, ok := on.serverScriptEvents[evt]; ok {
+		for _, event := range events {
+			event(ctx)
+		}
 	}
 
 	ctx.reset()

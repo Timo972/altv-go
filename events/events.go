@@ -127,8 +127,8 @@ type EventUnsubscriber interface {
 }
 
 var (
-	on   *subscriber       = &subscriber{}
-	once *subscriber       = &subscriber{once: true}
+	on   *subscriber       = &subscriber{serverScriptEvents: make(map[string][]serverEventListener), clientScriptEvents: make(map[string][]clientEventListener)}
+	once *subscriber       = &subscriber{once: true, serverScriptEvents: make(map[string][]serverEventListener), clientScriptEvents: make(map[string][]clientEventListener)}
 	On   EventSubscriber   = on
 	Once EventSubscriber   = once
 	Off  EventUnsubscriber = &unsubscriber{sub: on}

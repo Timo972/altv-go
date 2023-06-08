@@ -8,7 +8,7 @@ void Go::ServerStartedEvent::Call(const alt::CEvent *ev)
 
     if (call == nullptr)
     {
-        alt::ICore::Instance().LogError("Couldn't not call ServerStartedEvent.");
+        alt::ICore::Instance().LogError("Could not call ServerStartedEvent.");
         return;
     }
 
