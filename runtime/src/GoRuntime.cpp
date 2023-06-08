@@ -319,9 +319,9 @@ alt::MValue Go::Runtime::DecodeMValue(rapidjson::Value &d)
         std::cout << "is object" << std::endl;
         rapidjson::Value &$type = d["$type"];
 
-        if (!$type.Empty() && $type.IsInt())
+        if ($type.IsInt())
         {
-            std::cout << "is custom mvalue" << std::endl;
+            std::cout << "is special mvalue" << std::endl;
             auto typ = static_cast<alt::IMValue::Type>($type.GetInt());
 
             if (typ == alt::IMValue::Type::BASE_OBJECT)
@@ -329,7 +329,7 @@ alt::MValue Go::Runtime::DecodeMValue(rapidjson::Value &d)
                 rapidjson::Value &id = d["id"];
                 rapidjson::Value &type = d["type"];
 
-                if (id.Empty() || type.Empty())
+                if (!id.IsUint() || !type.IsInt())
                 {
                     core.LogError("Invalid BaseObject MValue");
                     return core.CreateMValueNone();
@@ -341,7 +341,8 @@ alt::MValue Go::Runtime::DecodeMValue(rapidjson::Value &d)
             {
                 rapidjson::Value &data = d["data"];
 
-                if (data.Empty() || !data.IsString())
+                // data.Empty() || 
+                if (!data.IsString())
                 {
                     core.LogError("Invalid ByteArray MValue");
                     return core.CreateMValueNone();
@@ -356,7 +357,7 @@ alt::MValue Go::Runtime::DecodeMValue(rapidjson::Value &d)
                 rapidjson::Value &b = d["b"];
                 rapidjson::Value &a = d["a"];
 
-                if (r.Empty() || !r.IsUint() || g.Empty() || !g.IsUint() || b.Empty() || !b.IsUint() || a.Empty() || !a.IsUint())
+                if (!r.IsUint() || !g.IsUint() || !b.IsUint() || !a.IsUint())
                 {
                     core.LogError("Invalid RGBA MValue");
                     return core.CreateMValueNone();
@@ -369,7 +370,7 @@ alt::MValue Go::Runtime::DecodeMValue(rapidjson::Value &d)
                 rapidjson::Value &x = d["x"];
                 rapidjson::Value &y = d["y"];
 
-                if (x.Empty() || !x.IsFloat() || y.Empty() || !y.IsFloat())
+                if (!x.IsFloat() || !y.IsFloat())
                 {
                     core.LogError("Invalid Vector2 MValue");
                     return core.CreateMValueNone();
@@ -386,7 +387,7 @@ alt::MValue Go::Runtime::DecodeMValue(rapidjson::Value &d)
                 rapidjson::Value &y = d["y"];
                 rapidjson::Value &z = d["z"];
 
-                if (x.Empty() || !x.IsFloat() || y.Empty() || !y.IsFloat() || z.Empty() || z.IsFloat())
+                if (!x.IsFloat() || !y.IsFloat() || z.IsFloat())
                 {
                     core.LogError("Invalid Vector3 MValue");
                     return core.CreateMValueNone();
@@ -403,7 +404,7 @@ alt::MValue Go::Runtime::DecodeMValue(rapidjson::Value &d)
                 rapidjson::Value &id = d["id"];
                 rapidjson::Value &resourceName = d["resourceName"];
 
-                if (id.Empty() || !id.IsInt() || resourceName.Empty() || resourceName.IsString())
+                if (!id.IsInt() || !resourceName.IsString())
                 {
                     core.LogError("Invalid (exported) Function MValue");
                     return core.CreateMValueNone();
