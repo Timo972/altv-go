@@ -52,19 +52,22 @@ package main
 
 import "C"
 import (
-    "github.com/timo972/altv-go"
+  "github.com/timo972/altv-go"
+  // this package is a required import. if you are not using the events package, import it like this
+  // _ "github.com/timo972/altv-go/events"
+  // if you are not importing it, the module will log errors calling the ServerStarted and ResourceStopEvent
 	"github.com/timo972/altv-go/events"
 )
 
 func init() {
 	// You may want to initialize something here.
-    // However the alt:V api is limited due to the reason 
-    // that the package did not load the go-module's c-api yet!
-    // As of now you can only use the event features here.
+  // However the alt:V api is limited due to the reason 
+  // that the package did not load the go-module's c-api yet!
+  // As of now you can only use the event features here.
 
-    // e.g.
-    events.On.ServerStarted(func () {
-        altv.LogInfo("Server Started")
+  // e.g.
+  events.On.ServerStarted(func () {
+      altv.LogInfo("Server Started")
     })
 }
 
@@ -75,7 +78,7 @@ func main() {
 
 //export OnStart
 func OnStart() {
-    // Full alt:V api is available. Do whatever you want.
+  // Full alt:V api is available. Do whatever you want.
 
 	altv.LogInfo("Resource Started")
 }
