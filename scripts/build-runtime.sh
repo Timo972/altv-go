@@ -11,7 +11,7 @@ fi
 
 pushd build
 
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-9 ..
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++ ..
 cmake --build . --config Release
 
 popd
