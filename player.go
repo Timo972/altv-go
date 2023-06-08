@@ -11,6 +11,7 @@ type Player interface {
 	DiscordUserID() int64
 	SocialID() uint64
 	Health() uint16
+	Spawn(x float64, y float64, z float64, delayMs uint)
 }
 
 type player struct {
@@ -52,4 +53,8 @@ func (p *player) DiscordUserID() int64 {
 
 func (p *player) Health() uint16 {
 	return uint16(C.player_get_health(p.ptr))
+}
+
+func (p *player) Spawn(x float64, y float64, z float64, delayMs uint) {
+	C.player_spawn(p.ptr, C.float(x), C.float(y), C.float(z), C.ulong(delayMs))
 }
