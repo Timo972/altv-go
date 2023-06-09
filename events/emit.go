@@ -23,15 +23,27 @@ func Emit(eventName string, args ...interface{}) error {
 	cEvent := C.CString(eventName)
 	defer C.free(unsafe.Pointer(cEvent))
 
-	var err error
-	margs := make([][]byte, len(args))
+	cbytearrs := C.malloc(C.size_t(len(args)) * C.size_t(C.sizeof_Array))
+	cargs := C.struct_array{
+		array: cbytearrs,
+		size:  C.ulonglong(len(args)),
+	}
+	bytearrs := (*[1 << 30]C.struct_array)(cbytearrs)
+	defer C.free(cbytearrs)
 
 	for i, arg := range args {
-		margs[i], err = mvalue.Marshal(arg)
+		raw, err := mvalue.Marshal(arg)
 		if err != nil {
 			return err
 		}
+
+		bytearrs[i] = C.struct_array{
+			array: unsafe.Pointer(C.CBytes(raw)),
+			size:  C.ulonglong(len(raw)),
+		}
 	}
+
+	C.core_trigger_local_event(cEvent, cargs)
 
 	return nil
 }

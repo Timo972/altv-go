@@ -2,6 +2,7 @@ package events
 
 import (
 	"context"
+	"log"
 	"sync"
 
 	"github.com/goccy/go-reflect"
@@ -22,9 +23,9 @@ var clientCtxPool = sync.Pool{New: func() any {
 
 // Ctx is used as the context of script event
 type Ctx struct {
-	bufs [][]byte
+	bufs  [][]byte
 	cache []interface{}
-	ctx  context.Context
+	ctx   context.Context
 }
 
 type ClientCtx struct {
@@ -46,10 +47,12 @@ func (c *Ctx) copyArgs(cargs C.struct_array) {
 	size := int(cargs.size)
 	c.bufs = make([][]byte, size)
 	c.cache = make([]interface{}, size)
-	cbufs := (*[1<<28]C.struct_array)(cargs.array)[:size:size]
+	log.Printf("events::ctx::copyArgs -> array size %d", size)
+	cbufs := (*[1 << 28]C.struct_array)(cargs.array)[:size:size]
 
 	for i := 0; i < size; i++ {
 		c.bufs[i] = C.GoBytes(cbufs[i].array, C.int(cbufs[i].size))
+		log.Printf("events::ctx::copyArgs -> array[%d]: %+v = %s size %d === %d", i, c.bufs[i], c.bufs[i], len(c.bufs[i]), cbufs[i].size)
 	}
 }
 
@@ -59,12 +62,13 @@ func (c *Ctx) Context() context.Context {
 
 // Value decodes the value at index i into v
 func (c *Ctx) Value(i int, v interface{}) error {
-	if len(c.bufs) >= i {
+	if len(c.bufs) <= i {
 		return ErrArgOutOfBounds
 	}
 
 	if c.cache[i] != nil {
-		reflect.ValueNoEscapeOf(v).Set(reflect.ValueOf(c.cache[i]))
+		log.Printf("events::ctx::Value (cached) -> %d: %v", i, c.cache[i])
+		reflect.ValueNoEscapeOf(v).Set(reflect.ValueNoEscapeOf(c.cache[i]))
 		return nil
 	}
 
@@ -73,6 +77,9 @@ func (c *Ctx) Value(i int, v interface{}) error {
 		return err
 	}
 	c.cache[i] = v
+
+	log.Printf("events::ctx::Value -> %d: %v", i, v)
+
 	return nil
 }
 
