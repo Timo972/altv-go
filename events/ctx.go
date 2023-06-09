@@ -90,5 +90,5 @@ func (c *ClientCtx) reset() {
 
 // Player returns the player that triggered the event
 func (c *ClientCtx) Player() altv.Player {
-	return nil
+	return c.p
 }
