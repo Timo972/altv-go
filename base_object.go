@@ -7,7 +7,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"unsafe"
 
 	"github.com/goccy/go-json"
@@ -161,18 +160,12 @@ func (b *baseObject) CancelCtx(err error) {
 	b.cancelFunc(err)
 }
 
-func (b *baseObject) SetMetaData(key string, v interface{}) error {
-	raw, err := mvalue.Marshal(v)
+func (b *baseObject) SetMetaData(key string, v any) error {
+	data, free, err := marshal(v)
 	if err != nil {
 		return err
 	}
-
-	log.Printf("SetMetaData: %s -> %s\n", key, string(raw))
-
-	data := C.struct_array{
-		array: unsafe.Pointer(C.CBytes(raw)),
-		size:  C.ulonglong(len(raw)),
-	}
+	defer free()
 
 	cKey := C.CString(key)
 	defer C.free(unsafe.Pointer(cKey))
@@ -185,21 +178,17 @@ func (b *baseObject) SetMetaData(key string, v interface{}) error {
 	return nil
 }
 
-func (b *baseObject) MetaData(key string, v interface{}) error {
-	var cArr C.struct_array
-	cKey := C.CString(key)
-	defer C.free(unsafe.Pointer(cKey))
+func (b *baseObject) MetaData(key string, v any) error {
+	var carr C.struct_array
+	ckey := C.CString(key)
+	defer C.free(unsafe.Pointer(ckey))
 	if b.typ == BaseTypePlayer {
-		cArr = C.player_get_meta_data(b.ptr, cKey)
+		carr = C.player_get_meta_data(b.ptr, ckey)
 	} else if b.typ == BaseTypeVehicle {
-		cArr = C.vehicle_get_meta_data(b.ptr, cKey)
+		carr = C.vehicle_get_meta_data(b.ptr, ckey)
 	}
 
-	data := C.GoBytes(cArr.array, C.int(cArr.size))
-
-	log.Printf("MetaData: %s -> %s\n", key, string(data))
-
-	return mvalue.Unmarshal(data, v)
+	return unmarshal(carr, v)
 }
 
 func newBaseObject(typ BaseObjectType, ptr unsafe.Pointer, id uint32) baseObject {

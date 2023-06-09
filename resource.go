@@ -29,7 +29,7 @@ type Resource interface {
 	// Main returns the resource main file.
 	Main() string
 	// Exports populates the given struct with the resource exports.
-	Exports(out interface{}) error
+	// Exports(out any) error
 	// Dependencies returns resource names the resource depends on.
 	Dependencies() []string
 	// Dependants returns resource names that depend on this resource.
@@ -41,7 +41,9 @@ type Resource interface {
 	// Path returns the resource path.
 	Path() string
 	// Config populates the given struct with the resource config.
-	Config(out interface{}) error
+	Config(out any) error
+	// Import imports a value exported by another resource, no matter which language. See mvalue serialization for more information about supported values.
+	Import(name string, out any) error
 }
 
 // CurrentResource is the resource you are scripting in.
@@ -102,7 +104,7 @@ func (r publicResource) Main() string {
 	return C.GoString(C.resource_get_main(r.ptr))
 }
 
-func (r publicResource) Exports(out interface{}) error {
+func (r publicResource) Exports(out any) error {
 	return nil
 }
 
@@ -136,6 +138,10 @@ func (r localResource) Path() string {
 	return r.path
 }
 
-func (r publicResource) Config(out interface{}) error {
+func (r publicResource) Config(out any) error {
 	return nil
+}
+
+func (r publicResource) Import(name string, out any) error {
+	return resourceImport(r.Name(), name, out)
 }
