@@ -46,6 +46,10 @@ func (p *Player) SetHealth(health uint16) *Player {
 	return p
 }
 
+func (p *Player) Spawn(x, y, z float64, delay uint) {
+
+}
+
 func NewPlayer(id uint32) *Player {
 	return &Player{
 		Entity: Entity{

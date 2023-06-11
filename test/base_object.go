@@ -97,5 +97,6 @@ func NewBaseObject(id uint32, typ altv.BaseObjectType) *BaseObject {
 	return &BaseObject{
 		ctx:        ctx,
 		cancelFunc: cancel,
+		id:         id,
 	}
 }
