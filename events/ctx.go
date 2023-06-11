@@ -83,6 +83,11 @@ func (c *Ctx) Value(i int, v interface{}) error {
 	return nil
 }
 
+// NumValue returns the number of values in the context
+func (c *Ctx) NumValue() int {
+	return len(c.bufs)
+}
+
 func (c *ClientCtx) reset() {
 	c.Ctx.reset()
 	c.p = nil
