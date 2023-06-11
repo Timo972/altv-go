@@ -7,7 +7,7 @@ import (
 // #include "capi.h"
 import "C"
 
-type serverEventListener func(ctx *Ctx)
+type ServerEventListener func(ctx *Ctx)
 
 func numServerEventListeners(eventName string) int {
 	count := 0
@@ -28,10 +28,10 @@ func checkServerEvent(eventName string) {
 	}
 }
 
-func (s *subscriber) ServerEvent(eventName string, listener serverEventListener) int {
+func (s *subscriber) ServerEvent(eventName string, listener ServerEventListener) int {
 	listeners, ok := s.serverScriptEvents[eventName]
 	if !ok {
-		listeners = make([]serverEventListener, 1)
+		listeners = make([]ServerEventListener, 1)
 		listeners[0] = listener
 	} else {
 		listeners = append(listeners, listener)
@@ -75,7 +75,7 @@ func altServerScriptEvent(cName *C.char, arr C.struct_array) {
 		for _, event := range events {
 			event(ctx)
 		}
-		once.serverScriptEvents[evt] = make([]serverEventListener, 0)
+		once.serverScriptEvents[evt] = make([]ServerEventListener, 0)
 	}
 
 	if events, ok := on.serverScriptEvents[evt]; ok {

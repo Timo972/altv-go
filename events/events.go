@@ -93,8 +93,8 @@ type subscriber struct {
 	playerDamageEvents []playerDamageListener
 	resourceStopEvents []resourceStopListener
 
-	serverScriptEvents map[string][]serverEventListener
-	clientScriptEvents map[string][]clientEventListener
+	serverScriptEvents map[string][]ServerEventListener
+	clientScriptEvents map[string][]ClientEventListener
 	once               bool
 }
 
@@ -110,8 +110,8 @@ type EventSubscriber interface {
 	ConnectionQueueRemove(connectionQueueRemoveListener) int
 	PlayerDamage(playerDamageListener) int
 	ResourceStop(resourceStopListener) int
-	ServerEvent(eventName string, listener serverEventListener) int
-	ClientEvent(eventName string, listener clientEventListener) int
+	ServerEvent(eventName string, listener ServerEventListener) int
+	ClientEvent(eventName string, listener ClientEventListener) int
 }
 
 type EventUnsubscriber interface {
@@ -127,8 +127,8 @@ type EventUnsubscriber interface {
 }
 
 var (
-	on   *subscriber       = &subscriber{serverScriptEvents: make(map[string][]serverEventListener), clientScriptEvents: make(map[string][]clientEventListener)}
-	once *subscriber       = &subscriber{once: true, serverScriptEvents: make(map[string][]serverEventListener), clientScriptEvents: make(map[string][]clientEventListener)}
+	on   *subscriber       = &subscriber{serverScriptEvents: make(map[string][]ServerEventListener), clientScriptEvents: make(map[string][]ClientEventListener)}
+	once *subscriber       = &subscriber{once: true, serverScriptEvents: make(map[string][]ServerEventListener), clientScriptEvents: make(map[string][]ClientEventListener)}
 	On   EventSubscriber   = on
 	Once EventSubscriber   = once
 	Off  EventUnsubscriber = &unsubscriber{sub: on}

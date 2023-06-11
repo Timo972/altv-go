@@ -11,7 +11,7 @@ import (
 // #include "capi.h"
 import "C"
 
-type clientEventListener func(ctx *ClientCtx)
+type ClientEventListener func(ctx *ClientCtx)
 
 func numClientEventListeners(eventName string) int {
 	count := 0
@@ -32,10 +32,10 @@ func checkClientEvent(eventName string) {
 	}
 }
 
-func (s *subscriber) ClientEvent(eventName string, listener clientEventListener) int {
+func (s *subscriber) ClientEvent(eventName string, listener ClientEventListener) int {
 	listeners, ok := s.clientScriptEvents[eventName]
 	if !ok {
-		listeners = make([]clientEventListener, 1)
+		listeners = make([]ClientEventListener, 1)
 		listeners[0] = listener
 	} else {
 		listeners = append(listeners, listener)
@@ -86,7 +86,7 @@ func altClientScriptEvent(e C.struct_entity, cName *C.char, arr C.struct_array) 
 		for _, event := range events {
 			event(ctx)
 		}
-		once.clientScriptEvents[evt] = make([]clientEventListener, 0)
+		once.clientScriptEvents[evt] = make([]ClientEventListener, 0)
 	}
 
 	if events, ok := on.clientScriptEvents[evt]; ok {
