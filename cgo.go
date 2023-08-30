@@ -8,4 +8,4 @@ package altv
 // #include "capi.h"
 import "C"
 
-var _ = ""
+//go:generate make capi
