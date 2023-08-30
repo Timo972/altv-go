@@ -71,7 +71,6 @@ EXPORT Entity Core_CreatePointBlipEntity(Entity entity, unsigned short global);
 EXPORT Entity Core_CreateAreaBlip(float x, float y, float z, float width, float height, unsigned short global);
 EXPORT Entity Core_CreateRadiusBlip(float x, float y, float z, float radius, unsigned short global);
 EXPORT Entity Core_CreateColShapePolygon(float minZ, float maxZ, Array points);
-EXPORT Array Core_GetBlips();
 EXPORT Array Core_GetAllResources();
 EXPORT const char *Core_StringToSHA256(const char *str);
 EXPORT void Core_StopServer();
