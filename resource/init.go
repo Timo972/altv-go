@@ -1,4 +1,4 @@
-package altv
+package resource
 
 import (
 	"fmt"
@@ -9,10 +9,6 @@ import (
 	"github.com/timo972/altv-go/mvalue"
 )
 
-// #cgo CFLAGS: -I./internal/c-api/lib
-// #cgo linux LDFLAGS: -L./internal/c-api/lib/linux -lcapi -ldl -g
-// #cgo windows LDFLAGS: -L./internal/c-api/lib/win32 -lcapi -ldl -g
-// #cgo CXXFLAGS: -std=c++14
 // #include <stdlib.h>
 // #include "capi.h"
 import "C"
@@ -45,10 +41,10 @@ func listenSignal() {
 func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, ver *C.char) C.int {
 	fmt.Println("resource initializing")
 
-	CurrentResource = &localResource{
+	Current = &LocalResource{
 		name: C.GoString(name),
 		path: C.GoString(path),
-		publicResource: publicResource{
+		PublicResource: PublicResource{
 			ptr: ptr,
 		},
 	}
@@ -68,7 +64,7 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, ver *C.char)
 
 	fmt.Println("resource initialized")
 
-	mvalue.SetResourceName(CurrentResource.Name())
+	mvalue.SetResourceName(Current.Name())
 
 	ready = true
 
