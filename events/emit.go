@@ -3,7 +3,7 @@ package events
 import (
 	"unsafe"
 
-	"github.com/timo972/altv-go"
+	"github.com/timo972/altv-go/entity"
 	"github.com/timo972/altv-go/internal/cutil"
 	"github.com/timo972/altv-go/mvalue"
 )
@@ -41,9 +41,9 @@ func marshalArgs(args []any) (C.struct_array, func(), error) {
 	return cargs, free, nil
 }
 
-func newPlayerCArray(p []altv.Player) (C.struct_array, cutil.FreeArrayFunc) {
+func newPlayerCArray(p []entity.Player) (C.struct_array, cutil.FreeArrayFunc) {
 	// 8 is sizeof void ptr on 64bit
-	ptr, size, free := cutil.NewCArrayFunc[altv.Player, unsafe.Pointer](p, 8, func(item altv.Player) unsafe.Pointer {
+	ptr, size, free := cutil.NewCArrayFunc[entity.Player, unsafe.Pointer](p, 8, func(item entity.Player) unsafe.Pointer {
 		return item.Ptr()
 	})
 
@@ -78,7 +78,7 @@ func Emit(eventName string, args ...any) error {
 	return nil
 }
 
-func EmitClient(p altv.Player, evt string, args ...any) error {
+func EmitClient(p entity.Player, evt string, args ...any) error {
 	cevt := C.CString(evt)
 	defer C.free(unsafe.Pointer(cevt))
 
@@ -92,7 +92,7 @@ func EmitClient(p altv.Player, evt string, args ...any) error {
 	return nil
 }
 
-func EmitClients(p []altv.Player, evt string, args ...any) error {
+func EmitClients(p []entity.Player, evt string, args ...any) error {
 	cclients, freeClients := newPlayerCArray(p)
 	defer freeClients()
 

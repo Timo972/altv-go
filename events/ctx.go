@@ -6,7 +6,7 @@ import (
 	"sync"
 
 	"github.com/goccy/go-reflect"
-	"github.com/timo972/altv-go"
+	"github.com/timo972/altv-go/entity"
 	"github.com/timo972/altv-go/mvalue"
 )
 
@@ -30,7 +30,7 @@ type Ctx struct {
 
 type ClientCtx struct {
 	Ctx
-	p altv.Player
+	p entity.Player
 }
 
 func (c *Ctx) reset() {
@@ -94,6 +94,6 @@ func (c *ClientCtx) reset() {
 }
 
 // Player returns the player that triggered the event
-func (c *ClientCtx) Player() altv.Player {
+func (c *ClientCtx) Player() entity.Player {
 	return c.p
 }

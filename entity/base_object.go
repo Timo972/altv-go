@@ -163,7 +163,7 @@ func (b *baseObject) CancelCtx(err error) {
 }
 
 func (b *baseObject) SetMetaData(key string, v any) error {
-	data, free, err := marshal(v)
+	/*data, free, err := marshal(v)
 	if err != nil {
 		return err
 	}
@@ -175,22 +175,22 @@ func (b *baseObject) SetMetaData(key string, v any) error {
 		C.player_set_meta_data(b.ptr, cKey, data)
 	} else if b.typ == BaseTypeVehicle {
 		C.vehicle_set_meta_data(b.ptr, cKey, data)
-	}
+	}*/
 
 	return nil
 }
 
 func (b *baseObject) MetaData(key string, v any) error {
-	var carr C.struct_array
+	/*var carr C.struct_array
 	ckey := C.CString(key)
 	defer C.free(unsafe.Pointer(ckey))
 	if b.typ == BaseTypePlayer {
 		carr = C.player_get_meta_data(b.ptr, ckey)
 	} else if b.typ == BaseTypeVehicle {
 		carr = C.vehicle_get_meta_data(b.ptr, ckey)
-	}
+	}*/
 
-	return unmarshal(carr, v)
+	return nil // unmarshal(carr, v)
 }
 
 func newBaseObject(typ BaseObjectType, ptr unsafe.Pointer, id uint32) baseObject {

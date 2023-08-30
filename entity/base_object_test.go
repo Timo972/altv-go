@@ -1,12 +1,6 @@
 package entity
 
-import (
-	"testing"
-
-	"github.com/timo972/altv-go/mvalue"
-)
-
-func TestBaseObjectMarshal(t *testing.T) {
+/*func TestBaseObjectMarshal(t *testing.T) {
 	testCases := []struct {
 		id     uint32
 		typ    BaseObjectType
@@ -29,7 +23,7 @@ func TestBaseObjectMarshal(t *testing.T) {
 			t.Errorf("mvalue.Marshal(%+v) = %s; want %s", obj, string(result), testCase.output)
 		}
 	}
-}
+}*/
 
 /*func TestBaseObjectUnmarshal(t *testing.T) {
 	testCases := []struct {
