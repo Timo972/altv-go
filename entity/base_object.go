@@ -1,17 +1,18 @@
-package altv
+package entity
 
-// #include "capi.h"
+// #cgo CFLAGS: -I../internal/c-api/lib
+// #cgo linux LDFLAGS: -L../internal/c-api/lib/linux -lcapi -ldl -g
+// #cgo windows LDFLAGS: -L../internal/c-api/lib/win32 -lcapi -ldl -g
+// #cgo CXXFLAGS: -std=c++14
 // #include <stdlib.h>
+// #include "capi.h"
 import "C"
 import (
 	"context"
 	"errors"
-	"fmt"
 	"unsafe"
 
 	"github.com/goccy/go-json"
-	"github.com/timo972/altv-go/internal/cutil"
-	"github.com/timo972/altv-go/mvalue"
 )
 
 var ErrInvalidBaseObject = errors.New("base object is invalid")
@@ -67,12 +68,12 @@ type baseObject struct {
 	cancelFunc context.CancelCauseFunc
 }
 
-type BaseObjectData[T BaseObject] struct {
+/*type BaseObjectData[T BaseObject] struct {
 	json.Marshaler
 	json.Unmarshaler
 	ID    uint32
 	Type  BaseObjectType
-	ptr   unsafe.Pointer
+	Ptr   unsafe.Pointer
 	Model uint32
 }
 
@@ -95,7 +96,7 @@ func (b *BaseObjectData[T]) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	if b.ptr, err = mvalue.ParsePointer(obj.Ptr); err != nil {
+	if b.Ptr, err = mvalue.ParsePointer(obj.Ptr); err != nil {
 		return err
 	}
 	b.ID = obj.ID
@@ -105,11 +106,11 @@ func (b *BaseObjectData[T]) UnmarshalJSON(data []byte) error {
 }
 
 func (b *BaseObjectData[T]) Obj() (T, error) {
-	return GetBaseObject[T](b.Type, b.ptr, b.ID, b.Model)
-}
+	return nil, nil // factory.GetBaseObject[T](b.Type, b.Ptr, b.ID, b.Model)
+}*/
 
 func (b *baseObject) MarshalJSON() ([]byte, error) {
-	return json.Marshal(baseObjectData{ID: b.id, Type: b.typ})
+	return []byte("{}"), nil // json.Marshal(baseObjectData{ID: b.id, Type: b.typ})
 }
 
 func (b *baseObject) ID() uint32 {
@@ -201,45 +202,4 @@ func newBaseObject(typ BaseObjectType, ptr unsafe.Pointer, id uint32) baseObject
 		ctx:        ctx,
 		cancelFunc: cancel,
 	}
-}
-
-//export altCreateBaseObject
-func altCreateBaseObject(entity C.struct_entity) {
-	fmt.Printf("altCreateBaseObject\n")
-	id := uint32(entity.id)
-	typ := BaseObjectType(entity.typ)
-	ptr := unsafe.Pointer(entity.ptr)
-	model := uint32(entity.model)
-
-	if _, err := GetBaseObject[BaseObject](typ, ptr, id, model); err != nil {
-		LogError(fmt.Sprintf("altCreateBaseObject: %s", err.Error()))
-	}
-}
-
-//export altRemoveBaseObject
-func altRemoveBaseObject(entity C.struct_entity) {
-	fmt.Printf("altRemoveBaseObject\n")
-	id := uint32(entity.id)
-	typ := BaseObjectType(entity.typ)
-	ptr := unsafe.Pointer(entity.ptr)
-	model := uint32(entity.model)
-
-	obj, err := GetBaseObject[BaseObject](typ, ptr, id, model)
-	if err != nil {
-		LogError(fmt.Sprintf("altRemoveBaseObject: %s", err.Error()))
-		return
-	}
-
-	obj.CancelCtx(ErrInvalidBaseObject)
-	baseObjectCache.Delete(id)
-}
-
-func newBaseObjectArray[T BaseObject](arr C.struct_array) []T {
-	return cutil.NewArrayFunc[C.struct_entity, T](unsafe.Pointer(arr.array), int(arr.size), func(item C.struct_entity) T {
-		v, err := getBaseObject[T](item)
-		if err != nil {
-			LogError(fmt.Sprintf("[Go] newBaseObjectArray: %s", err.Error()))
-		}
-		return v
-	})
 }

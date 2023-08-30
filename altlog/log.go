@@ -1,9 +1,11 @@
-package altv
+package altlog
 
-/*
-#include <stdlib.h>
-#include "capi.h"
-*/
+// #cgo CFLAGS: -I../internal/c-api/lib
+// #cgo linux LDFLAGS: -L../internal/c-api/lib/linux -lcapi -ldl -g
+// #cgo windows LDFLAGS: -L../internal/c-api/lib/win32 -lcapi -ldl -g
+// #cgo CXXFLAGS: -std=c++14
+// #include <stdlib.h>
+// #include "capi.h"
 import "C"
 import (
 	"io"
@@ -25,14 +27,14 @@ func (l *altLog) Write(p []byte) (n int, err error) {
 var Console io.Writer = &altLog{}
 
 // LogWarning logs a warning message to the console.
-func LogWarning(msgs ...string) {
+func Warnln(msgs ...string) {
 	cstr := C.CString(strings.Join(msgs, " "))
 	defer C.free(unsafe.Pointer(cstr))
 	C.core_log_warning(cstr)
 }
 
 // LogError logs an error message to the console.
-func LogError(msgs ...string) {
+func Errorln(msgs ...string) {
 	cstr := C.CString(strings.Join(msgs, " "))
 	defer C.free(unsafe.Pointer(cstr))
 	C.core_log_error(cstr)
@@ -41,7 +43,7 @@ func LogError(msgs ...string) {
 // Log logs a message to the console.
 // You can use color codes in the message.
 // https://docs.altv.mp/articles/logging.html
-func Log(msgs ...string) {
+func Println(msgs ...string) {
 	cstr := C.CString(strings.Join(msgs, " "))
 	defer C.free(unsafe.Pointer(cstr))
 	C.core_log_colored(cstr)

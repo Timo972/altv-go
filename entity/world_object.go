@@ -1,4 +1,4 @@
-package altv
+package entity
 
 type WorldObject interface {
 	BaseObject

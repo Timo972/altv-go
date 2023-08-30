@@ -3,15 +3,18 @@ package events
 import (
 	"C"
 
-	"github.com/timo972/altv-go"
 	"golang.org/x/exp/slices"
 )
 import (
 	"fmt"
 	"unsafe"
+
+	"github.com/timo972/altv-go/altlog"
+	"github.com/timo972/altv-go/entity"
+	"github.com/timo972/altv-go/factory"
 )
 
-type playerDamageListener = func(p altv.Player, attacker altv.Entity, healthDamage uint16, armourDamage uint16, weapon uint32)
+type playerDamageListener = func(p entity.Player, attacker entity.Entity, healthDamage uint16, armourDamage uint16, weapon uint32)
 
 func checkPlayerDamageEvent() {
 	lisCount := len(on.playerDamageEvents) + len(once.playerDamageEvents)
@@ -38,14 +41,14 @@ func (unsub *unsubscriber) PlayerDamage(id int) error {
 
 //export altPlayerDamageEvent
 func altPlayerDamageEvent(cp C.struct_entity, ce C.struct_entity, healthDmg C.ushort, armourDmg C.ushort, weap C.ulong) {
-	p, err := altv.GetBaseObject[altv.Player](altv.BaseObjectType(cp.typ), unsafe.Pointer(cp.ptr), uint32(cp.id), 0)
+	p, err := factory.GetBaseObject[entity.Player](entity.BaseObjectType(cp.typ), unsafe.Pointer(cp.ptr), uint32(cp.id), 0)
 	if err != nil {
-		altv.LogError(fmt.Sprintf("[Go] PlayerDamage: %v", err))
+		altlog.Errorln(fmt.Sprintf("[Go] PlayerDamage: %v", err))
 		return
 	}
-	e, err := altv.GetBaseObject[altv.Entity](altv.BaseObjectType(ce.typ), unsafe.Pointer(ce.ptr), uint32(ce.id), uint32(ce.model))
+	e, err := factory.GetBaseObject[entity.Entity](entity.BaseObjectType(ce.typ), unsafe.Pointer(ce.ptr), uint32(ce.id), uint32(ce.model))
 	if err != nil {
-		altv.LogError(fmt.Sprintf("[Go] PlayerDamage: %v", err))
+		altlog.Errorln(fmt.Sprintf("[Go] PlayerDamage: %v", err))
 		return
 	}
 

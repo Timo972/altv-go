@@ -1,18 +1,20 @@
-package altv
+package factory
 
 import (
 	"testing"
 	"unsafe"
+
+	"github.com/timo972/altv-go/entity"
 )
 
 type testPlayer struct {
-	Player
+	entity.Player
 	username string
 }
 
-func testPlayerFactory(ptr unsafe.Pointer, id uint32) Player {
+func testPlayerFactory(ptr unsafe.Pointer, id uint32) entity.Player {
 	return &testPlayer{
-		Player: NewPlayer(ptr, id),
+		Player: entity.NewPlayer(ptr, id),
 	}
 }
 
@@ -27,12 +29,12 @@ func TestPlayerFactory(t *testing.T) {
 }
 
 type testVehicle struct {
-	Vehicle
+	entity.Vehicle
 }
 
-func testVehicleFactory(ptr unsafe.Pointer, id uint32, model uint32) Vehicle {
+func testVehicleFactory(ptr unsafe.Pointer, id uint32, model uint32) entity.Vehicle {
 	return &testVehicle{
-		Vehicle: NewVehicle(ptr, id, model),
+		Vehicle: entity.NewVehicle(ptr, id, model),
 	}
 }
 

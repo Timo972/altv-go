@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/timo972/altv-go"
+	"github.com/timo972/altv-go/altlog"
+	"github.com/timo972/altv-go/entity"
+	"github.com/timo972/altv-go/factory"
 	"golang.org/x/exp/slices"
 )
 
-type playerConnectListener func(p altv.Player)
+type playerConnectListener func(p entity.Player)
 
 func (e *subscriber) PlayerConnect(listener playerConnectListener) int {
 	e.playerConnectEvents = append(e.playerConnectEvents, listener)
@@ -38,9 +40,9 @@ func checkPlayerConnect() {
 
 //export altPlayerConnectEvent
 func altPlayerConnectEvent(e C.struct_entity) {
-	p, err := altv.GetBaseObject[altv.Player](altv.BaseObjectType(e.typ), unsafe.Pointer(e.ptr), uint32(e.id), 0)
+	p, err := factory.GetBaseObject[entity.Player](entity.BaseObjectType(e.typ), unsafe.Pointer(e.ptr), uint32(e.id), 0)
 	if err != nil {
-		altv.LogError(fmt.Sprintf("[Go] PlayerConnect: %v", err))
+		altlog.Errorln(fmt.Sprintf("[Go] PlayerConnect: %v", err))
 		return
 	}
 

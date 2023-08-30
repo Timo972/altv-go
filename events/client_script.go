@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/timo972/altv-go"
+	"github.com/timo972/altv-go/altlog"
+	"github.com/timo972/altv-go/entity"
+	"github.com/timo972/altv-go/factory"
 	"golang.org/x/exp/slices"
 )
 
@@ -74,9 +76,9 @@ func altClientScriptEvent(e C.struct_entity, cName *C.char, arr C.struct_array) 
 	ctx.defaults()
 
 	var err error
-	ctx.p, err = altv.GetBaseObject[altv.Player](altv.BaseObjectType(e.typ), unsafe.Pointer(e.ptr), uint32(e.id), 0)
+	ctx.p, err = factory.GetBaseObject[entity.Player](entity.BaseObjectType(e.typ), unsafe.Pointer(e.ptr), uint32(e.id), 0)
 	if err != nil {
-		altv.LogError(fmt.Sprintf("[Go] ClientScriptEvent: %v", err))
+		altlog.Errorln(fmt.Sprintf("[Go] ClientScriptEvent: %v", err))
 		return
 	}
 
