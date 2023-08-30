@@ -6,6 +6,9 @@
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/memorybuffer.h"
+#ifdef _MSC_VER
+#undef GetObject
+#endif
 
 Go::Runtime *Go::Runtime::Instance = nullptr;
 
