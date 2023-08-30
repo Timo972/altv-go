@@ -22,9 +22,12 @@ Thats it!
 ## Building
 **To build the module there are some prerequisites needed:**
 - [Windows] Visual Studio 2019 or later
-- [Linux] GCC 8
+- [Linux] GCC >=8
 - [CMake](https://cmake.org/download/)
-- [ProtoC & Protobuf 3.19.4](https://github.com/protocolbuffers/protobuf/releases/tag/v3.19.4)
 
-Then just run ``build.bat`` or ``build.sh`` in the root folder (depending on os).
-You may have to tweek build.bat on windows for cmake to find libprotobuf
+### Clone the repository
+Run ``git clone --recurse-submodules https://github.com/timo972/altv-go.git``
+
+### Building the module
+Run ``make runtime`` in the repo root folder.
+In case you dont have make installed you can run ``./scripts/build-runtime.sh`` on linux and ``.\scripts\build-runtime.bat`` on windows.
