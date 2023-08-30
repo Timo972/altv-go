@@ -96,6 +96,8 @@ type subscriber struct {
 	serverScriptEvents map[string][]ServerEventListener
 	clientScriptEvents map[string][]ClientEventListener
 	once               bool
+
+	consoleCommandEvents []consoleCommandListener
 }
 
 type unsubscriber struct {
@@ -112,6 +114,7 @@ type EventSubscriber interface {
 	ResourceStop(resourceStopListener) int
 	ServerEvent(eventName string, listener ServerEventListener) int
 	ClientEvent(eventName string, listener ClientEventListener) int
+	ConsoleCommand(consoleCommandListener) int
 }
 
 type EventUnsubscriber interface {
@@ -124,6 +127,7 @@ type EventUnsubscriber interface {
 	ResourceStop(int) error
 	ServerEvent(eventName string, id int) error
 	ClientEvent(eventName string, id int) error
+	ConsoleCommand(int) error
 }
 
 var (
