@@ -87,25 +87,18 @@ func init() {
 	SetVehicleFactory(entity.NewVehicle)
 }
 
-// getBaseObject ! internal only !
-func getBaseObject[Type entity.BaseObject](p C.struct_entity) (Type, error) {
-	typ, ptr, id, model := getEntityData(p)
-
-	return getOrCreateBaseObject[Type](typ, ptr, id, model)
-}
-
 // GetBaseObject ! internal only !
 func GetBaseObject[Type entity.BaseObject](typ entity.BaseObjectType, ptr unsafe.Pointer, id uint32, model uint32) (Type, error) {
 	return getOrCreateBaseObject[Type](typ, ptr, id, model)
 }
 
 //export altCreateBaseObject
-func altCreateBaseObject(entity C.struct_entity) {
+func altCreateBaseObject(e C.struct_entity) {
 	fmt.Printf("altCreateBaseObject\n")
-	id := uint32(entity.id)
-	typ := entity.BaseObjectType(entity.typ)
-	ptr := unsafe.Pointer(entity.ptr)
-	model := uint32(entity.model)
+	id := uint32(e.id)
+	typ := entity.BaseObjectType(e.typ)
+	ptr := unsafe.Pointer(e.ptr)
+	model := uint32(e.model)
 
 	if _, err := GetBaseObject[entity.BaseObject](typ, ptr, id, model); err != nil {
 		altlog.Errorln(fmt.Sprintf("altCreateBaseObject: %s", err.Error()))
@@ -113,12 +106,12 @@ func altCreateBaseObject(entity C.struct_entity) {
 }
 
 //export altRemoveBaseObject
-func altRemoveBaseObject(entity C.struct_entity) {
+func altRemoveBaseObject(e C.struct_entity) {
 	fmt.Printf("altRemoveBaseObject\n")
-	id := uint32(entity.id)
-	typ := entity.BaseObjectType(entity.typ)
-	ptr := unsafe.Pointer(entity.ptr)
-	model := uint32(entity.model)
+	id := uint32(e.id)
+	typ := entity.BaseObjectType(e.typ)
+	ptr := unsafe.Pointer(e.ptr)
+	model := uint32(e.model)
 
 	obj, err := GetBaseObject[entity.BaseObject](typ, ptr, id, model)
 	if err != nil {

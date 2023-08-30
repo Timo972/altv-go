@@ -18,7 +18,7 @@ type AltPlayer struct {
 	entity
 }
 
-func NewPlayer(ptr unsafe.Pointer, id uint32) *AltPlayer {
+func NewPlayer(ptr unsafe.Pointer, id uint32) Player {
 	return &AltPlayer{
 		entity{
 			worldObject{
