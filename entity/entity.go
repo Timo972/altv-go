@@ -4,6 +4,6 @@ type Entity interface {
 	WorldObject
 }
 
-type entity struct {
-	worldObject
+type AltEntity struct {
+	AltWorldObject
 }

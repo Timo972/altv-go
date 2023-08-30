@@ -30,7 +30,7 @@ func getOrCreateBaseObject[Type entity.BaseObject](typ entity.BaseObjectType, pt
 			return object, ErrNoFactory
 		}
 
-		if typ == entity.BaseTypeVehicle {
+		if typ == entity.TypeVehicle {
 			factory, ok := f.(VehicleFactory)
 			if !ok {
 				return object, ErrInvalidFactory
@@ -41,7 +41,7 @@ func getOrCreateBaseObject[Type entity.BaseObject](typ entity.BaseObjectType, pt
 			return object, nil
 		}
 
-		if typ == entity.BaseTypePlayer {
+		if typ == entity.TypePlayer {
 			factory, ok := f.(BaseFactory[entity.Player])
 			if !ok {
 				return object, ErrInvalidFactory
@@ -73,13 +73,13 @@ type VehicleFactory func(ptr unsafe.Pointer, id uint32, model uint32) entity.Veh
 
 // SetPlayerFactory sets the factory used by the package to create player struct instances
 func SetPlayerFactory(factory BaseFactory[entity.Player]) {
-	factories.Store(entity.BaseTypePlayer, factory)
-	fmt.Println("Player Factory loaded", entity.BaseTypePlayer, factory)
+	factories.Store(entity.TypePlayer, factory)
+	fmt.Println("Player Factory loaded", entity.TypePlayer, factory)
 }
 
 func SetVehicleFactory(factory VehicleFactory) {
-	factories.Store(entity.BaseTypeVehicle, factory)
-	fmt.Println("Vehicle Factory loaded", entity.BaseTypeVehicle, factory)
+	factories.Store(entity.TypeVehicle, factory)
+	fmt.Println("Vehicle Factory loaded", entity.TypeVehicle, factory)
 }
 
 func init() {

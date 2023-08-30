@@ -15,14 +15,14 @@ type Player interface {
 }
 
 type AltPlayer struct {
-	entity
+	AltEntity
 }
 
 func NewPlayer(ptr unsafe.Pointer, id uint32) Player {
 	return &AltPlayer{
-		entity{
-			worldObject{
-				baseObject: newBaseObject(BaseTypePlayer, ptr, id),
+		AltEntity{
+			AltWorldObject{
+				AltBaseObject: newBaseObject(TypePlayer, ptr, id),
 			},
 		},
 	}

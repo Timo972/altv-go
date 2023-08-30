@@ -4,6 +4,6 @@ type WorldObject interface {
 	BaseObject
 }
 
-type worldObject struct {
-	baseObject
+type AltWorldObject struct {
+	AltBaseObject
 }

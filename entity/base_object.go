@@ -17,35 +17,6 @@ import (
 
 var ErrInvalidBaseObject = errors.New("base object is invalid")
 
-type BaseObjectType = uint8
-
-const (
-	BaseTypePlayer BaseObjectType = iota
-	BaseTypeVehicle
-	BaseTypePed
-	BaseTypeNetworkObject
-	BaseTypeBlip
-	BaseTypeWebView
-	BaseTypeVoiceChannel
-	BaseTypeColShape
-	BaseTypeCheckpoint
-	BaseTypeWebSocketClient
-	BaseTypeHttpClient
-	BaseTypeAudio
-	BaseTypeRMLElement
-	BaseTypeRMLDocument
-	BaseTypeLocalPlayer
-	BaseTypeObject
-	BaseTypeVirtualEntity
-	BaseTypeVirtualEntityGroup
-	BaseTypeMarker
-	BaseTypeTextLabel
-	BaseTypeLocalPed
-	BaseTypeLocalVehicle
-	BaseTypeAudioFilter
-	BaseTypeSize
-)
-
 type BaseObject interface {
 	json.Marshaler
 	// json.Unmarshaler
@@ -60,7 +31,7 @@ type BaseObject interface {
 	CancelCtx(error)
 }
 
-type baseObject struct {
+type AltBaseObject struct {
 	id         uint32
 	ptr        unsafe.Pointer
 	typ        BaseObjectType
@@ -77,7 +48,7 @@ type baseObject struct {
 	Model uint32
 }
 
-type baseObjectData struct {
+type altBaseObjectData struct {
 	mvalue.SpecialType
 	ID    uint32         `json:"id"`
 	Type  BaseObjectType `json:"type"`
@@ -86,11 +57,11 @@ type baseObjectData struct {
 }
 
 func (b *BaseObjectData[T]) MarshalJSON() ([]byte, error) {
-	return json.Marshal(baseObjectData{ID: b.ID, Type: b.Type, Ptr: "", Model: b.Model, SpecialType: mvalue.SpecialType{Type: mvalue.TypeBaseObject}})
+	return json.Marshal(AltBaseObjectData{ID: b.ID, Type: b.Type, Ptr: "", Model: b.Model, SpecialType: mvalue.SpecialType{Type: mvalue.TypeBaseObject}})
 }
 
 func (b *BaseObjectData[T]) UnmarshalJSON(data []byte) error {
-	var obj baseObjectData
+	var obj AltBaseObjectData
 	var err error
 	if err = json.Unmarshal(data, &obj); err != nil {
 		return err
@@ -109,23 +80,23 @@ func (b *BaseObjectData[T]) Obj() (T, error) {
 	return nil, nil // factory.GetBaseObject[T](b.Type, b.Ptr, b.ID, b.Model)
 }*/
 
-func (b *baseObject) MarshalJSON() ([]byte, error) {
-	return []byte("{}"), nil // json.Marshal(baseObjectData{ID: b.id, Type: b.typ})
+func (b *AltBaseObject) MarshalJSON() ([]byte, error) {
+	return []byte("{}"), nil // json.Marshal(AltBaseObjectData{ID: b.id, Type: b.typ})
 }
 
-func (b *baseObject) ID() uint32 {
+func (b *AltBaseObject) ID() uint32 {
 	return b.id
 }
 
-func (b *baseObject) Type() BaseObjectType {
+func (b *AltBaseObject) Type() BaseObjectType {
 	return b.typ
 }
 
-func (b *baseObject) Ptr() unsafe.Pointer {
+func (b *AltBaseObject) Ptr() unsafe.Pointer {
 	return b.ptr
 }
 
-func (b *baseObject) Valid() bool {
+func (b *AltBaseObject) Valid() bool {
 	if b.ctx == nil {
 		return false
 	}
@@ -138,31 +109,31 @@ func (b *baseObject) Valid() bool {
 	return true
 }
 
-func (b *baseObject) Destroy() {
-	if b.typ == BaseTypePlayer {
+func (b *AltBaseObject) Destroy() {
+	if b.typ == TypePlayer {
 		C.player_destroy(b.ptr)
-	} else if b.typ == BaseTypeVoiceChannel {
+	} else if b.typ == TypeVoiceChannel {
 		C.voice_channel_destroy(b.ptr)
-	} else if b.typ == BaseTypeCheckpoint {
+	} else if b.typ == TypeCheckpoint {
 		C.checkpoint_destroy(b.ptr)
-	} else if b.typ == BaseTypeColShape {
+	} else if b.typ == TypeColShape {
 		C.col_shape_destroy(b.ptr)
-	} else if b.typ == BaseTypeVehicle {
+	} else if b.typ == TypeVehicle {
 		C.vehicle_destroy(b.ptr)
-	} else if b.typ == BaseTypeBlip {
+	} else if b.typ == TypeBlip {
 		C.blip_destroy(b.ptr)
 	}
 }
 
-func (b *baseObject) Context() context.Context {
+func (b *AltBaseObject) Context() context.Context {
 	return b.ctx
 }
 
-func (b *baseObject) CancelCtx(err error) {
+func (b *AltBaseObject) CancelCtx(err error) {
 	b.cancelFunc(err)
 }
 
-func (b *baseObject) SetMetaData(key string, v any) error {
+func (b *AltBaseObject) SetMetaData(key string, v any) error {
 	/*data, free, err := marshal(v)
 	if err != nil {
 		return err
@@ -180,7 +151,7 @@ func (b *baseObject) SetMetaData(key string, v any) error {
 	return nil
 }
 
-func (b *baseObject) MetaData(key string, v any) error {
+func (b *AltBaseObject) MetaData(key string, v any) error {
 	/*var carr C.struct_array
 	ckey := C.CString(key)
 	defer C.free(unsafe.Pointer(ckey))
@@ -193,9 +164,9 @@ func (b *baseObject) MetaData(key string, v any) error {
 	return nil // unmarshal(carr, v)
 }
 
-func newBaseObject(typ BaseObjectType, ptr unsafe.Pointer, id uint32) baseObject {
+func newBaseObject(typ BaseObjectType, ptr unsafe.Pointer, id uint32) AltBaseObject {
 	ctx, cancel := context.WithCancelCause(context.Background())
-	return baseObject{
+	return AltBaseObject{
 		ptr:        ptr,
 		id:         id,
 		typ:        typ,

@@ -10,16 +10,16 @@ type Vehicle interface {
 	Entity
 }
 
-type vehicle struct {
-	entity
+type AltVehicle struct {
+	AltEntity
 	model uint32
 }
 
 func NewVehicle(ptr unsafe.Pointer, id uint32, model uint32) Vehicle {
-	v := &vehicle{
-		entity{
-			worldObject{
-				baseObject: newBaseObject(BaseTypeVehicle, ptr, id),
+	v := &AltVehicle{
+		AltEntity{
+			AltWorldObject{
+				AltBaseObject: newBaseObject(TypeVehicle, ptr, id),
 			},
 		},
 		model,
@@ -28,6 +28,6 @@ func NewVehicle(ptr unsafe.Pointer, id uint32, model uint32) Vehicle {
 	return v
 }
 
-func (v *vehicle) Model() uint32 {
+func (v *AltVehicle) Model() uint32 {
 	return v.model
 }

@@ -37,12 +37,12 @@ func Players() []entity.Player {
 }
 
 func PlayerByID(id uint32) (entity.Player, error) {
-	p := C.core_get_base_object_by_i_d(C.uchar(entity.BaseTypePlayer), C.uint(id))
+	p := C.core_get_base_object_by_i_d(C.uchar(entity.TypePlayer), C.uint(id))
 	return factory.GetBaseObject[entity.Player](getEntityData(p))
 }
 
 func VehicleByID(id uint32) (entity.Vehicle, error) {
-	e := C.core_get_base_object_by_i_d(C.uchar(entity.BaseTypeVehicle), C.uint(id))
+	e := C.core_get_base_object_by_i_d(C.uchar(entity.TypePlayer), C.uint(id))
 	return factory.GetBaseObject[entity.Vehicle](getEntityData(e))
 }
 
