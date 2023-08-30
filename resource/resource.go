@@ -10,7 +10,6 @@ import "C"
 import (
 	"unsafe"
 
-	"github.com/timo972/altv-go/imprt"
 	"github.com/timo972/altv-go/internal/cutil"
 	"github.com/timo972/altv-go/perm"
 )
@@ -55,7 +54,7 @@ type Resource interface {
 	// Config populates the given struct with the resource config.
 	Config(out any) error
 	// Import imports a value exported by another resource, no matter which language. See mvalue serialization for more information about supported values.
-	Import(name string, out any) error
+	// Import(name string, out any) error
 }
 
 // CurrentResource is the resource you are scripting in.
@@ -146,6 +145,6 @@ func (r PublicResource) Config(out any) error {
 	return nil
 }
 
-func (r PublicResource) Import(name string, out any) error {
+/*func (r PublicResource) Import(name string, out any) error {
 	return imprt.New(r.Name(), name, out)
-}
+}*/

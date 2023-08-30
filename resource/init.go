@@ -6,7 +6,6 @@ import (
 	"unsafe"
 
 	"github.com/timo972/altv-go/internal/lib"
-	"github.com/timo972/altv-go/mvalue"
 )
 
 // #include <stdlib.h>
@@ -59,12 +58,11 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, ver *C.char)
 
 	status := C.load_module(mod)
 	if int(status) == 0 {
-		log.Fatalf("couldn't locate %s library", lib.MODULE_NAME)
+		log.Printf("couldn't locate %s library", lib.MODULE_NAME)
+		return status
 	}
 
 	fmt.Println("resource initialized")
-
-	mvalue.SetResourceName(Current.Name())
 
 	ready = true
 
