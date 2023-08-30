@@ -12,7 +12,7 @@ type serverStartedListener func()
 func (sub *subscriber) ServerStarted(listener serverStartedListener) int {
 	fmt.Println("subscribing to serverStarted")
 	sub.serverStartedEvents = append(sub.serverStartedEvents, listener)
-	go registerOnEvent(serverStarted)
+	registerOnEvent(serverStarted)
 	return len(sub.serverStartedEvents) - 1
 }
 
@@ -29,7 +29,7 @@ func (unsub *unsubscriber) ServerStarted(id int) error {
 func checkServerStarted() {
 	lisCount := len(on.serverStartedEvents) + len(once.serverStartedEvents)
 	if lisCount < 1 {
-		go unregisterOnEvent(serverStarted)
+		unregisterOnEvent(serverStarted)
 	}
 }
 

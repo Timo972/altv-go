@@ -11,13 +11,13 @@ type resourceErrorListener = func(resourceName string)
 func checkResourceError() {
 	re := len(once.resourceErrorEvents) + len(on.resourceErrorEvents)
 	if re < 1 {
-		go unregisterOnEvent(resourceError)
+		unregisterOnEvent(resourceError)
 	}
 }
 
 func (e *subscriber) ResourceError(listener resourceErrorListener) int {
 	e.resourceErrorEvents = append(e.resourceErrorEvents, listener)
-	go registerOnEvent(resourceError)
+	registerOnEvent(resourceError)
 	return len(e.resourceErrorEvents) - 1
 }
 

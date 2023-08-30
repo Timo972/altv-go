@@ -16,13 +16,13 @@ type playerDamageListener = func(p altv.Player, attacker altv.Entity, healthDama
 func checkPlayerDamageEvent() {
 	lisCount := len(on.playerDamageEvents) + len(once.playerDamageEvents)
 	if lisCount < 1 {
-		go unregisterOnEvent(serverScriptEvent)
+		unregisterOnEvent(serverScriptEvent)
 	}
 }
 
 func (s *subscriber) PlayerDamage(listener playerDamageListener) int {
 	s.playerDamageEvents = append(s.playerDamageEvents, listener)
-	go registerOnEvent(playerDamage)
+	registerOnEvent(playerDamage)
 	return len(s.playerDamageEvents) - 1
 }
 

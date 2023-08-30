@@ -1,11 +1,5 @@
 package events
 
-import (
-	"unsafe"
-
-	"github.com/timo972/altv-go"
-)
-
 // #cgo CFLAGS: -I../internal/c-api/lib
 // #cgo linux LDFLAGS: -L../internal/c-api/lib/linux -lcapi -ldl -g
 // #cgo windows LDFLAGS: -L../internal/c-api/lib/win32 -lcapi -ldl -g
@@ -137,21 +131,3 @@ var (
 	Once EventSubscriber   = once
 	Off  EventUnsubscriber = &unsubscriber{sub: on}
 )
-
-func registerOnEvent(event uint16) {
-	altv.WaitReady()
-
-	cresource := C.CString(altv.CurrentResource.Name())
-	defer C.free(unsafe.Pointer(cresource))
-
-	C.runtime_register_alt_event(cresource, C.ushort(event))
-}
-
-func unregisterOnEvent(event uint16) {
-	altv.WaitReady()
-
-	cresource := C.CString(altv.CurrentResource.Name())
-	defer C.free(unsafe.Pointer(cresource))
-
-	C.runtime_unregister_alt_event(cresource, C.ushort(event))
-}

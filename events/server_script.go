@@ -24,7 +24,7 @@ func numServerEventListeners(eventName string) int {
 func checkServerEvent(eventName string) {
 	lisCount := numServerEventListeners(eventName)
 	if lisCount < 1 {
-		go unregisterOnEvent(serverScriptEvent)
+		unregisterOnEvent(serverScriptEvent)
 	}
 }
 
@@ -38,7 +38,7 @@ func (s *subscriber) ServerEvent(eventName string, listener ServerEventListener)
 	}
 
 	s.serverScriptEvents[eventName] = listeners
-	go registerOnEvent(serverScriptEvent)
+	registerOnEvent(serverScriptEvent)
 	return len(listeners) - 1
 }
 

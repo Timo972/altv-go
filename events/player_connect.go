@@ -14,7 +14,7 @@ type playerConnectListener func(p altv.Player)
 
 func (e *subscriber) PlayerConnect(listener playerConnectListener) int {
 	e.playerConnectEvents = append(e.playerConnectEvents, listener)
-	go registerOnEvent(playerConnect)
+	registerOnEvent(playerConnect)
 
 	return len(e.playerConnectEvents) - 1
 }
@@ -32,7 +32,7 @@ func (unsub *unsubscriber) PlayerConnect(id int) error {
 func checkPlayerConnect() {
 	lisCount := len(on.playerConnectEvents) + len(once.playerConnectEvents)
 	if lisCount < 1 {
-		go unregisterOnEvent(playerConnect)
+		unregisterOnEvent(playerConnect)
 	}
 }
 

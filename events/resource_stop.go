@@ -11,13 +11,13 @@ type resourceStopListener = func(resourceName string)
 func checkResourceStop() {
 	re := len(once.resourceStopEvents) + len(on.resourceStopEvents)
 	if re < 1 {
-		go unregisterOnEvent(resourceError)
+		unregisterOnEvent(resourceError)
 	}
 }
 
 func (e *subscriber) ResourceStop(listener resourceErrorListener) int {
 	e.resourceStopEvents = append(e.resourceStopEvents, listener)
-	go registerOnEvent(resourceError)
+	registerOnEvent(resourceError)
 	return len(e.resourceStopEvents) - 1
 }
 

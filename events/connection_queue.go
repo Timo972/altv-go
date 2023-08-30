@@ -16,20 +16,20 @@ type connectionQueueRemoveListener func(connectionInfo altv.ConnectionInfo)
 func checkConnectionQueueAdd() {
 	lisCount := len(on.connectionQueueAddEvents) + len(once.connectionQueueAddEvents)
 	if lisCount < 1 {
-		go unregisterOnEvent(connectionQueueAdd)
+		unregisterOnEvent(connectionQueueAdd)
 	}
 }
 
 func checkConnectionQueueRemove() {
 	lisCount := len(on.connectionQueueRemoveEvents) + len(once.connectionQueueRemoveEvents)
 	if lisCount < 1 {
-		go unregisterOnEvent(connectionQueueRemove)
+		unregisterOnEvent(connectionQueueRemove)
 	}
 }
 
 func (sub *subscriber) ConnectionQueueAdd(listener connectionQueueAddListener) int {
 	sub.connectionQueueAddEvents = append(sub.connectionQueueAddEvents, listener)
-	go registerOnEvent(connectionQueueAdd)
+	registerOnEvent(connectionQueueAdd)
 	return len(sub.connectionQueueAddEvents) - 1
 }
 
@@ -45,7 +45,7 @@ func (unsub *unsubscriber) ConnectionQueueAdd(id int) error {
 
 func (sub *subscriber) ConnectionQueueRemove(listener connectionQueueRemoveListener) int {
 	sub.connectionQueueRemoveEvents = append(sub.connectionQueueRemoveEvents, listener)
-	go registerOnEvent(connectionQueueRemove)
+	registerOnEvent(connectionQueueRemove)
 	return len(sub.connectionQueueRemoveEvents) - 1
 }
 

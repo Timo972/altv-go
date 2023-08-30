@@ -12,13 +12,13 @@ type consoleCommandListener = func(cmd string, args []string)
 func checkConsoleCommand() {
 	re := len(once.consoleCommandEvents) + len(on.consoleCommandEvents)
 	if re < 1 {
-		go unregisterOnEvent(consoleCommandEvent)
+		unregisterOnEvent(consoleCommandEvent)
 	}
 }
 
 func (e *subscriber) ConsoleCommand(listener consoleCommandListener) int {
 	e.consoleCommandEvents = append(e.consoleCommandEvents, listener)
-	go registerOnEvent(consoleCommandEvent)
+	registerOnEvent(consoleCommandEvent)
 	return len(e.consoleCommandEvents) - 1
 }
 

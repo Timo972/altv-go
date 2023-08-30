@@ -3,7 +3,6 @@ package altv
 import (
 	"fmt"
 	"log"
-	"sync"
 	"unsafe"
 
 	"github.com/timo972/altv-go/internal/lib"
@@ -18,14 +17,13 @@ import (
 // #include "capi.h"
 import "C"
 
-var ready = sync.WaitGroup{}
+var ready = false
 
 // var sig = make(chan os.Signal, 1)
 
-func init() {
-	ready.Add(1)
+/*func init() {
 	// signal.Notify(sig)
-}
+}*/
 
 /*func handleSignal(signal os.Signal) {
 	if signal == syscall.SIGKILL || signal == syscall.SIGTERM || signal == syscall.SIGINT {
@@ -72,14 +70,13 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, ver *C.char)
 
 	mvalue.SetResourceName(CurrentResource.Name())
 
-	ready.Done()
+	ready = true
 
 	// go listenSignal()
 
 	return status
 }
 
-// WaitReady waits until the alt:V api is ready to be used.
-func WaitReady() {
-	ready.Wait()
+func Ready() bool {
+	return ready
 }
