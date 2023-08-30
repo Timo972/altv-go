@@ -19,18 +19,3 @@ func convertArray[V any](a C.struct_array) ([]V, int, func()) {
 		C.free(unsafe.Pointer(a.array))
 	}
 }
-
-func newStringArray(ptr unsafe.Pointer, size int) []string {
-	strings := make([]string, size)
-	cStrings := (*[1 << 28]*C.char)(ptr)[:size:size]
-
-	// for i := 0; i < size; i++ {
-	// 	strings[i] = C.GoString(cStrings[i])
-	// }
-
-	for i, cString := range cStrings {
-		strings[i] = C.GoString(cString)
-	}
-
-	return strings
-}

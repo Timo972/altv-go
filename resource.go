@@ -7,6 +7,8 @@ package altv
 import "C"
 import (
 	"unsafe"
+
+	"github.com/timo972/altv-go/internal/cstrings"
 )
 
 type publicResource struct {
@@ -111,13 +113,13 @@ func (r publicResource) Exports(out any) error {
 func (r publicResource) Dependencies() []string {
 	cDeps := C.resource_get_dependencies(r.ptr)
 
-	return newStringArray(unsafe.Pointer(cDeps.array), int(cDeps.size))
+	return cstrings.NewArray(unsafe.Pointer(cDeps.array), int(cDeps.size))
 }
 
 func (r publicResource) Dependants() []string {
 	cDeps := C.resource_get_dependants(r.ptr)
 
-	return newStringArray(unsafe.Pointer(cDeps.array), int(cDeps.size))
+	return cstrings.NewArray(unsafe.Pointer(cDeps.array), int(cDeps.size))
 }
 
 func (r publicResource) RequiredPermissions() []Permission {
