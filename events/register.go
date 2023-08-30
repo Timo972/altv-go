@@ -1,6 +1,7 @@
 package events
 
 // #include "capi.h"
+// #include <stdlib.h>
 import "C"
 import (
 	"unsafe"
