@@ -1,4 +1,4 @@
-package events
+package event
 
 import (
 	"fmt"
@@ -17,11 +17,11 @@ type ClientEventListener func(ctx *ClientCtx)
 
 func numClientEventListeners(eventName string) int {
 	count := 0
-	if events, ok := on.clientScriptEvents[eventName]; ok {
-		count += len(events)
+	if event, ok := on.clientScriptEvents[eventName]; ok {
+		count += len(event)
 	}
-	if events, ok := once.clientScriptEvents[eventName]; ok {
-		count += len(events)
+	if event, ok := once.clientScriptEvents[eventName]; ok {
+		count += len(event)
 	}
 
 	return count
@@ -84,15 +84,15 @@ func altClientScriptEvent(e C.struct_entity, cName *C.char, arr C.struct_array) 
 
 	ctx.copyArgs(arr)
 
-	if events, ok := once.clientScriptEvents[evt]; ok {
-		for _, event := range events {
+	if event, ok := once.clientScriptEvents[evt]; ok {
+		for _, event := range event {
 			event(ctx)
 		}
 		once.clientScriptEvents[evt] = make([]ClientEventListener, 0)
 	}
 
-	if events, ok := on.clientScriptEvents[evt]; ok {
-		for _, event := range events {
+	if event, ok := on.clientScriptEvents[evt]; ok {
+		for _, event := range event {
 			event(ctx)
 		}
 	}

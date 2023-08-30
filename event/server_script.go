@@ -1,4 +1,4 @@
-package events
+package event
 
 import (
 	"golang.org/x/exp/slices"
@@ -11,11 +11,11 @@ type ServerEventListener func(ctx *Ctx)
 
 func numServerEventListeners(eventName string) int {
 	count := 0
-	if events, ok := on.serverScriptEvents[eventName]; ok {
-		count += len(events)
+	if event, ok := on.serverScriptEvents[eventName]; ok {
+		count += len(event)
 	}
-	if events, ok := once.serverScriptEvents[eventName]; ok {
-		count += len(events)
+	if event, ok := once.serverScriptEvents[eventName]; ok {
+		count += len(event)
 	}
 
 	return count
@@ -71,15 +71,15 @@ func altServerScriptEvent(cName *C.char, arr C.struct_array) {
 
 	ctx.copyArgs(arr)
 
-	if events, ok := once.serverScriptEvents[evt]; ok {
-		for _, event := range events {
+	if event, ok := once.serverScriptEvents[evt]; ok {
+		for _, event := range event {
 			event(ctx)
 		}
 		once.serverScriptEvents[evt] = make([]ServerEventListener, 0)
 	}
 
-	if events, ok := on.serverScriptEvents[evt]; ok {
-		for _, event := range events {
+	if event, ok := on.serverScriptEvents[evt]; ok {
+		for _, event := range event {
 			event(ctx)
 		}
 	}

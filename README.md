@@ -53,10 +53,10 @@ package main
 import "C"
 import (
   "github.com/timo972/altv-go"
-  // this package is a required import. if you are not using the events package, import it like this
-  // _ "github.com/timo972/altv-go/events"
+  // this package is a required import. if you are not using the event package, import it like this
+  // _ "github.com/timo972/altv-go/event"
   // if you are not importing it, the module will log errors calling the ServerStarted and ResourceStopEvent
-	"github.com/timo972/altv-go/events"
+	"github.com/timo972/altv-go/event"
 )
 
 func init() {
@@ -66,7 +66,7 @@ func init() {
   // As of now you can only use the event features here.
 
   // e.g.
-  events.On.ServerStarted(func () {
+  event.On.ServerStarted(func () {
       altv.LogInfo("Server Started")
     })
 }

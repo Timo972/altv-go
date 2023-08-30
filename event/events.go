@@ -1,4 +1,4 @@
-package events
+package event
 
 // #cgo CFLAGS: -I../internal/c-api/lib
 // #cgo linux LDFLAGS: -L../internal/c-api/lib/linux -lcapi -ldl -g

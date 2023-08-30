@@ -1,4 +1,4 @@
-package events
+package event
 
 import (
 	"context"
@@ -47,12 +47,12 @@ func (c *Ctx) copyArgs(cargs C.struct_array) {
 	size := int(cargs.size)
 	c.bufs = make([][]byte, size)
 	c.cache = make([]interface{}, size)
-	log.Printf("events::ctx::copyArgs -> array size %d", size)
+	log.Printf("event::ctx::copyArgs -> array size %d", size)
 	cbufs := (*[1 << 28]C.struct_array)(cargs.array)[:size:size]
 
 	for i := 0; i < size; i++ {
 		c.bufs[i] = C.GoBytes(cbufs[i].array, C.int(cbufs[i].size))
-		log.Printf("events::ctx::copyArgs -> array[%d]: %+v = %s size %d === %d", i, c.bufs[i], c.bufs[i], len(c.bufs[i]), cbufs[i].size)
+		log.Printf("event::ctx::copyArgs -> array[%d]: %+v = %s size %d === %d", i, c.bufs[i], c.bufs[i], len(c.bufs[i]), cbufs[i].size)
 	}
 }
 
@@ -67,7 +67,7 @@ func (c *Ctx) Value(i int, v interface{}) error {
 	}
 
 	if c.cache[i] != nil {
-		log.Printf("events::ctx::Value (cached) -> %d: %v", i, c.cache[i])
+		log.Printf("event::ctx::Value (cached) -> %d: %v", i, c.cache[i])
 		reflect.ValueNoEscapeOf(v).Set(reflect.ValueNoEscapeOf(c.cache[i]))
 		return nil
 	}
@@ -78,7 +78,7 @@ func (c *Ctx) Value(i int, v interface{}) error {
 	}
 	c.cache[i] = v
 
-	log.Printf("events::ctx::Value -> %d: %v", i, v)
+	log.Printf("event::ctx::Value -> %d: %v", i, v)
 
 	return nil
 }

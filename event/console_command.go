@@ -1,4 +1,4 @@
-package events
+package event
 
 // #include "capi.h"
 import "C"

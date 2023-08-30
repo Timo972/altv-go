@@ -4,7 +4,7 @@ on:
     paths:
       - "*.go"
       - "internal/**"
-      - "events/**"
+      - "event/**"
       - "mvalue/**"
       - "go.mod"
       - "go.sum"
@@ -12,7 +12,7 @@ on:
     paths:
       - "*.go"
       - "internal/**"
-      - "events/**"
+      - "event/**"
       - "mvalue/**"
       - "go.mod"
       - "go.sum"
@@ -39,9 +39,9 @@ jobs:
         run: go test
         working-directory: .
 
-      - name: Test altv/events
+      - name: Test altv/event
         run: go test
-        working-directory: ./events
+        working-directory: ./event
       
       - name: Test altv/mvalue
         run: go test
