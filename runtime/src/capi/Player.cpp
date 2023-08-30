@@ -376,7 +376,7 @@ EXPORT void Player_RemoveWeapon(void *p, unsigned long weapon) {
     player->RemoveWeapon(weapon);
 }
 
-EXPORT void Player_RemoveAllWeapons(void *p, ushort removeAmmo) {
+EXPORT void Player_RemoveAllWeapons(void *p, unsigned short removeAmmo) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     player->RemoveAllWeapons(removeAmmo);
 }
