@@ -69,7 +69,7 @@ EXPORT void Player_ClearBloodDamage(void *p);
 EXPORT void Player_SetMaxHealth(void *p, unsigned int health);
 EXPORT void Player_GiveWeapon(void *p, unsigned long weapon, long ammo, int selectWeapon);
 EXPORT void Player_RemoveWeapon(void *p, unsigned long weapon);
-EXPORT void Player_RemoveAllWeapons(void *p);
+EXPORT void Player_RemoveAllWeapons(void *p, ushort removeAmmo);
 EXPORT void Player_SetDateTime(void *p, int day, int month, int year, int hour, int minute, int second);
 EXPORT void Player_SetWeather(void *p, unsigned long weather);
 EXPORT void Player_Kick(void *p, const char *reason);

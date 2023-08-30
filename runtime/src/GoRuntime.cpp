@@ -93,9 +93,6 @@ Entity Go::Runtime::GetEntity(alt::IEntity *entity)
         case alt::IEntity::Type::VIRTUAL_ENTITY_GROUP:
             e.ptr = entity->As<alt::IVirtualEntityGroup>();
             break;
-        case alt::IEntity::Type::NETWORK_OBJECT:
-            e.ptr = entity->As<alt::INetworkObject>();
-            break;
         case alt::IEntity::Type::OBJECT:
             e.ptr = entity->As<alt::IObject>();
             break;
@@ -166,10 +163,6 @@ Entity Go::Runtime::GetBaseObject(alt::IBaseObject *baseObject)
         case alt::IBaseObject::Type::VIRTUAL_ENTITY_GROUP:
             e.ptr = baseObject->As<alt::IVirtualEntityGroup>();
             e.id = baseObject->As<alt::IVirtualEntityGroup>()->GetID();
-            break;
-        case alt::IBaseObject::Type::NETWORK_OBJECT:
-            e.ptr = baseObject->As<alt::INetworkObject>();
-            e.id = baseObject->As<alt::INetworkObject>()->GetID();
             break;
         case alt::IBaseObject::Type::TEXT_LABEL:
             e.ptr = baseObject->As<alt::ITextLabel>();
@@ -564,9 +557,9 @@ rapidjson::Document Go::Runtime::EncodeMValueToJSON(alt::MValueConst mValue)
         auto alloc = d.GetAllocator();
         d.SetObject();
 
-        for (auto it = dict->Begin(); it != nullptr; it = dict->Next()) {
-            std::string key = it->GetKey();
-            d.AddMember(rapidjson::Value(key.c_str(), key.size()), EncodeMValueToJSON(it->GetValue()), alloc);
+        for (auto it = dict->Begin(); it != dict->End(); it++) {
+            std::string key = it->first;
+            d.AddMember(rapidjson::Value(key.c_str(), key.size()), EncodeMValueToJSON(it->second), alloc);
         }
     } else if (type == alt::IMValue::Type::LIST) {
         auto list = std::dynamic_pointer_cast<const alt::IMValueList>(mValue);

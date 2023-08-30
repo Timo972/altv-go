@@ -92,47 +92,42 @@ EXPORT Array Core_GetEntities() {
 }
 
 EXPORT Array Core_GetPlayers() {
-    auto entities = alt::ICore::Instance().GetPlayers();
+    auto entities = alt::ICore::Instance().GetBaseObjects(alt::IBaseObject::Type::PLAYER);
     return Go::Runtime::CreateEntityArray(entities);
 }
 
 EXPORT Array Core_GetVehicles() {
-    auto entities = alt::ICore::Instance().GetVehicles();
+    auto entities = alt::ICore::Instance().GetBaseObjects(alt::IBaseObject::Type::VEHICLE);
     return Go::Runtime::CreateEntityArray(entities);
 }
 
 EXPORT Array Core_GetColShapes() {
-    auto entities = alt::ICore::Instance().GetColShapes();
+    auto entities = alt::ICore::Instance().GetBaseObjects(alt::IBaseObject::Type::COLSHAPE);
     return Go::Runtime::CreateEntityArray(entities);
 }
 
 EXPORT Array Core_GetCheckpoints() {
-    auto entities = alt::ICore::Instance().GetCheckpoints();
+    auto entities = alt::ICore::Instance().GetBaseObjects(alt::IBaseObject::Type::CHECKPOINT);
     return Go::Runtime::CreateEntityArray(entities);
 }
 
 EXPORT Array Core_GetVirtualEntities() {
-    auto entities = alt::ICore::Instance().GetVirtualEntities();
+    auto entities = alt::ICore::Instance().GetBaseObjects(alt::IBaseObject::Type::VIRTUAL_ENTITY);
     return Go::Runtime::CreateEntityArray(entities);
 }
 
 EXPORT Array Core_GetVirtualEntityGroups() {
-    auto entities = alt::ICore::Instance().GetVirtualEntityGroups();
+    auto entities = alt::ICore::Instance().GetBaseObjects(alt::IBaseObject::Type::VIRTUAL_ENTITY_GROUP);
     return Go::Runtime::CreateEntityArray(entities);
 }
 
 EXPORT Array Core_GetMarkers() {
-    auto entities = alt::ICore::Instance().GetMarkers();
-    return Go::Runtime::CreateEntityArray(entities);
-}
-
-EXPORT Array Core_GetNetworkObjects() {
-    auto entities = alt::ICore::Instance().GetNetworkObjects();
+    auto entities = alt::ICore::Instance().GetBaseObjects(alt::IBaseObject::Type::MARKER);
     return Go::Runtime::CreateEntityArray(entities);
 }
 
 EXPORT Array Core_GetPeds() {
-    auto entities = alt::ICore::Instance().GetPeds();
+    auto entities = alt::ICore::Instance().GetBaseObjects(alt::IBaseObject::Type::PED);
     return Go::Runtime::CreateEntityArray(entities);
 }
 
@@ -296,25 +291,25 @@ EXPORT void Core_TriggerClientEventForAll(const char *ev, Array data) {
     alt::ICore::Instance().TriggerClientEventForAll(ev, args);
 }
 
-EXPORT Entity Core_CreatePointBlipPosition(float x, float y, float z) {
-    auto blip = alt::ICore::Instance().CreateBlip(nullptr, alt::IBlip::BlipType::DESTINATION, alt::Position(x, y, z));
+EXPORT Entity Core_CreatePointBlipPosition(float x, float y, float z, ushort global) {
+    auto blip = alt::ICore::Instance().CreateBlip(global, alt::IBlip::BlipType::DESTINATION, alt::Position(x, y, z));
     return Go::Runtime::GetBaseObject(blip);
 }
 
-EXPORT Entity Core_CreatePointBlipEntity(Entity entity) {
-    auto blip = alt::ICore::Instance().CreateBlip(nullptr, alt::IBlip::BlipType::DESTINATION, Go::Runtime::GetEntityRef(entity));
+EXPORT Entity Core_CreatePointBlipEntity(Entity entity, ushort global) {
+    auto blip = alt::ICore::Instance().CreateBlip(global, alt::IBlip::BlipType::DESTINATION, Go::Runtime::GetEntityRef(entity));
     return Go::Runtime::GetBaseObject(blip);
 }
 
-EXPORT Entity Core_CreateAreaBlip(float x, float y, float z, float width, float height) {
-    auto blip = alt::ICore::Instance().CreateBlip(nullptr, alt::IBlip::BlipType::AREA, alt::Position(x, y, z));
+EXPORT Entity Core_CreateAreaBlip(float x, float y, float z, float width, float height, ushort global) {
+    auto blip = alt::ICore::Instance().CreateBlip(global, alt::IBlip::BlipType::AREA, alt::Position(x, y, z));
     blip->SetScaleXY({width, height});
 
     return Go::Runtime::GetBaseObject(blip);
 }
 
-EXPORT Entity Core_CreateRadiusBlip(float x, float y, float z, float radius) {
-    auto blip = alt::ICore::Instance().CreateBlip(nullptr, alt::IBlip::BlipType::RADIUS, alt::Position(x, y, z));
+EXPORT Entity Core_CreateRadiusBlip(float x, float y, float z, float radius, ushort global) {
+    auto blip = alt::ICore::Instance().CreateBlip(global, alt::IBlip::BlipType::RADIUS, alt::Position(x, y, z));
     blip->SetScaleXY({radius, radius});
 
     return Go::Runtime::GetBaseObject(blip);
@@ -334,7 +329,7 @@ EXPORT Entity Core_CreateColShapePolygon(float minZ, float maxZ, Array points) {
 }
 
 EXPORT Array Core_GetBlips() {
-    auto blips = alt::ICore::Instance().GetBlips();
+    auto blips = alt::ICore::Instance().GetBaseObjects(alt::IBaseObject::Type::BLIP);
     return Go::Runtime::CreateEntityArray(blips);
 }
 

@@ -24,7 +24,7 @@ EXPORT void Blip_SetDimension(void *p, long dimension);
 
 // Blip methods
 EXPORT int Blip_IsGlobal(void *b);
-EXPORT Entity Blip_GetTarget(void *b);
+EXPORT Array Blip_GetTargets(void *b);
 EXPORT int Blip_IsAttached(void *b);
 EXPORT Entity Blip_AttachedTo(void *b);
 EXPORT void Blip_AttachTo(void *b, Entity e);

@@ -64,7 +64,7 @@ namespace Go {
             return arr;
         }
 
-        template<typename Type, typename TargetType>
+        /*template<typename Type, typename TargetType>
         static Array CreateArray(alt::Array<Type> altArr) {
             Array arr;
             arr.size = altArr.GetSize();
@@ -77,7 +77,7 @@ namespace Go {
             arr.array = cArray;
 
             return arr;
-        }
+        }*/
 
         template<typename Type, typename TargetType>
         static Array CreateArray(std::unordered_set<Type> set) {
