@@ -291,24 +291,24 @@ EXPORT void Core_TriggerClientEventForAll(const char *ev, Array data) {
     alt::ICore::Instance().TriggerClientEventForAll(ev, args);
 }
 
-EXPORT Entity Core_CreatePointBlipPosition(float x, float y, float z, ushort global) {
+EXPORT Entity Core_CreatePointBlipPosition(float x, float y, float z, unsigned short global) {
     auto blip = alt::ICore::Instance().CreateBlip(global, alt::IBlip::BlipType::DESTINATION, alt::Position(x, y, z));
     return Go::Runtime::GetBaseObject(blip);
 }
 
-EXPORT Entity Core_CreatePointBlipEntity(Entity entity, ushort global) {
+EXPORT Entity Core_CreatePointBlipEntity(Entity entity, unsigned short global) {
     auto blip = alt::ICore::Instance().CreateBlip(global, alt::IBlip::BlipType::DESTINATION, Go::Runtime::GetEntityRef(entity));
     return Go::Runtime::GetBaseObject(blip);
 }
 
-EXPORT Entity Core_CreateAreaBlip(float x, float y, float z, float width, float height, ushort global) {
+EXPORT Entity Core_CreateAreaBlip(float x, float y, float z, float width, float height, unsigned short global) {
     auto blip = alt::ICore::Instance().CreateBlip(global, alt::IBlip::BlipType::AREA, alt::Position(x, y, z));
     blip->SetScaleXY({width, height});
 
     return Go::Runtime::GetBaseObject(blip);
 }
 
-EXPORT Entity Core_CreateRadiusBlip(float x, float y, float z, float radius, ushort global) {
+EXPORT Entity Core_CreateRadiusBlip(float x, float y, float z, float radius, unsigned short global) {
     auto blip = alt::ICore::Instance().CreateBlip(global, alt::IBlip::BlipType::RADIUS, alt::Position(x, y, z));
     blip->SetScaleXY({radius, radius});
 
