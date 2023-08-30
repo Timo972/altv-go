@@ -4,6 +4,7 @@ import (
 	"unsafe"
 
 	"github.com/timo972/altv-go"
+	"github.com/timo972/altv-go/internal/cutil"
 	"github.com/timo972/altv-go/mvalue"
 )
 
@@ -40,22 +41,17 @@ func marshalArgs(args []any) (C.struct_array, func(), error) {
 	return cargs, free, nil
 }
 
-func newPlayerCArray(p []altv.Player) (C.struct_array, func()) {
-	clientSize := len(p)
-
-	clientArrayPtr := C.malloc(C.size_t(clientSize) * C.size_t(8))
-	clientArray := (*[1 << 30]unsafe.Pointer)(clientArrayPtr)
-
-	for i := 0; i < clientSize; i++ {
-		clientArray[i] = p[i].Ptr()
-	}
+func newPlayerCArray(p []altv.Player) (C.struct_array, cutil.FreeArrayFunc) {
+	// 8 is sizeof void ptr on 64bit
+	ptr, size, free := cutil.NewCArrayFunc[altv.Player, unsafe.Pointer](p, 8, func(item altv.Player) unsafe.Pointer {
+		return item.Ptr()
+	})
 
 	return C.struct_array{
-			array: clientArrayPtr,
-			size:  C.ulonglong(clientSize),
-		}, func() {
-			C.free(clientArrayPtr)
-		}
+			array: ptr,
+			size:  C.ulonglong(size),
+		},
+		free
 }
 
 // EmitRaw emits an event with the given name and byte data.

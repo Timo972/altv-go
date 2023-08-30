@@ -7,6 +7,8 @@ package altv
 import "C"
 import (
 	"unsafe"
+
+	"github.com/timo972/altv-go/internal/cutil"
 )
 
 type BoneInfo struct {
@@ -24,20 +26,7 @@ func newBoneInfo(info C.struct_boneInfo) BoneInfo {
 }
 
 func createBoneSlice(arr C.struct_array) []BoneInfo {
-	defer C.free(unsafe.Pointer(arr.array))
-	size := int(arr.size)
-
-	boneArray := (*[1 << 28]C.struct_boneInfo)(arr.array)[:size:size]
-
-	bones := make([]BoneInfo, size)
-
-	if size == 0 {
-		return bones
-	}
-
-	for i := 0; i < size; i++ {
-		bones[i] = newBoneInfo(boneArray[i])
-	}
-
-	return bones
+	return cutil.NewArrayFunc[C.struct_boneInfo, BoneInfo](unsafe.Pointer(arr.array), int(arr.size), func(item C.struct_boneInfo) BoneInfo {
+		return newBoneInfo(item)
+	})
 }

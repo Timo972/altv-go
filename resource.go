@@ -8,7 +8,7 @@ import "C"
 import (
 	"unsafe"
 
-	"github.com/timo972/altv-go/internal/cstrings"
+	"github.com/timo972/altv-go/internal/cutil"
 )
 
 type publicResource struct {
@@ -66,16 +66,12 @@ func ResourceByName(name string) Resource {
 // AllResources returns all resources.
 func AllResources() []Resource {
 	arr := C.core_get_all_resources()
-	size := int(arr.size)
-	ptrs := (*[1 << 28]unsafe.Pointer)(arr.array)[:size:size]
 
-	resources := make([]Resource, size)
-
-	for i, ptr := range ptrs {
-		resources[i] = &publicResource{ptr: ptr}
-	}
-
-	return resources
+	return cutil.NewArrayFunc[unsafe.Pointer, Resource](unsafe.Pointer(arr.array), int(arr.size), func(item unsafe.Pointer) Resource {
+		return &publicResource{
+			ptr: item,
+		}
+	})
 }
 
 func (r publicResource) IsStarted() bool {
@@ -113,13 +109,13 @@ func (r publicResource) Exports(out any) error {
 func (r publicResource) Dependencies() []string {
 	cDeps := C.resource_get_dependencies(r.ptr)
 
-	return cstrings.NewArray(unsafe.Pointer(cDeps.array), int(cDeps.size))
+	return cutil.NewStringArray(unsafe.Pointer(cDeps.array), int(cDeps.size))
 }
 
 func (r publicResource) Dependants() []string {
 	cDeps := C.resource_get_dependants(r.ptr)
 
-	return cstrings.NewArray(unsafe.Pointer(cDeps.array), int(cDeps.size))
+	return cutil.NewStringArray(unsafe.Pointer(cDeps.array), int(cDeps.size))
 }
 
 func (r publicResource) RequiredPermissions() []Permission {

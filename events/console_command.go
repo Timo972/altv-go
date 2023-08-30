@@ -3,7 +3,7 @@ package events
 // #include "capi.h"
 import "C"
 import (
-	"github.com/timo972/altv-go/internal/cstrings"
+	"github.com/timo972/altv-go/internal/cutil"
 	"golang.org/x/exp/slices"
 )
 
@@ -35,7 +35,7 @@ func (unsub *unsubscriber) ConsoleCommand(id int) error {
 //export altConsoleCommandEvent
 func altConsoleCommandEvent(cname *C.char, cargs C.struct_array) {
 	name := C.GoString(cname)
-	args := cstrings.NewArray(cargs.array, int(cargs.size))
+	args := cutil.NewStringArray(cargs.array, int(cargs.size))
 
 	for i, event := range once.consoleCommandEvents {
 		event(name, args)

@@ -1,9 +1,9 @@
-package cstrings
+package cutil
 
 import "unsafe"
 import "C"
 
-func NewArray(ptr unsafe.Pointer, size int) []string {
+func NewStringArray(ptr unsafe.Pointer, size int) []string {
 	strings := make([]string, size)
 	cStrings := (*[1 << 28]*C.char)(ptr)[:size:size]
 

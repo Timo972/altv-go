@@ -10,6 +10,7 @@ import (
 	"unsafe"
 
 	"github.com/goccy/go-json"
+	"github.com/timo972/altv-go/internal/cutil"
 	"github.com/timo972/altv-go/mvalue"
 )
 
@@ -234,18 +235,11 @@ func altRemoveBaseObject(entity C.struct_entity) {
 }
 
 func newBaseObjectArray[T BaseObject](arr C.struct_array) []T {
-	values, size, free := convertArray[C.struct_entity](arr)
-	defer free()
-	slice := make([]T, size)
-
-	var err error
-	for i := 0; i < size; i++ {
-		slice[i], err = getBaseObject[T](values[i])
+	return cutil.NewArrayFunc[C.struct_entity, T](unsafe.Pointer(arr.array), int(arr.size), func(item C.struct_entity) T {
+		v, err := getBaseObject[T](item)
 		if err != nil {
 			LogError(fmt.Sprintf("[Go] newBaseObjectArray: %s", err.Error()))
-			continue
 		}
-	}
-
-	return slice
+		return v
+	})
 }

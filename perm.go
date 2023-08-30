@@ -5,7 +5,11 @@ package altv
 #include "capi.h"
 */
 import "C"
-import "unsafe"
+import (
+	"unsafe"
+
+	"github.com/timo972/altv-go/internal/cutil"
+)
 
 type Permission = uint8
 
@@ -18,15 +22,7 @@ const (
 )
 
 func newPermissionArray(arr C.struct_array) []Permission {
-	size := int(arr.size)
-	defer C.free(unsafe.Pointer(arr.array))
-
-	cPerms := (*[1 << 28]C.uchar)(arr.array)[:size:size]
-	perms := make([]Permission, size)
-
-	for i, p := range cPerms {
-		perms[i] = Permission(p)
-	}
-
-	return perms
+	return cutil.NewArrayFunc[C.uchar, Permission](unsafe.Pointer(arr.array), int(arr.size), func(item C.uchar) Permission {
+		return Permission(item)
+	})
 }
