@@ -2,10 +2,10 @@ name: Test Go Module
 on: 
   push:
     paths:
-      - "runtime/*"
+      - "runtime/**"
   pull_request:
     paths:
-      - "runtime/*"
+      - "runtime/**"
 
 jobs:
   build:
