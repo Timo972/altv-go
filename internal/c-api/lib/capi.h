@@ -174,6 +174,58 @@ typedef struct boneInfo {
 
 
 
+typedef int (*capi_runtime_register_alt_event)(const char *resourceName,  unsigned short eventType);
+
+typedef int (*capi_runtime_unregister_alt_event)(const char *resourceName,  unsigned short eventType);
+
+typedef int (*capi_runtime_register_alt_export)(const char *resourceName,  const char *exportName,  Array value);
+
+typedef Array (*capi_runtime_get_alt_export)(const char *targetResourceName,  const char *exportName);
+
+typedef void * (*capi_runtime_create_m_value_function)(const char *resourceName,  unsigned long long id);
+
+typedef Array (*capi_runtime_call_m_value_function)(void *ptr,  Array args);
+
+typedef void (*capi_connection_accept)(void *handle,  unsigned char sendNames);
+
+typedef void (*capi_connection_decline)(void *handle,  const char *reason);
+
+typedef int (*capi_connection_is_accepted)(void *handle);
+
+typedef int (*capi_voice_channel_is_valid)(const char* resourceName,  void *p);
+
+typedef int (*capi_voice_channel_get_type)(void *c);
+
+typedef int (*capi_voice_channel_has_meta_data)(void* base,  const char *key);
+
+typedef Array (*capi_voice_channel_get_meta_data)(void* base,  const char *key);
+
+typedef void (*capi_voice_channel_set_meta_data)(void *base,  const char *key,  Array data);
+
+typedef void (*capi_voice_channel_delete_meta_data)(void *base,  const char *key);
+
+typedef void (*capi_voice_channel_destroy)(void *b);
+
+typedef int (*capi_voice_channel_is_spatial)(void *v);
+
+typedef float (*capi_voice_channel_get_max_distance)(void *v);
+
+typedef int (*capi_voice_channel_has_player)(void *v,  void *p);
+
+typedef void (*capi_voice_channel_add_player)(void *v,  void *p);
+
+typedef void (*capi_voice_channel_remove_player)(void *v,  void *p);
+
+typedef int (*capi_voice_channel_is_player_muted)(void *v,  void *p);
+
+typedef void (*capi_voice_channel_mute_player)(void *v,  void *p);
+
+typedef void (*capi_voice_channel_unmute_player)(void *v,  void *p);
+
+typedef unsigned long long (*capi_voice_channel_get_player_count)(void *v);
+
+typedef Array (*capi_voice_channel_get_players)(void *v);
+
 typedef int (*capi_blip_get_type)(void *c);
 
 typedef int (*capi_blip_has_meta_data)(void *base,  const char *key);
@@ -334,6 +386,94 @@ typedef void (*capi_blip_set_shrinked)(void *b,  int val);
 
 typedef void (*capi_blip_fade)(void *b,  unsigned int opacity,  unsigned int duration);
 
+typedef int (*capi_checkpoint_get_type)(void *c);
+
+typedef int (*capi_checkpoint_has_meta_data)(void* base,  const char *key);
+
+typedef Array (*capi_checkpoint_get_meta_data)(void* base,  const char *key);
+
+typedef void (*capi_checkpoint_set_meta_data)(void *base,  const char *key,  Array data);
+
+typedef void (*capi_checkpoint_delete_meta_data)(void *base,  const char *key);
+
+typedef void (*capi_checkpoint_destroy)(void *b);
+
+typedef int (*capi_checkpoint_is_valid)(const char* resourceName,  void *p);
+
+typedef Position (*capi_checkpoint_get_position)(void *p);
+
+typedef void (*capi_checkpoint_set_position)(void* p,  float x,  float y,  float z);
+
+typedef long (*capi_checkpoint_get_dimension)(void* p);
+
+typedef void (*capi_checkpoint_set_dimension)(void* p,  long dimension);
+
+typedef int (*capi_checkpoint_get_col_shape_type)(void *c);
+
+typedef int (*capi_checkpoint_is_entity_in)(void *c,  Entity e);
+
+typedef int (*capi_checkpoint_is_point_in)(void *c,  float x,  float y,  float z);
+
+typedef void (*capi_checkpoint_set_players_only)(void *c,  int state);
+
+typedef int (*capi_checkpoint_is_players_only)(void *c);
+
+typedef unsigned char (*capi_checkpoint_is_entity_id_in)(void *c,  unsigned short id);
+
+typedef unsigned char (*capi_checkpoint_get_checkpoint_type)(void *c);
+
+typedef float (*capi_checkpoint_get_height)(void *c);
+
+typedef float (*capi_checkpoint_get_radius)(void *c);
+
+typedef RGBA (*capi_checkpoint_get_color)(void *c);
+
+typedef Position (*capi_checkpoint_get_next_position)(void *c);
+
+typedef void (*capi_checkpoint_set_checkpoint_type)(void *c,  unsigned char type);
+
+typedef void (*capi_checkpoint_set_height)(void *c,  float height);
+
+typedef void (*capi_checkpoint_set_radius)(void *c,  float radius);
+
+typedef void (*capi_checkpoint_set_color)(void *c,  unsigned char r,  unsigned char g,  unsigned char b,  unsigned char a);
+
+typedef void (*capi_checkpoint_set_next_position)(void *c,  float x,  float y,  float z);
+
+typedef int (*capi_col_shape_get_type)(void *c);
+
+typedef int (*capi_col_shape_has_meta_data)(void* base,  const char *key);
+
+typedef Array (*capi_col_shape_get_meta_data)(void* base,  const char *key);
+
+typedef void (*capi_col_shape_set_meta_data)(void *base,  const char *key,  Array data);
+
+typedef void (*capi_col_shape_delete_meta_data)(void *base,  const char *key);
+
+typedef void (*capi_col_shape_destroy)(void *b);
+
+typedef int (*capi_col_shape_is_valid)(const char* resourceName,  void *p);
+
+typedef Position (*capi_col_shape_get_position)(void *p);
+
+typedef void (*capi_col_shape_set_position)(void* p,  float x,  float y,  float z);
+
+typedef long (*capi_col_shape_get_dimension)(void* p);
+
+typedef void (*capi_col_shape_set_dimension)(void* p,  long dimension);
+
+typedef int (*capi_col_shape_get_col_shape_type)(void *c);
+
+typedef int (*capi_col_shape_is_entity_in)(void *c,  Entity e);
+
+typedef int (*capi_col_shape_is_point_in)(void *c,  float x,  float y,  float z);
+
+typedef void (*capi_col_shape_set_players_only)(void *c,  int state);
+
+typedef int (*capi_col_shape_is_players_only)(void *c);
+
+typedef unsigned char (*capi_col_shape_is_entity_id_in)(void *c,  unsigned short id);
+
 typedef void (*capi_core_log_info)(const char *message);
 
 typedef void (*capi_core_log_debug)(const char *message);
@@ -472,62 +612,6 @@ typedef Array (*capi_core_get_server_config)();
 typedef unsigned long long (*capi_core_hash_server_password)(const char *password);
 
 typedef void* (*capi_core_get_resource_by_name)(const char *resourceName);
-
-typedef unsigned char (*capi_resource_is_started)(void *r);
-
-typedef const char * (*capi_resource_get_type)(void *r);
-
-typedef const char * (*capi_resource_get_name)(void* r);
-
-typedef const char * (*capi_resource_get_main)(void *r);
-
-typedef Array (*capi_resource_get_config)(void *r);
-
-typedef Array (*capi_resource_get_exports)(void *r);
-
-typedef Array (*capi_resource_get_dependencies)(void *r);
-
-typedef Array (*capi_resource_get_dependants)(void *r);
-
-typedef Array (*capi_resource_get_required_permissions)(void *r);
-
-typedef Array (*capi_resource_get_optional_permissions)(void *r);
-
-typedef const char * (*capi_resource_get_path)(void *r);
-
-typedef int (*capi_col_shape_get_type)(void *c);
-
-typedef int (*capi_col_shape_has_meta_data)(void* base,  const char *key);
-
-typedef Array (*capi_col_shape_get_meta_data)(void* base,  const char *key);
-
-typedef void (*capi_col_shape_set_meta_data)(void *base,  const char *key,  Array data);
-
-typedef void (*capi_col_shape_delete_meta_data)(void *base,  const char *key);
-
-typedef void (*capi_col_shape_destroy)(void *b);
-
-typedef int (*capi_col_shape_is_valid)(const char* resourceName,  void *p);
-
-typedef Position (*capi_col_shape_get_position)(void *p);
-
-typedef void (*capi_col_shape_set_position)(void* p,  float x,  float y,  float z);
-
-typedef long (*capi_col_shape_get_dimension)(void* p);
-
-typedef void (*capi_col_shape_set_dimension)(void* p,  long dimension);
-
-typedef int (*capi_col_shape_get_col_shape_type)(void *c);
-
-typedef int (*capi_col_shape_is_entity_in)(void *c,  Entity e);
-
-typedef int (*capi_col_shape_is_point_in)(void *c,  float x,  float y,  float z);
-
-typedef void (*capi_col_shape_set_players_only)(void *c,  int state);
-
-typedef int (*capi_col_shape_is_players_only)(void *c);
-
-typedef unsigned char (*capi_col_shape_is_entity_id_in)(void *c,  unsigned short id);
 
 typedef const char * (*capi_player_get_name)(void *p);
 
@@ -800,23 +884,27 @@ typedef unsigned int (*capi_player_get_last_damaged_body_part)(void *p);
 
 typedef void (*capi_player_set_last_damaged_body_part)(void *p,  unsigned int bodyPart);
 
-typedef int (*capi_runtime_register_alt_event)(const char *resourceName,  unsigned short eventType);
+typedef unsigned char (*capi_resource_is_started)(void *r);
 
-typedef int (*capi_runtime_unregister_alt_event)(const char *resourceName,  unsigned short eventType);
+typedef const char * (*capi_resource_get_type)(void *r);
 
-typedef int (*capi_runtime_register_alt_export)(const char *resourceName,  const char *exportName,  Array value);
+typedef const char * (*capi_resource_get_name)(void* r);
 
-typedef Array (*capi_runtime_get_alt_export)(const char *targetResourceName,  const char *exportName);
+typedef const char * (*capi_resource_get_main)(void *r);
 
-typedef void * (*capi_runtime_create_m_value_function)(const char *resourceName,  unsigned long long id);
+typedef Array (*capi_resource_get_config)(void *r);
 
-typedef Array (*capi_runtime_call_m_value_function)(void *ptr,  Array args);
+typedef Array (*capi_resource_get_exports)(void *r);
 
-typedef void (*capi_connection_accept)(void *handle,  unsigned char sendNames);
+typedef Array (*capi_resource_get_dependencies)(void *r);
 
-typedef void (*capi_connection_decline)(void *handle,  const char *reason);
+typedef Array (*capi_resource_get_dependants)(void *r);
 
-typedef int (*capi_connection_is_accepted)(void *handle);
+typedef Array (*capi_resource_get_required_permissions)(void *r);
+
+typedef Array (*capi_resource_get_optional_permissions)(void *r);
+
+typedef const char * (*capi_resource_get_path)(void *r);
 
 typedef int (*capi_vehicle_has_meta_data)(void *base,  const char *key);
 
@@ -1274,95 +1362,59 @@ typedef unsigned char (*capi_vehicle_get_hybrid_extra_state)(void *v);
 
 typedef void (*capi_vehicle_set_hybrid_extra_state)(void *v,  unsigned char state);
 
-typedef int (*capi_voice_channel_is_valid)(const char* resourceName,  void *p);
-
-typedef int (*capi_voice_channel_get_type)(void *c);
-
-typedef int (*capi_voice_channel_has_meta_data)(void* base,  const char *key);
-
-typedef Array (*capi_voice_channel_get_meta_data)(void* base,  const char *key);
-
-typedef void (*capi_voice_channel_set_meta_data)(void *base,  const char *key,  Array data);
-
-typedef void (*capi_voice_channel_delete_meta_data)(void *base,  const char *key);
-
-typedef void (*capi_voice_channel_destroy)(void *b);
-
-typedef int (*capi_voice_channel_is_spatial)(void *v);
-
-typedef float (*capi_voice_channel_get_max_distance)(void *v);
-
-typedef int (*capi_voice_channel_has_player)(void *v,  void *p);
-
-typedef void (*capi_voice_channel_add_player)(void *v,  void *p);
-
-typedef void (*capi_voice_channel_remove_player)(void *v,  void *p);
-
-typedef int (*capi_voice_channel_is_player_muted)(void *v,  void *p);
-
-typedef void (*capi_voice_channel_mute_player)(void *v,  void *p);
-
-typedef void (*capi_voice_channel_unmute_player)(void *v,  void *p);
-
-typedef unsigned long long (*capi_voice_channel_get_player_count)(void *v);
-
-typedef Array (*capi_voice_channel_get_players)(void *v);
-
-typedef int (*capi_checkpoint_get_type)(void *c);
-
-typedef int (*capi_checkpoint_has_meta_data)(void* base,  const char *key);
-
-typedef Array (*capi_checkpoint_get_meta_data)(void* base,  const char *key);
-
-typedef void (*capi_checkpoint_set_meta_data)(void *base,  const char *key,  Array data);
-
-typedef void (*capi_checkpoint_delete_meta_data)(void *base,  const char *key);
-
-typedef void (*capi_checkpoint_destroy)(void *b);
-
-typedef int (*capi_checkpoint_is_valid)(const char* resourceName,  void *p);
-
-typedef Position (*capi_checkpoint_get_position)(void *p);
-
-typedef void (*capi_checkpoint_set_position)(void* p,  float x,  float y,  float z);
-
-typedef long (*capi_checkpoint_get_dimension)(void* p);
-
-typedef void (*capi_checkpoint_set_dimension)(void* p,  long dimension);
-
-typedef int (*capi_checkpoint_get_col_shape_type)(void *c);
-
-typedef int (*capi_checkpoint_is_entity_in)(void *c,  Entity e);
-
-typedef int (*capi_checkpoint_is_point_in)(void *c,  float x,  float y,  float z);
-
-typedef void (*capi_checkpoint_set_players_only)(void *c,  int state);
-
-typedef int (*capi_checkpoint_is_players_only)(void *c);
-
-typedef unsigned char (*capi_checkpoint_is_entity_id_in)(void *c,  unsigned short id);
-
-typedef unsigned char (*capi_checkpoint_get_checkpoint_type)(void *c);
-
-typedef float (*capi_checkpoint_get_height)(void *c);
-
-typedef float (*capi_checkpoint_get_radius)(void *c);
-
-typedef RGBA (*capi_checkpoint_get_color)(void *c);
-
-typedef Position (*capi_checkpoint_get_next_position)(void *c);
-
-typedef void (*capi_checkpoint_set_checkpoint_type)(void *c,  unsigned char type);
-
-typedef void (*capi_checkpoint_set_height)(void *c,  float height);
-
-typedef void (*capi_checkpoint_set_radius)(void *c,  float radius);
-
-typedef void (*capi_checkpoint_set_color)(void *c,  unsigned char r,  unsigned char g,  unsigned char b,  unsigned char a);
-
-typedef void (*capi_checkpoint_set_next_position)(void *c,  float x,  float y,  float z);
 
 
+int runtime_register_alt_event(const char *resourceName,  unsigned short eventType);
+
+int runtime_unregister_alt_event(const char *resourceName,  unsigned short eventType);
+
+int runtime_register_alt_export(const char *resourceName,  const char *exportName,  Array value);
+
+Array runtime_get_alt_export(const char *targetResourceName,  const char *exportName);
+
+void * runtime_create_m_value_function(const char *resourceName,  unsigned long long id);
+
+Array runtime_call_m_value_function(void *ptr,  Array args);
+
+void connection_accept(void *handle,  unsigned char sendNames);
+
+void connection_decline(void *handle,  const char *reason);
+
+int connection_is_accepted(void *handle);
+
+int voice_channel_is_valid(const char* resourceName,  void *p);
+
+int voice_channel_get_type(void *c);
+
+int voice_channel_has_meta_data(void* base,  const char *key);
+
+Array voice_channel_get_meta_data(void* base,  const char *key);
+
+void voice_channel_set_meta_data(void *base,  const char *key,  Array data);
+
+void voice_channel_delete_meta_data(void *base,  const char *key);
+
+void voice_channel_destroy(void *b);
+
+int voice_channel_is_spatial(void *v);
+
+float voice_channel_get_max_distance(void *v);
+
+int voice_channel_has_player(void *v,  void *p);
+
+void voice_channel_add_player(void *v,  void *p);
+
+void voice_channel_remove_player(void *v,  void *p);
+
+int voice_channel_is_player_muted(void *v,  void *p);
+
+void voice_channel_mute_player(void *v,  void *p);
+
+void voice_channel_unmute_player(void *v,  void *p);
+
+unsigned long long voice_channel_get_player_count(void *v);
+
+Array voice_channel_get_players(void *v);
 
 int blip_get_type(void *c);
 
@@ -1524,6 +1576,94 @@ void blip_set_shrinked(void *b,  int val);
 
 void blip_fade(void *b,  unsigned int opacity,  unsigned int duration);
 
+int checkpoint_get_type(void *c);
+
+int checkpoint_has_meta_data(void* base,  const char *key);
+
+Array checkpoint_get_meta_data(void* base,  const char *key);
+
+void checkpoint_set_meta_data(void *base,  const char *key,  Array data);
+
+void checkpoint_delete_meta_data(void *base,  const char *key);
+
+void checkpoint_destroy(void *b);
+
+int checkpoint_is_valid(const char* resourceName,  void *p);
+
+Position checkpoint_get_position(void *p);
+
+void checkpoint_set_position(void* p,  float x,  float y,  float z);
+
+long checkpoint_get_dimension(void* p);
+
+void checkpoint_set_dimension(void* p,  long dimension);
+
+int checkpoint_get_col_shape_type(void *c);
+
+int checkpoint_is_entity_in(void *c,  Entity e);
+
+int checkpoint_is_point_in(void *c,  float x,  float y,  float z);
+
+void checkpoint_set_players_only(void *c,  int state);
+
+int checkpoint_is_players_only(void *c);
+
+unsigned char checkpoint_is_entity_id_in(void *c,  unsigned short id);
+
+unsigned char checkpoint_get_checkpoint_type(void *c);
+
+float checkpoint_get_height(void *c);
+
+float checkpoint_get_radius(void *c);
+
+RGBA checkpoint_get_color(void *c);
+
+Position checkpoint_get_next_position(void *c);
+
+void checkpoint_set_checkpoint_type(void *c,  unsigned char type);
+
+void checkpoint_set_height(void *c,  float height);
+
+void checkpoint_set_radius(void *c,  float radius);
+
+void checkpoint_set_color(void *c,  unsigned char r,  unsigned char g,  unsigned char b,  unsigned char a);
+
+void checkpoint_set_next_position(void *c,  float x,  float y,  float z);
+
+int col_shape_get_type(void *c);
+
+int col_shape_has_meta_data(void* base,  const char *key);
+
+Array col_shape_get_meta_data(void* base,  const char *key);
+
+void col_shape_set_meta_data(void *base,  const char *key,  Array data);
+
+void col_shape_delete_meta_data(void *base,  const char *key);
+
+void col_shape_destroy(void *b);
+
+int col_shape_is_valid(const char* resourceName,  void *p);
+
+Position col_shape_get_position(void *p);
+
+void col_shape_set_position(void* p,  float x,  float y,  float z);
+
+long col_shape_get_dimension(void* p);
+
+void col_shape_set_dimension(void* p,  long dimension);
+
+int col_shape_get_col_shape_type(void *c);
+
+int col_shape_is_entity_in(void *c,  Entity e);
+
+int col_shape_is_point_in(void *c,  float x,  float y,  float z);
+
+void col_shape_set_players_only(void *c,  int state);
+
+int col_shape_is_players_only(void *c);
+
+unsigned char col_shape_is_entity_id_in(void *c,  unsigned short id);
+
 void core_log_info(const char *message);
 
 void core_log_debug(const char *message);
@@ -1662,62 +1802,6 @@ Array core_get_server_config();
 unsigned long long core_hash_server_password(const char *password);
 
 void* core_get_resource_by_name(const char *resourceName);
-
-unsigned char resource_is_started(void *r);
-
-const char * resource_get_type(void *r);
-
-const char * resource_get_name(void* r);
-
-const char * resource_get_main(void *r);
-
-Array resource_get_config(void *r);
-
-Array resource_get_exports(void *r);
-
-Array resource_get_dependencies(void *r);
-
-Array resource_get_dependants(void *r);
-
-Array resource_get_required_permissions(void *r);
-
-Array resource_get_optional_permissions(void *r);
-
-const char * resource_get_path(void *r);
-
-int col_shape_get_type(void *c);
-
-int col_shape_has_meta_data(void* base,  const char *key);
-
-Array col_shape_get_meta_data(void* base,  const char *key);
-
-void col_shape_set_meta_data(void *base,  const char *key,  Array data);
-
-void col_shape_delete_meta_data(void *base,  const char *key);
-
-void col_shape_destroy(void *b);
-
-int col_shape_is_valid(const char* resourceName,  void *p);
-
-Position col_shape_get_position(void *p);
-
-void col_shape_set_position(void* p,  float x,  float y,  float z);
-
-long col_shape_get_dimension(void* p);
-
-void col_shape_set_dimension(void* p,  long dimension);
-
-int col_shape_get_col_shape_type(void *c);
-
-int col_shape_is_entity_in(void *c,  Entity e);
-
-int col_shape_is_point_in(void *c,  float x,  float y,  float z);
-
-void col_shape_set_players_only(void *c,  int state);
-
-int col_shape_is_players_only(void *c);
-
-unsigned char col_shape_is_entity_id_in(void *c,  unsigned short id);
 
 const char * player_get_name(void *p);
 
@@ -1990,23 +2074,27 @@ unsigned int player_get_last_damaged_body_part(void *p);
 
 void player_set_last_damaged_body_part(void *p,  unsigned int bodyPart);
 
-int runtime_register_alt_event(const char *resourceName,  unsigned short eventType);
+unsigned char resource_is_started(void *r);
 
-int runtime_unregister_alt_event(const char *resourceName,  unsigned short eventType);
+const char * resource_get_type(void *r);
 
-int runtime_register_alt_export(const char *resourceName,  const char *exportName,  Array value);
+const char * resource_get_name(void* r);
 
-Array runtime_get_alt_export(const char *targetResourceName,  const char *exportName);
+const char * resource_get_main(void *r);
 
-void * runtime_create_m_value_function(const char *resourceName,  unsigned long long id);
+Array resource_get_config(void *r);
 
-Array runtime_call_m_value_function(void *ptr,  Array args);
+Array resource_get_exports(void *r);
 
-void connection_accept(void *handle,  unsigned char sendNames);
+Array resource_get_dependencies(void *r);
 
-void connection_decline(void *handle,  const char *reason);
+Array resource_get_dependants(void *r);
 
-int connection_is_accepted(void *handle);
+Array resource_get_required_permissions(void *r);
+
+Array resource_get_optional_permissions(void *r);
+
+const char * resource_get_path(void *r);
 
 int vehicle_has_meta_data(void *base,  const char *key);
 
@@ -2463,93 +2551,5 @@ void vehicle_set_hybrid_extra_active(void *v,  unsigned char state);
 unsigned char vehicle_get_hybrid_extra_state(void *v);
 
 void vehicle_set_hybrid_extra_state(void *v,  unsigned char state);
-
-int voice_channel_is_valid(const char* resourceName,  void *p);
-
-int voice_channel_get_type(void *c);
-
-int voice_channel_has_meta_data(void* base,  const char *key);
-
-Array voice_channel_get_meta_data(void* base,  const char *key);
-
-void voice_channel_set_meta_data(void *base,  const char *key,  Array data);
-
-void voice_channel_delete_meta_data(void *base,  const char *key);
-
-void voice_channel_destroy(void *b);
-
-int voice_channel_is_spatial(void *v);
-
-float voice_channel_get_max_distance(void *v);
-
-int voice_channel_has_player(void *v,  void *p);
-
-void voice_channel_add_player(void *v,  void *p);
-
-void voice_channel_remove_player(void *v,  void *p);
-
-int voice_channel_is_player_muted(void *v,  void *p);
-
-void voice_channel_mute_player(void *v,  void *p);
-
-void voice_channel_unmute_player(void *v,  void *p);
-
-unsigned long long voice_channel_get_player_count(void *v);
-
-Array voice_channel_get_players(void *v);
-
-int checkpoint_get_type(void *c);
-
-int checkpoint_has_meta_data(void* base,  const char *key);
-
-Array checkpoint_get_meta_data(void* base,  const char *key);
-
-void checkpoint_set_meta_data(void *base,  const char *key,  Array data);
-
-void checkpoint_delete_meta_data(void *base,  const char *key);
-
-void checkpoint_destroy(void *b);
-
-int checkpoint_is_valid(const char* resourceName,  void *p);
-
-Position checkpoint_get_position(void *p);
-
-void checkpoint_set_position(void* p,  float x,  float y,  float z);
-
-long checkpoint_get_dimension(void* p);
-
-void checkpoint_set_dimension(void* p,  long dimension);
-
-int checkpoint_get_col_shape_type(void *c);
-
-int checkpoint_is_entity_in(void *c,  Entity e);
-
-int checkpoint_is_point_in(void *c,  float x,  float y,  float z);
-
-void checkpoint_set_players_only(void *c,  int state);
-
-int checkpoint_is_players_only(void *c);
-
-unsigned char checkpoint_is_entity_id_in(void *c,  unsigned short id);
-
-unsigned char checkpoint_get_checkpoint_type(void *c);
-
-float checkpoint_get_height(void *c);
-
-float checkpoint_get_radius(void *c);
-
-RGBA checkpoint_get_color(void *c);
-
-Position checkpoint_get_next_position(void *c);
-
-void checkpoint_set_checkpoint_type(void *c,  unsigned char type);
-
-void checkpoint_set_height(void *c,  float height);
-
-void checkpoint_set_radius(void *c,  float radius);
-
-void checkpoint_set_color(void *c,  unsigned char r,  unsigned char g,  unsigned char b,  unsigned char a);
-
-void checkpoint_set_next_position(void *c,  float x,  float y,  float z);
 
 #endif

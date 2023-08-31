@@ -42,6 +42,7 @@
 
 Package depends heavily on [cgo](https://pkg.go.dev/cmd/cgo).
 To build on Windows, a gcc compiler is required (ex: mingw-w64).
+You can find a guide on how to install mingw-w64 [here](/TROUBLESHOOTING.md#mingw-w64-windows).
 
 ## Usage
 
