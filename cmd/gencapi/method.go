@@ -25,8 +25,7 @@ func (m *method) Name() string {
 }
 
 func (m *method) CName() string {
-	// TODO: real CamelCase to snake_case
-	return fmt.Sprintf("%s_%s", m.className, m.classMethod)
+	return ToSnakeCase(m.className + m.classMethod)
 }
 
 func (m *method) CArgs() string {

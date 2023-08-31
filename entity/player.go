@@ -33,7 +33,7 @@ func NewPlayer(ptr unsafe.Pointer, id uint32) Player {
 }*/
 
 func (p *AltPlayer) SocialID() uint64 {
-	return uint64(C.player_get_social_i_d(p.ptr))
+	return uint64(C.player_get_social_id(p.ptr))
 }
 
 func (p *AltPlayer) DiscordUserID() int64 {
