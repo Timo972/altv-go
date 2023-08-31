@@ -11,9 +11,9 @@ Follow these instructions **until step 5** to install mingw-w64 using msys2: htt
 Inside the MSYS2 terminal run<br />
 ``pacman -S --needed base-devel mingw-w64-x86_64-toolchain``<br />
 and <br />
-``pacman -S mingw-w64-x86_64-dlfcn``
-
-You can now close the MSYS2 terminal and are ready to build your go project.
+``pacman -S mingw-w64-x86_64-dlfcn``<br />
+Lastly close the MSYS2 terminal and add the mingw-w64 bin directory to your PATH environment variable.<br />
+You are ready to build your go project as usual.
 
 ## Common Build Errors
 
