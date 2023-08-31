@@ -7,5 +7,3 @@ package altv
 // #include <stdlib.h>
 // #include "capi.h"
 import "C"
-
-//go:generate make capi
