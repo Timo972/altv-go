@@ -3,11 +3,11 @@
   <a href="https://github.com/timo972/altv-go/actions/workflows/test-api.yml">
     <img src="https://github.com/timo972/altv-go/actions/workflows/test-api.yml/badge.svg" />
   </a>
-	<a href="https://github.com/Timo972/altv-go/actions/workflows/test-module.yml">
+  <a href="https://github.com/Timo972/altv-go/actions/workflows/test-module.yml">
     <img src="https://github.com/Timo972/altv-go/actions/workflows/test-module.yml/badge.svg" />
   </a>
-	<a href="https://github.com/timo972/altv-go/actions/workflows/build-deploy-module.yml">
-    <img src="https://github.com/timo972/altv-go/actions/workflows/build-deploy-module.yml/badge.svg" />
+  <a href="https://github.com/timo972/altv-go/actions/workflows/publish-module.yml">
+    <img src="https://github.com/timo972/altv-go/actions/workflows/publish-module.yml/badge.svg" />
   </a>
   <a href="https://github.com/edgedb/edgedb/blob/master/LICENSE">
     <img alt="license" src="https://img.shields.io/badge/license-MIT-blue" />
