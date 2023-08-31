@@ -6,6 +6,9 @@ on:
       - "**/*.go"
       - "go.mod"
       - "go.sum"
+    branches: 
+      - main
+      - dev
   pull_request:
     paths:
       - "*.go"
