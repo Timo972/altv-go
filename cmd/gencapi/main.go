@@ -23,7 +23,7 @@ func (strs *stringArrayFlag) Set(v string) error {
 
 func ensureFileDirs(targets []string) error {
 	for _, target := range targets {
-		if err := os.MkdirAll(path.Dir(target), 0600); err != nil {
+		if err := os.MkdirAll(path.Dir(target), 0755); err != nil {
 			return fmt.Errorf("error ensuring %s outpout folder: %w", target, err)
 		}
 	}
@@ -34,7 +34,7 @@ func createDst(dsts []string) (io.Writer, func(), error) {
 	writers := make([]io.Writer, len(dsts))
 
 	for i, dst := range dsts {
-		f, err := os.OpenFile(dst, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0600)
+		f, err := os.OpenFile(dst, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
 		if err != nil {
 			return nil, nil, fmt.Errorf("error opening %s: %w", dst, err)
 		}
