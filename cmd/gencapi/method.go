@@ -71,7 +71,7 @@ func (m *method) CInit() string {
 }
 
 func (m *method) CLoad() string {
-	return fmt.Sprintf("g_call_%s = GET_FUNC(module, \"%s\", capi_%s);", m.CName(), m.Name(), m.CName())
+	return fmt.Sprintf("g_call_%s = GET_FUNC(module, %q, capi_%s);", m.CName(), m.Name(), m.CName())
 }
 
 func (m *method) CBody() string {
@@ -120,7 +120,7 @@ func parseCAPIDir(runtimeCAPI fs.FS) (map[string][]*method, error) {
 	capiMethods := make(map[string][]*method)
 	if err := fs.WalkDir(runtimeCAPI, ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
-			log.Fatalf("error walking runtime CAPI folder: %s", err)
+			return err
 		}
 
 		if d.IsDir() {

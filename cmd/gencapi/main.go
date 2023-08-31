@@ -12,8 +12,8 @@ import (
 
 type stringArrayFlag []string
 
-func (strs stringArrayFlag) String() string {
-	return strings.Join(strs, ";")
+func (strs *stringArrayFlag) String() string {
+	return strings.Join(*strs, ";")
 }
 
 func (strs *stringArrayFlag) Set(v string) error {
@@ -23,7 +23,7 @@ func (strs *stringArrayFlag) Set(v string) error {
 
 func ensureFileDirs(targets []string) error {
 	for _, target := range targets {
-		if err := os.MkdirAll(path.Dir(target), 0755); err != nil {
+		if err := os.MkdirAll(path.Dir(target), 0644); err != nil {
 			return fmt.Errorf("error ensuring %s outpout folder: %w", target, err)
 		}
 	}
@@ -94,9 +94,9 @@ func main() {
 
 	runtimeStructs, err := os.Open(runtimeStructsPath)
 	if err != nil {
+		runtimeStructs.Close()
 		log.Fatalf("error opening runtime structs file: %s", err)
 	}
-	defer runtimeStructs.Close()
 
 	runtimeCAPI := os.DirFS(runtimeCAPIPath)
 	capi, err := parseCAPIDir(runtimeCAPI)
@@ -107,6 +107,7 @@ func main() {
 	log.Printf("parsed %d CAPI files", len(capi))
 
 	typedefs, err := parseTypedefs(runtimeStructs)
+	runtimeStructs.Close()
 	if err != nil {
 		log.Fatalf("error parsing runtime structs file: %s", err)
 	}
