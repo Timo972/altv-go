@@ -22,9 +22,9 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         include:
-          - os: windows-2019
+          - os: windows-latest
             script_name: .\scripts\build-capi.bat
-          - os: ubuntu-16.04
+          - os: ubuntu-latest
             script_name: ./scripts/build-capi.sh
     name: Test ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
