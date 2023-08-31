@@ -174,6 +174,361 @@ typedef struct boneInfo {
 
 
 
+typedef int (*capi_blip_get_type)(void *c);
+
+typedef int (*capi_blip_has_meta_data)(void *base,  const char *key);
+
+typedef Array (*capi_blip_get_meta_data)(void *base,  const char *key);
+
+typedef void (*capi_blip_set_meta_data)(void *base,  const char *key,  Array data);
+
+typedef void (*capi_blip_delete_meta_data)(void *base,  const char *key);
+
+typedef void (*capi_blip_destroy)(void *b);
+
+typedef int (*capi_blip_is_valid)(const char *resourceName,  void *p);
+
+typedef Position (*capi_blip_get_position)(void *p);
+
+typedef void (*capi_blip_set_position)(void *p,  float x,  float y,  float z);
+
+typedef long (*capi_blip_get_dimension)(void *p);
+
+typedef void (*capi_blip_set_dimension)(void *p,  long dimension);
+
+typedef int (*capi_blip_is_global)(void *b);
+
+typedef Array (*capi_blip_get_targets)(void *b);
+
+typedef int (*capi_blip_is_attached)(void *b);
+
+typedef Entity (*capi_blip_attached_to)(void *b);
+
+typedef void (*capi_blip_attach_to)(void *b,  Entity e);
+
+typedef unsigned char (*capi_blip_get_blip_type)(void *b);
+
+typedef Vector2 (*capi_blip_get_scale_xy)(void *b);
+
+typedef void (*capi_blip_set_scale_xy)(void *b,  Vector2 scale);
+
+typedef int (*capi_blip_get_display)(void *b);
+
+typedef void (*capi_blip_set_display)(void *b,  int display);
+
+typedef int (*capi_blip_get_sprite)(void *b);
+
+typedef int (*capi_blip_get_color)(void *b);
+
+typedef RGBA (*capi_blip_get_secondary_color)(void *b);
+
+typedef int (*capi_blip_get_alpha)(void *b);
+
+typedef int (*capi_blip_get_flash_timer)(void *b);
+
+typedef int (*capi_blip_get_flash_interval)(void *b);
+
+typedef int (*capi_blip_get_as_friendly)(void *b);
+
+typedef int (*capi_blip_get_route)(void *b);
+
+typedef int (*capi_blip_get_bright)(void *b);
+
+typedef int (*capi_blip_get_number)(void *b);
+
+typedef int (*capi_blip_get_show_cone)(void *b);
+
+typedef int (*capi_blip_get_flashes)(void *b);
+
+typedef int (*capi_blip_get_flashes_alternate)(void *b);
+
+typedef int (*capi_blip_get_as_short_range)(void *b);
+
+typedef int (*capi_blip_get_priority)(void *b);
+
+typedef float (*capi_blip_get_rotation)(void *b);
+
+typedef const char * (*capi_blip_get_gxt_name)(void *b);
+
+typedef const char * (*capi_blip_get_name)(void *b);
+
+typedef RGBA (*capi_blip_get_route_color)(void *b);
+
+typedef int (*capi_blip_get_pulse)(void *b);
+
+typedef int (*capi_blip_get_as_mission_creator)(void *b);
+
+typedef int (*capi_blip_get_tick_visible)(void *b);
+
+typedef int (*capi_blip_get_heading_indicator_visible)(void *b);
+
+typedef int (*capi_blip_get_outline_indicator_visible)(void *b);
+
+typedef int (*capi_blip_get_friend_indicator_visible)(void *b);
+
+typedef int (*capi_blip_get_crew_indicator_visible)(void *b);
+
+typedef int (*capi_blip_get_category)(void *b);
+
+typedef int (*capi_blip_get_as_high_detail)(void *b);
+
+typedef int (*capi_blip_get_shrinked)(void *b);
+
+typedef void (*capi_blip_set_sprite)(void *b,  int sprite);
+
+typedef void (*capi_blip_set_color)(void *b,  int color);
+
+typedef void (*capi_blip_set_route)(void *b,  int state);
+
+typedef void (*capi_blip_set_route_color)(void *b,  RGBA color);
+
+typedef void (*capi_blip_set_secondary_color)(void *b,  RGBA color);
+
+typedef void (*capi_blip_set_alpha)(void *b,  int alpha);
+
+typedef void (*capi_blip_set_flash_timer)(void *b,  int timer);
+
+typedef void (*capi_blip_set_flash_interval)(void *b,  int interval);
+
+typedef void (*capi_blip_set_as_friendly)(void *b,  int friendly);
+
+typedef void (*capi_blip_set_bright)(void *b,  int bright);
+
+typedef void (*capi_blip_set_number)(void *b,  int number);
+
+typedef void (*capi_blip_set_show_cone)(void *b,  int state);
+
+typedef void (*capi_blip_set_flashes)(void *b,  int state);
+
+typedef void (*capi_blip_set_flashes_alternate)(void *b,  int state);
+
+typedef void (*capi_blip_set_as_short_range)(void *b,  int state);
+
+typedef void (*capi_blip_set_priority)(void *b,  int state);
+
+typedef void (*capi_blip_set_rotation)(void *b,  float rot);
+
+typedef void (*capi_blip_set_gxt_name)(void *b,  const char *name);
+
+typedef void (*capi_blip_set_name)(void *b,  const char *name);
+
+typedef void (*capi_blip_set_pulse)(void *b,  int val);
+
+typedef void (*capi_blip_set_as_mission_creator)(void *b,  int val);
+
+typedef void (*capi_blip_set_tick_visible)(void *b,  int val);
+
+typedef void (*capi_blip_set_heading_indicator_visible)(void *b,  int val);
+
+typedef void (*capi_blip_set_outline_indicator_visible)(void *b,  int val);
+
+typedef void (*capi_blip_set_friend_indicator_visible)(void *b,  int val);
+
+typedef void (*capi_blip_set_crew_indicator_visible)(void *b,  int val);
+
+typedef void (*capi_blip_set_category)(void *b,  int val);
+
+typedef void (*capi_blip_set_as_high_detail)(void *b,  int val);
+
+typedef void (*capi_blip_set_shrinked)(void *b,  int val);
+
+typedef void (*capi_blip_fade)(void *b,  unsigned int opacity,  unsigned int duration);
+
+typedef void (*capi_core_log_info)(const char *message);
+
+typedef void (*capi_core_log_debug)(const char *message);
+
+typedef void (*capi_core_log_warning)(const char *message);
+
+typedef void (*capi_core_log_error)(const char *message);
+
+typedef void (*capi_core_log_colored)(const char *message);
+
+typedef Entity (*capi_core_create_vehicle)(unsigned long model,  float posX,  float posY,  float posZ, 
+                                float rotX,  float rotY,  float rotZ);
+
+typedef Entity
+ (*capi_core_create_checkpoint)(unsigned char type,  float x,  float y,  float z,  float radius,  float height,  unsigned char r, 
+                      unsigned char g,  unsigned char b,  unsigned char a,  unsigned long streamingDistance);
+
+typedef Entity (*capi_core_create_voice_channel)(int spacial,  float maxDistance);
+
+typedef const char * (*capi_core_get_version)();
+
+typedef const char * (*capi_core_get_branch)();
+
+typedef int (*capi_core_is_debug)();
+
+typedef unsigned long (*capi_core_hash)(const char *str);
+
+typedef int (*capi_core_file_exists)(const char *path);
+
+typedef const char * (*capi_core_read_file)(const char *path);
+
+typedef Entity (*capi_core_get_entity_by_id)(unsigned short id);
+
+typedef Entity (*capi_core_get_base_object_by_id)(unsigned char type,  unsigned int id);
+
+typedef Array (*capi_core_get_entities)();
+
+typedef Array (*capi_core_get_players)();
+
+typedef Array (*capi_core_get_vehicles)();
+
+typedef Array (*capi_core_get_blips)();
+
+typedef Array (*capi_core_get_col_shapes)();
+
+typedef Array (*capi_core_get_checkpoints)();
+
+typedef Array (*capi_core_get_virtual_entities)();
+
+typedef Array (*capi_core_get_virtual_entity_groups)();
+
+typedef Array (*capi_core_get_markers)();
+
+typedef Array (*capi_core_get_peds)();
+
+typedef int (*capi_core_has_meta_data)(const char *key);
+
+typedef Array (*capi_core_get_meta_data)(const char *key);
+
+typedef void (*capi_core_set_meta_data)(const char *key,  Array data);
+
+typedef void (*capi_core_delete_meta_data)(const char *key);
+
+typedef int (*capi_core_has_synced_meta_data)(const char *key);
+
+typedef Array (*capi_core_get_synced_meta_data)(const char *key);
+
+typedef Array (*capi_core_get_required_permissions)();
+
+typedef Array (*capi_core_get_optional_permissions)();
+
+typedef void (*capi_core_destroy_base_object)(void *h);
+
+typedef const char * (*capi_core_get_root_directory)();
+
+typedef int (*capi_core_start_resource)(const char *name);
+
+typedef void (*capi_core_stop_resource)(const char *name);
+
+typedef void (*capi_core_restart_resource)(const char *name);
+
+typedef void (*capi_core_set_synced_meta_data)(const char *key,  Array data);
+
+typedef void (*capi_core_delete_synced_meta_data)(const char *key);
+
+typedef Array (*capi_core_get_players_by_name)(const char *name);
+
+typedef unsigned int (*capi_core_get_net_time)();
+
+typedef void (*capi_core_set_password)(const char *password);
+
+typedef const char * (*capi_core_get_sdk_hash)();
+
+typedef Entity (*capi_core_create_col_shape_cylinder)(float posX,  float posY,  float posZ,  float radius,  float height);
+
+typedef Entity (*capi_core_create_col_shape_cube)(float posX1,  float posY1,  float posZ1,  float posX2,  float posY2,  float posZ2);
+
+typedef Entity (*capi_core_create_col_shape_rectangle)(float x1,  float y1,  float x2,  float y2,  float z);
+
+typedef Entity (*capi_core_create_col_shape_circle)(float posX,  float posY,  float posZ,  float radius);
+
+typedef Entity (*capi_core_create_col_shape_sphere)(float posX,  float posY,  float posZ,  float radius);
+
+typedef void (*capi_core_trigger_local_event)(const char *ev,  Array args);
+
+typedef void (*capi_core_trigger_local_event_raw)(const char* ev,  char* bytes,  unsigned long long size);
+
+typedef void (*capi_core_trigger_client_event)(void *p,  const char *ev,  Array args);
+
+typedef void (*capi_core_trigger_client_event_for)(Array clients,  const char *ev,  Array args);
+
+typedef void (*capi_core_trigger_client_event_for_all)(const char *ev,  Array args);
+
+typedef Entity (*capi_core_create_point_blip_position)(float x,  float y,  float z,  unsigned short global);
+
+typedef Entity (*capi_core_create_point_blip_entity)(Entity entity,  unsigned short global);
+
+typedef Entity (*capi_core_create_area_blip)(float x,  float y,  float z,  float width,  float height,  unsigned short global);
+
+typedef Entity (*capi_core_create_radius_blip)(float x,  float y,  float z,  float radius,  unsigned short global);
+
+typedef Entity (*capi_core_create_col_shape_polygon)(float minZ,  float maxZ,  Array points);
+
+typedef Array (*capi_core_get_all_resources)();
+
+typedef const char * (*capi_core_string_to_sha256)(const char *str);
+
+typedef void (*capi_core_stop_server)();
+
+typedef VehicleModelInfo (*capi_core_get_vehicle_model_by_hash)(unsigned int hash);
+
+typedef PedModelInfo (*capi_core_get_ped_model_by_hash)(unsigned int hash);
+
+typedef Array (*capi_core_get_server_config)();
+
+typedef unsigned long long (*capi_core_hash_server_password)(const char *password);
+
+typedef void* (*capi_core_get_resource_by_name)(const char *resourceName);
+
+typedef unsigned char (*capi_resource_is_started)(void *r);
+
+typedef const char * (*capi_resource_get_type)(void *r);
+
+typedef const char * (*capi_resource_get_name)(void* r);
+
+typedef const char * (*capi_resource_get_main)(void *r);
+
+typedef Array (*capi_resource_get_config)(void *r);
+
+typedef Array (*capi_resource_get_exports)(void *r);
+
+typedef Array (*capi_resource_get_dependencies)(void *r);
+
+typedef Array (*capi_resource_get_dependants)(void *r);
+
+typedef Array (*capi_resource_get_required_permissions)(void *r);
+
+typedef Array (*capi_resource_get_optional_permissions)(void *r);
+
+typedef const char * (*capi_resource_get_path)(void *r);
+
+typedef int (*capi_col_shape_get_type)(void *c);
+
+typedef int (*capi_col_shape_has_meta_data)(void* base,  const char *key);
+
+typedef Array (*capi_col_shape_get_meta_data)(void* base,  const char *key);
+
+typedef void (*capi_col_shape_set_meta_data)(void *base,  const char *key,  Array data);
+
+typedef void (*capi_col_shape_delete_meta_data)(void *base,  const char *key);
+
+typedef void (*capi_col_shape_destroy)(void *b);
+
+typedef int (*capi_col_shape_is_valid)(const char* resourceName,  void *p);
+
+typedef Position (*capi_col_shape_get_position)(void *p);
+
+typedef void (*capi_col_shape_set_position)(void* p,  float x,  float y,  float z);
+
+typedef long (*capi_col_shape_get_dimension)(void* p);
+
+typedef void (*capi_col_shape_set_dimension)(void* p,  long dimension);
+
+typedef int (*capi_col_shape_get_col_shape_type)(void *c);
+
+typedef int (*capi_col_shape_is_entity_in)(void *c,  Entity e);
+
+typedef int (*capi_col_shape_is_point_in)(void *c,  float x,  float y,  float z);
+
+typedef void (*capi_col_shape_set_players_only)(void *c,  int state);
+
+typedef int (*capi_col_shape_is_players_only)(void *c);
+
+typedef unsigned char (*capi_col_shape_is_entity_id_in)(void *c,  unsigned short id);
+
 typedef const char * (*capi_player_get_name)(void *p);
 
 typedef int (*capi_player_has_meta_data)(void *base,  const char *key);
@@ -953,361 +1308,6 @@ typedef unsigned long long (*capi_voice_channel_get_player_count)(void *v);
 
 typedef Array (*capi_voice_channel_get_players)(void *v);
 
-typedef int (*capi_blip_get_type)(void *c);
-
-typedef int (*capi_blip_has_meta_data)(void *base,  const char *key);
-
-typedef Array (*capi_blip_get_meta_data)(void *base,  const char *key);
-
-typedef void (*capi_blip_set_meta_data)(void *base,  const char *key,  Array data);
-
-typedef void (*capi_blip_delete_meta_data)(void *base,  const char *key);
-
-typedef void (*capi_blip_destroy)(void *b);
-
-typedef int (*capi_blip_is_valid)(const char *resourceName,  void *p);
-
-typedef Position (*capi_blip_get_position)(void *p);
-
-typedef void (*capi_blip_set_position)(void *p,  float x,  float y,  float z);
-
-typedef long (*capi_blip_get_dimension)(void *p);
-
-typedef void (*capi_blip_set_dimension)(void *p,  long dimension);
-
-typedef int (*capi_blip_is_global)(void *b);
-
-typedef Array (*capi_blip_get_targets)(void *b);
-
-typedef int (*capi_blip_is_attached)(void *b);
-
-typedef Entity (*capi_blip_attached_to)(void *b);
-
-typedef void (*capi_blip_attach_to)(void *b,  Entity e);
-
-typedef unsigned char (*capi_blip_get_blip_type)(void *b);
-
-typedef Vector2 (*capi_blip_get_scale_xy)(void *b);
-
-typedef void (*capi_blip_set_scale_xy)(void *b,  Vector2 scale);
-
-typedef int (*capi_blip_get_display)(void *b);
-
-typedef void (*capi_blip_set_display)(void *b,  int display);
-
-typedef int (*capi_blip_get_sprite)(void *b);
-
-typedef int (*capi_blip_get_color)(void *b);
-
-typedef RGBA (*capi_blip_get_secondary_color)(void *b);
-
-typedef int (*capi_blip_get_alpha)(void *b);
-
-typedef int (*capi_blip_get_flash_timer)(void *b);
-
-typedef int (*capi_blip_get_flash_interval)(void *b);
-
-typedef int (*capi_blip_get_as_friendly)(void *b);
-
-typedef int (*capi_blip_get_route)(void *b);
-
-typedef int (*capi_blip_get_bright)(void *b);
-
-typedef int (*capi_blip_get_number)(void *b);
-
-typedef int (*capi_blip_get_show_cone)(void *b);
-
-typedef int (*capi_blip_get_flashes)(void *b);
-
-typedef int (*capi_blip_get_flashes_alternate)(void *b);
-
-typedef int (*capi_blip_get_as_short_range)(void *b);
-
-typedef int (*capi_blip_get_priority)(void *b);
-
-typedef float (*capi_blip_get_rotation)(void *b);
-
-typedef const char * (*capi_blip_get_gxt_name)(void *b);
-
-typedef const char * (*capi_blip_get_name)(void *b);
-
-typedef RGBA (*capi_blip_get_route_color)(void *b);
-
-typedef int (*capi_blip_get_pulse)(void *b);
-
-typedef int (*capi_blip_get_as_mission_creator)(void *b);
-
-typedef int (*capi_blip_get_tick_visible)(void *b);
-
-typedef int (*capi_blip_get_heading_indicator_visible)(void *b);
-
-typedef int (*capi_blip_get_outline_indicator_visible)(void *b);
-
-typedef int (*capi_blip_get_friend_indicator_visible)(void *b);
-
-typedef int (*capi_blip_get_crew_indicator_visible)(void *b);
-
-typedef int (*capi_blip_get_category)(void *b);
-
-typedef int (*capi_blip_get_as_high_detail)(void *b);
-
-typedef int (*capi_blip_get_shrinked)(void *b);
-
-typedef void (*capi_blip_set_sprite)(void *b,  int sprite);
-
-typedef void (*capi_blip_set_color)(void *b,  int color);
-
-typedef void (*capi_blip_set_route)(void *b,  int state);
-
-typedef void (*capi_blip_set_route_color)(void *b,  RGBA color);
-
-typedef void (*capi_blip_set_secondary_color)(void *b,  RGBA color);
-
-typedef void (*capi_blip_set_alpha)(void *b,  int alpha);
-
-typedef void (*capi_blip_set_flash_timer)(void *b,  int timer);
-
-typedef void (*capi_blip_set_flash_interval)(void *b,  int interval);
-
-typedef void (*capi_blip_set_as_friendly)(void *b,  int friendly);
-
-typedef void (*capi_blip_set_bright)(void *b,  int bright);
-
-typedef void (*capi_blip_set_number)(void *b,  int number);
-
-typedef void (*capi_blip_set_show_cone)(void *b,  int state);
-
-typedef void (*capi_blip_set_flashes)(void *b,  int state);
-
-typedef void (*capi_blip_set_flashes_alternate)(void *b,  int state);
-
-typedef void (*capi_blip_set_as_short_range)(void *b,  int state);
-
-typedef void (*capi_blip_set_priority)(void *b,  int state);
-
-typedef void (*capi_blip_set_rotation)(void *b,  float rot);
-
-typedef void (*capi_blip_set_gxt_name)(void *b,  const char *name);
-
-typedef void (*capi_blip_set_name)(void *b,  const char *name);
-
-typedef void (*capi_blip_set_pulse)(void *b,  int val);
-
-typedef void (*capi_blip_set_as_mission_creator)(void *b,  int val);
-
-typedef void (*capi_blip_set_tick_visible)(void *b,  int val);
-
-typedef void (*capi_blip_set_heading_indicator_visible)(void *b,  int val);
-
-typedef void (*capi_blip_set_outline_indicator_visible)(void *b,  int val);
-
-typedef void (*capi_blip_set_friend_indicator_visible)(void *b,  int val);
-
-typedef void (*capi_blip_set_crew_indicator_visible)(void *b,  int val);
-
-typedef void (*capi_blip_set_category)(void *b,  int val);
-
-typedef void (*capi_blip_set_as_high_detail)(void *b,  int val);
-
-typedef void (*capi_blip_set_shrinked)(void *b,  int val);
-
-typedef void (*capi_blip_fade)(void *b,  unsigned int opacity,  unsigned int duration);
-
-typedef void (*capi_core_log_info)(const char *message);
-
-typedef void (*capi_core_log_debug)(const char *message);
-
-typedef void (*capi_core_log_warning)(const char *message);
-
-typedef void (*capi_core_log_error)(const char *message);
-
-typedef void (*capi_core_log_colored)(const char *message);
-
-typedef Entity (*capi_core_create_vehicle)(unsigned long model,  float posX,  float posY,  float posZ, 
-                                float rotX,  float rotY,  float rotZ);
-
-typedef Entity
- (*capi_core_create_checkpoint)(unsigned char type,  float x,  float y,  float z,  float radius,  float height,  unsigned char r, 
-                      unsigned char g,  unsigned char b,  unsigned char a,  unsigned long streamingDistance);
-
-typedef Entity (*capi_core_create_voice_channel)(int spacial,  float maxDistance);
-
-typedef const char * (*capi_core_get_version)();
-
-typedef const char * (*capi_core_get_branch)();
-
-typedef int (*capi_core_is_debug)();
-
-typedef unsigned long (*capi_core_hash)(const char *str);
-
-typedef int (*capi_core_file_exists)(const char *path);
-
-typedef const char * (*capi_core_read_file)(const char *path);
-
-typedef Entity (*capi_core_get_entity_by_id)(unsigned short id);
-
-typedef Entity (*capi_core_get_base_object_by_id)(unsigned char type,  unsigned int id);
-
-typedef Array (*capi_core_get_entities)();
-
-typedef Array (*capi_core_get_players)();
-
-typedef Array (*capi_core_get_vehicles)();
-
-typedef Array (*capi_core_get_blips)();
-
-typedef Array (*capi_core_get_col_shapes)();
-
-typedef Array (*capi_core_get_checkpoints)();
-
-typedef Array (*capi_core_get_virtual_entities)();
-
-typedef Array (*capi_core_get_virtual_entity_groups)();
-
-typedef Array (*capi_core_get_markers)();
-
-typedef Array (*capi_core_get_peds)();
-
-typedef int (*capi_core_has_meta_data)(const char *key);
-
-typedef Array (*capi_core_get_meta_data)(const char *key);
-
-typedef void (*capi_core_set_meta_data)(const char *key,  Array data);
-
-typedef void (*capi_core_delete_meta_data)(const char *key);
-
-typedef int (*capi_core_has_synced_meta_data)(const char *key);
-
-typedef Array (*capi_core_get_synced_meta_data)(const char *key);
-
-typedef Array (*capi_core_get_required_permissions)();
-
-typedef Array (*capi_core_get_optional_permissions)();
-
-typedef void (*capi_core_destroy_base_object)(void *h);
-
-typedef const char * (*capi_core_get_root_directory)();
-
-typedef int (*capi_core_start_resource)(const char *name);
-
-typedef void (*capi_core_stop_resource)(const char *name);
-
-typedef void (*capi_core_restart_resource)(const char *name);
-
-typedef void (*capi_core_set_synced_meta_data)(const char *key,  Array data);
-
-typedef void (*capi_core_delete_synced_meta_data)(const char *key);
-
-typedef Array (*capi_core_get_players_by_name)(const char *name);
-
-typedef unsigned int (*capi_core_get_net_time)();
-
-typedef void (*capi_core_set_password)(const char *password);
-
-typedef const char * (*capi_core_get_sdk_hash)();
-
-typedef Entity (*capi_core_create_col_shape_cylinder)(float posX,  float posY,  float posZ,  float radius,  float height);
-
-typedef Entity (*capi_core_create_col_shape_cube)(float posX1,  float posY1,  float posZ1,  float posX2,  float posY2,  float posZ2);
-
-typedef Entity (*capi_core_create_col_shape_rectangle)(float x1,  float y1,  float x2,  float y2,  float z);
-
-typedef Entity (*capi_core_create_col_shape_circle)(float posX,  float posY,  float posZ,  float radius);
-
-typedef Entity (*capi_core_create_col_shape_sphere)(float posX,  float posY,  float posZ,  float radius);
-
-typedef void (*capi_core_trigger_local_event)(const char *ev,  Array args);
-
-typedef void (*capi_core_trigger_local_event_raw)(const char* ev,  char* bytes,  unsigned long long size);
-
-typedef void (*capi_core_trigger_client_event)(void *p,  const char *ev,  Array args);
-
-typedef void (*capi_core_trigger_client_event_for)(Array clients,  const char *ev,  Array args);
-
-typedef void (*capi_core_trigger_client_event_for_all)(const char *ev,  Array args);
-
-typedef Entity (*capi_core_create_point_blip_position)(float x,  float y,  float z,  unsigned short global);
-
-typedef Entity (*capi_core_create_point_blip_entity)(Entity entity,  unsigned short global);
-
-typedef Entity (*capi_core_create_area_blip)(float x,  float y,  float z,  float width,  float height,  unsigned short global);
-
-typedef Entity (*capi_core_create_radius_blip)(float x,  float y,  float z,  float radius,  unsigned short global);
-
-typedef Entity (*capi_core_create_col_shape_polygon)(float minZ,  float maxZ,  Array points);
-
-typedef Array (*capi_core_get_all_resources)();
-
-typedef const char * (*capi_core_string_to_sha256)(const char *str);
-
-typedef void (*capi_core_stop_server)();
-
-typedef VehicleModelInfo (*capi_core_get_vehicle_model_by_hash)(unsigned int hash);
-
-typedef PedModelInfo (*capi_core_get_ped_model_by_hash)(unsigned int hash);
-
-typedef Array (*capi_core_get_server_config)();
-
-typedef unsigned long long (*capi_core_hash_server_password)(const char *password);
-
-typedef void* (*capi_core_get_resource_by_name)(const char *resourceName);
-
-typedef int (*capi_col_shape_get_type)(void *c);
-
-typedef int (*capi_col_shape_has_meta_data)(void* base,  const char *key);
-
-typedef Array (*capi_col_shape_get_meta_data)(void* base,  const char *key);
-
-typedef void (*capi_col_shape_set_meta_data)(void *base,  const char *key,  Array data);
-
-typedef void (*capi_col_shape_delete_meta_data)(void *base,  const char *key);
-
-typedef void (*capi_col_shape_destroy)(void *b);
-
-typedef int (*capi_col_shape_is_valid)(const char* resourceName,  void *p);
-
-typedef Position (*capi_col_shape_get_position)(void *p);
-
-typedef void (*capi_col_shape_set_position)(void* p,  float x,  float y,  float z);
-
-typedef long (*capi_col_shape_get_dimension)(void* p);
-
-typedef void (*capi_col_shape_set_dimension)(void* p,  long dimension);
-
-typedef int (*capi_col_shape_get_col_shape_type)(void *c);
-
-typedef int (*capi_col_shape_is_entity_in)(void *c,  Entity e);
-
-typedef int (*capi_col_shape_is_point_in)(void *c,  float x,  float y,  float z);
-
-typedef void (*capi_col_shape_set_players_only)(void *c,  int state);
-
-typedef int (*capi_col_shape_is_players_only)(void *c);
-
-typedef unsigned char (*capi_col_shape_is_entity_id_in)(void *c,  unsigned short id);
-
-typedef unsigned char (*capi_resource_is_started)(void *r);
-
-typedef const char * (*capi_resource_get_type)(void *r);
-
-typedef const char * (*capi_resource_get_name)(void* r);
-
-typedef const char * (*capi_resource_get_main)(void *r);
-
-typedef Array (*capi_resource_get_config)(void *r);
-
-typedef Array (*capi_resource_get_exports)(void *r);
-
-typedef Array (*capi_resource_get_dependencies)(void *r);
-
-typedef Array (*capi_resource_get_dependants)(void *r);
-
-typedef Array (*capi_resource_get_required_permissions)(void *r);
-
-typedef Array (*capi_resource_get_optional_permissions)(void *r);
-
-typedef const char * (*capi_resource_get_path)(void *r);
-
 typedef int (*capi_checkpoint_get_type)(void *c);
 
 typedef int (*capi_checkpoint_has_meta_data)(void* base,  const char *key);
@@ -1363,6 +1363,361 @@ typedef void (*capi_checkpoint_set_color)(void *c,  unsigned char r,  unsigned c
 typedef void (*capi_checkpoint_set_next_position)(void *c,  float x,  float y,  float z);
 
 
+
+int blip_get_type(void *c);
+
+int blip_has_meta_data(void *base,  const char *key);
+
+Array blip_get_meta_data(void *base,  const char *key);
+
+void blip_set_meta_data(void *base,  const char *key,  Array data);
+
+void blip_delete_meta_data(void *base,  const char *key);
+
+void blip_destroy(void *b);
+
+int blip_is_valid(const char *resourceName,  void *p);
+
+Position blip_get_position(void *p);
+
+void blip_set_position(void *p,  float x,  float y,  float z);
+
+long blip_get_dimension(void *p);
+
+void blip_set_dimension(void *p,  long dimension);
+
+int blip_is_global(void *b);
+
+Array blip_get_targets(void *b);
+
+int blip_is_attached(void *b);
+
+Entity blip_attached_to(void *b);
+
+void blip_attach_to(void *b,  Entity e);
+
+unsigned char blip_get_blip_type(void *b);
+
+Vector2 blip_get_scale_xy(void *b);
+
+void blip_set_scale_xy(void *b,  Vector2 scale);
+
+int blip_get_display(void *b);
+
+void blip_set_display(void *b,  int display);
+
+int blip_get_sprite(void *b);
+
+int blip_get_color(void *b);
+
+RGBA blip_get_secondary_color(void *b);
+
+int blip_get_alpha(void *b);
+
+int blip_get_flash_timer(void *b);
+
+int blip_get_flash_interval(void *b);
+
+int blip_get_as_friendly(void *b);
+
+int blip_get_route(void *b);
+
+int blip_get_bright(void *b);
+
+int blip_get_number(void *b);
+
+int blip_get_show_cone(void *b);
+
+int blip_get_flashes(void *b);
+
+int blip_get_flashes_alternate(void *b);
+
+int blip_get_as_short_range(void *b);
+
+int blip_get_priority(void *b);
+
+float blip_get_rotation(void *b);
+
+const char * blip_get_gxt_name(void *b);
+
+const char * blip_get_name(void *b);
+
+RGBA blip_get_route_color(void *b);
+
+int blip_get_pulse(void *b);
+
+int blip_get_as_mission_creator(void *b);
+
+int blip_get_tick_visible(void *b);
+
+int blip_get_heading_indicator_visible(void *b);
+
+int blip_get_outline_indicator_visible(void *b);
+
+int blip_get_friend_indicator_visible(void *b);
+
+int blip_get_crew_indicator_visible(void *b);
+
+int blip_get_category(void *b);
+
+int blip_get_as_high_detail(void *b);
+
+int blip_get_shrinked(void *b);
+
+void blip_set_sprite(void *b,  int sprite);
+
+void blip_set_color(void *b,  int color);
+
+void blip_set_route(void *b,  int state);
+
+void blip_set_route_color(void *b,  RGBA color);
+
+void blip_set_secondary_color(void *b,  RGBA color);
+
+void blip_set_alpha(void *b,  int alpha);
+
+void blip_set_flash_timer(void *b,  int timer);
+
+void blip_set_flash_interval(void *b,  int interval);
+
+void blip_set_as_friendly(void *b,  int friendly);
+
+void blip_set_bright(void *b,  int bright);
+
+void blip_set_number(void *b,  int number);
+
+void blip_set_show_cone(void *b,  int state);
+
+void blip_set_flashes(void *b,  int state);
+
+void blip_set_flashes_alternate(void *b,  int state);
+
+void blip_set_as_short_range(void *b,  int state);
+
+void blip_set_priority(void *b,  int state);
+
+void blip_set_rotation(void *b,  float rot);
+
+void blip_set_gxt_name(void *b,  const char *name);
+
+void blip_set_name(void *b,  const char *name);
+
+void blip_set_pulse(void *b,  int val);
+
+void blip_set_as_mission_creator(void *b,  int val);
+
+void blip_set_tick_visible(void *b,  int val);
+
+void blip_set_heading_indicator_visible(void *b,  int val);
+
+void blip_set_outline_indicator_visible(void *b,  int val);
+
+void blip_set_friend_indicator_visible(void *b,  int val);
+
+void blip_set_crew_indicator_visible(void *b,  int val);
+
+void blip_set_category(void *b,  int val);
+
+void blip_set_as_high_detail(void *b,  int val);
+
+void blip_set_shrinked(void *b,  int val);
+
+void blip_fade(void *b,  unsigned int opacity,  unsigned int duration);
+
+void core_log_info(const char *message);
+
+void core_log_debug(const char *message);
+
+void core_log_warning(const char *message);
+
+void core_log_error(const char *message);
+
+void core_log_colored(const char *message);
+
+Entity core_create_vehicle(unsigned long model,  float posX,  float posY,  float posZ, 
+                                float rotX,  float rotY,  float rotZ);
+
+Entity
+ core_create_checkpoint(unsigned char type,  float x,  float y,  float z,  float radius,  float height,  unsigned char r, 
+                      unsigned char g,  unsigned char b,  unsigned char a,  unsigned long streamingDistance);
+
+Entity core_create_voice_channel(int spacial,  float maxDistance);
+
+const char * core_get_version();
+
+const char * core_get_branch();
+
+int core_is_debug();
+
+unsigned long core_hash(const char *str);
+
+int core_file_exists(const char *path);
+
+const char * core_read_file(const char *path);
+
+Entity core_get_entity_by_id(unsigned short id);
+
+Entity core_get_base_object_by_id(unsigned char type,  unsigned int id);
+
+Array core_get_entities();
+
+Array core_get_players();
+
+Array core_get_vehicles();
+
+Array core_get_blips();
+
+Array core_get_col_shapes();
+
+Array core_get_checkpoints();
+
+Array core_get_virtual_entities();
+
+Array core_get_virtual_entity_groups();
+
+Array core_get_markers();
+
+Array core_get_peds();
+
+int core_has_meta_data(const char *key);
+
+Array core_get_meta_data(const char *key);
+
+void core_set_meta_data(const char *key,  Array data);
+
+void core_delete_meta_data(const char *key);
+
+int core_has_synced_meta_data(const char *key);
+
+Array core_get_synced_meta_data(const char *key);
+
+Array core_get_required_permissions();
+
+Array core_get_optional_permissions();
+
+void core_destroy_base_object(void *h);
+
+const char * core_get_root_directory();
+
+int core_start_resource(const char *name);
+
+void core_stop_resource(const char *name);
+
+void core_restart_resource(const char *name);
+
+void core_set_synced_meta_data(const char *key,  Array data);
+
+void core_delete_synced_meta_data(const char *key);
+
+Array core_get_players_by_name(const char *name);
+
+unsigned int core_get_net_time();
+
+void core_set_password(const char *password);
+
+const char * core_get_sdk_hash();
+
+Entity core_create_col_shape_cylinder(float posX,  float posY,  float posZ,  float radius,  float height);
+
+Entity core_create_col_shape_cube(float posX1,  float posY1,  float posZ1,  float posX2,  float posY2,  float posZ2);
+
+Entity core_create_col_shape_rectangle(float x1,  float y1,  float x2,  float y2,  float z);
+
+Entity core_create_col_shape_circle(float posX,  float posY,  float posZ,  float radius);
+
+Entity core_create_col_shape_sphere(float posX,  float posY,  float posZ,  float radius);
+
+void core_trigger_local_event(const char *ev,  Array args);
+
+void core_trigger_local_event_raw(const char* ev,  char* bytes,  unsigned long long size);
+
+void core_trigger_client_event(void *p,  const char *ev,  Array args);
+
+void core_trigger_client_event_for(Array clients,  const char *ev,  Array args);
+
+void core_trigger_client_event_for_all(const char *ev,  Array args);
+
+Entity core_create_point_blip_position(float x,  float y,  float z,  unsigned short global);
+
+Entity core_create_point_blip_entity(Entity entity,  unsigned short global);
+
+Entity core_create_area_blip(float x,  float y,  float z,  float width,  float height,  unsigned short global);
+
+Entity core_create_radius_blip(float x,  float y,  float z,  float radius,  unsigned short global);
+
+Entity core_create_col_shape_polygon(float minZ,  float maxZ,  Array points);
+
+Array core_get_all_resources();
+
+const char * core_string_to_sha256(const char *str);
+
+void core_stop_server();
+
+VehicleModelInfo core_get_vehicle_model_by_hash(unsigned int hash);
+
+PedModelInfo core_get_ped_model_by_hash(unsigned int hash);
+
+Array core_get_server_config();
+
+unsigned long long core_hash_server_password(const char *password);
+
+void* core_get_resource_by_name(const char *resourceName);
+
+unsigned char resource_is_started(void *r);
+
+const char * resource_get_type(void *r);
+
+const char * resource_get_name(void* r);
+
+const char * resource_get_main(void *r);
+
+Array resource_get_config(void *r);
+
+Array resource_get_exports(void *r);
+
+Array resource_get_dependencies(void *r);
+
+Array resource_get_dependants(void *r);
+
+Array resource_get_required_permissions(void *r);
+
+Array resource_get_optional_permissions(void *r);
+
+const char * resource_get_path(void *r);
+
+int col_shape_get_type(void *c);
+
+int col_shape_has_meta_data(void* base,  const char *key);
+
+Array col_shape_get_meta_data(void* base,  const char *key);
+
+void col_shape_set_meta_data(void *base,  const char *key,  Array data);
+
+void col_shape_delete_meta_data(void *base,  const char *key);
+
+void col_shape_destroy(void *b);
+
+int col_shape_is_valid(const char* resourceName,  void *p);
+
+Position col_shape_get_position(void *p);
+
+void col_shape_set_position(void* p,  float x,  float y,  float z);
+
+long col_shape_get_dimension(void* p);
+
+void col_shape_set_dimension(void* p,  long dimension);
+
+int col_shape_get_col_shape_type(void *c);
+
+int col_shape_is_entity_in(void *c,  Entity e);
+
+int col_shape_is_point_in(void *c,  float x,  float y,  float z);
+
+void col_shape_set_players_only(void *c,  int state);
+
+int col_shape_is_players_only(void *c);
+
+unsigned char col_shape_is_entity_id_in(void *c,  unsigned short id);
 
 const char * player_get_name(void *p);
 
@@ -2142,361 +2497,6 @@ void voice_channel_unmute_player(void *v,  void *p);
 unsigned long long voice_channel_get_player_count(void *v);
 
 Array voice_channel_get_players(void *v);
-
-int blip_get_type(void *c);
-
-int blip_has_meta_data(void *base,  const char *key);
-
-Array blip_get_meta_data(void *base,  const char *key);
-
-void blip_set_meta_data(void *base,  const char *key,  Array data);
-
-void blip_delete_meta_data(void *base,  const char *key);
-
-void blip_destroy(void *b);
-
-int blip_is_valid(const char *resourceName,  void *p);
-
-Position blip_get_position(void *p);
-
-void blip_set_position(void *p,  float x,  float y,  float z);
-
-long blip_get_dimension(void *p);
-
-void blip_set_dimension(void *p,  long dimension);
-
-int blip_is_global(void *b);
-
-Array blip_get_targets(void *b);
-
-int blip_is_attached(void *b);
-
-Entity blip_attached_to(void *b);
-
-void blip_attach_to(void *b,  Entity e);
-
-unsigned char blip_get_blip_type(void *b);
-
-Vector2 blip_get_scale_xy(void *b);
-
-void blip_set_scale_xy(void *b,  Vector2 scale);
-
-int blip_get_display(void *b);
-
-void blip_set_display(void *b,  int display);
-
-int blip_get_sprite(void *b);
-
-int blip_get_color(void *b);
-
-RGBA blip_get_secondary_color(void *b);
-
-int blip_get_alpha(void *b);
-
-int blip_get_flash_timer(void *b);
-
-int blip_get_flash_interval(void *b);
-
-int blip_get_as_friendly(void *b);
-
-int blip_get_route(void *b);
-
-int blip_get_bright(void *b);
-
-int blip_get_number(void *b);
-
-int blip_get_show_cone(void *b);
-
-int blip_get_flashes(void *b);
-
-int blip_get_flashes_alternate(void *b);
-
-int blip_get_as_short_range(void *b);
-
-int blip_get_priority(void *b);
-
-float blip_get_rotation(void *b);
-
-const char * blip_get_gxt_name(void *b);
-
-const char * blip_get_name(void *b);
-
-RGBA blip_get_route_color(void *b);
-
-int blip_get_pulse(void *b);
-
-int blip_get_as_mission_creator(void *b);
-
-int blip_get_tick_visible(void *b);
-
-int blip_get_heading_indicator_visible(void *b);
-
-int blip_get_outline_indicator_visible(void *b);
-
-int blip_get_friend_indicator_visible(void *b);
-
-int blip_get_crew_indicator_visible(void *b);
-
-int blip_get_category(void *b);
-
-int blip_get_as_high_detail(void *b);
-
-int blip_get_shrinked(void *b);
-
-void blip_set_sprite(void *b,  int sprite);
-
-void blip_set_color(void *b,  int color);
-
-void blip_set_route(void *b,  int state);
-
-void blip_set_route_color(void *b,  RGBA color);
-
-void blip_set_secondary_color(void *b,  RGBA color);
-
-void blip_set_alpha(void *b,  int alpha);
-
-void blip_set_flash_timer(void *b,  int timer);
-
-void blip_set_flash_interval(void *b,  int interval);
-
-void blip_set_as_friendly(void *b,  int friendly);
-
-void blip_set_bright(void *b,  int bright);
-
-void blip_set_number(void *b,  int number);
-
-void blip_set_show_cone(void *b,  int state);
-
-void blip_set_flashes(void *b,  int state);
-
-void blip_set_flashes_alternate(void *b,  int state);
-
-void blip_set_as_short_range(void *b,  int state);
-
-void blip_set_priority(void *b,  int state);
-
-void blip_set_rotation(void *b,  float rot);
-
-void blip_set_gxt_name(void *b,  const char *name);
-
-void blip_set_name(void *b,  const char *name);
-
-void blip_set_pulse(void *b,  int val);
-
-void blip_set_as_mission_creator(void *b,  int val);
-
-void blip_set_tick_visible(void *b,  int val);
-
-void blip_set_heading_indicator_visible(void *b,  int val);
-
-void blip_set_outline_indicator_visible(void *b,  int val);
-
-void blip_set_friend_indicator_visible(void *b,  int val);
-
-void blip_set_crew_indicator_visible(void *b,  int val);
-
-void blip_set_category(void *b,  int val);
-
-void blip_set_as_high_detail(void *b,  int val);
-
-void blip_set_shrinked(void *b,  int val);
-
-void blip_fade(void *b,  unsigned int opacity,  unsigned int duration);
-
-void core_log_info(const char *message);
-
-void core_log_debug(const char *message);
-
-void core_log_warning(const char *message);
-
-void core_log_error(const char *message);
-
-void core_log_colored(const char *message);
-
-Entity core_create_vehicle(unsigned long model,  float posX,  float posY,  float posZ, 
-                                float rotX,  float rotY,  float rotZ);
-
-Entity
- core_create_checkpoint(unsigned char type,  float x,  float y,  float z,  float radius,  float height,  unsigned char r, 
-                      unsigned char g,  unsigned char b,  unsigned char a,  unsigned long streamingDistance);
-
-Entity core_create_voice_channel(int spacial,  float maxDistance);
-
-const char * core_get_version();
-
-const char * core_get_branch();
-
-int core_is_debug();
-
-unsigned long core_hash(const char *str);
-
-int core_file_exists(const char *path);
-
-const char * core_read_file(const char *path);
-
-Entity core_get_entity_by_id(unsigned short id);
-
-Entity core_get_base_object_by_id(unsigned char type,  unsigned int id);
-
-Array core_get_entities();
-
-Array core_get_players();
-
-Array core_get_vehicles();
-
-Array core_get_blips();
-
-Array core_get_col_shapes();
-
-Array core_get_checkpoints();
-
-Array core_get_virtual_entities();
-
-Array core_get_virtual_entity_groups();
-
-Array core_get_markers();
-
-Array core_get_peds();
-
-int core_has_meta_data(const char *key);
-
-Array core_get_meta_data(const char *key);
-
-void core_set_meta_data(const char *key,  Array data);
-
-void core_delete_meta_data(const char *key);
-
-int core_has_synced_meta_data(const char *key);
-
-Array core_get_synced_meta_data(const char *key);
-
-Array core_get_required_permissions();
-
-Array core_get_optional_permissions();
-
-void core_destroy_base_object(void *h);
-
-const char * core_get_root_directory();
-
-int core_start_resource(const char *name);
-
-void core_stop_resource(const char *name);
-
-void core_restart_resource(const char *name);
-
-void core_set_synced_meta_data(const char *key,  Array data);
-
-void core_delete_synced_meta_data(const char *key);
-
-Array core_get_players_by_name(const char *name);
-
-unsigned int core_get_net_time();
-
-void core_set_password(const char *password);
-
-const char * core_get_sdk_hash();
-
-Entity core_create_col_shape_cylinder(float posX,  float posY,  float posZ,  float radius,  float height);
-
-Entity core_create_col_shape_cube(float posX1,  float posY1,  float posZ1,  float posX2,  float posY2,  float posZ2);
-
-Entity core_create_col_shape_rectangle(float x1,  float y1,  float x2,  float y2,  float z);
-
-Entity core_create_col_shape_circle(float posX,  float posY,  float posZ,  float radius);
-
-Entity core_create_col_shape_sphere(float posX,  float posY,  float posZ,  float radius);
-
-void core_trigger_local_event(const char *ev,  Array args);
-
-void core_trigger_local_event_raw(const char* ev,  char* bytes,  unsigned long long size);
-
-void core_trigger_client_event(void *p,  const char *ev,  Array args);
-
-void core_trigger_client_event_for(Array clients,  const char *ev,  Array args);
-
-void core_trigger_client_event_for_all(const char *ev,  Array args);
-
-Entity core_create_point_blip_position(float x,  float y,  float z,  unsigned short global);
-
-Entity core_create_point_blip_entity(Entity entity,  unsigned short global);
-
-Entity core_create_area_blip(float x,  float y,  float z,  float width,  float height,  unsigned short global);
-
-Entity core_create_radius_blip(float x,  float y,  float z,  float radius,  unsigned short global);
-
-Entity core_create_col_shape_polygon(float minZ,  float maxZ,  Array points);
-
-Array core_get_all_resources();
-
-const char * core_string_to_sha256(const char *str);
-
-void core_stop_server();
-
-VehicleModelInfo core_get_vehicle_model_by_hash(unsigned int hash);
-
-PedModelInfo core_get_ped_model_by_hash(unsigned int hash);
-
-Array core_get_server_config();
-
-unsigned long long core_hash_server_password(const char *password);
-
-void* core_get_resource_by_name(const char *resourceName);
-
-int col_shape_get_type(void *c);
-
-int col_shape_has_meta_data(void* base,  const char *key);
-
-Array col_shape_get_meta_data(void* base,  const char *key);
-
-void col_shape_set_meta_data(void *base,  const char *key,  Array data);
-
-void col_shape_delete_meta_data(void *base,  const char *key);
-
-void col_shape_destroy(void *b);
-
-int col_shape_is_valid(const char* resourceName,  void *p);
-
-Position col_shape_get_position(void *p);
-
-void col_shape_set_position(void* p,  float x,  float y,  float z);
-
-long col_shape_get_dimension(void* p);
-
-void col_shape_set_dimension(void* p,  long dimension);
-
-int col_shape_get_col_shape_type(void *c);
-
-int col_shape_is_entity_in(void *c,  Entity e);
-
-int col_shape_is_point_in(void *c,  float x,  float y,  float z);
-
-void col_shape_set_players_only(void *c,  int state);
-
-int col_shape_is_players_only(void *c);
-
-unsigned char col_shape_is_entity_id_in(void *c,  unsigned short id);
-
-unsigned char resource_is_started(void *r);
-
-const char * resource_get_type(void *r);
-
-const char * resource_get_name(void* r);
-
-const char * resource_get_main(void *r);
-
-Array resource_get_config(void *r);
-
-Array resource_get_exports(void *r);
-
-Array resource_get_dependencies(void *r);
-
-Array resource_get_dependants(void *r);
-
-Array resource_get_required_permissions(void *r);
-
-Array resource_get_optional_permissions(void *r);
-
-const char * resource_get_path(void *r);
 
 int checkpoint_get_type(void *c);
 
