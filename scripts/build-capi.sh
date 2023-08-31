@@ -1,5 +1,7 @@
 #!/bin/bash
 
+go run cmd/gencapi/*.go -cout=./internal/c-api/build/out/capi.c -hout=./internal/c-api/build/out/capi.h -hout=./internal/c-api/lib/capi.h  ./runtime/src/capi
+
 cd ./internal/c-api
 
 if [ ! -d build ]; then

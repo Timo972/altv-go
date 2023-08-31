@@ -1,0 +1,27 @@
+#include "capi.h"
+
+Module module;
+
+{{ range .Methods }}
+{{ .CInit }}
+{{ end }}
+
+{{ range .Methods }}
+{{ .CBody }}
+{{ end }}
+
+int load_module(const char *path)
+{
+    module = LOAD_LIB(path);
+
+    if (module == NULL)
+    {
+        return 0;
+    }
+
+    {{ range .Methods }}
+    {{ .CLoad }}
+    {{ end }}
+
+    return 1;
+}
