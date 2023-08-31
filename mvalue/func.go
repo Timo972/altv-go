@@ -4,6 +4,7 @@ import (
 	"unsafe"
 
 	"github.com/goccy/go-json"
+	"github.com/timo972/altv-go/resource"
 )
 
 type FuncCtx struct{}
@@ -28,6 +29,11 @@ type importFuncData struct {
 var exported = make([]*exportFuncData, 0)
 
 func (f ExportFunc) MarshalJSON() ([]byte, error) {
+	resourceName = ""
+	if resource.Current != nil {
+		resourceName = resource.Current.Name()
+	}
+
 	data := &exportFuncData{
 		SpecialType:  SpecialType{Type: TypeFunction},
 		ID:           len(exported),
@@ -51,9 +57,4 @@ func (f *ImportFunc) UnmarshalJSON(raw []byte) error {
 // CallFunc calls the exported function of another resource with the given arguments.
 func CallFunc(f *ImportFunc, args ...any) any {
 	return nil
-}
-
-// SetResourceName sets the resource name for the exported functions. Do not use this by yourself or you might break function exporting!
-func SetResourceName(name string) {
-	resourceName = name
 }

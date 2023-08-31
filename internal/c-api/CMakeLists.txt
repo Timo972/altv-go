@@ -11,14 +11,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib/linux")
 endif()
 MESSAGE(STATUS "Compiling altv-go-capi:" ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 
-# Generate c-api header & source files
-add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/out/capi.h ${CMAKE_CURRENT_BINARY_DIR}/out/capi.c
-    COMMAND node ../../../runtime/tools/pkg-capi.js
-)
-# Copy header to lib directory
-# FIXME:
-#configure_file(${CMAKE_CURRENT_BINARY_DIR}/out/capi.h ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/../capi.h COPYONLY)
-
 # Aggiungere l'origine all'eseguibile di questo progetto.
 add_library (capi STATIC "./out/capi.c" "./out/capi.h")
 

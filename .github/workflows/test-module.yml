@@ -3,6 +3,9 @@ on:
   push:
     paths:
       - "runtime/**"
+    branches: 
+      - main
+      - dev
   pull_request:
     paths:
       - "runtime/**"

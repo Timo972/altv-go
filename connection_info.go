@@ -11,7 +11,7 @@ import (
 	"github.com/timo972/altv-go/internal/lib"
 )
 
-type ConnectionInfo interface {
+/*type ConnectionInfo interface {
 	// ID returns the id of the connecting player
 	ID() uint32
 	// Name returns the name of the connecting player
@@ -49,9 +49,9 @@ type ConnectionInfo interface {
 	Decline(reason string)
 	// Accepted returns if the connection was accepted
 	Accepted() bool
-}
+}*/
 
-type connInfo struct {
+type ConnectionInfo struct {
 	ptr           unsafe.Pointer
 	id            uint32
 	name          string
@@ -71,8 +71,8 @@ type connInfo struct {
 }
 
 // NewConnectionInfo ! INTERNAL ONLY !
-func NewConnectionInfo(ptr unsafe.Pointer, id uint32, name string, socialID uint64, socialName string, hwidHash uint64, hwidExHash uint64, authToken string, debug bool, branch string, build uint32, cdnUrl string, passwordHash uint64, ip string, discordUserId int64, cloudAuthHash string) ConnectionInfo {
-	return &connInfo{
+func NewConnectionInfo(ptr unsafe.Pointer, id uint32, name string, socialID uint64, socialName string, hwidHash uint64, hwidExHash uint64, authToken string, debug bool, branch string, build uint32, cdnUrl string, passwordHash uint64, ip string, discordUserId int64, cloudAuthHash string) *ConnectionInfo {
+	return &ConnectionInfo{
 		ptr:           ptr,
 		id:            id,
 		name:          name,
@@ -92,76 +92,76 @@ func NewConnectionInfo(ptr unsafe.Pointer, id uint32, name string, socialID uint
 	}
 }
 
-func (c *connInfo) ID() uint32 {
+func (c *ConnectionInfo) ID() uint32 {
 	return c.id
 }
 
-func (c *connInfo) Name() string {
+func (c *ConnectionInfo) Name() string {
 	return c.name
 }
 
-func (c *connInfo) SocialID() uint64 {
+func (c *ConnectionInfo) SocialID() uint64 {
 	return c.socialID
 }
 
-func (c *connInfo) SocialName() string {
+func (c *ConnectionInfo) SocialName() string {
 	return c.socialName
 }
 
-func (c *connInfo) HwIdHash() uint64 {
+func (c *ConnectionInfo) HwIdHash() uint64 {
 	return c.hwidHash
 }
 
-func (c *connInfo) HwIdExHash() uint64 {
+func (c *ConnectionInfo) HwIdExHash() uint64 {
 	return c.hwidExHash
 }
 
-func (c *connInfo) AuthToken() string {
+func (c *ConnectionInfo) AuthToken() string {
 	return c.authToken
 }
 
-func (c *connInfo) Debug() bool {
+func (c *ConnectionInfo) Debug() bool {
 	return c.isDebug
 }
 
-func (c *connInfo) Branch() string {
+func (c *ConnectionInfo) Branch() string {
 	return c.branch
 }
 
-func (c *connInfo) Build() uint32 {
+func (c *ConnectionInfo) Build() uint32 {
 	return c.build
 }
 
-func (c *connInfo) CDNUrl() string {
+func (c *ConnectionInfo) CDNUrl() string {
 	return c.cdnUrl
 }
 
-func (c *connInfo) PasswordHash() uint64 {
+func (c *ConnectionInfo) PasswordHash() uint64 {
 	return c.passwordHash
 }
 
-func (c *connInfo) IP() string {
+func (c *ConnectionInfo) IP() string {
 	return c.ip
 }
 
-func (c *connInfo) DiscordUserID() int64 {
+func (c *ConnectionInfo) DiscordUserID() int64 {
 	return c.discordUserID
 }
 
-func (c *connInfo) CloudAuthHash() string {
+func (c *ConnectionInfo) CloudAuthHash() string {
 	return c.cloudAuthHash
 }
 
-func (c *connInfo) Accept(sendNames bool) {
+func (c *ConnectionInfo) Accept(sendNames bool) {
 	C.connection_accept(c.ptr, C.uchar(lib.Bool2int(sendNames)))
 }
 
-func (c *connInfo) Decline(reason string) {
+func (c *ConnectionInfo) Decline(reason string) {
 	r := C.CString(reason)
 	defer C.free(unsafe.Pointer(r))
 	C.connection_decline(c.ptr, r)
 }
 
-func (c *connInfo) Accepted() bool {
+func (c *ConnectionInfo) Accepted() bool {
 	return int(C.connection_is_accepted(c.ptr)) == 1
 }

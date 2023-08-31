@@ -1,0 +1,77 @@
+name: Publish Go Module
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, windows-2019]
+    name: Build ${{ matrix.os }}
+    runs-on: ${{ matrix.os }} 
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.3.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Extract version
+        id: version
+        shell: bash
+        run: |
+          TAG=${GITHUB_REF/refs\/tags\//}
+          echo ::set-output name=TAG::${TAG}
+          echo ::set-output name=VERSION::${TAG#v}
+
+      - name: Build module for windows
+        if: matrix.os == 'windows-2019'
+        shell: cmd
+        run: |
+          mkdir build
+          pushd build
+          cmake -G"Visual Studio 16" -A x64 -DGO_MODULE_VERSION=%VERSION% ..
+          cmake --build . --config Release
+          popd
+        env:
+          VERSION: ${{ steps.version.outputs.VERSION }}
+        working-directory: ./runtime
+
+      - name: Build module for linux
+        if: matrix.os == 'ubuntu-20.04'
+        run: |
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+          sudo apt-get update
+          sudo apt-get install gcc-8 g++-8
+          mkdir build && cd build
+          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-8 -DGO_MODULE_VERSION=%VERSION% ..
+          cmake --build . --config Release
+        env:
+          VERSION: ${{ steps.version.outputs.VERSION }}
+        working-directory: ./runtime
+
+      - name: Upload windows artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./runtime/bin/Release/go-module.dll
+          asset_name: go-module.dll
+          asset_content_type: application/x-msdownload
+
+      - name: Upload linux artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./runtime/bin/libgo-module.so
+          asset_name: libgo-module.so
+          asset_content_type: application/octet-stream
