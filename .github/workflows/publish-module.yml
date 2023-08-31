@@ -8,11 +8,18 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-20.04, windows-2019]
+        include:
+          - os: windows-2019
+            asset_name: go-module.dll
+            asset_path: .\runtime\bin\Release\go-module.dll
+          - os: ubuntu-20.04
+            asset_name: libgo-module.so
+            asset_path: ./runtime/bin/libgo-module.so
     name: Build ${{ matrix.os }}
     runs-on: ${{ matrix.os }} 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: recursive
 
@@ -56,22 +63,12 @@ jobs:
           VERSION: ${{ steps.version.outputs.VERSION }}
         working-directory: ./runtime
 
-      - name: Upload windows artifacts
+      - name: Upload artifacts
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./runtime/bin/Release/go-module.dll
-          asset_name: go-module.dll
-          asset_content_type: application/x-msdownload
-
-      - name: Upload linux artifacts
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./runtime/bin/libgo-module.so
-          asset_name: libgo-module.so
+          asset_path: ${{ matrix.asset_path }}
+          asset_name: ${{ matrix.asset_name }}
           asset_content_type: application/octet-stream
