@@ -23,8 +23,8 @@ func (l *altLog) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
-// Console is the default console writer.
-var Console io.Writer = &altLog{}
+// Stdout is the default console writer.
+var Stdout io.Writer = &altLog{}
 
 // LogWarning logs a warning message to the console.
 func Warnln(msgs ...string) {
