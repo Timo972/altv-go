@@ -53,134 +53,140 @@ alt::IResource::Impl *Go::Runtime::GetResource(const std::string &name)
     return nullptr;
 }
 
-CBaseObject Go::Runtime::GetCBaseObject(alt::IEntity *entity)
+void Go::Runtime::GetCBaseObject(alt::IEntity *entity, CBaseObject *e)
 {
-    CBaseObject e;
-
     if (entity != nullptr)
     {
         auto entityType = entity->GetType();
-        e.typ = static_cast<unsigned char>(entityType);
-        e.id = entity->GetID();
+        e->typ = static_cast<unsigned char>(entityType);
+        e->id = entity->GetID();
 
         switch (entityType)
         {
         case alt::IEntity::Type::PLAYER:
-            e.ptr = entity->As<alt::IPlayer>();
+            e->ptr = entity->As<alt::IPlayer>();
             break;
         case alt::IEntity::Type::VEHICLE:
-            e.ptr = entity->As<alt::IVehicle>();
-            e.model = entity->As<alt::IVehicle>()->GetModel();
+            e->ptr = entity->As<alt::IVehicle>();
+            e->model = entity->As<alt::IVehicle>()->GetModel();
             break;
         case alt::IEntity::Type::BLIP:
-            e.ptr = entity->As<alt::IBlip>();
+            e->ptr = entity->As<alt::IBlip>();
             break;
         case alt::IEntity::Type::CHECKPOINT:
-            e.ptr = entity->As<alt::ICheckpoint>();
+            e->ptr = entity->As<alt::ICheckpoint>();
             break;
         case alt::IEntity::Type::COLSHAPE:
-            e.ptr = entity->As<alt::IColShape>();
+            e->ptr = entity->As<alt::IColShape>();
             break;
         case alt::IEntity::Type::VOICE_CHANNEL:
-            e.ptr = entity->As<alt::IVoiceChannel>();
+            e->ptr = entity->As<alt::IVoiceChannel>();
             break;
         case alt::IEntity::Type::PED:
-            e.ptr = entity->As<alt::IPed>();
+            e->ptr = entity->As<alt::IPed>();
             break;
         case alt::IEntity::Type::MARKER:
-            e.ptr = entity->As<alt::IMarker>();
+            e->ptr = entity->As<alt::IMarker>();
             break;
         case alt::IEntity::Type::VIRTUAL_ENTITY:
-            e.ptr = entity->As<alt::IVirtualEntity>();
+            e->ptr = entity->As<alt::IVirtualEntity>();
             break;
         case alt::IEntity::Type::VIRTUAL_ENTITY_GROUP:
-            e.ptr = entity->As<alt::IVirtualEntityGroup>();
+            e->ptr = entity->As<alt::IVirtualEntityGroup>();
             break;
         case alt::IEntity::Type::OBJECT:
-            e.ptr = entity->As<alt::IObject>();
+            e->ptr = entity->As<alt::IObject>();
             break;
         case alt::IEntity::Type::TEXT_LABEL:
-            e.ptr = entity->As<alt::ITextLabel>();
+            e->ptr = entity->As<alt::ITextLabel>();
             break;
         default:
-            e.ptr = nullptr;
+            e->ptr = nullptr;
             break;
         }
     }
     else
     {
-        e.ptr = nullptr;
+        e->ptr = nullptr;
     }
+}
 
+CBaseObject Go::Runtime::GetCBaseObject(alt::IEntity *entity)
+{
+    CBaseObject e;
+    GetCBaseObject(entity, &e);
     return e;
+}
+
+void Go::Runtime::GetCBaseObject(alt::IBaseObject *baseObject, CBaseObject *e)
+{
+    if (baseObject != nullptr)
+    {
+        auto entityType = baseObject->GetType();
+        e->typ = static_cast<unsigned char>(entityType);
+
+        switch (entityType)
+        {
+        case alt::IBaseObject::Type::PLAYER:
+            e->ptr = baseObject->As<alt::IPlayer>();
+            e->id = baseObject->As<alt::IPlayer>()->GetID();
+            break;
+        case alt::IBaseObject::Type::VEHICLE:
+            e->ptr = baseObject->As<alt::IVehicle>();
+            e->id = baseObject->As<alt::IVehicle>()->GetID();
+            e->model = baseObject->As<alt::IVehicle>()->GetModel();
+            break;
+        case alt::IBaseObject::Type::BLIP:
+            e->ptr = baseObject->As<alt::IBlip>();
+            e->id = baseObject->As<alt::IBlip>()->GetID();
+            break;
+        case alt::IBaseObject::Type::CHECKPOINT:
+            e->ptr = baseObject->As<alt::ICheckpoint>();
+            e->id = baseObject->As<alt::ICheckpoint>()->GetID();
+            break;
+        case alt::IBaseObject::Type::COLSHAPE:
+            e->ptr = baseObject->As<alt::IColShape>();
+            e->id = baseObject->As<alt::IColShape>()->GetID();
+            break;
+        case alt::IBaseObject::Type::VOICE_CHANNEL:
+            e->ptr = baseObject->As<alt::IVoiceChannel>();
+            e->id = baseObject->As<alt::IVoiceChannel>()->GetID();
+            break;
+        case alt::IBaseObject::Type::MARKER:
+            e->ptr = baseObject->As<alt::IMarker>();
+            e->id = baseObject->As<alt::IMarker>()->GetID();
+            break;
+        case alt::IBaseObject::Type::PED:
+            e->ptr = baseObject->As<alt::IPed>();
+            e->id = baseObject->As<alt::IPed>()->GetID();
+            break;
+        case alt::IBaseObject::Type::VIRTUAL_ENTITY:
+            e->ptr = baseObject->As<alt::IVirtualEntity>();
+            e->id = baseObject->As<alt::IVirtualEntity>()->GetID();
+            break;
+        case alt::IBaseObject::Type::VIRTUAL_ENTITY_GROUP:
+            e->ptr = baseObject->As<alt::IVirtualEntityGroup>();
+            e->id = baseObject->As<alt::IVirtualEntityGroup>()->GetID();
+            break;
+        case alt::IBaseObject::Type::TEXT_LABEL:
+            e->ptr = baseObject->As<alt::ITextLabel>();
+            e->id = baseObject->As<alt::ITextLabel>()->GetID();
+            break;
+        default:
+            e->ptr = nullptr;
+            break;
+        }
+    }
+    else
+    {
+        e->ptr = nullptr;
+    }
 }
 
 CBaseObject Go::Runtime::GetCBaseObject(alt::IBaseObject *baseObject)
 {
     CBaseObject e;
-
-    if (baseObject != nullptr)
-    {
-        auto entityType = baseObject->GetType();
-        e.typ = static_cast<unsigned char>(entityType);
-
-        switch (entityType)
-        {
-        case alt::IBaseObject::Type::PLAYER:
-            e.ptr = baseObject->As<alt::IPlayer>();
-            e.id = baseObject->As<alt::IPlayer>()->GetID();
-            break;
-        case alt::IBaseObject::Type::VEHICLE:
-            e.ptr = baseObject->As<alt::IVehicle>();
-            e.id = baseObject->As<alt::IVehicle>()->GetID();
-            e.model = baseObject->As<alt::IVehicle>()->GetModel();
-            break;
-        case alt::IBaseObject::Type::BLIP:
-            e.ptr = baseObject->As<alt::IBlip>();
-            e.id = baseObject->As<alt::IBlip>()->GetID();
-            break;
-        case alt::IBaseObject::Type::CHECKPOINT:
-            e.ptr = baseObject->As<alt::ICheckpoint>();
-            e.id = baseObject->As<alt::ICheckpoint>()->GetID();
-            break;
-        case alt::IBaseObject::Type::COLSHAPE:
-            e.ptr = baseObject->As<alt::IColShape>();
-            e.id = baseObject->As<alt::IColShape>()->GetID();
-            break;
-        case alt::IBaseObject::Type::VOICE_CHANNEL:
-            e.ptr = baseObject->As<alt::IVoiceChannel>();
-            e.id = baseObject->As<alt::IVoiceChannel>()->GetID();
-            break;
-        case alt::IBaseObject::Type::MARKER:
-            e.ptr = baseObject->As<alt::IMarker>();
-            e.id = baseObject->As<alt::IMarker>()->GetID();
-            break;
-        case alt::IBaseObject::Type::PED:
-            e.ptr = baseObject->As<alt::IPed>();
-            e.id = baseObject->As<alt::IPed>()->GetID();
-            break;
-        case alt::IBaseObject::Type::VIRTUAL_ENTITY:
-            e.ptr = baseObject->As<alt::IVirtualEntity>();
-            e.id = baseObject->As<alt::IVirtualEntity>()->GetID();
-            break;
-        case alt::IBaseObject::Type::VIRTUAL_ENTITY_GROUP:
-            e.ptr = baseObject->As<alt::IVirtualEntityGroup>();
-            e.id = baseObject->As<alt::IVirtualEntityGroup>()->GetID();
-            break;
-        case alt::IBaseObject::Type::TEXT_LABEL:
-            e.ptr = baseObject->As<alt::ITextLabel>();
-            e.id = baseObject->As<alt::ITextLabel>()->GetID();
-            break;
-        default:
-            e.ptr = nullptr;
-            break;
-        }
-    }
-    else
-    {
-        e.ptr = nullptr;
-    }
-
+    GetCBaseObject(baseObject, &e);
     return e;
 }
 
@@ -325,7 +331,7 @@ alt::MValue Go::Runtime::DecodeMValue(rapidjson::Value &d)
             {
                 rapidjson::Value &data = d["data"];
 
-                // data.Empty() || 
+                // data.Empty() ||
                 if (!data.IsString())
                 {
                     core.LogError("Invalid ByteArray MValue");
@@ -515,21 +521,27 @@ rapidjson::Document Go::Runtime::EncodeMValueToJSON(alt::MValueConst mValue)
         d.AddMember(rapidjson::Value("g"), rapidjson::Value(value.g), d.GetAllocator());
         d.AddMember(rapidjson::Value("b"), rapidjson::Value(value.b), d.GetAllocator());
         d.AddMember(rapidjson::Value("a"), rapidjson::Value(value.a), d.GetAllocator());
-    } else if (type == alt::IMValue::Type::FUNCTION) {
+    }
+    else if (type == alt::IMValue::Type::FUNCTION)
+    {
         auto value = std::dynamic_pointer_cast<const alt::IMValueFunction>(mValue);
         std::string ptr = PointerToString(const_cast<alt::IMValueFunction *>(value.get()));
         d.SetObject();
         auto alloc = d.GetAllocator();
         d.AddMember(rapidjson::Value("$type"), rapidjson::Value(static_cast<int>(alt::IMValue::Type::FUNCTION)), alloc);
         d.AddMember(rapidjson::Value("ptr"), rapidjson::Value(ptr.c_str(), ptr.size()), alloc);
-    } else if (type == alt::IMValue::Type::VECTOR2) {
+    }
+    else if (type == alt::IMValue::Type::VECTOR2)
+    {
         auto value = std::dynamic_pointer_cast<const alt::IMValueVector2>(mValue)->Value();
         d.SetObject();
         auto alloc = d.GetAllocator();
         d.AddMember(rapidjson::Value("$type"), rapidjson::Value(static_cast<int>(alt::IMValue::Type::VECTOR2)), alloc);
         d.AddMember(rapidjson::Value("x"), rapidjson::Value(value[0]), alloc);
         d.AddMember(rapidjson::Value("y"), rapidjson::Value(value[1]), alloc);
-    } else if (type == alt::IMValue::Type::VECTOR3) {
+    }
+    else if (type == alt::IMValue::Type::VECTOR3)
+    {
         auto value = std::dynamic_pointer_cast<const alt::IMValueVector3>(mValue)->Value();
         d.SetObject();
         auto alloc = d.GetAllocator();
@@ -537,27 +549,35 @@ rapidjson::Document Go::Runtime::EncodeMValueToJSON(alt::MValueConst mValue)
         d.AddMember(rapidjson::Value("x"), rapidjson::Value(value[0]), alloc);
         d.AddMember(rapidjson::Value("y"), rapidjson::Value(value[1]), alloc);
         d.AddMember(rapidjson::Value("z"), rapidjson::Value(value[2]), alloc);
-    } else if (type == alt::IMValue::Type::BYTE_ARRAY) {
+    }
+    else if (type == alt::IMValue::Type::BYTE_ARRAY)
+    {
         auto value = std::dynamic_pointer_cast<const alt::IMValueByteArray>(mValue);
         d.SetObject();
         auto alloc = d.GetAllocator();
         d.AddMember(rapidjson::Value("$type"), rapidjson::Value(static_cast<int>(alt::IMValue::Type::BYTE_ARRAY)), alloc);
         d.AddMember(rapidjson::Value("data"), rapidjson::Value(reinterpret_cast<const char *>(value->GetData()), value->GetSize()), alloc);
-    } else if (type == alt::IMValue::Type::DICT) {
+    }
+    else if (type == alt::IMValue::Type::DICT)
+    {
         auto dict = std::dynamic_pointer_cast<const alt::IMValueDict>(mValue);
         auto alloc = d.GetAllocator();
         d.SetObject();
 
-        for (auto it = dict->Begin(); it != dict->End(); it++) {
+        for (auto it = dict->Begin(); it != dict->End(); it++)
+        {
             std::string key = it->first;
             d.AddMember(rapidjson::Value(key.c_str(), key.size()), EncodeMValueToJSON(it->second), alloc);
         }
-    } else if (type == alt::IMValue::Type::LIST) {
+    }
+    else if (type == alt::IMValue::Type::LIST)
+    {
         auto list = std::dynamic_pointer_cast<const alt::IMValueList>(mValue);
         auto alloc = d.GetAllocator();
         d.SetArray();
 
-        for (alt::Size i = 0; i < list->GetSize(); i++) {
+        for (alt::Size i = 0; i < list->GetSize(); i++)
+        {
             d.PushBack(EncodeMValueToJSON(list->Get(i)), alloc);
         }
     }
@@ -597,22 +617,26 @@ CArray Go::Runtime::EncodeMValue(alt::MValueConst mValue)
     return arr;
 }
 
-CArray Go::Runtime::EncodeMValueArgs(alt::MValueArgs args) {
+CArray Go::Runtime::EncodeMValueArgs(alt::MValueArgs args)
+{
     CArray cbufs;
     cbufs.size = args.size();
     auto bufs = new CArray[cbufs.size];
-    for (auto i = 0; i < cbufs.size; i++) {
+    for (auto i = 0; i < cbufs.size; i++)
+    {
         bufs[i] = EncodeMValue(args[i]);
     }
     cbufs.ptr = bufs;
     return cbufs;
 }
 
-alt::MValueArgs Go::Runtime::DecodeMValueArgs(CArray cbufs) {
+alt::MValueArgs Go::Runtime::DecodeMValueArgs(CArray cbufs)
+{
     auto bufs = reinterpret_cast<CArray *>(cbufs.ptr);
     alt::MValueArgs args;
-    
-    for (auto i = 0; i < cbufs.size; i++) {
+
+    for (auto i = 0; i < cbufs.size; i++)
+    {
         args.push_back(DecodeMValue(bufs[i]));
     }
 

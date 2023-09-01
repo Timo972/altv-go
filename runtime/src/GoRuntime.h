@@ -25,6 +25,8 @@ namespace Go {
 
         static CBaseObject GetCBaseObject(alt::IEntity* entity);
         static CBaseObject GetCBaseObject(alt::IBaseObject* baseObject);
+        static void GetCBaseObject(alt::IEntity* entity, CBaseObject* out);
+        static void GetCBaseObject(alt::IBaseObject* baseObject, CBaseObject* out);
         static alt::IBaseObject *GetBaseObject(CBaseObject* baseObject);
         static alt::IEntity *GetEntity(CBaseObject* baseObject);
 
