@@ -13,8 +13,12 @@ type eventType = uint16
 const (
 	none eventType = iota
 
+	// Server
 	serverStarted
+	CLIENT_REQUEST_OBJECT_EVENT
+	CLIENT_DELETE_OBJECT_EVENT
 
+	// Shared
 	playerConnect
 	playerDisconnect
 	playerConnectDenied
@@ -39,6 +43,7 @@ const (
 
 	playerDamage
 	playerDeath
+	PLAYER_HEAL
 	fireEvent
 	explosionEvent
 	startProjectileEvent
@@ -46,11 +51,18 @@ const (
 	vehicleDestroy
 	vehicleDamage
 
+	REQUEST_SYNCED_SCENE
+	START_SYNCED_SCENE
+	STOP_SYNCED_SCENE
+	UPDATE_SYNCED_SCENE
+
 	checkpointEvent
 	colshapeEvent
 	playerEnterVehicle
+	PLAYER_START_ENTER_VEHICLE
 	playerEnteringVehicle
 	playerLeaveVehicle
+	PLAYER_START_LEAVE_VEHICLE
 	playerChangeVehicleSeat
 	playerWeaponChange
 	playerRequestControl
@@ -73,6 +85,7 @@ const (
 	playerChangeInteriorEvent
 
 	playerWeaponShootEvent
+	PLAYER_BULLET_HIT_EVENT
 
 	playerDimensionChangeEvent
 )
