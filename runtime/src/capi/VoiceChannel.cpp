@@ -12,14 +12,14 @@ EXPORT int VoiceChannel_HasMetaData(void *base, const char *key) {
     return baseObject->HasMetaData(key);
 }
 
-EXPORT Array VoiceChannel_GetMetaData(void *base, const char *key) {
+EXPORT CArray VoiceChannel_GetMetaData(void *base, const char *key) {
 
     auto channel = reinterpret_cast<alt::IVoiceChannel *>(base);
     auto meta = channel->GetMetaData(key);
     return Go::Runtime::EncodeMValue(meta);
 }
 
-EXPORT void VoiceChannel_SetMetaData(void *base, const char *key, Array data) {
+EXPORT void VoiceChannel_SetMetaData(void *base, const char *key, CArray data) {
 
     auto channel = reinterpret_cast<alt::IVoiceChannel *>(base);
     auto value = Go::Runtime::DecodeMValue(data);
@@ -97,9 +97,9 @@ EXPORT unsigned long long VoiceChannel_GetPlayerCount(void *v) {
     return channel->GetPlayerCount();
 }
 
-EXPORT Array VoiceChannel_GetPlayers(void *v) {
+EXPORT CArray VoiceChannel_GetPlayers(void *v) {
     auto channel = reinterpret_cast<alt::IVoiceChannel *>(v);
     auto players = channel->GetPlayers();
 
-    return Go::Runtime::CreateEntityArray(players);
+    return Go::Runtime::CreateCBaseObjectArray(players);
 }

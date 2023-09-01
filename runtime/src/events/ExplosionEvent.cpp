@@ -4,7 +4,7 @@ Go::ExplosionEvent::ExplosionEvent(ModuleLibrary *module) : IEvent(module) { }
 
 void Go::ExplosionEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altExplosionEvent", int (*)(Entity source, Entity target, Position position, short explosionType, unsigned int explosionFX));
+    static auto call = GET_FUNC(Library, "altExplosionEvent", int (*)(CBaseObject source, CBaseObject target, CPosition position, short explosionType, unsigned int explosionFX));
 
     if (call == nullptr)
     {
@@ -14,14 +14,14 @@ void Go::ExplosionEvent::Call(const alt::CEvent *ev)
 
     auto event = dynamic_cast<const alt::CExplosionEvent *>(ev);
     auto target = event->GetTarget();
-    auto source = Go::Runtime::GetEntity(event->GetSource());
+    auto source = Go::Runtime::GetCBaseObject(event->GetSource());
     auto pos = event->GetPosition();
     auto expFX = event->GetExplosionFX();
     auto expType = event->GetExplosionType();
 
-    Entity e = Go::Runtime::GetEntity(target);
+    CBaseObject e = Go::Runtime::GetCBaseObject(target);
 
-    Position cPos;
+    CPosition cPos;
     cPos.x = pos.x;
     cPos.y = pos.y;
     cPos.z = pos.z;

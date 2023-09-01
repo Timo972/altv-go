@@ -21,39 +21,39 @@ EXPORT const char* Resource_GetMain(void* r) {
 	return resource->GetMain().c_str();
 }
 
-EXPORT Array Resource_GetConfig(void* r) {
+EXPORT CArray Resource_GetConfig(void* r) {
 	auto resource = reinterpret_cast<alt::IResource*>(r);
 	//return Go::Runtime::ConfigNodeToProtoBytes(resource->GetConfig());
     // FIXME:
-    Array config{};
+    CArray config{};
     return config;
 }
 
-EXPORT Array Resource_GetExports(void* r) {
+EXPORT CArray Resource_GetExports(void* r) {
 	auto resource = reinterpret_cast<alt::IResource*>(r);
 	alt::MValue e = resource->GetExports();
 
     return Go::Runtime::EncodeMValue(e);
 }
 
-EXPORT Array Resource_GetDependencies(void* r) {
+EXPORT CArray Resource_GetDependencies(void* r) {
 	auto resource = reinterpret_cast<alt::IResource*>(r);
 	auto deps = resource->GetDependencies();
 	return Go::Runtime::CreateStringArray(deps);
 }
 
-EXPORT Array Resource_GetDependants(void* r) {
+EXPORT CArray Resource_GetDependants(void* r) {
 	auto resource = reinterpret_cast<alt::IResource*>(r);
 	auto deps = resource->GetDependants();
 	return Go::Runtime::CreateStringArray(deps);
 }
 
-EXPORT Array Resource_GetRequiredPermissions(void* r) {
+EXPORT CArray Resource_GetRequiredPermissions(void* r) {
 	auto resource = reinterpret_cast<alt::IResource*>(r);
 	return Go::Runtime::CreateArray<alt::Permission, unsigned char>(resource->GetRequiredPermissions());
 }
 
-EXPORT Array Resource_GetOptionalPermissions(void* r) {
+EXPORT CArray Resource_GetOptionalPermissions(void* r) {
 	auto resource = reinterpret_cast<alt::IResource*>(r);
 	return Go::Runtime::CreateArray<alt::Permission, unsigned char>(resource->GetOptionalPermissions());
 }

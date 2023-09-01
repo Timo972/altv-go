@@ -7,13 +7,13 @@ EXPORT int Vehicle_HasMetaData(void *base, const char *key) {
     return vehicle->HasMetaData(key);
 }
 
-EXPORT Array Vehicle_GetMetaData(void *base, const char *key) {
+EXPORT CArray Vehicle_GetMetaData(void *base, const char *key) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(base);
     auto meta = vehicle->GetMetaData(key);
     return Go::Runtime::EncodeMValue(meta);
 }
 
-EXPORT void Vehicle_SetMetaData(void *base, const char *key, Array data) {
+EXPORT void Vehicle_SetMetaData(void *base, const char *key, CArray data) {
 
     auto vehicle = reinterpret_cast<alt::IVehicle *>(base);
     auto value = Go::Runtime::DecodeMValue(data);
@@ -34,13 +34,13 @@ EXPORT int Vehicle_HasSyncedMetaData(void *base, const char *key) {
     return vehicle->HasSyncedMetaData(key);
 }
 
-EXPORT Array Vehicle_GetSyncedMetaData(void *base, const char *key) {
+EXPORT CArray Vehicle_GetSyncedMetaData(void *base, const char *key) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(base);
     auto meta = vehicle->GetSyncedMetaData(key);
     return Go::Runtime::EncodeMValue(meta);
 }
 
-EXPORT void Vehicle_SetSyncedMetaData(void *base, const char *key, Array data) {
+EXPORT void Vehicle_SetSyncedMetaData(void *base, const char *key, CArray data) {
 
     auto vehicle = reinterpret_cast<alt::IVehicle *>(base);
     auto value = Go::Runtime::DecodeMValue(data);
@@ -60,13 +60,13 @@ EXPORT int Vehicle_HasStreamSyncedMetaData(void *base, const char *key) {
     return vehicle->HasStreamSyncedMetaData(key);
 }
 
-EXPORT Array Vehicle_GetStreamSyncedMetaData(void *base, const char *key) {
+EXPORT CArray Vehicle_GetStreamSyncedMetaData(void *base, const char *key) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(base);
     auto meta = vehicle->GetStreamSyncedMetaData(key);
     return Go::Runtime::EncodeMValue(meta);
 }
 
-EXPORT void Vehicle_SetStreamSyncedMetaData(void *base, const char *key, Array data) {
+EXPORT void Vehicle_SetStreamSyncedMetaData(void *base, const char *key, CArray data) {
 
     auto vehicle = reinterpret_cast<alt::IVehicle *>(base);
     auto value = Go::Runtime::DecodeMValue(data);
@@ -81,11 +81,11 @@ EXPORT void Vehicle_DeleteStreamSyncedMetaData(void *base, const char *key) {
     // vehicle->RemoveRef();
 }
 
-EXPORT Position Vehicle_GetPosition(void *v) {
+EXPORT CPosition Vehicle_GetPosition(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
     auto pos = vehicle->GetPosition();
 
-    Position position;
+    CPosition position;
     position.x = pos.x;
     position.y = pos.y;
     position.z = pos.z;
@@ -101,11 +101,11 @@ EXPORT void Vehicle_SetPosition(void *v, float x, float y, float z) {
     vehicle->SetPosition(pos);
 }
 
-EXPORT Rotation Vehicle_GetRotation(void *v) {
+EXPORT CRotation Vehicle_GetRotation(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
     auto rot = vehicle->GetRotation();
 
-    Rotation rotation;
+    CRotation rotation;
     rotation.pitch = rot.pitch;
     rotation.yaw = rot.yaw;
     rotation.roll = rot.roll;
@@ -145,10 +145,10 @@ EXPORT void Vehicle_Detach(void *v) {
     vehicle->Detach();
 }
 
-EXPORT void Vehicle_AttachToEntity(void *v, Entity e, int otherBoneIndex, int myBoneIndex, Position pos, Rotation rot,
+EXPORT void Vehicle_AttachToEntity(void *v, CBaseObject e, int otherBoneIndex, int myBoneIndex, CPosition pos, CRotation rot,
                                    int collision, int noFixedRotation) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    auto entity = Go::Runtime::GetEntityRef(e);
+    auto entity = Go::Runtime::GetEntity(&e);
 
     auto position = alt::Position(pos.x, pos.y, pos.z);
     auto rotation = alt::Rotation(rot.roll, rot.pitch, rot.yaw);
@@ -166,9 +166,9 @@ EXPORT int Vehicle_GetVisible(void *v) {
     return vehicle->GetVisible();
 }
 
-EXPORT Entity Vehicle_GetNetworkOwner(void *v) {
+EXPORT CBaseObject Vehicle_GetNetworkOwner(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return Go::Runtime::GetEntity(vehicle->GetNetworkOwner());
+    return Go::Runtime::GetCBaseObject(vehicle->GetNetworkOwner());
 }
 
 EXPORT void Vehicle_SetNetworkOwner(void *v, void *o, int disableMigration) {
@@ -177,9 +177,9 @@ EXPORT void Vehicle_SetNetworkOwner(void *v, void *o, int disableMigration) {
     vehicle->SetNetworkOwner(owner, disableMigration);
 }
 
-EXPORT Entity Vehicle_GetDriver(void *v) {
+EXPORT CBaseObject Vehicle_GetDriver(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return Go::Runtime::GetEntity(vehicle->GetDriver());
+    return Go::Runtime::GetCBaseObject(vehicle->GetDriver());
 }
 
 EXPORT int Vehicle_IsDestroyed(void *v) {
@@ -217,11 +217,11 @@ EXPORT unsigned long Vehicle_GetPrimaryColor(void *v) {
     return vehicle->GetPrimaryColor();
 }
 
-EXPORT RGBA Vehicle_GetPrimaryColorRGB(void *v) {
+EXPORT CRGBA Vehicle_GetPrimaryColorRGB(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
     auto rgb = vehicle->GetPrimaryColorRGB();
 
-    RGBA rgba;
+    CRGBA rgba;
     rgba.r = rgb.r;
     rgba.g = rgb.g;
     rgba.b = rgb.b;
@@ -240,11 +240,11 @@ EXPORT unsigned long Vehicle_GetSecondaryColor(void *v) {
     return vehicle->GetSecondaryColor();
 }
 
-EXPORT RGBA Vehicle_GetSecondaryColorRGB(void *v) {
+EXPORT CRGBA Vehicle_GetSecondaryColorRGB(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
     auto rgb = vehicle->GetSecondaryColorRGB();
 
-    RGBA rgba;
+    CRGBA rgba;
     rgba.r = rgb.r;
     rgba.g = rgb.g;
     rgba.b = rgb.b;
@@ -278,11 +278,11 @@ EXPORT int Vehicle_IsTireSmokeColorCustom(void *v) {
     return vehicle->IsTireSmokeColorCustom();
 }
 
-EXPORT RGBA Vehicle_GetTireSmokeColor(void *v) {
+EXPORT CRGBA Vehicle_GetTireSmokeColor(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
     auto rgb = vehicle->GetTireSmokeColor();
 
-    RGBA rgba;
+    CRGBA rgba;
     rgba.r = rgb.r;
     rgba.g = rgb.g;
     rgba.b = rgb.b;
@@ -346,7 +346,7 @@ EXPORT int Vehicle_IsNeonActive(void *v) {
     return vehicle->IsNeonActive();
 }
 
-EXPORT VehicleNeonState Vehicle_GetNeonActive(void *v) {
+EXPORT CVehicleNeonState Vehicle_GetNeonActive(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
 
     bool frontBool;
@@ -356,7 +356,7 @@ EXPORT VehicleNeonState Vehicle_GetNeonActive(void *v) {
 
     vehicle->GetNeonActive(&leftBool, &rightBool, &frontBool, &backBool);
 
-    VehicleNeonState state;
+    CVehicleNeonState state;
     state.front = frontBool;
     state.left = leftBool;
     state.right = rightBool;
@@ -365,11 +365,11 @@ EXPORT VehicleNeonState Vehicle_GetNeonActive(void *v) {
     return state;
 }
 
-EXPORT RGBA Vehicle_GetNeonColor(void *v) {
+EXPORT CRGBA Vehicle_GetNeonColor(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
     auto rgb = vehicle->GetNeonColor();
 
-    RGBA rgba;
+    CRGBA rgba;
     rgba.r = rgb.r;
     rgba.g = rgb.g;
     rgba.b = rgb.b;
@@ -856,14 +856,14 @@ EXPORT void Vehicle_SetManualEngineControl(void *v, int state) {
     vehicle->SetManualEngineControl(state);
 }
 
-EXPORT Entity Vehicle_GetAttached(void *v) {
+EXPORT CBaseObject Vehicle_GetAttached(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return Go::Runtime::GetEntity(vehicle->GetAttached());
+    return Go::Runtime::GetCBaseObject(vehicle->GetAttached());
 }
 
-EXPORT Entity Vehicle_GetAttachedTo(void *v) {
+EXPORT CBaseObject Vehicle_GetAttachedTo(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return Go::Runtime::GetEntity(vehicle->GetAttachedTo());
+    return Go::Runtime::GetCBaseObject(vehicle->GetAttachedTo());
 }
 
 EXPORT void Vehicle_Destroy(void *v) {
@@ -958,9 +958,9 @@ EXPORT void Vehicle_SetTrainTrackId(void *v, char trackId) {
     vehicle->SetTrainTrackId(trackId);
 }
 
-EXPORT Entity Vehicle_GetTrainEngineId(void *v) {
+EXPORT CBaseObject Vehicle_GetTrainEngineId(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return Go::Runtime::GetEntity(vehicle->GetTrainEngineId());
+    return Go::Runtime::GetCBaseObject(vehicle->GetTrainEngineId());
 }
 
 EXPORT void Vehicle_SetTrainEngineId(void *v, void *e) {
@@ -1069,9 +1069,9 @@ EXPORT void Vehicle_SetTrainCarriageConfigIndex(void *v, char carriageConfigInde
     vehicle->SetTrainCarriageConfigIndex(carriageConfigIndex);
 }
 
-EXPORT Entity Vehicle_GetTrainLinkedToBackwardId(void *v) {
+EXPORT CBaseObject Vehicle_GetTrainLinkedToBackwardId(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return Go::Runtime::GetEntity(vehicle->GetTrainLinkedToBackwardId());
+    return Go::Runtime::GetCBaseObject(vehicle->GetTrainLinkedToBackwardId());
 }
 
 EXPORT void Vehicle_SetTrainLinkedToBackwardId(void *v, void *e) {
@@ -1080,9 +1080,9 @@ EXPORT void Vehicle_SetTrainLinkedToBackwardId(void *v, void *e) {
     vehicle->SetTrainLinkedToBackwardId(train);
 }
 
-EXPORT Entity Vehicle_GetTrainLinkedToForwardId(void *v) {
+EXPORT CBaseObject Vehicle_GetTrainLinkedToForwardId(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return Go::Runtime::GetEntity(vehicle->GetTrainLinkedToForwardId());
+    return Go::Runtime::GetCBaseObject(vehicle->GetTrainLinkedToForwardId());
 }
 
 EXPORT void Vehicle_SetTrainLinkedToForwardId(void *v, void *e) {
@@ -1132,9 +1132,9 @@ EXPORT void Vehicle_SetBoatAnchorActive(void *v, int state) {
     vehicle->SetBoatAnchorActive(state);
 }
 
-EXPORT int Vehicle_SetSearchLight(void *v, int state, Entity e) {
+EXPORT int Vehicle_SetSearchLight(void *v, int state, CBaseObject e) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    auto target = Go::Runtime::GetEntityRef(e);
+    auto target = Go::Runtime::GetEntity(&e);
     return vehicle->SetSearchLight(state, target);
 }
 
@@ -1153,9 +1153,9 @@ EXPORT unsigned char Vehicle_HasTimedExplosion(void *v) {
     return vehicle->HasTimedExplosion();
 }
 
-EXPORT Entity Vehicle_GetTimedExplosionCulprit(void *v) {
+EXPORT CBaseObject Vehicle_GetTimedExplosionCulprit(void *v) {
     auto vehicle = reinterpret_cast<alt::IVehicle *>(v);
-    return Go::Runtime::GetEntity(vehicle->GetTimedExplosionCulprit());
+    return Go::Runtime::GetCBaseObject(vehicle->GetTimedExplosionCulprit());
 }
 
 EXPORT unsigned int Vehicle_GetTimedExplosionTime(void *v) {

@@ -53,9 +53,9 @@ alt::IResource::Impl *Go::Runtime::GetResource(const std::string &name)
     return nullptr;
 }
 
-Entity Go::Runtime::GetEntity(alt::IEntity *entity)
+CBaseObject Go::Runtime::GetCBaseObject(alt::IEntity *entity)
 {
-    Entity e;
+    CBaseObject e;
 
     if (entity != nullptr)
     {
@@ -115,9 +115,9 @@ Entity Go::Runtime::GetEntity(alt::IEntity *entity)
     return e;
 }
 
-Entity Go::Runtime::GetBaseObject(alt::IBaseObject *baseObject)
+CBaseObject Go::Runtime::GetCBaseObject(alt::IBaseObject *baseObject)
 {
-    Entity e;
+    CBaseObject e;
 
     if (baseObject != nullptr)
     {
@@ -184,7 +184,7 @@ Entity Go::Runtime::GetBaseObject(alt::IBaseObject *baseObject)
     return e;
 }
 
-ConnectionInfo Go::Runtime::GetConnectionInfo(alt::IConnectionInfo *info)
+CConnectionInfo Go::Runtime::GetConnectionInfo(alt::IConnectionInfo *info)
 {
     connectionInfo conn{};
     conn.authToken = info->GetAuthToken().c_str();
@@ -206,63 +206,51 @@ ConnectionInfo Go::Runtime::GetConnectionInfo(alt::IConnectionInfo *info)
     return conn;
 }
 
-Array Go::Runtime::CreateBoneArray(std::vector<alt::BoneInfo> bones)
+CArray Go::Runtime::CreateBoneArray(std::vector<alt::BoneInfo> bones)
 {
-    Array arr;
+    CArray arr;
     arr.size = bones.size();
 
-    auto cArr = new BoneInfo[arr.size];
+    auto cArr = new CBoneInfo[arr.size];
 
     for (uint64_t i = 0; i < arr.size; i++)
     {
         auto b = bones[i];
-        BoneInfo bone;
+        CBoneInfo bone;
         bone.id = b.id;
         bone.index = b.index;
         bone.name = b.name.c_str();
         cArr[i] = bone;
     }
 
-    arr.array = cArr;
+    arr.ptr = cArr;
 
     return arr;
 }
 
-alt::IEntity *Go::Runtime::GetEntityRef(Entity entity)
+alt::IEntity *Go::Runtime::GetEntity(CBaseObject *baseObject)
 {
-    auto type = static_cast<alt::IEntity::Type>(entity.typ);
-
-    switch (type)
-    {
-    case alt::IEntity::Type::PLAYER:
-        return reinterpret_cast<alt::IPlayer *>(entity.ptr);
-
-    case alt::IEntity::Type::VEHICLE:
-        return reinterpret_cast<alt::IVehicle *>(entity.ptr);
-
-    default:
-        return nullptr;
-    }
+    return dynamic_cast<alt::IEntity *>(GetBaseObject(baseObject));
 }
 
-alt::IBaseObject *Go::Runtime::GetBaseObjectRef(Entity baseObject)
+alt::IBaseObject *Go::Runtime::GetBaseObject(CBaseObject *baseObject)
 {
-    auto type = static_cast<alt::IBaseObject::Type>(baseObject.typ);
+    auto type = static_cast<alt::IBaseObject::Type>(baseObject->typ);
 
     switch (type)
     {
     case alt::IBaseObject::Type::BLIP:
-        return reinterpret_cast<alt::IBlip *>(baseObject.ptr);
+        return reinterpret_cast<alt::IBlip *>(baseObject->ptr);
     case alt::IBaseObject::Type::CHECKPOINT:
-        return reinterpret_cast<alt::ICheckpoint *>(baseObject.ptr);
+        return reinterpret_cast<alt::ICheckpoint *>(baseObject->ptr);
     case alt::IBaseObject::Type::COLSHAPE:
-        return reinterpret_cast<alt::IColShape *>(baseObject.ptr);
+        return reinterpret_cast<alt::IColShape *>(baseObject->ptr);
     case alt::IBaseObject::Type::PLAYER:
-        return reinterpret_cast<alt::IPlayer *>(baseObject.ptr);
+        return reinterpret_cast<alt::IPlayer *>(baseObject->ptr);
     case alt::IBaseObject::Type::VEHICLE:
-        return reinterpret_cast<alt::IVehicle *>(baseObject.ptr);
+        return reinterpret_cast<alt::IVehicle *>(baseObject->ptr);
     case alt::IBaseObject::Type::VOICE_CHANNEL:
-        return reinterpret_cast<alt::IVoiceChannel *>(baseObject.ptr);
+        return reinterpret_cast<alt::IVoiceChannel *>(baseObject->ptr);
     default:
         return nullptr;
     }
@@ -450,10 +438,10 @@ alt::MValue Go::Runtime::DecodeMValue(rapidjson::Value &d)
     return core.CreateMValueNone();
 }
 
-alt::MValue Go::Runtime::DecodeMValue(Array value)
+alt::MValue Go::Runtime::DecodeMValue(CArray value)
 {
     alt::ICore &core = alt::ICore::Instance();
-    auto data = reinterpret_cast<const char *>(value.array);
+    auto data = reinterpret_cast<const char *>(value.ptr);
 
     std::cout << "-------------------" << std::endl;
     std::cout << "decoding mvalue" << std::endl;
@@ -509,7 +497,7 @@ rapidjson::Document Go::Runtime::EncodeMValueToJSON(alt::MValueConst mValue)
     else if (type == alt::IMValue::Type::BASE_OBJECT)
     {
         auto baseObject = std::dynamic_pointer_cast<const alt::IMValueBaseObject>(mValue)->Value();
-        Entity data = GetBaseObject(baseObject.get());
+        CBaseObject data = GetCBaseObject(baseObject.get());
         auto ptr = PointerToString(data.ptr);
         d.SetObject();
         d.AddMember(rapidjson::Value("$type"), rapidjson::Value(static_cast<int>(alt::IMValue::Type::BASE_OBJECT)), d.GetAllocator());
@@ -577,7 +565,7 @@ rapidjson::Document Go::Runtime::EncodeMValueToJSON(alt::MValueConst mValue)
     return d;
 }
 
-Array Go::Runtime::EncodeMValue(alt::MValueConst mValue)
+CArray Go::Runtime::EncodeMValue(alt::MValueConst mValue)
 {
     rapidjson::Document d = EncodeMValueToJSON(mValue);
 
@@ -599,9 +587,9 @@ Array Go::Runtime::EncodeMValue(alt::MValueConst mValue)
     auto size = strBuf.GetSize();
     auto data = new char[size];
 
-    Array arr;
+    CArray arr;
     memcpy(data, strBuf.GetString(), size);
-    arr.array = data;
+    arr.ptr = data;
     arr.size = size;
 
     std::cout << "copied" << std::endl;
@@ -609,19 +597,19 @@ Array Go::Runtime::EncodeMValue(alt::MValueConst mValue)
     return arr;
 }
 
-Array Go::Runtime::EncodeMValueArgs(alt::MValueArgs args) {
-    Array cbufs;
+CArray Go::Runtime::EncodeMValueArgs(alt::MValueArgs args) {
+    CArray cbufs;
     cbufs.size = args.size();
-    auto bufs = new Array[cbufs.size];
+    auto bufs = new CArray[cbufs.size];
     for (auto i = 0; i < cbufs.size; i++) {
         bufs[i] = EncodeMValue(args[i]);
     }
-    cbufs.array = bufs;
+    cbufs.ptr = bufs;
     return cbufs;
 }
 
-alt::MValueArgs Go::Runtime::DecodeMValueArgs(Array cbufs) {
-    auto bufs = reinterpret_cast<Array *>(cbufs.array);
+alt::MValueArgs Go::Runtime::DecodeMValueArgs(CArray cbufs) {
+    auto bufs = reinterpret_cast<CArray *>(cbufs.ptr);
     alt::MValueArgs args;
     
     for (auto i = 0; i < cbufs.size; i++) {
@@ -686,7 +674,7 @@ alt::MValueArgs Go::Runtime::DecodeMValueArgs(Array cbufs) {
     case alt::IMValue::Type::VECTOR2: {
         auto v2 = mValue.As<alt::IMValueVector2>()->Value();
 
-        Position vector{};
+        CPosition vector{};
         vector.x = v2[0];
         vector.y = v2[1];
 
@@ -696,7 +684,7 @@ alt::MValueArgs Go::Runtime::DecodeMValueArgs(Array cbufs) {
     case alt::IMValue::Type::VECTOR3: {
         auto v3 = mValue.As<alt::IMValueVector3>()->Value();
 
-        Position vector{};
+        CPosition vector{};
         vector.x = v3[0];
         vector.y = v3[1];
         vector.z = v3[2];
@@ -810,7 +798,7 @@ void Go::Runtime::EncodeMValue(alt::MValueConst mValue, GoValue *value) {
     case alt::IMValue::Type::VECTOR2: {
         auto v2 = mValue.As<const alt::IMValueVector2>()->Value();
 
-        Position vector{};
+        CPosition vector{};
         vector.x = v2[0];
         vector.y = v2[1];
 
@@ -820,7 +808,7 @@ void Go::Runtime::EncodeMValue(alt::MValueConst mValue, GoValue *value) {
     case alt::IMValue::Type::VECTOR3: {
         auto v3 = mValue.As<const alt::IMValueVector3>()->Value();
 
-        Position vector{};
+        CPosition vector{};
         vector.x = v3[0];
         vector.y = v3[1];
         vector.z = v3[2];

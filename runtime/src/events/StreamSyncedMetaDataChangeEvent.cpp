@@ -5,7 +5,7 @@ Go::StreamSyncedMetaDataChangeEvent::StreamSyncedMetaDataChangeEvent(ModuleLibra
 
 void Go::StreamSyncedMetaDataChangeEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altStreamSyncedMetaDataChangeEvent", void (*)(Entity entity, const char* key, Array oldValue, Array newValue));
+    static auto call = GET_FUNC(Library, "altStreamSyncedMetaDataChangeEvent", void (*)(CBaseObject entity, const char* key, CArray oldValue, CArray newValue));
 
     if (call == nullptr)
     {
@@ -18,7 +18,7 @@ void Go::StreamSyncedMetaDataChangeEvent::Call(const alt::CEvent *ev)
     auto newValueMeta = event->GetVal();
     auto oldValueMeta = event->GetOldVal();
 
-    Entity e = Go::Runtime::GetBaseObject(event->GetTarget());
+    CBaseObject e = Go::Runtime::GetCBaseObject(event->GetTarget());
 
     auto newValue = Go::Runtime::EncodeMValue(newValueMeta);
     auto oldValue = Go::Runtime::EncodeMValue(oldValueMeta);

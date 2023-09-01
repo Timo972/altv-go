@@ -15,14 +15,14 @@ EXPORT int ColShape_HasMetaData(void* base, const char *key)
     return baseObject->HasMetaData(key);
 }
 
-EXPORT Array ColShape_GetMetaData(void* base, const char *key)
+EXPORT CArray ColShape_GetMetaData(void* base, const char *key)
 {
     auto baseObject = reinterpret_cast<alt::IColShape*>(base);
     auto meta = baseObject->GetMetaData(key);
     return Go::Runtime::EncodeMValue(meta);
 }
 
-EXPORT void ColShape_SetMetaData(void *base, const char *key, Array data)
+EXPORT void ColShape_SetMetaData(void *base, const char *key, CArray data)
 {
     auto baseObject = reinterpret_cast<alt::IColShape*>(base);
     auto value = Go::Runtime::DecodeMValue(data);
@@ -52,12 +52,12 @@ EXPORT int ColShape_IsValid(const char *resourceName, void *p)
 }
 
 // WorldObject inherited
-EXPORT Position ColShape_GetPosition(void *p)
+EXPORT CPosition ColShape_GetPosition(void *p)
 {
     auto colShape = reinterpret_cast<alt::IColShape*>(p);
     auto pos = colShape->GetPosition();
 
-    Position position;
+    CPosition position;
     position.x = pos.x;
     position.y = pos.y;
     position.z = pos.z;
@@ -93,10 +93,10 @@ EXPORT int ColShape_GetColShapeType(void *c)
     return static_cast<int>(colShape->GetColshapeType());
 }
 
-EXPORT int ColShape_IsEntityIn(void *c, Entity e)
+EXPORT int ColShape_IsEntityIn(void *c, CBaseObject e)
 {
     auto colShape = reinterpret_cast<alt::IColShape*>(c);
-    auto entity = Go::Runtime::GetEntityRef(e);
+    auto entity = Go::Runtime::GetEntity(&e);
     return colShape->IsEntityIn(entity);
 }
 

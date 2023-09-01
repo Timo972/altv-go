@@ -21,7 +21,7 @@ EXPORT int Runtime_UnregisterAltEvent(const char *resourceName, unsigned short e
     return true;
 }
 
-EXPORT int Runtime_RegisterAltExport(const char *resourceName, const char *exportName, Array data) {
+EXPORT int Runtime_RegisterAltExport(const char *resourceName, const char *exportName, CArray data) {
     auto resource = dynamic_cast<Go::Resource *>(Go::Runtime::GetInstance()->GetResource(resourceName));
     if (resource == nullptr) {
         return 0;
@@ -51,7 +51,7 @@ EXPORT void *Runtime_CreateMValueFunction(const char *resourceName, unsigned lon
     return defaultMVal.get();
 }
 
-EXPORT Array Runtime_CallMValueFunction(void *ptr, Array data) {
+EXPORT CArray Runtime_CallMValueFunction(void *ptr, CArray data) {
     auto mValRef = reinterpret_cast<alt::IMValue *>(ptr);
     auto func = dynamic_cast<alt::IMValueFunction *>(mValRef);
 
@@ -61,7 +61,7 @@ EXPORT Array Runtime_CallMValueFunction(void *ptr, Array data) {
     return Go::Runtime::EncodeMValue(retValue);
 }
 
-EXPORT Array Runtime_GetAltExport(const char *targetResourceName, const char *exportName) {
+EXPORT CArray Runtime_GetAltExport(const char *targetResourceName, const char *exportName) {
     auto targetResource = alt::ICore::Instance().GetResource(targetResourceName);
 
     if (targetResource == nullptr) {

@@ -5,7 +5,7 @@ Go::PlayerRequestControlEvent::PlayerRequestControlEvent(ModuleLibrary* module) 
 
 void Go::PlayerRequestControlEvent::Call(const alt::CEvent* ev)
 {
-    static auto call = GET_FUNC(Library, "altPlayerRequestControlEvent", bool (*)(Entity playerObject, Entity target));
+    static auto call = GET_FUNC(Library, "altPlayerRequestControlEvent", bool (*)(CBaseObject playerObject, CBaseObject target));
 
     if (call == nullptr)
     {
@@ -14,8 +14,8 @@ void Go::PlayerRequestControlEvent::Call(const alt::CEvent* ev)
     }
 
     auto event = dynamic_cast<const alt::CPlayerRequestControlEvent*>(ev);
-    auto entity = Go::Runtime::GetEntity(event->GetTarget());
-    auto player = Go::Runtime::GetEntity(event->GetPlayer());
+    auto entity = Go::Runtime::GetCBaseObject(event->GetTarget());
+    auto player = Go::Runtime::GetCBaseObject(event->GetPlayer());
 
     bool ok = call(player, entity);
     if (!ok) 

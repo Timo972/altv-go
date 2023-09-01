@@ -9,68 +9,68 @@ typedef struct pos {
     float x;
     float y;
     float z;
-} Position;
+} CPosition;
 
 typedef struct rot {
     float roll;
     float pitch;
     float yaw;
-} Rotation;
+} CRotation;
 
 typedef struct rgba {
     unsigned char r;
     unsigned char g;
     unsigned char b;
     unsigned char a;
-} RGBA;
+} CRGBA;
 
 typedef struct cloth {
     unsigned int drawableId;
     unsigned int textureId;
     unsigned int paletteId;
-} Cloth;
+} CCloth;
 
 typedef struct dlcCloth {
     unsigned long dlc;
     unsigned int drawableId;
     unsigned int textureId;
     unsigned int paletteId;
-} DlcCloth;
+} CDlcCloth;
 
 typedef struct prop {
     unsigned int drawableId;
     unsigned int textureId;
-} Prop;
+} CProp;
 
 typedef struct dlcProp {
     unsigned long dlc;
     unsigned int drawableId;
     unsigned int textureId;
-} DlcProp;
+} CDlcProp;
 
 typedef struct fireInfo {
-    Position position;
+    CPosition position;
     unsigned long weaponHash;
-} FireInfo;
+} CFireInfo;
 
 typedef struct neonState {
     unsigned char left;
     unsigned char right;
     unsigned char front;
     unsigned char back;
-} VehicleNeonState;
+} CVehicleNeonState;
 
-typedef struct entity {
+typedef struct baseObject {
     unsigned char typ;
     void *ptr;
     unsigned int id;
     unsigned int model;
-} Entity;
+} CBaseObject;
 
 typedef struct array {
     unsigned long long size;
-    void *array;
-} Array;
+    void *ptr;
+} CArray;
 
 typedef struct connectionInfo {
     unsigned int id;
@@ -88,13 +88,13 @@ typedef struct connectionInfo {
     const char *ip;
     long long discordUserID;
     const char *cloudAuthHash;
-} ConnectionInfo;
+} CConnectionInfo;
 
 typedef struct weapon {
     unsigned int hash;
     unsigned char tintIndex;
-    Array components;
-} Weapon;
+    CArray components;
+} CWeapon;
 
 typedef struct headBlendData {
     unsigned int shapeFirstID;
@@ -106,7 +106,7 @@ typedef struct headBlendData {
     float shapeMix;
     float skinMix;
     float thirdMix;
-} HeadBlendData;
+} CHeadBlendData;
 
 typedef struct headOverlay {
     unsigned char index;
@@ -114,12 +114,12 @@ typedef struct headOverlay {
     unsigned char colorType;
     unsigned char colorIndex;
     unsigned char secondColorIndex;
-} HeadOverlay;
+} CHeadOverlay;
 
 typedef struct vector2 {
     float x;
     float y;
-} Vector2;
+} CVector2;
 
 typedef struct vehicleModelInfo {
    const char *title;
@@ -128,7 +128,7 @@ typedef struct vehicleModelInfo {
    // bool
    unsigned char hasArmoredWindows;
    unsigned char hasAutoAttachTrailer;
-   Array bones;
+   CArray bones;
 
    unsigned char primaryColor;
    unsigned char secondaryColor;
@@ -140,18 +140,18 @@ typedef struct vehicleModelInfo {
    unsigned short modKits[2];
    unsigned short extras;
    unsigned short defaultExtras;
-} VehicleModelInfo;
+} CVehicleModelInfo;
 
 typedef struct pedModelInfo {
     unsigned int hash;
     const char* name;
-    Array bones;
-} PedModelInfo;
+    CArray bones;
+} CPedModelInfo;
 
 typedef struct boneInfo {
     unsigned short id;
     unsigned short index;
     const char* name;
-} BoneInfo;
+} CBoneInfo;
 
 #include "SDK.h"

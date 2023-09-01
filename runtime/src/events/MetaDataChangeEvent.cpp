@@ -7,7 +7,7 @@ Go::MetaDataChangeEvent::MetaDataChangeEvent(ModuleLibrary *module) : IEvent(mod
 
 void Go::MetaDataChangeEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altMetaDataChangeEvent", void (*)(const char* key, Array oldValue, Array newValue));
+    static auto call = GET_FUNC(Library, "altMetaDataChangeEvent", void (*)(const char* key, CArray oldValue, CArray newValue));
 
     if (call == nullptr)
     {

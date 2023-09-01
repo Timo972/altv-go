@@ -12,13 +12,13 @@ EXPORT int Player_HasMetaData(void *base, const char *key) {
     return baseObject->HasMetaData(key);
 }
 
-EXPORT Array Player_GetMetaData(void *base, const char *key) {
+EXPORT CArray Player_GetMetaData(void *base, const char *key) {
     auto baseObject = reinterpret_cast<alt::IPlayer *>(base);
     auto meta = baseObject->GetMetaData(key);
     return Go::Runtime::EncodeMValue(meta);
 }
 
-EXPORT void Player_SetMetaData(void *base, const char *key, Array data) {
+EXPORT void Player_SetMetaData(void *base, const char *key, CArray data) {
     auto baseObject = reinterpret_cast<alt::IPlayer *>(base);
     auto value = Go::Runtime::DecodeMValue(data);
 
@@ -37,13 +37,13 @@ EXPORT int Player_HasSyncedMetaData(void *base, const char *key) {
 }
 
 
-EXPORT Array Player_GetSyncedMetaData(void *base, const char *key) {
+EXPORT CArray Player_GetSyncedMetaData(void *base, const char *key) {
     auto baseObject = reinterpret_cast<alt::IPlayer *>(base);
     auto meta = baseObject->GetSyncedMetaData(key);
     return Go::Runtime::EncodeMValue(meta);
 }
 
-EXPORT void Player_SetSyncedMetaData(void *base, const char *key, Array data) {
+EXPORT void Player_SetSyncedMetaData(void *base, const char *key, CArray data) {
     auto baseObject = reinterpret_cast<alt::IPlayer *>(base);
     auto value = Go::Runtime::DecodeMValue(data);
 
@@ -62,13 +62,13 @@ EXPORT int Player_HasStreamSyncedMetaData(void *base, const char *key) {
 }
 
 
-EXPORT Array Player_GetStreamSyncedMetaData(void *base, const char *key) {
+EXPORT CArray Player_GetStreamSyncedMetaData(void *base, const char *key) {
     auto baseObject = reinterpret_cast<alt::IPlayer *>(base);
     auto meta = baseObject->GetStreamSyncedMetaData(key);
     return Go::Runtime::EncodeMValue(meta);
 }
 
-EXPORT void Player_SetStreamSyncedMetaData(void *base, const char *key, Array data) {
+EXPORT void Player_SetStreamSyncedMetaData(void *base, const char *key, CArray data) {
     auto baseObject = reinterpret_cast<alt::IPlayer *>(base);
     auto value = Go::Runtime::DecodeMValue(data);
 
@@ -81,11 +81,11 @@ EXPORT void Player_DeleteStreamSyncedMetaData(void *base, const char *key) {
     // baseObject->RemoveRef();
 }
 
-EXPORT Position Player_GetPosition(void *p) {
+EXPORT CPosition Player_GetPosition(void *p) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto pos = player->GetPosition();
 
-    Position position;
+    CPosition position;
     position.x = pos.x;
     position.y = pos.y;
     position.z = pos.z;
@@ -101,11 +101,11 @@ EXPORT void Player_SetPosition(void *p, float x, float y, float z) {
     player->SetPosition(position);
 }
 
-EXPORT Rotation Player_GetRotation(void *p) {
+EXPORT CRotation Player_GetRotation(void *p) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto rot = player->GetRotation();
 
-    Rotation rotation;
+    CRotation rotation;
     rotation.pitch = rot.pitch;
     rotation.yaw = rot.yaw;
     rotation.roll = rot.roll;
@@ -168,7 +168,7 @@ EXPORT int Player_HasWeaponComponent(void *p, unsigned long weapon, unsigned lon
     return player->HasWeaponComponent(weapon, component);
 }
 
-EXPORT Array Player_GetCurrentWeaponComponents(void *p) {
+EXPORT CArray Player_GetCurrentWeaponComponents(void *p) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto components = player->GetCurrentWeaponComponents();
     return Go::Runtime::CreateArray<uint32_t, unsigned int>(components);
@@ -234,11 +234,11 @@ EXPORT float Player_GetMoveSpeed(void *p) {
     return player->GetMoveSpeed();
 }
 
-EXPORT Position Player_GetAimPos(void *p) {
+EXPORT CPosition Player_GetAimPos(void *p) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto pos = player->GetAimPos();
 
-    Position position;
+    CPosition position;
     position.x = pos.x;
     position.y = pos.y;
     position.z = pos.z;
@@ -246,11 +246,11 @@ EXPORT Position Player_GetAimPos(void *p) {
     return position;
 }
 
-EXPORT Rotation Player_GetHeadRotation(void *p) {
+EXPORT CRotation Player_GetHeadRotation(void *p) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto rot = player->GetHeadRotation();
 
-    Rotation rotation;
+    CRotation rotation;
     rotation.pitch = rot.pitch;
     rotation.roll = rot.roll;
     rotation.yaw = rot.yaw;
@@ -263,9 +263,9 @@ EXPORT int Player_IsInVehicle(void *p) {
     return player->IsInVehicle();
 }
 
-EXPORT Entity Player_GetVehicle(void *p) {
+EXPORT CBaseObject Player_GetVehicle(void *p) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
-    return Go::Runtime::GetEntity(player->GetVehicle());
+    return Go::Runtime::GetCBaseObject(player->GetVehicle());
 }
 
 EXPORT unsigned int Player_GetSeat(void *p) {
@@ -273,17 +273,17 @@ EXPORT unsigned int Player_GetSeat(void *p) {
     return player->GetSeat();
 }
 
-EXPORT Entity Player_GetEntityAimingAt(void *p) {
+EXPORT CBaseObject Player_GetEntityAimingAt(void *p) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto entity = player->GetEntityAimingAt();
-    return Go::Runtime::GetEntity(entity);
+    return Go::Runtime::GetCBaseObject(entity);
 }
 
-EXPORT Position Player_GetEntityAimOffset(void *p) {
+EXPORT CPosition Player_GetEntityAimOffset(void *p) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto pos = player->GetEntityAimOffset();
 
-    Position offset;
+    CPosition offset;
     offset.x = pos.x;
     offset.y = pos.y;
     offset.z = pos.z;
@@ -396,11 +396,11 @@ EXPORT void Player_Kick(void *p, const char *reason) {
     player->Kick(reason);
 }
 
-EXPORT Cloth Player_GetClothes(void *p, unsigned int component) {
+EXPORT CCloth Player_GetClothes(void *p, unsigned int component) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto cloth = player->GetClothes(component);
 
-    Cloth cCloth;
+    CCloth cCloth;
     cCloth.drawableId = cloth.drawableId;
     cCloth.textureId = cloth.textureId;
     cCloth.paletteId = cloth.paletteId;
@@ -408,11 +408,11 @@ EXPORT Cloth Player_GetClothes(void *p, unsigned int component) {
     return cCloth;
 }
 
-EXPORT DlcCloth Player_GetDlcClothes(void *p, unsigned int component) {
+EXPORT CDlcCloth Player_GetDlcClothes(void *p, unsigned int component) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto cloth = player->GetDlcClothes(component);
 
-    DlcCloth dlcCloth;
+    CDlcCloth dlcCloth;
     dlcCloth.dlc = cloth.dlc;
     dlcCloth.drawableId = cloth.drawableId;
     dlcCloth.textureId = cloth.textureId;
@@ -421,22 +421,22 @@ EXPORT DlcCloth Player_GetDlcClothes(void *p, unsigned int component) {
     return dlcCloth;
 }
 
-EXPORT Prop Player_GetProps(void *p, unsigned int component) {
+EXPORT CProp Player_GetProps(void *p, unsigned int component) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto prop = player->GetProps(component);
 
-    Prop cProp;
+    CProp cProp;
     cProp.drawableId = prop.drawableId;
     cProp.textureId = prop.textureId;
 
     return cProp;
 }
 
-EXPORT DlcProp Player_GetDlcProps(void *p, unsigned int component) {
+EXPORT CDlcProp Player_GetDlcProps(void *p, unsigned int component) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto prop = player->GetDlcProps(component);
 
-    DlcProp dlcProp;
+    CDlcProp dlcProp;
     dlcProp.dlc = prop.dlc;
     dlcProp.drawableId = prop.drawableId;
     dlcProp.textureId = prop.textureId;
@@ -494,12 +494,12 @@ EXPORT void Player_Detach(void *p) {
 }
 
 EXPORT void
-Player_AttachToEntity(void *p, Entity e, int otherBoneIndex, int myBoneIndex, Position pos, Rotation rot, int collision,
+Player_AttachToEntity(void *p, CBaseObject e, int otherBoneIndex, int myBoneIndex, float posX, float posY, float posZ, float rotX, float rotY, float rotZ, int collision,
                       int noFixedRotation) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
-    auto entity = Go::Runtime::GetEntityRef(e);
-    auto position = new alt::Position(pos.x, pos.y, pos.z);
-    auto rotation = new alt::Rotation(rot.roll, rot.pitch, rot.yaw);
+    auto entity = Go::Runtime::GetEntity(&e);
+    auto position = new alt::Position(posX, posY, posZ);
+    auto rotation = new alt::Rotation(rotX, rotY, rotZ);
     player->AttachToEntity(entity, otherBoneIndex, myBoneIndex, *position, *rotation, collision, noFixedRotation);
 }
 
@@ -518,9 +518,9 @@ EXPORT unsigned long Player_GetID(void *p) {
     return player->GetID();
 }
 
-EXPORT Entity Player_GetNetworkOwner(void *p) {
+EXPORT CBaseObject Player_GetNetworkOwner(void *p) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
-    return Go::Runtime::GetEntity(player->GetNetworkOwner());
+    return Go::Runtime::GetCBaseObject(player->GetNetworkOwner());
 }
 
 EXPORT void Player_SetNetworkOwner(void *p, void *o, int disableMigration) {
@@ -611,11 +611,11 @@ Player_SetHeadOverlayColor(void *p, unsigned char overlayID, unsigned char color
     return player->SetHeadOverlayColor(overlayID, colorType, colorIndex, secondColorIndex);
 }
 
-EXPORT HeadOverlay Player_GetHeadOverlay(void *p, unsigned char overlayID) {
+EXPORT CHeadOverlay Player_GetHeadOverlay(void *p, unsigned char overlayID) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto overlay =  player->GetHeadOverlay(overlayID);
 
-    HeadOverlay o;
+    CHeadOverlay o;
     o.secondColorIndex = overlay.secondColorIndex;
     o.colorIndex = overlay.colorIndex;
     o.colorType = overlay.colorType;
@@ -646,11 +646,11 @@ Player_SetHeadBlendPaletteColor(void *p, unsigned char id, unsigned char red, un
     return player->SetHeadBlendPaletteColor(id, red, green, blue);
 }
 
-EXPORT RGBA Player_GetHeadBlendPaletteColor(void *p, unsigned char id) {
+EXPORT CRGBA Player_GetHeadBlendPaletteColor(void *p, unsigned char id) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
 
     alt::RGBA color = player->GetHeadBlendPaletteColor(id);
-    RGBA c;
+    CRGBA c;
     c.r = color.r;
     c.g = color.g;
     c.b = color.b;
@@ -668,11 +668,11 @@ Player_SetHeadBlendData(void *p, unsigned int shapeFirstID, unsigned int shapeSe
                              shapeMix, skinMix, thirdMix);
 }
 
-EXPORT HeadBlendData Player_GetHeadBlendData(void *p) {
+EXPORT CHeadBlendData Player_GetHeadBlendData(void *p) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto headBlend = player->GetHeadBlendData();
 
-    HeadBlendData h;
+    CHeadBlendData h;
     h.skinFirstID = headBlend.skinFirstID;
     h.skinSecondID = headBlend.skinSecondID;
     h.skinThirdID = headBlend.skinThirdID;
@@ -716,16 +716,16 @@ EXPORT unsigned char Player_GetHairHighlightColor(void *p) {
     return player->GetHairHighlightColor();
 }
 
-EXPORT Array Player_GetWeapons(void *p) {
+EXPORT CArray Player_GetWeapons(void *p) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto weapons = player->GetWeapons();
 
     auto size = weapons.size();
-    auto cweaps = new Weapon[size];
+    auto cweaps = new CWeapon[size];
 
     for (uint64_t i = 0; i < size; i++) {
         auto weapon = weapons[i];
-        Weapon w;
+        CWeapon w;
         w.hash = weapon.hash;
         w.tintIndex = weapon.tintIndex;
         w.components = Go::Runtime::CreateArray<uint32_t, unsigned int>(weapon.components);
@@ -733,9 +733,9 @@ EXPORT Array Player_GetWeapons(void *p) {
         cweaps[i] = w;
     }
 
-    Array arr;
+    CArray arr;
     arr.size = size;
-    arr.array = cweaps;
+    arr.ptr = cweaps;
 
     return arr;
 }
@@ -745,14 +745,14 @@ EXPORT int Player_HasLocalMetaData(void *p, const char *key) {
     return player->HasLocalMetaData(key);
 }
 
-EXPORT void Player_SetLocalMetaData(void *p, const char *key, Array data) {
+EXPORT void Player_SetLocalMetaData(void *p, const char *key, CArray data) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto meta = Go::Runtime::DecodeMValue(data);
 
     player->SetLocalMetaData(key, meta);
 }
 
-EXPORT Array Player_GetLocalMetaData(void *p, const char *key) {
+EXPORT CArray Player_GetLocalMetaData(void *p, const char *key) {
     auto player = reinterpret_cast<alt::IPlayer *>(p);
     auto meta = player->GetLocalMetaData(key);
     return Go::Runtime::EncodeMValue(meta);

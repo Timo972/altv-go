@@ -5,7 +5,7 @@ Go::VehicleAttachEvent::VehicleAttachEvent(ModuleLibrary *module) : IEvent(modul
 
 void Go::VehicleAttachEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altVehicleAttachEvent", void (*)(Entity vehicle, Entity attachedVehicle));
+    static auto call = GET_FUNC(Library, "altVehicleAttachEvent", void (*)(CBaseObject vehicle, CBaseObject attachedVehicle));
 
     if (call == nullptr)
     {
@@ -14,8 +14,8 @@ void Go::VehicleAttachEvent::Call(const alt::CEvent *ev)
     }
 
     auto event = dynamic_cast<const alt::CVehicleAttachEvent *>(ev);
-    auto vehicle = Go::Runtime::GetEntity(event->GetTarget());
-    auto attached = Go::Runtime::GetEntity(event->GetAttached());
+    auto vehicle = Go::Runtime::GetCBaseObject(event->GetTarget());
+    auto attached = Go::Runtime::GetCBaseObject(event->GetAttached());
 
     call(vehicle, attached);
 }

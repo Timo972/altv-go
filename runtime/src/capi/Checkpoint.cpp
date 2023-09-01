@@ -15,7 +15,7 @@ EXPORT int Checkpoint_HasMetaData(void* base, const char *key)
     return baseObject->HasMetaData(key);
 }
 
-EXPORT Array Checkpoint_GetMetaData(void* base, const char *key)
+EXPORT CArray Checkpoint_GetMetaData(void* base, const char *key)
 {
     auto baseObject = reinterpret_cast<alt::ICheckpoint*>(base);
     auto meta = baseObject->GetMetaData(key);
@@ -23,7 +23,7 @@ EXPORT Array Checkpoint_GetMetaData(void* base, const char *key)
     return Go::Runtime::EncodeMValue(meta);
 }
 
-EXPORT void Checkpoint_SetMetaData(void *base, const char *key, Array data)
+EXPORT void Checkpoint_SetMetaData(void *base, const char *key, CArray data)
 {
     auto baseObject = reinterpret_cast<alt::ICheckpoint*>(base);
     auto value = Go::Runtime::DecodeMValue(data);
@@ -45,12 +45,12 @@ EXPORT void Checkpoint_Destroy(void *b)
 }
 
 // WorldObject inherited
-EXPORT Position Checkpoint_GetPosition(void *p)
+EXPORT CPosition Checkpoint_GetPosition(void *p)
 {
     auto checkpoint = reinterpret_cast<alt::ICheckpoint*>(p);
     auto pos = checkpoint->GetPosition();
 
-    Position position;
+    CPosition position;
     position.x = pos.x;
     position.y = pos.y;
     position.z = pos.z;
@@ -86,10 +86,10 @@ EXPORT int Checkpoint_GetColShapeType(void *c)
     return static_cast<int>(checkpoint->GetColshapeType());
 }
 
-EXPORT int Checkpoint_IsEntityIn(void *c, Entity e)
+EXPORT int Checkpoint_IsEntityIn(void *c, CBaseObject e)
 {
     auto checkpoint = reinterpret_cast<alt::ICheckpoint*>(c);
-    auto entity = Go::Runtime::GetEntityRef(e);
+    auto entity = Go::Runtime::GetEntity(&e);
     return checkpoint->IsEntityIn(entity);
 }
 
@@ -133,12 +133,12 @@ EXPORT float Checkpoint_GetRadius(void *c)
     return checkpoint->GetRadius();
 }
 
-EXPORT RGBA Checkpoint_GetColor(void *c)
+EXPORT CRGBA Checkpoint_GetColor(void *c)
 {
     auto checkpoint = reinterpret_cast<alt::ICheckpoint*>(c);
     auto rgba = checkpoint->GetColor();
 
-    RGBA color;
+    CRGBA color;
     color.r = rgba.r;
     color.g = rgba.g;
     color.b = rgba.b;
@@ -147,12 +147,12 @@ EXPORT RGBA Checkpoint_GetColor(void *c)
     return color;
 }
 
-EXPORT Position Checkpoint_GetNextPosition(void *c)
+EXPORT CPosition Checkpoint_GetNextPosition(void *c)
 {
     auto checkpoint = reinterpret_cast<alt::ICheckpoint*>(c);
     auto pos = checkpoint->GetNextPosition();
 
-    Position position;
+    CPosition position;
     position.x = pos.x;
     position.y = pos.y;
     position.z = pos.z;

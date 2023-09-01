@@ -10,33 +10,33 @@ extern "C"
 // BaseObject inherited
 EXPORT int Blip_GetType(void *c);
 EXPORT int Blip_HasMetaData(void *base, const char *key);
-EXPORT Array Blip_GetMetaData(void *base, const char *key);
-EXPORT void Blip_SetMetaData(void *base, const char *key, Array data);
+EXPORT CArray Blip_GetMetaData(void *base, const char *key);
+EXPORT void Blip_SetMetaData(void *base, const char *key, CArray data);
 EXPORT void Blip_DeleteMetaData(void *base, const char *key);
 EXPORT void Blip_Destroy(void *b);
 EXPORT int Blip_IsValid(const char *resourceName, void *p);
 
 // WorldObject inherited
-EXPORT Position Blip_GetPosition(void *p);
+EXPORT CPosition Blip_GetPosition(void *p);
 EXPORT void Blip_SetPosition(void *p, float x, float y, float z);
 EXPORT long Blip_GetDimension(void *p);
 EXPORT void Blip_SetDimension(void *p, long dimension);
 
 // Blip methods
 EXPORT int Blip_IsGlobal(void *b);
-EXPORT Array Blip_GetTargets(void *b);
+EXPORT CArray Blip_GetTargets(void *b);
 EXPORT int Blip_IsAttached(void *b);
-EXPORT Entity Blip_AttachedTo(void *b);
-EXPORT void Blip_AttachTo(void *b, Entity e);
+EXPORT CBaseObject Blip_AttachedTo(void *b);
+EXPORT void Blip_AttachTo(void *b, CBaseObject e);
 EXPORT unsigned char Blip_GetBlipType(void *b);
 
-EXPORT Vector2 Blip_GetScaleXY(void *b);
-EXPORT void Blip_SetScaleXY(void *b, Vector2 scale);
+EXPORT CVector2 Blip_GetScaleXY(void *b);
+EXPORT void Blip_SetScaleXY(void *b, CVector2 scale);
 EXPORT int Blip_GetDisplay(void *b);
 EXPORT void Blip_SetDisplay(void *b, int display);
 EXPORT int Blip_GetSprite(void *b);
 EXPORT int Blip_GetColor(void *b);
-EXPORT RGBA Blip_GetSecondaryColor(void *b);
+EXPORT CRGBA Blip_GetSecondaryColor(void *b);
 EXPORT int Blip_GetAlpha(void *b);
 EXPORT int Blip_GetFlashTimer(void *b);
 EXPORT int Blip_GetFlashInterval(void *b);
@@ -52,7 +52,7 @@ EXPORT int Blip_GetPriority(void *b);
 EXPORT float Blip_GetRotation(void *b);
 EXPORT const char *Blip_GetGxtName(void *b);
 EXPORT const char *Blip_GetName(void *b);
-EXPORT RGBA Blip_GetRouteColor(void *b);
+EXPORT CRGBA Blip_GetRouteColor(void *b);
 EXPORT int Blip_GetPulse(void *b);
 EXPORT int Blip_GetAsMissionCreator(void *b);
 EXPORT int Blip_GetTickVisible(void *b);
@@ -67,8 +67,8 @@ EXPORT int Blip_GetShrinked(void *b);
 EXPORT void Blip_SetSprite(void *b, int sprite);
 EXPORT void Blip_SetColor(void *b, int color);
 EXPORT void Blip_SetRoute(void *b, int state);
-EXPORT void Blip_SetRouteColor(void *b, RGBA color);
-EXPORT void Blip_SetSecondaryColor(void *b, RGBA color);
+EXPORT void Blip_SetRouteColor(void *b, CRGBA color);
+EXPORT void Blip_SetSecondaryColor(void *b, CRGBA color);
 EXPORT void Blip_SetAlpha(void *b, int alpha);
 EXPORT void Blip_SetFlashTimer(void *b, int timer);
 EXPORT void Blip_SetFlashInterval(void *b, int interval);

@@ -5,7 +5,7 @@ Go::PlayerConnectEvent::PlayerConnectEvent(ModuleLibrary *module) : IEvent(modul
 
 void Go::PlayerConnectEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altPlayerConnectEvent", void (*)(Entity playerObject));
+    static auto call = GET_FUNC(Library, "altPlayerConnectEvent", void (*)(CBaseObject playerObject));
 
     if (call == nullptr)
     {
@@ -14,7 +14,7 @@ void Go::PlayerConnectEvent::Call(const alt::CEvent *ev)
     }
 
     auto event = static_cast<const alt::CPlayerConnectEvent *>(ev);
-    auto player = Go::Runtime::GetEntity(event->GetTarget());
+    auto player = Go::Runtime::GetCBaseObject(event->GetTarget());
 
     call(player);
 }

@@ -2,7 +2,7 @@
 #include "GoRuntime.h"
 
 alt::MValue Go::Function::Call(alt::MValueArgs args) const {
-    static auto call = GET_FUNC(Library, "altCallFunction", Array (*)(unsigned long long id, Array args));
+    static auto call = GET_FUNC(Library, "altCallFunction", CArray (*)(unsigned long long id, CArray args));
 
     if (call == nullptr) {
         alt::ICore::Instance().LogError("Couldn't not call altCallFunction.");
@@ -11,7 +11,7 @@ alt::MValue Go::Function::Call(alt::MValueArgs args) const {
 
     // auto data = Go::Runtime::EncodeMValueArgs(args);
 
-    // Array res = call(id, data);
+    // CArray res = call(id, data);
 
     // TODO: free Array
 

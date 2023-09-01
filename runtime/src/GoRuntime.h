@@ -23,20 +23,19 @@ namespace Go {
 
         alt::IResource::Impl *GetResource(const std::string &name);
 
-        static Entity GetEntity(alt::IEntity* entity);
-        static Entity GetBaseObject(alt::IBaseObject* baseObject);
+        static CBaseObject GetCBaseObject(alt::IEntity* entity);
+        static CBaseObject GetCBaseObject(alt::IBaseObject* baseObject);
+        static alt::IBaseObject *GetBaseObject(CBaseObject* baseObject);
+        static alt::IEntity *GetEntity(CBaseObject* baseObject);
 
-        static alt::IEntity *GetEntityRef(Entity entity);
-        static alt::IBaseObject *GetBaseObjectRef(Entity baseObject);
-
-        static ConnectionInfo GetConnectionInfo(alt::IConnectionInfo* info);
+        static CConnectionInfo GetConnectionInfo(alt::IConnectionInfo* info);
         
-        static Array CreateBoneArray(std::vector<alt::BoneInfo> bones);
+        static CArray CreateBoneArray(std::vector<alt::BoneInfo> bones);
 
         // const char *SerializeConfig(alt::config::Node rootNode);
 
-        static Array CreateStringArray(std::vector<std::string> set) {
-            Array arr;
+        static CArray CreateStringArray(std::vector<std::string> set) {
+            CArray arr;
             arr.size = set.size();
             auto cset = new const char *[arr.size];
 
@@ -44,29 +43,29 @@ namespace Go {
                 cset[i] = set[i].c_str();
             }
 
-            arr.array = cset;
+            arr.ptr = cset;
 
             return arr;
         }
 
         template<class ClassInstance>
-        static Array CreateEntityArray(std::vector<ClassInstance*> objects) {
-            Array arr;
+        static CArray CreateCBaseObjectArray(std::vector<ClassInstance*> objects) {
+            CArray arr;
             arr.size = objects.size();
 
-            auto entities = new Entity[arr.size];
+            auto entities = new CBaseObject[arr.size];
 
             for (uint64_t i = 0; i < arr.size; i++) {
-                entities[i] = GetBaseObject(objects[i]);
+                entities[i] = GetCBaseObject(objects[i]);
             }
 
-            arr.array = entities;
+            arr.ptr = entities;
             return arr;
         }
 
         /*template<typename Type, typename TargetType>
-        static Array CreateArray(alt::Array<Type> altArr) {
-            Array arr;
+        static CArray CreateArray(alt::Array<Type> altArr) {
+            CArray arr;
             arr.size = altArr.GetSize();
             auto cArray = new TargetType[arr.size];
 
@@ -74,14 +73,14 @@ namespace Go {
                 cArray[i] = static_cast<TargetType>(altArr[i]);
             }
 
-            arr.array = cArray;
+            arr.ptr = cArray;
 
             return arr;
         }*/
 
         template<typename Type, typename TargetType>
-        static Array CreateArray(std::unordered_set<Type> set) {
-            Array arr;
+        static CArray CreateArray(std::unordered_set<Type> set) {
+            CArray arr;
             arr.size = set.size();
             auto cset = new TargetType[arr.size];
 
@@ -91,14 +90,14 @@ namespace Go {
                 i++;
             }
 
-            arr.array = cset;
+            arr.ptr = cset;
 
             return arr;
         }
 
         template<typename Type, typename TargetType>
-        static Array CreateArray(std::vector<Type> set) {
-            Array arr;
+        static CArray CreateArray(std::vector<Type> set) {
+            CArray arr;
             arr.size = set.size();
             auto cset = new TargetType[arr.size];
 
@@ -106,7 +105,7 @@ namespace Go {
                 cset[i] = static_cast<TargetType>(set[i]);
             }
 
-            arr.array = cset;
+            arr.ptr = cset;
 
             return arr;
         }
@@ -114,15 +113,15 @@ namespace Go {
         static std::string PointerToString(void* p);
 
         // MValue to JSON and back
-        static alt::MValue DecodeMValue(Array data);
+        static alt::MValue DecodeMValue(CArray data);
         static alt::MValue DecodeMValue(rapidjson::Value& value);
 
         static rapidjson::Document EncodeMValueToJSON(alt::MValueConst value);
-        static Array EncodeMValue(alt::MValueConst value);
-        // static Array EncodeMValue(alt::MValue value);
+        static CArray EncodeMValue(alt::MValueConst value);
+        // static CArray EncodeMValue(alt::MValue value);
 
-        static alt::MValueArgs DecodeMValueArgs(Array args);
-        static Array EncodeMValueArgs(alt::MValueArgs args);
+        static alt::MValueArgs DecodeMValueArgs(CArray args);
+        static CArray EncodeMValueArgs(alt::MValueArgs args);
 
         static Go::Runtime *GetInstance();
     };

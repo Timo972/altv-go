@@ -10,10 +10,10 @@ extern "C"
 #endif
     EXPORT int Runtime_RegisterAltEvent(const char *resourceName, unsigned short eventType);
     EXPORT int Runtime_UnregisterAltEvent(const char *resourceName, unsigned short eventType);
-    EXPORT int Runtime_RegisterAltExport(const char *resourceName, const char *exportName, Array value);
-    EXPORT Array Runtime_GetAltExport(const char *targetResourceName, const char *exportName);
+    EXPORT int Runtime_RegisterAltExport(const char *resourceName, const char *exportName, CArray value);
+    EXPORT CArray Runtime_GetAltExport(const char *targetResourceName, const char *exportName);
     EXPORT void *Runtime_CreateMValueFunction(const char *resourceName, unsigned long long id);
-    EXPORT Array Runtime_CallMValueFunction(void *ptr, Array args);
+    EXPORT CArray Runtime_CallMValueFunction(void *ptr, CArray args);
     EXPORT void Connection_Accept(void *handle, unsigned char sendNames);
     EXPORT void Connection_Decline(void *handle, const char *reason);
     EXPORT int Connection_IsAccepted(void *handle);

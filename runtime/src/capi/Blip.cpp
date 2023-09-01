@@ -15,7 +15,7 @@ EXPORT int Blip_HasMetaData(void* base, const char *key)
     return baseObject->HasMetaData(key);
 }
 
-EXPORT Array Blip_GetMetaData(void* base, const char *key)
+EXPORT CArray Blip_GetMetaData(void* base, const char *key)
 {
     auto baseObject = reinterpret_cast<alt::IBlip*>(base);
     auto meta = baseObject->GetMetaData(key);
@@ -23,7 +23,7 @@ EXPORT Array Blip_GetMetaData(void* base, const char *key)
     return Go::Runtime::EncodeMValue(meta);
 }
 
-EXPORT void Blip_SetMetaData(void *base, const char *key, Array data)
+EXPORT void Blip_SetMetaData(void *base, const char *key, CArray data)
 {
     auto baseObject = reinterpret_cast<alt::IBlip*>(base);
     auto value = Go::Runtime::DecodeMValue(data);
@@ -53,12 +53,12 @@ EXPORT int Blip_IsValid(const char *resourceName, void* p)
 }
 
 // WorldObject inherited
-EXPORT Position Blip_GetPosition(void *p)
+EXPORT CPosition Blip_GetPosition(void *p)
 {
     auto blip = reinterpret_cast<alt::IBlip*>(p);
     auto pos = blip->GetPosition();
 
-    Position position;
+    CPosition position;
     position.x = pos.x;
     position.y = pos.y;
     position.z = pos.z;
@@ -94,10 +94,10 @@ EXPORT int Blip_IsGlobal(void *b)
     return blip->IsGlobal();
 }
 
-EXPORT Array Blip_GetTargets(void *b)
+EXPORT CArray Blip_GetTargets(void *b)
 {
     auto blip = reinterpret_cast<alt::IBlip*>(b);
-    return Go::Runtime::CreateEntityArray(blip->GetTargets());
+    return Go::Runtime::CreateCBaseObjectArray(blip->GetTargets());
 }
 
 EXPORT int Blip_IsAttached(void *b)
@@ -106,18 +106,18 @@ EXPORT int Blip_IsAttached(void *b)
     return blip->IsAttached();
 }
 
-EXPORT Entity Blip_AttachedTo(void *b)
+EXPORT CBaseObject Blip_AttachedTo(void *b)
 {
     auto blip = reinterpret_cast<alt::IBlip*>(b);
     auto entity = blip->AttachedTo();
 
-    return Go::Runtime::GetEntity(entity);
+    return Go::Runtime::GetCBaseObject(entity);
 }
 
-EXPORT void Blip_AttachTo(void *b, Entity e)
+EXPORT void Blip_AttachTo(void *b, CBaseObject e)
 {
     auto blip = reinterpret_cast<alt::IBlip*>(b);
-    auto entity = Go::Runtime::GetEntityRef(e);
+    auto entity = Go::Runtime::GetEntity(&e);
     blip->AttachTo(entity);
 }
 
@@ -127,19 +127,19 @@ EXPORT unsigned char Blip_GetBlipType(void *b)
     return static_cast<unsigned char>(blip->GetBlipType());
 }
 
-EXPORT Vector2 Blip_GetScaleXY(void *b)
+EXPORT CVector2 Blip_GetScaleXY(void *b)
 {
     auto blip = reinterpret_cast<alt::IBlip*>(b);
     auto vector2 = blip->GetScaleXY();
 
-    Vector2 v2;
+    CVector2 v2;
     v2.x = vector2[0];
     v2.y = vector2[1];
 
     return v2;
 }
 
-EXPORT void Blip_SetScaleXY(void *b, Vector2 scale)
+EXPORT void Blip_SetScaleXY(void *b, CVector2 scale)
 {
     auto blip = reinterpret_cast<alt::IBlip*>(b);
     blip->SetScaleXY(alt::Vector2f(scale.x, scale.y));
@@ -169,12 +169,12 @@ EXPORT int Blip_GetColor(void *b)
     return blip->GetColor();
 }
 
-EXPORT RGBA Blip_GetSecondaryColor(void *b)
+EXPORT CRGBA Blip_GetSecondaryColor(void *b)
 {
     auto blip = reinterpret_cast<alt::IBlip*>(b);
     auto color = blip->GetSecondaryColor();
 
-    RGBA c;
+    CRGBA c;
     c.r = color.r;
     c.g = color.g;
     c.b = color.b;
@@ -273,12 +273,12 @@ EXPORT const char *Blip_GetName(void *b)
     return blip->GetName().c_str();
 }
 
-EXPORT RGBA Blip_GetRouteColor(void *b)
+EXPORT CRGBA Blip_GetRouteColor(void *b)
 {
     auto blip = reinterpret_cast<alt::IBlip*>(b);
     auto color = blip->GetRouteColor();
 
-    RGBA c;
+    CRGBA c;
     c.r = color.r;
     c.g = color.g;
     c.b = color.b;
@@ -365,13 +365,13 @@ EXPORT void Blip_SetRoute(void *b, int state)
     blip->SetRoute(state);
 }
 
-EXPORT void Blip_SetRouteColor(void *b, RGBA color)
+EXPORT void Blip_SetRouteColor(void *b, CRGBA color)
 {
     auto blip = reinterpret_cast<alt::IBlip*>(b);
     blip->SetRouteColor(alt::RGBA(color.r, color.g, color.b, color.a));
 }
 
-EXPORT void Blip_SetSecondaryColor(void *b, RGBA color)
+EXPORT void Blip_SetSecondaryColor(void *b, CRGBA color)
 {
     auto blip = reinterpret_cast<alt::IBlip*>(b);
     blip->SetSecondaryColor(alt::RGBA(color.r, color.g, color.b, color.a));

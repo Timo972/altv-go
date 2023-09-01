@@ -5,7 +5,7 @@ Go::PlayerChangeInteriorEvent::PlayerChangeInteriorEvent(ModuleLibrary* module) 
 
 void Go::PlayerChangeInteriorEvent::Call(const alt::CEvent* ev)
 {
-    static auto call = GET_FUNC(Library, "altPlayerChangeInteriorEvent", void (*)(Entity playerObject, unsigned int oldInterior, unsigned int newInterior));
+    static auto call = GET_FUNC(Library, "altPlayerChangeInteriorEvent", void (*)(CBaseObject playerObject, unsigned int oldInterior, unsigned int newInterior));
 
     if (call == nullptr)
     {
@@ -15,5 +15,5 @@ void Go::PlayerChangeInteriorEvent::Call(const alt::CEvent* ev)
 
     auto event = dynamic_cast<const alt::CPlayerChangeInteriorEvent*>(ev);
 
-    call(Go::Runtime::GetEntity(event->GetTarget()), event->GetOldInteriorLocation(), event->GetNewInteriorLocation());
+    call(Go::Runtime::GetCBaseObject(event->GetTarget()), event->GetOldInteriorLocation(), event->GetNewInteriorLocation());
 }

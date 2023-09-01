@@ -5,7 +5,7 @@ Go::FireEvent::FireEvent(ModuleLibrary *module) : IEvent(module) { }
 
 void Go::FireEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altFireEvent", int (*)(Entity player, Array fires));
+    static auto call = GET_FUNC(Library, "altFireEvent", int (*)(CBaseObject player, CArray fires));
 
     if (call == nullptr)
     {
@@ -14,17 +14,17 @@ void Go::FireEvent::Call(const alt::CEvent *ev)
     }
 
     auto event = dynamic_cast<const alt::CFireEvent *>(ev);
-    auto source = Go::Runtime::GetEntity(event->GetSource());
+    auto source = Go::Runtime::GetCBaseObject(event->GetSource());
     auto fires = event->GetFires();
 
-    Array cFireArr;
+    CArray cFireArr;
     cFireArr.size = fires.size();
-    auto args = new FireInfo[cFireArr.size];
+    auto args = new CFireInfo[cFireArr.size];
 
     for (uint64_t i = 0; i < cFireArr.size; i++) {
         auto fire = fires[i];
-        FireInfo info;
-        Position pos;
+        CFireInfo info;
+        CPosition pos;
         pos.x = fire.position.x;
         pos.y = fire.position.y;
         pos.z = fire.position.z;
@@ -33,7 +33,7 @@ void Go::FireEvent::Call(const alt::CEvent *ev)
         args[i] = info;
     }
 
-    cFireArr.array = args;
+    cFireArr.ptr = args;
 
     auto cancel = call(source, cFireArr);
 

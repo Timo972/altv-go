@@ -5,7 +5,7 @@ Go::GlobalMetaDataChangeEvent::GlobalMetaDataChangeEvent(ModuleLibrary *module) 
 
 void Go::GlobalMetaDataChangeEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altGlobalMetaDataChangeEvent", void (*)(const char* key, Array oldValue, Array newValue));
+    static auto call = GET_FUNC(Library, "altGlobalMetaDataChangeEvent", void (*)(const char* key, CArray oldValue, CArray newValue));
 
     if (call == nullptr)
     {

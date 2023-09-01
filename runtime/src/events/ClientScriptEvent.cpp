@@ -4,7 +4,7 @@
 Go::ClientScriptEvent::ClientScriptEvent(ModuleLibrary *module) : IEvent(module) {}
 
 void Go::ClientScriptEvent::Call(const alt::CEvent *ev) {
-    static auto call = GET_FUNC(Library, "altClientScriptEvent", bool (*)(Entity player, const char *name, Array args));
+    static auto call = GET_FUNC(Library, "altClientScriptEvent", bool (*)(CBaseObject player, const char *name, CArray args));
 
     if (call == nullptr)
     {
@@ -13,7 +13,7 @@ void Go::ClientScriptEvent::Call(const alt::CEvent *ev) {
     }
 
     auto event = dynamic_cast<const alt::CClientScriptEvent*>(ev);
-    auto player = Go::Runtime::GetEntity(event->GetTarget());
+    auto player = Go::Runtime::GetCBaseObject(event->GetTarget());
     auto name = event->GetName().c_str();
     const auto& args = event->GetArgs();
 

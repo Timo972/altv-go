@@ -4,7 +4,7 @@ Go::ConsoleCommandEvent::ConsoleCommandEvent(ModuleLibrary *module) : IEvent(mod
 
 void Go::ConsoleCommandEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altConsoleCommandEvent", void (*)(const char* name, Array arr));
+    static auto call = GET_FUNC(Library, "altConsoleCommandEvent", void (*)(const char* name, CArray arr));
 
     if (call == nullptr)
     {

@@ -4,7 +4,7 @@ Go::VehicleDamageEvent::VehicleDamageEvent(ModuleLibrary *module) : IEvent(modul
 
 void Go::VehicleDamageEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altVehicleDamageEvent", bool (*)(Entity vehicle, Entity attacker, unsigned bodyHealthDamage, unsigned additionalBodyHealthDamage, unsigned engineHealthDamage, unsigned petrolTankHealthDamage, unsigned damageWidth));
+    static auto call = GET_FUNC(Library, "altVehicleDamageEvent", bool (*)(CBaseObject vehicle, CBaseObject attacker, unsigned bodyHealthDamage, unsigned additionalBodyHealthDamage, unsigned engineHealthDamage, unsigned petrolTankHealthDamage, unsigned damageWidth));
 
     if (call == nullptr)
     {
@@ -13,8 +13,8 @@ void Go::VehicleDamageEvent::Call(const alt::CEvent *ev)
     }
 
     auto event = dynamic_cast<const alt::CVehicleDamageEvent *>(ev);
-    auto vehicle = Go::Runtime::GetEntity(event->GetTarget());
-    auto attacker = Go::Runtime::GetEntity(event->GetDamager());
+    auto vehicle = Go::Runtime::GetCBaseObject(event->GetTarget());
+    auto attacker = Go::Runtime::GetCBaseObject(event->GetDamager());
     auto bodyHealthDamage = event->GetBodyHealthDamage();
     auto bodyAdditionalHealthDamage = event->GetBodyAdditionalHealthDamage();
     auto engineHealthDamage = event->GetEngineHealthDamage();
