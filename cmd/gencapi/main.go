@@ -98,8 +98,7 @@ func main() {
 		log.Fatalf("error opening runtime structs file: %s", err)
 	}
 
-	runtimeCAPI := os.DirFS(runtimeCAPIPath)
-	capi, err := parseCAPIDir(runtimeCAPI)
+	capi, err := parseCAPIDir(runtimeCAPIPath)
 	if err != nil {
 		log.Fatalf("error parsing runtime CAPI folder: %s", err)
 	}

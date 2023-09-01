@@ -28,25 +28,25 @@ func tmplData(structs []typedef, capi map[string][]*method) *templateData {
 	return data
 }
 
-func genCHead(dst io.Writer, structs []typedef, capi map[string][]*method) error {
+func genCHead(dst io.Writer, structs []typedef, capi []*method) error {
 	tmpl, err := template.New("head.tmpl").ParseFS(tmplfs, "head.tmpl")
 	if err != nil {
 		return err
 	}
 
-	data := tmplData(structs, capi)
+	data := &templateData{Methods: capi, Structs: structs}
 	log.Printf("writing %d typedefs and %d methods to header", len(data.Structs), len(data.Methods))
 
 	return tmpl.Execute(dst, data)
 }
 
-func genCBody(dst io.Writer, capi map[string][]*method) error {
+func genCBody(dst io.Writer, capi []*method) error {
 	tmpl, err := template.New("body.tmpl").ParseFS(tmplfs, "body.tmpl")
 	if err != nil {
 		return err
 	}
 
-	data := tmplData(nil, capi)
+	data := &templateData{Methods: capi}
 	log.Printf("writing %d methods to body", len(data.Methods))
 
 	return tmpl.Execute(dst, data)

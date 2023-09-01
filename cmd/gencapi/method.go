@@ -5,6 +5,8 @@ import (
 	"io"
 	"io/fs"
 	"log"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -116,9 +118,9 @@ func parseMethods(src io.Reader) ([]*method, error) {
 	return methods, nil
 }
 
-func parseCAPIDir(runtimeCAPI fs.FS) (map[string][]*method, error) {
-	capiMethods := make(map[string][]*method)
-	if err := fs.WalkDir(runtimeCAPI, ".", func(path string, d fs.DirEntry, err error) error {
+func parseCAPIDir(runtimeCAPI string) ([]*method, error) {
+	capiMethods := make([]*method, 0)
+	if err := filepath.WalkDir(runtimeCAPI, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -132,7 +134,7 @@ func parseCAPIDir(runtimeCAPI fs.FS) (map[string][]*method, error) {
 			return nil
 		}
 
-		h, err := runtimeCAPI.Open(path)
+		h, err := os.Open(path)
 		if err != nil {
 			return fmt.Errorf("error opening %s: %w", path, err)
 		}
@@ -143,7 +145,7 @@ func parseCAPIDir(runtimeCAPI fs.FS) (map[string][]*method, error) {
 		}
 
 		log.Printf("%s: %d methods", path, len(methods))
-		capiMethods[path] = methods
+		capiMethods = append(capiMethods, methods...)
 
 		return nil
 	}); err != nil {
