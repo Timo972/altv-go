@@ -75,7 +75,7 @@ func altServerScriptEvent(cName *C.char, arr C.struct_array) {
 		for _, event := range event {
 			event(ctx)
 		}
-		once.serverScriptEvents[evt] = make([]ServerEventListener, 0)
+		clear(once.serverScriptEvents[evt])
 	}
 
 	if event, ok := on.serverScriptEvents[evt]; ok {

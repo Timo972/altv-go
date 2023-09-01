@@ -88,7 +88,7 @@ func altClientScriptEvent(e *C.struct_baseObject, cName *C.char, arr C.struct_ar
 		for _, event := range event {
 			event(ctx)
 		}
-		once.clientScriptEvents[evt] = make([]ClientEventListener, 0)
+		clear(once.clientScriptEvents[evt])
 	}
 
 	if event, ok := on.clientScriptEvents[evt]; ok {

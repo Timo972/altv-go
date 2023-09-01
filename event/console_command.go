@@ -37,10 +37,10 @@ func altConsoleCommandEvent(cname *C.char, cargs C.struct_array) {
 	name := C.GoString(cname)
 	args := cutil.NewStringArray(cargs.ptr, int(cargs.size))
 
-	for i, event := range once.consoleCommandEvents {
+	for _, event := range once.consoleCommandEvents {
 		event(name, args)
-		once.consoleCommandEvents = slices.Delete(once.consoleCommandEvents, i, 1)
 	}
+	clear(once.consoleCommandEvents)
 
 	for _, event := range on.consoleCommandEvents {
 		event(name, args)

@@ -56,10 +56,10 @@ func altPlayerDamageEvent(cp *C.struct_baseObject, ce *C.struct_baseObject, heal
 	armourDamage := uint16(armourDmg)
 	weapon := uint32(weap)
 
-	for i, event := range once.playerDamageEvents {
+	for _, event := range once.playerDamageEvents {
 		event(p, e, healthDamage, armourDamage, weapon)
-		once.playerDamageEvents = slices.Delete(once.playerDamageEvents, i, 1)
 	}
+	clear(once.playerDamageEvents)
 
 	for _, event := range on.playerDamageEvents {
 		event(p, e, healthDamage, armourDamage, weapon)

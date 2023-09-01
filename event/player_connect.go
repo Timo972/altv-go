@@ -46,10 +46,10 @@ func altPlayerConnectEvent(e *C.struct_baseObject) {
 		return
 	}
 
-	for i, event := range once.playerConnectEvents {
+	for _, event := range once.playerConnectEvents {
 		event(p)
-		once.playerConnectEvents = slices.Delete(once.playerConnectEvents, i, 1)
 	}
+	clear(once.playerConnectEvents)
 
 	for _, event := range on.playerConnectEvents {
 		event(p)

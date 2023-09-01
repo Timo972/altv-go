@@ -63,10 +63,10 @@ func (unsub *unsubscriber) ConnectionQueueRemove(id int) error {
 func altConnectionQueueAddEvent(cHandle unsafe.Pointer, cInfo C.struct_connectionInfo) {
 	info := altv.NewConnectionInfo(cHandle, uint32(cInfo.id), C.GoString(cInfo.name), uint64(cInfo.socialID), C.GoString(cInfo.socialName), uint64(cInfo.hwidHash), uint64(cInfo.hwidExHash), C.GoString(cInfo.authToken), uint8(cInfo.isDebug) == 1, C.GoString(cInfo.branch), uint32(cInfo.build), C.GoString(cInfo.cdnUrl), uint64(cInfo.passwordHash), C.GoString(cInfo.ip), int64(cInfo.discordUserID), C.GoString(cInfo.cloudAuthHash))
 
-	for i, event := range once.connectionQueueAddEvents {
+	for _, event := range once.connectionQueueAddEvents {
 		event(info)
-		once.connectionQueueAddEvents = slices.Delete(once.connectionQueueAddEvents, i, 1)
 	}
+	clear(once.connectionQueueAddEvents)
 
 	for _, event := range on.connectionQueueAddEvents {
 		event(info)
@@ -79,10 +79,10 @@ func altConnectionQueueAddEvent(cHandle unsafe.Pointer, cInfo C.struct_connectio
 func altConnectionQueueRemoveEvent(cHandle unsafe.Pointer, cInfo C.struct_connectionInfo) {
 	info := altv.NewConnectionInfo(cHandle, uint32(cInfo.id), C.GoString(cInfo.name), uint64(cInfo.socialID), C.GoString(cInfo.socialName), uint64(cInfo.hwidHash), uint64(cInfo.hwidExHash), C.GoString(cInfo.authToken), uint8(cInfo.isDebug) == 1, C.GoString(cInfo.branch), uint32(cInfo.build), C.GoString(cInfo.cdnUrl), uint64(cInfo.passwordHash), C.GoString(cInfo.ip), int64(cInfo.discordUserID), C.GoString(cInfo.cloudAuthHash))
 
-	for i, event := range once.connectionQueueRemoveEvents {
+	for _, event := range once.connectionQueueRemoveEvents {
 		event(info)
-		once.connectionQueueRemoveEvents = slices.Delete(once.connectionQueueRemoveEvents, i, 1)
 	}
+	clear(once.connectionQueueRemoveEvents)
 
 	for _, event := range on.connectionQueueRemoveEvents {
 		event(info)

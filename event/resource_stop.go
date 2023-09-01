@@ -35,10 +35,10 @@ func (unsub *unsubscriber) ResourceStop(id int) error {
 func altResourceStopEvent(n *C.char) {
 	name := C.GoString(n)
 
-	for i, event := range once.resourceStopEvents {
+	for _, event := range once.resourceStopEvents {
 		event(name)
-		once.resourceStopEvents = slices.Delete(once.resourceStopEvents, i, 1)
 	}
+	clear(once.resourceStopEvents)
 
 	for _, event := range on.resourceStopEvents {
 		event(name)

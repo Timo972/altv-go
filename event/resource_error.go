@@ -35,10 +35,10 @@ func (unsub *unsubscriber) ResourceError(id int) error {
 func altResourceErrorEvent(n *C.char) {
 	name := C.GoString(n)
 
-	for i, event := range once.resourceErrorEvents {
+	for _, event := range once.resourceErrorEvents {
 		event(name)
-		once.resourceErrorEvents = slices.Delete(once.resourceErrorEvents, i, 1)
 	}
+	clear(once.resourceErrorEvents)
 
 	for _, event := range on.resourceErrorEvents {
 		event(name)

@@ -78,6 +78,8 @@ const (
 )
 
 type subscriber struct {
+	startEvents                 []lifecycleListener
+	stopEvents                  []lifecycleListener
 	serverStartedEvents         []serverStartedListener
 	playerConnectEvents         []playerConnectListener
 	resourceErrorEvents         []resourceErrorListener
@@ -99,6 +101,8 @@ type unsubscriber struct {
 }
 
 type EventSubscriber interface {
+	Start(lifecycleListener) int
+	Stop(lifecycleListener) int
 	ServerStarted(serverStartedListener) int
 	PlayerConnect(playerConnectListener) int
 	ResourceError(resourceErrorListener) int
@@ -112,6 +116,8 @@ type EventSubscriber interface {
 }
 
 type EventUnsubscriber interface {
+	Start(int) error
+	Stop(int) error
 	ServerStarted(int) error
 	PlayerConnect(int) error
 	ResourceError(int) error

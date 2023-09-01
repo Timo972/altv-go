@@ -35,10 +35,10 @@ func checkServerStarted() {
 
 //export altServerStartedEvent
 func altServerStartedEvent() {
-	for i, event := range once.serverStartedEvents {
+	for _, event := range once.serverStartedEvents {
 		event()
-		once.serverStartedEvents = slices.Delete(once.serverStartedEvents, i, 1)
 	}
+	clear(once.serverStartedEvents)
 
 	for _, event := range on.serverStartedEvents {
 		event()
