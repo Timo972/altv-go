@@ -13,10 +13,10 @@ import (
 import "C"
 
 func marshalArgs(args []any) (C.struct_array, func(), error) {
-	cbytearrs := C.malloc(C.size_t(len(args)) * C.size_t(C.sizeof_Array))
+	cbytearrs := C.malloc(C.size_t(len(args)) * C.size_t(C.sizeof_CArray))
 	cargs := C.struct_array{
-		array: cbytearrs,
-		size:  C.ulonglong(len(args)),
+		ptr:  cbytearrs,
+		size: C.ulonglong(len(args)),
 	}
 	bytearrs := (*[1 << 30]C.struct_array)(cbytearrs)
 	free := func() {
@@ -33,8 +33,8 @@ func marshalArgs(args []any) (C.struct_array, func(), error) {
 		}
 
 		bytearrs[i] = C.struct_array{
-			array: unsafe.Pointer(C.CBytes(raw)),
-			size:  C.ulonglong(len(raw)),
+			ptr:  unsafe.Pointer(C.CBytes(raw)),
+			size: C.ulonglong(len(raw)),
 		}
 	}
 
@@ -48,8 +48,8 @@ func newPlayerCArray(p []entity.Player) (C.struct_array, cutil.FreeArrayFunc) {
 	})
 
 	return C.struct_array{
-			array: ptr,
-			size:  C.ulonglong(size),
+			ptr:  ptr,
+			size: C.ulonglong(size),
 		},
 		free
 }

@@ -26,7 +26,7 @@ func newBoneInfo(info C.struct_boneInfo) BoneInfo {
 }
 
 func createBoneSlice(arr C.struct_array) []BoneInfo {
-	return cutil.NewArrayFunc[C.struct_boneInfo, BoneInfo](unsafe.Pointer(arr.array), int(arr.size), func(item C.struct_boneInfo) BoneInfo {
+	return cutil.NewArrayFunc[C.struct_boneInfo, BoneInfo](unsafe.Pointer(arr.ptr), int(arr.size), func(item C.struct_boneInfo) BoneInfo {
 		return newBoneInfo(item)
 	})
 }

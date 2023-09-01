@@ -15,7 +15,7 @@ import (
 )
 
 func newPermissionArray(arr C.struct_array) []perm.Permission {
-	return cutil.NewArrayFunc[C.uchar, perm.Permission](unsafe.Pointer(arr.array), int(arr.size), func(item C.uchar) perm.Permission {
+	return cutil.NewArrayFunc[C.uchar, perm.Permission](unsafe.Pointer(arr.ptr), int(arr.size), func(item C.uchar) perm.Permission {
 		return perm.Permission(item)
 	})
 }
@@ -76,7 +76,7 @@ func ByName(name string) Resource {
 func All() []Resource {
 	arr := C.core_get_all_resources()
 
-	return cutil.NewArrayFunc[unsafe.Pointer, Resource](unsafe.Pointer(arr.array), int(arr.size), func(item unsafe.Pointer) Resource {
+	return cutil.NewArrayFunc[unsafe.Pointer, Resource](unsafe.Pointer(arr.ptr), int(arr.size), func(item unsafe.Pointer) Resource {
 		return &PublicResource{
 			ptr: item,
 		}
@@ -114,13 +114,13 @@ func (r PublicResource) Main() string {
 func (r PublicResource) Dependencies() []string {
 	cDeps := C.resource_get_dependencies(r.ptr)
 
-	return cutil.NewStringArray(unsafe.Pointer(cDeps.array), int(cDeps.size))
+	return cutil.NewStringArray(unsafe.Pointer(cDeps.ptr), int(cDeps.size))
 }
 
 func (r PublicResource) Dependants() []string {
 	cDeps := C.resource_get_dependants(r.ptr)
 
-	return cutil.NewStringArray(unsafe.Pointer(cDeps.array), int(cDeps.size))
+	return cutil.NewStringArray(unsafe.Pointer(cDeps.ptr), int(cDeps.size))
 }
 
 func (r PublicResource) RequiredPermissions() []perm.Permission {

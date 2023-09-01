@@ -64,7 +64,7 @@ func (unsub *unsubscriber) ClientEvent(eventName string, id int) error {
 }
 
 //export altClientScriptEvent
-func altClientScriptEvent(e C.struct_entity, cName *C.char, arr C.struct_array) {
+func altClientScriptEvent(e *C.struct_baseObject, cName *C.char, arr C.struct_array) {
 	evt := C.GoString(cName)
 
 	if lisCount := numClientEventListeners(evt); lisCount < 1 {

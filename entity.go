@@ -12,7 +12,7 @@ import (
 	"github.com/timo972/altv-go/internal/cutil"
 )
 
-func getEntityData(e C.struct_entity) (typ entity.BaseObjectType, ptr unsafe.Pointer, id uint32, model uint32) {
+func getEntityData(e C.struct_baseObject) (typ entity.BaseObjectType, ptr unsafe.Pointer, id uint32, model uint32) {
 	ptr = unsafe.Pointer(e.ptr)
 	id = uint32(e.id)
 	typ = entity.BaseObjectType(e.typ)
@@ -22,7 +22,7 @@ func getEntityData(e C.struct_entity) (typ entity.BaseObjectType, ptr unsafe.Poi
 }
 
 func newBaseObjectArray[T entity.BaseObject](arr C.struct_array) []T {
-	return cutil.NewArrayFunc[C.struct_entity, T](unsafe.Pointer(arr.array), int(arr.size), func(item C.struct_entity) T {
+	return cutil.NewArrayFunc[C.struct_baseObject, T](unsafe.Pointer(arr.ptr), int(arr.size), func(item C.struct_baseObject) T {
 		v, err := factory.GetBaseObject[T](getEntityData(item))
 		if err != nil {
 			altlog.Errorln(fmt.Sprintf("[Go] newBaseObjectArray: %s", err.Error()))

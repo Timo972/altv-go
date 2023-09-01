@@ -93,7 +93,7 @@ func GetBaseObject[Type entity.BaseObject](typ entity.BaseObjectType, ptr unsafe
 }
 
 //export altCreateBaseObject
-func altCreateBaseObject(e C.struct_entity) {
+func altCreateBaseObject(e *C.struct_baseObject) {
 	fmt.Printf("altCreateBaseObject\n")
 	id := uint32(e.id)
 	typ := entity.BaseObjectType(e.typ)
@@ -106,7 +106,7 @@ func altCreateBaseObject(e C.struct_entity) {
 }
 
 //export altRemoveBaseObject
-func altRemoveBaseObject(e C.struct_entity) {
+func altRemoveBaseObject(e *C.struct_baseObject) {
 	fmt.Printf("altRemoveBaseObject\n")
 	id := uint32(e.id)
 	typ := entity.BaseObjectType(e.typ)

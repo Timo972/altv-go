@@ -40,7 +40,7 @@ func (unsub *unsubscriber) PlayerDamage(id int) error {
 }
 
 //export altPlayerDamageEvent
-func altPlayerDamageEvent(cp C.struct_entity, ce C.struct_entity, healthDmg C.ushort, armourDmg C.ushort, weap C.ulong) {
+func altPlayerDamageEvent(cp *C.struct_baseObject, ce *C.struct_baseObject, healthDmg C.ushort, armourDmg C.ushort, weap C.ulong) {
 	p, err := factory.GetBaseObject[entity.Player](entity.BaseObjectType(cp.typ), unsafe.Pointer(cp.ptr), uint32(cp.id), 0)
 	if err != nil {
 		altlog.Errorln(fmt.Sprintf("[Go] PlayerDamage: %v", err))

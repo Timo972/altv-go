@@ -22,7 +22,7 @@ func resourceImport(resourceName string, name string, out any) error {
 	defer C.free(unsafe.Pointer(cname))
 
 	carr := C.runtime_get_alt_export(crname, cname)
-	data := C.GoBytes(carr.array, C.int(carr.size))
+	data := C.GoBytes(carr.ptr, C.int(carr.size))
 
 	return mvalue.Unmarshal(data, out)
 }

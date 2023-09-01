@@ -48,10 +48,10 @@ func (c *Ctx) copyArgs(cargs C.struct_array) {
 	c.bufs = make([][]byte, size)
 	c.cache = make([]interface{}, size)
 	log.Printf("event::ctx::copyArgs -> array size %d", size)
-	cbufs := (*[1 << 28]C.struct_array)(cargs.array)[:size:size]
+	cbufs := (*[1 << 28]C.struct_array)(cargs.ptr)[:size:size]
 
 	for i := 0; i < size; i++ {
-		c.bufs[i] = C.GoBytes(cbufs[i].array, C.int(cbufs[i].size))
+		c.bufs[i] = C.GoBytes(cbufs[i].ptr, C.int(cbufs[i].size))
 		log.Printf("event::ctx::copyArgs -> array[%d]: %+v = %s size %d === %d", i, c.bufs[i], c.bufs[i], len(c.bufs[i]), cbufs[i].size)
 	}
 }

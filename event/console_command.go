@@ -35,7 +35,7 @@ func (unsub *unsubscriber) ConsoleCommand(id int) error {
 //export altConsoleCommandEvent
 func altConsoleCommandEvent(cname *C.char, cargs C.struct_array) {
 	name := C.GoString(cname)
-	args := cutil.NewStringArray(cargs.array, int(cargs.size))
+	args := cutil.NewStringArray(cargs.ptr, int(cargs.size))
 
 	for i, event := range once.consoleCommandEvents {
 		event(name, args)

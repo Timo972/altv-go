@@ -104,9 +104,11 @@ void Go::Resource::OnTick() {}
 
 void Go::Resource::OnCreateBaseObject(alt::IBaseObject* handle) {
     this->AddEntity(handle);
-    CBaseObject object = Go::Runtime::GetCBaseObject(handle);
 
-    static auto addEntity = GET_FUNC(Module, "altCreateBaseObject", void(*)(CBaseObject));
+    CBaseObject *object;
+    Go::Runtime::GetCBaseObject(handle, object);
+
+    static auto addEntity = GET_FUNC(Module, "altCreateBaseObject", void(*)(CBaseObject*));
     if (addEntity == nullptr) {
         alt::ICore::Instance().LogError("Could not call altCreateBaseObject.");
         return;
@@ -116,9 +118,10 @@ void Go::Resource::OnCreateBaseObject(alt::IBaseObject* handle) {
 
 void Go::Resource::OnRemoveBaseObject(alt::IBaseObject* handle) {
     this->RemoveEntity(handle);
-    CBaseObject object = Go::Runtime::GetCBaseObject(handle);
+    CBaseObject *object;
+    Go::Runtime::GetCBaseObject(handle, object);
 
-    static auto removeEntity = GET_FUNC(Module, "altRemoveBaseObject", void(*)(CBaseObject));
+    static auto removeEntity = GET_FUNC(Module, "altRemoveBaseObject", void(*)(CBaseObject*));
     if (removeEntity == nullptr) {
         alt::ICore::Instance().LogError("Could not call altRemoveBaseObject.");
         return;

@@ -39,7 +39,7 @@ func checkPlayerConnect() {
 }
 
 //export altPlayerConnectEvent
-func altPlayerConnectEvent(e C.struct_entity) {
+func altPlayerConnectEvent(e *C.struct_baseObject) {
 	p, err := factory.GetBaseObject[entity.Player](entity.BaseObjectType(e.typ), unsafe.Pointer(e.ptr), uint32(e.id), 0)
 	if err != nil {
 		altlog.Errorln(fmt.Sprintf("[Go] PlayerConnect: %v", err))
