@@ -5,7 +5,7 @@ Go::VehicleDetachEvent::VehicleDetachEvent(ModuleLibrary *module) : IEvent(modul
 
 void Go::VehicleDetachEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altVehicleDetachEvent", void (*)(CBaseObject vehicle, CBaseObject detachedVehicle));
+    static auto call = GET_FUNC(Library, "altVehicleDetachEvent", void (*)(CBaseObject *vehicle, CBaseObject *detachedVehicle));
 
     if (call == nullptr)
     {
@@ -14,8 +14,11 @@ void Go::VehicleDetachEvent::Call(const alt::CEvent *ev)
     }
 
     auto event = dynamic_cast<const alt::CVehicleDetachEvent *>(ev);
-    auto vehicle = Go::Runtime::GetCBaseObject(event->GetTarget());
-    auto detached = Go::Runtime::GetCBaseObject(event->GetDetached());
+
+    CBaseObject *vehicle;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), vehicle);
+    CBaseObject *detached;
+    Go::Runtime::GetCBaseObject(event->GetDetached(), detached);
 
     call(vehicle, detached);
 }

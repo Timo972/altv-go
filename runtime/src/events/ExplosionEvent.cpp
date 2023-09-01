@@ -4,7 +4,7 @@ Go::ExplosionEvent::ExplosionEvent(ModuleLibrary *module) : IEvent(module) { }
 
 void Go::ExplosionEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altExplosionEvent", int (*)(CBaseObject source, CBaseObject target, CPosition position, short explosionType, unsigned int explosionFX));
+    static auto call = GET_FUNC(Library, "altExplosionEvent", int (*)(CBaseObject *source, CBaseObject *target, CPosition position, short explosionType, unsigned int explosionFX));
 
     if (call == nullptr)
     {
@@ -13,20 +13,22 @@ void Go::ExplosionEvent::Call(const alt::CEvent *ev)
     }
 
     auto event = dynamic_cast<const alt::CExplosionEvent *>(ev);
-    auto target = event->GetTarget();
-    auto source = Go::Runtime::GetCBaseObject(event->GetSource());
+
+    CBaseObject *source;
+    Go::Runtime::GetCBaseObject(event->GetSource(), source);
+    CBaseObject *target;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), target);
+
     auto pos = event->GetPosition();
     auto expFX = event->GetExplosionFX();
     auto expType = event->GetExplosionType();
-
-    CBaseObject e = Go::Runtime::GetCBaseObject(target);
 
     CPosition cPos;
     cPos.x = pos.x;
     cPos.y = pos.y;
     cPos.z = pos.z;
 
-    auto cancel = call(source, e, cPos, static_cast<short>(expType), expFX);
+    auto cancel = call(source, target, cPos, static_cast<short>(expType), expFX);
 
     if(cancel == 0) {
         event->Cancel();

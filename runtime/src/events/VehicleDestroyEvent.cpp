@@ -5,7 +5,7 @@ Go::VehicleDestroyEvent::VehicleDestroyEvent(ModuleLibrary *module) : IEvent(mod
 
 void Go::VehicleDestroyEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altVehicleDestroyEvent", void (*)(CBaseObject vehicle));
+    static auto call = GET_FUNC(Library, "altVehicleDestroyEvent", void (*)(CBaseObject *vehicle));
 
     if (call == nullptr)
     {
@@ -14,7 +14,9 @@ void Go::VehicleDestroyEvent::Call(const alt::CEvent *ev)
     }
 
     auto event = dynamic_cast<const alt::CVehicleDestroyEvent *>(ev);
-    auto vehicle = Go::Runtime::GetCBaseObject(event->GetTarget());
+
+    CBaseObject *vehicle;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), vehicle);
 
     call(vehicle);
 }

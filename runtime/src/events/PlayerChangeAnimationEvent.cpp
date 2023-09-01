@@ -5,7 +5,7 @@ Go::PlayerChangeAnimationEvent::PlayerChangeAnimationEvent(ModuleLibrary* module
 
 void Go::PlayerChangeAnimationEvent::Call(const alt::CEvent* ev)
 {
-    static auto call = GET_FUNC(Library, "altPlayerChangeAnimationEvent", void (*)(CBaseObject playerObject, unsigned int oldAnimDict, unsigned int oldAnimName, unsigned int newAnimDict, unsigned int newAnimName));
+    static auto call = GET_FUNC(Library, "altPlayerChangeAnimationEvent", void (*)(CBaseObject *playerObject, unsigned int oldAnimDict, unsigned int oldAnimName, unsigned int newAnimDict, unsigned int newAnimName));
 
     if (call == nullptr)
     {
@@ -15,5 +15,8 @@ void Go::PlayerChangeAnimationEvent::Call(const alt::CEvent* ev)
 
     auto event = dynamic_cast<const alt::CPlayerChangeAnimationEvent*>(ev);
 
-    call(Go::Runtime::GetCBaseObject(event->GetTarget()), event->GetOldAnimationDict(), event->GetOldAnimationName(), event->GetNewAnimationDict(), event->GetNewAnimationName());
+    CBaseObject *player;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), player);
+
+    call(player, event->GetOldAnimationDict(), event->GetOldAnimationName(), event->GetNewAnimationDict(), event->GetNewAnimationName());
 }

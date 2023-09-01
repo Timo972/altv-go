@@ -5,7 +5,7 @@ Go::FireEvent::FireEvent(ModuleLibrary *module) : IEvent(module) { }
 
 void Go::FireEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altFireEvent", int (*)(CBaseObject player, CArray fires));
+    static auto call = GET_FUNC(Library, "altFireEvent", int (*)(CBaseObject *player, CArray fires));
 
     if (call == nullptr)
     {
@@ -14,7 +14,9 @@ void Go::FireEvent::Call(const alt::CEvent *ev)
     }
 
     auto event = dynamic_cast<const alt::CFireEvent *>(ev);
-    auto source = Go::Runtime::GetCBaseObject(event->GetSource());
+
+    baseObject *source;
+    Go::Runtime::GetCBaseObject(event->GetSource(), source);
     auto fires = event->GetFires();
 
     CArray cFireArr;

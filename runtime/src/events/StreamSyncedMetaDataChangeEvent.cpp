@@ -5,7 +5,7 @@ Go::StreamSyncedMetaDataChangeEvent::StreamSyncedMetaDataChangeEvent(ModuleLibra
 
 void Go::StreamSyncedMetaDataChangeEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altStreamSyncedMetaDataChangeEvent", void (*)(CBaseObject entity, const char* key, CArray oldValue, CArray newValue));
+    static auto call = GET_FUNC(Library, "altStreamSyncedMetaDataChangeEvent", void (*)(CBaseObject *entity, const char* key, CArray oldValue, CArray newValue));
 
     if (call == nullptr)
     {
@@ -17,13 +17,14 @@ void Go::StreamSyncedMetaDataChangeEvent::Call(const alt::CEvent *ev)
     auto key = event->GetKey().c_str();
     auto newValueMeta = event->GetVal();
     auto oldValueMeta = event->GetOldVal();
-
-    CBaseObject e = Go::Runtime::GetCBaseObject(event->GetTarget());
+    
+    CBaseObject *entity;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), entity);
 
     auto newValue = Go::Runtime::EncodeMValue(newValueMeta);
     auto oldValue = Go::Runtime::EncodeMValue(oldValueMeta);
 
-    call(e, key, oldValue, newValue);
+    call(entity, key, oldValue, newValue);
 
     // TODO: fee Arrays
 }

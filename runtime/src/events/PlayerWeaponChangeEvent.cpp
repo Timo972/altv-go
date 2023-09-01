@@ -5,7 +5,7 @@ Go::PlayerWeaponChangeEvent::PlayerWeaponChangeEvent(ModuleLibrary *module) : IE
 
 void Go::PlayerWeaponChangeEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altPlayerWeaponChangeEvent", int (*)(CBaseObject player, unsigned long oldWeapon, unsigned long newWeapon));
+    static auto call = GET_FUNC(Library, "altPlayerWeaponChangeEvent", int (*)(CBaseObject *player, unsigned long oldWeapon, unsigned long newWeapon));
 
     if (call == nullptr)
     {
@@ -14,7 +14,10 @@ void Go::PlayerWeaponChangeEvent::Call(const alt::CEvent *ev)
     }
 
     auto event = dynamic_cast<const alt::CPlayerWeaponChangeEvent *>(ev);
-    auto player = Go::Runtime::GetCBaseObject(event->GetTarget());
+
+    CBaseObject *player;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), player);
+
     auto oldWeapon = event->GetOldWeapon();
     auto newWeapon = event->GetNewWeapon();
 

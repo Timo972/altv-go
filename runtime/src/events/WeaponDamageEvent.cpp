@@ -4,7 +4,7 @@ Go::WeaponDamageEvent::WeaponDamageEvent(ModuleLibrary *module) : IEvent(module)
 
 void Go::WeaponDamageEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altWeaponDamageEvent", int (*)(CBaseObject source, CBaseObject target, unsigned long weapon, unsigned short damage, CPosition offset, short bodyPart));
+    static auto call = GET_FUNC(Library, "altWeaponDamageEvent", int (*)(CBaseObject *source, CBaseObject *target, unsigned long weapon, unsigned short damage, CPosition offset, short bodyPart));
 
     if (call == nullptr)
     {
@@ -13,8 +13,12 @@ void Go::WeaponDamageEvent::Call(const alt::CEvent *ev)
     }
 
     auto event = dynamic_cast<const alt::CWeaponDamageEvent *>(ev);
-    auto target = Go::Runtime::GetCBaseObject(event->GetTarget());
-    auto source = Go::Runtime::GetCBaseObject(event->GetSource());
+
+    CBaseObject *target;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), target);
+    CBaseObject *source;
+    Go::Runtime::GetCBaseObject(event->GetSource(), source);
+
     auto bodyPart = event->GetBodyPart();
     auto damage = event->GetDamageValue();
     auto weapon = event->GetWeaponHash();

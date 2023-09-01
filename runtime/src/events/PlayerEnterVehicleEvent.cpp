@@ -5,7 +5,7 @@ Go::PlayerEnterVehicleEvent::PlayerEnterVehicleEvent(ModuleLibrary *module) : IE
 
 void Go::PlayerEnterVehicleEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altPlayerEnterVehicleEvent", void (*)(CBaseObject playerObject, CBaseObject vehicleObject, unsigned char seat));
+    static auto call = GET_FUNC(Library, "altPlayerEnterVehicleEvent", void (*)(CBaseObject *playerObject, CBaseObject *vehicleObject, unsigned char seat));
 
     if (call == nullptr)
     {
@@ -14,8 +14,12 @@ void Go::PlayerEnterVehicleEvent::Call(const alt::CEvent *ev)
     }
 
     auto event = dynamic_cast<const alt::CPlayerEnterVehicleEvent *>(ev);
-    auto vehicle = Go::Runtime::GetCBaseObject(event->GetTarget());
-    auto player = Go::Runtime::GetCBaseObject(event->GetPlayer());
+
+    CBaseObject *vehicle;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), vehicle);
+    CBaseObject *player;
+    Go::Runtime::GetCBaseObject(event->GetPlayer(), player);
+
     auto seat = event->GetSeat();
 
     call(player, vehicle, seat);

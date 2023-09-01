@@ -5,7 +5,7 @@ Go::PlayerChangeVehicleSeatEvent::PlayerChangeVehicleSeatEvent(ModuleLibrary *mo
 
 void Go::PlayerChangeVehicleSeatEvent::Call(const alt::CEvent *ev)
 {
-    static auto call = GET_FUNC(Library, "altPlayerChangeVehicleSeatEvent", void (*)(CBaseObject playerObject, CBaseObject vehicleObject, unsigned char oldSeat, unsigned char newSeat));
+    static auto call = GET_FUNC(Library, "altPlayerChangeVehicleSeatEvent", void (*)(CBaseObject *playerObject, CBaseObject *vehicleObject, unsigned char oldSeat, unsigned char newSeat));
 
     if (call == nullptr)
     {
@@ -14,8 +14,12 @@ void Go::PlayerChangeVehicleSeatEvent::Call(const alt::CEvent *ev)
     }
 
     auto event = dynamic_cast<const alt::CPlayerChangeVehicleSeatEvent *>(ev);
-    auto vehicle = Go::Runtime::GetCBaseObject(event->GetTarget());
-    auto player = Go::Runtime::GetCBaseObject(event->GetPlayer());
+
+    CBaseObject *player;
+    Go::Runtime::GetCBaseObject(event->GetPlayer(), player);
+    CBaseObject *vehicle;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), vehicle);
+
     auto newSeat = event->GetNewSeat();
     auto oldSeat = event->GetOldSeat();
 
