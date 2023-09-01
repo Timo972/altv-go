@@ -1,3 +1,4 @@
+run: runtime capi test
 
 ifeq ($(OS), Windows_NT)
 capi:
@@ -9,8 +10,9 @@ capi:
 	"$(CURDIR)/scripts/build-capi.sh"
 runtime:
 	"$(CURDIR)/scripts/build-runtime.sh"
-test: runtime
-	"$(CURDIR)/scripts/test.sh"
 endif
 
-.PHONY: capi runtime test
+test:
+	@go test -v
+
+.PHONY: capi runtime

@@ -7,20 +7,20 @@ import (
 	"github.com/timo972/altv-go/entity"
 )
 
-type testPlayer struct {
+type myPlayer struct {
 	entity.Player
 	username string
 }
 
-func testPlayerFactory(ptr unsafe.Pointer, id uint32) entity.Player {
-	return &testPlayer{
+func myPlayerFactory(ptr unsafe.Pointer, id uint32) entity.Player {
+	return &myPlayer{
 		Player: entity.NewPlayer(ptr, id),
 	}
 }
 
 func TestPlayerFactory(t *testing.T) {
-	SetPlayerFactory(testPlayerFactory)
-	p, ok := testPlayerFactory(nil, 1).(*testPlayer)
+	SetPlayerFactory(myPlayerFactory)
+	p, ok := myPlayerFactory(nil, 1).(*myPlayer)
 	if !ok {
 		t.Error("testPlayerFactory returned wrong type")
 	}
@@ -28,16 +28,16 @@ func TestPlayerFactory(t *testing.T) {
 	p.username = "test"
 }
 
-type testVehicle struct {
+type myVehicle struct {
 	entity.Vehicle
 }
 
-func testVehicleFactory(ptr unsafe.Pointer, id uint32, model uint32) entity.Vehicle {
-	return &testVehicle{
+func myVehicleFactory(ptr unsafe.Pointer, id uint32, model uint32) entity.Vehicle {
+	return &myVehicle{
 		Vehicle: entity.NewVehicle(ptr, id, model),
 	}
 }
 
 func TestVehicleFactory(t *testing.T) {
-	SetVehicleFactory(testVehicleFactory)
+	SetVehicleFactory(myVehicleFactory)
 }

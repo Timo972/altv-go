@@ -432,7 +432,7 @@ typedef void (*capi_core_log_error)(const char *message);
 
 typedef void (*capi_core_log_colored)(const char *message);
 
-typedef CBaseObject (*capi_core_create_vehicle)(unsigned long model,  float posX,  float posY,  float posZ, 
+typedef CBaseObject * (*capi_core_create_vehicle)(unsigned long model,  float posX,  float posY,  float posZ, 
                                 float rotX,  float rotY,  float rotZ);
 
 typedef CBaseObject
@@ -453,9 +453,9 @@ typedef int (*capi_core_file_exists)(const char *path);
 
 typedef const char * (*capi_core_read_file)(const char *path);
 
-typedef CBaseObject (*capi_core_get_entity_by_id)(unsigned short id);
+typedef CBaseObject * (*capi_core_get_entity_by_sync_id)(unsigned short id);
 
-typedef CBaseObject (*capi_core_get_base_object_by_id)(unsigned char type,  unsigned int id);
+typedef CBaseObject * (*capi_core_get_base_object_by_id)(unsigned char type,  unsigned int id);
 
 typedef CArray (*capi_core_get_entities)();
 
@@ -1622,7 +1622,7 @@ void core_log_error(const char *message);
 
 void core_log_colored(const char *message);
 
-CBaseObject core_create_vehicle(unsigned long model,  float posX,  float posY,  float posZ, 
+CBaseObject * core_create_vehicle(unsigned long model,  float posX,  float posY,  float posZ, 
                                 float rotX,  float rotY,  float rotZ);
 
 CBaseObject
@@ -1643,9 +1643,9 @@ int core_file_exists(const char *path);
 
 const char * core_read_file(const char *path);
 
-CBaseObject core_get_entity_by_id(unsigned short id);
+CBaseObject * core_get_entity_by_sync_id(unsigned short id);
 
-CBaseObject core_get_base_object_by_id(unsigned char type,  unsigned int id);
+CBaseObject * core_get_base_object_by_id(unsigned char type,  unsigned int id);
 
 CArray core_get_entities();
 

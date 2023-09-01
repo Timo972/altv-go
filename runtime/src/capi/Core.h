@@ -13,7 +13,7 @@ EXPORT void Core_LogDebug(const char *message);
 EXPORT void Core_LogWarning(const char *message);
 EXPORT void Core_LogError(const char *message);
 EXPORT void Core_LogColored(const char *message);
-EXPORT CBaseObject Core_CreateVehicle(unsigned long model, float posX, float posY, float posZ,
+EXPORT CBaseObject *Core_CreateVehicle(unsigned long model, float posX, float posY, float posZ,
                                 float rotX, float rotY, float rotZ);
 EXPORT CBaseObject
 Core_CreateCheckpoint(unsigned char type, float x, float y, float z, float radius, float height, unsigned char r,
@@ -25,8 +25,8 @@ EXPORT int Core_IsDebug();
 EXPORT unsigned long Core_Hash(const char *str);
 EXPORT int Core_FileExists(const char *path);
 EXPORT const char *Core_ReadFile(const char *path);
-EXPORT CBaseObject Core_GetEntityByID(unsigned short id);
-EXPORT CBaseObject Core_GetBaseObjectByID(unsigned char type, unsigned int id);
+EXPORT CBaseObject *Core_GetEntityBySyncID(unsigned short id);
+EXPORT CBaseObject *Core_GetBaseObjectByID(unsigned char type, unsigned int id);
 EXPORT CArray Core_GetEntities();
 EXPORT CArray Core_GetPlayers();
 EXPORT CArray Core_GetVehicles();

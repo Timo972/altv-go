@@ -35,6 +35,7 @@ func (s *unsubscriber) Stop(id int) error {
 
 //export OnStart
 func OnStart() {
+	processEventQueue()
 	for _, event := range once.startEvents {
 		event()
 	}

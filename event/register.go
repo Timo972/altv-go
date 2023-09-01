@@ -35,7 +35,7 @@ func unregisterOnEvent(event uint16) {
 	C.runtime_unregister_alt_event(cresource, C.ushort(event))
 }
 
-func processQueue() {
+func processEventQueue() {
 	for event := range queue {
 		registerOnEvent(event)
 	}

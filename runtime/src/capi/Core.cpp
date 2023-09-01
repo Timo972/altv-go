@@ -21,13 +21,14 @@ EXPORT void Core_LogColored(const char *message) {
     alt::ICore::Instance().LogColored(message);
 }
 
-EXPORT CBaseObject Core_CreateVehicle(unsigned long model, float posX, float posY, float posZ,
+EXPORT CBaseObject *Core_CreateVehicle(unsigned long model, float posX, float posY, float posZ,
                                 float rotX, float rotY, float rotZ) {
     alt::Position position(posX, posY, posZ);
     alt::Rotation rotation(rotX, rotY, rotZ);
 
-    auto vehicle = alt::ICore::Instance().CreateVehicle(model, position, rotation);
-    return Go::Runtime::GetCBaseObject(vehicle);
+    CBaseObject *vehicle = (CBaseObject*) malloc(sizeof(CBaseObject));
+    Go::Runtime::GetCBaseObject(alt::ICore::Instance().CreateVehicle(model, position, rotation), vehicle);
+    return vehicle;
 }
 
 EXPORT CBaseObject Core_CreateCheckpoint(unsigned char type, float x, float y, float z, float radius, float height, unsigned char r,
@@ -74,16 +75,20 @@ EXPORT const char *Core_ReadFile(const char *path) {
     return content.c_str();
 }
 
-EXPORT CBaseObject Core_GetEntityByID(unsigned short id) {
+EXPORT CBaseObject *Core_GetEntityBySyncID(unsigned short id) {
     auto entity = alt::ICore::Instance().GetEntityBySyncID(id);
 
-    return Go::Runtime::GetCBaseObject(entity);
+    CBaseObject *ent = (CBaseObject *)malloc(sizeof(CBaseObject));
+    Go::Runtime::GetCBaseObject(entity, ent);
+    return ent;
 }
 
-EXPORT CBaseObject Core_GetBaseObjectByID(unsigned char type, unsigned int id) {
+EXPORT CBaseObject *Core_GetBaseObjectByID(unsigned char type, unsigned int id) {
     auto baseObject = alt::ICore::Instance().GetBaseObjectByID(static_cast<alt::IBaseObject::Type>(type), id);
 
-    return Go::Runtime::GetCBaseObject(baseObject);
+    CBaseObject *obj = (CBaseObject *)malloc(sizeof(CBaseObject));
+    Go::Runtime::GetCBaseObject(baseObject, obj);
+    return obj;
 }
 
 EXPORT CArray Core_GetEntities() {

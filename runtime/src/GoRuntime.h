@@ -55,10 +55,11 @@ namespace Go {
             CArray arr;
             arr.size = objects.size();
 
-            auto entities = new CBaseObject[arr.size];
+            // TODO: test if this works
+            auto entities = new CBaseObject*[arr.size];
 
             for (uint64_t i = 0; i < arr.size; i++) {
-                entities[i] = GetCBaseObject(objects[i]);
+                GetCBaseObject(objects[i], entities[i]);
             }
 
             arr.ptr = entities;

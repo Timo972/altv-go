@@ -3,6 +3,7 @@
 Go::Resource::Resource(Go::Runtime *runtime, alt::IResource *resource) : _runtime(runtime), _resource(resource) {}
 
 bool Go::Resource::Start() {
+    // load go library
     Module = LOAD_LIB((_resource->GetPath() + SEPARATOR + _resource->GetMain()).c_str());
     if (Module == nullptr) {
         alt::ICore::Instance()
@@ -11,8 +12,6 @@ bool Go::Resource::Start() {
         return false;
     }
 
-    auto resourceName = _resource->GetName().c_str();
-    auto resourcePath = _resource->GetPath().c_str();
     auto go = GET_FUNC(Module, "initGoResource",
                        int(*)(alt::IResource * resourcePtr, const char *resourceName, const char *ResourcePath, const char *version));
     if (go == nullptr) {
@@ -22,11 +21,13 @@ bool Go::Resource::Start() {
         return false;
     }
 
+    // initialize go resource - trigger capi loading of runtime C exports
+    auto resourceName = _resource->GetName().c_str();
+    auto resourcePath = _resource->GetPath().c_str();
     bool ok = go(_resource, resourceName, resourcePath, GO_MODULE_VERSION);
     if (!ok) {
         return ok;
     }
-
 
     auto start = GET_FUNC(Module, "OnStart", void(*)());
     if (start == nullptr) {
@@ -34,6 +35,7 @@ bool Go::Resource::Start() {
         return false;
     }
 
+    // register event handlers
     RegisterEventHandler(alt::CEvent::Type::PLAYER_CONNECT, new PlayerConnectEvent(Module));
     RegisterEventHandler(alt::CEvent::Type::PLAYER_DISCONNECT, new PlayerDisconnectEvent(Module));
     RegisterEventHandler(alt::CEvent::Type::PLAYER_DAMAGE, new PlayerDamageEvent(Module));
@@ -72,14 +74,17 @@ bool Go::Resource::Start() {
     RegisterEventHandler(alt::CEvent::Type::PLAYER_CHANGE_ANIMATION_EVENT, new PlayerChangeAnimationEvent(Module));
     RegisterEventHandler(alt::CEvent::Type::PLAYER_CHANGE_INTERIOR_EVENT, new PlayerChangeInteriorEvent(Module));
 
+    // call go library entrypoint
     start();
 
+    // set resource exports
     _resource->SetExports(_registeredExports);
 
     return true;
 }
 
 bool Go::Resource::Stop() {
+    std::cout << "Go::Resource::Stop" << std::endl;
     auto stop = GET_FUNC(Module, "OnStop", void(*)());
     if (stop == nullptr) {
         alt::ICore::Instance().LogError("Couldn't call OnStop.");
@@ -91,12 +96,15 @@ bool Go::Resource::Stop() {
     // TODO: UNLOAD_LIB(Module)
     // https://github.com/golang/go/issues/11100
 
+    std::cout << "Go::Resource::Stop succeeded" << std::endl;
+
     return true;
 }
 
 void Go::Resource::OnEvent(const alt::CEvent *ev) {
     auto type = ev->GetType();
 
+    std::cout << "Go::Resource::OnEvent" << std::endl;
     NotifyEvent(ev, _resource->GetName().c_str());
 }
 
@@ -121,14 +129,19 @@ void Go::Resource::OnCreateBaseObject(alt::IBaseObject* handle) {
 }
 
 void Go::Resource::OnRemoveBaseObject(alt::IBaseObject* handle) {
+    std::cout << "Go::Resource::OnRemoveBaseObject" << std::endl;
     this->RemoveEntity(handle);
+    
     CBaseObject object;
     Go::Runtime::GetCBaseObject(handle, &object);
+    std::cout << "Go::Runtime::GetCBaseObject" << std::endl;
 
     static auto removeEntity = GET_FUNC(Module, "altRemoveBaseObject", void(*)(CBaseObject*));
     if (removeEntity == nullptr) {
         alt::ICore::Instance().LogError("Could not call altRemoveBaseObject.");
         return;
     }
+
+    std::cout << "executing altRemoveBaseObject" << std::endl;
     removeEntity(&object);
 }
