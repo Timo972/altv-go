@@ -15,8 +15,8 @@ void Go::VehicleDestroyEvent::Call(const alt::CEvent *ev)
 
     auto event = dynamic_cast<const alt::CVehicleDestroyEvent *>(ev);
 
-    CBaseObject *vehicle;
-    Go::Runtime::GetCBaseObject(event->GetTarget(), vehicle);
+    CBaseObject vehicle;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), &vehicle);
 
-    call(vehicle);
+    call(&vehicle);
 }

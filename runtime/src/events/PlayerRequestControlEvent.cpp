@@ -14,12 +14,12 @@ void Go::PlayerRequestControlEvent::Call(const alt::CEvent* ev)
     }
 
     auto event = dynamic_cast<const alt::CPlayerRequestControlEvent*>(ev);
-    CBaseObject *entity;
-    Go::Runtime::GetCBaseObject(event->GetTarget(), entity);
-    CBaseObject *player;
-    Go::Runtime::GetCBaseObject(event->GetPlayer(), player);
+    CBaseObject entity;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), &entity);
+    CBaseObject player;
+    Go::Runtime::GetCBaseObject(event->GetPlayer(), &player);
 
-    bool ok = call(player, entity);
+    bool ok = call(&player, &entity);
     if (!ok) 
         event->Cancel();
 }

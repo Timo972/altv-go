@@ -15,10 +15,10 @@ void Go::VehicleAttachEvent::Call(const alt::CEvent *ev)
 
     auto event = dynamic_cast<const alt::CVehicleAttachEvent *>(ev);
 
-    CBaseObject *vehicle;
-    Go::Runtime::GetCBaseObject(event->GetTarget(), vehicle);
-    CBaseObject *attached;
-    Go::Runtime::GetCBaseObject(event->GetAttached(), attached);
+    CBaseObject vehicle;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), &vehicle);
+    CBaseObject attached;
+    Go::Runtime::GetCBaseObject(event->GetAttached(), &attached);
 
-    call(vehicle, attached);
+    call(&vehicle, &attached);
 }

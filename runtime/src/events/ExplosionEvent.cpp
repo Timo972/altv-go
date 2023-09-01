@@ -14,10 +14,10 @@ void Go::ExplosionEvent::Call(const alt::CEvent *ev)
 
     auto event = dynamic_cast<const alt::CExplosionEvent *>(ev);
 
-    CBaseObject *source;
-    Go::Runtime::GetCBaseObject(event->GetSource(), source);
-    CBaseObject *target;
-    Go::Runtime::GetCBaseObject(event->GetTarget(), target);
+    CBaseObject source;
+    Go::Runtime::GetCBaseObject(event->GetSource(), &source);
+    CBaseObject target;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), &target);
 
     auto pos = event->GetPosition();
     auto expFX = event->GetExplosionFX();
@@ -28,7 +28,7 @@ void Go::ExplosionEvent::Call(const alt::CEvent *ev)
     cPos.y = pos.y;
     cPos.z = pos.z;
 
-    auto cancel = call(source, target, cPos, static_cast<short>(expType), expFX);
+    auto cancel = call(&source, &target, cPos, static_cast<short>(expType), expFX);
 
     if(cancel == 0) {
         event->Cancel();

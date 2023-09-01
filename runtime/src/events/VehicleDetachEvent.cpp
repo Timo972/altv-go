@@ -15,10 +15,10 @@ void Go::VehicleDetachEvent::Call(const alt::CEvent *ev)
 
     auto event = dynamic_cast<const alt::CVehicleDetachEvent *>(ev);
 
-    CBaseObject *vehicle;
-    Go::Runtime::GetCBaseObject(event->GetTarget(), vehicle);
-    CBaseObject *detached;
-    Go::Runtime::GetCBaseObject(event->GetDetached(), detached);
+    CBaseObject vehicle;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), &vehicle);
+    CBaseObject detached;
+    Go::Runtime::GetCBaseObject(event->GetDetached(), &detached);
 
-    call(vehicle, detached);
+    call(&vehicle, &detached);
 }

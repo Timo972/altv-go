@@ -14,10 +14,10 @@ void Go::WeaponDamageEvent::Call(const alt::CEvent *ev)
 
     auto event = dynamic_cast<const alt::CWeaponDamageEvent *>(ev);
 
-    CBaseObject *target;
-    Go::Runtime::GetCBaseObject(event->GetTarget(), target);
-    CBaseObject *source;
-    Go::Runtime::GetCBaseObject(event->GetSource(), source);
+    CBaseObject target;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), &target);
+    CBaseObject source;
+    Go::Runtime::GetCBaseObject(event->GetSource(), &source);
 
     auto bodyPart = event->GetBodyPart();
     auto damage = event->GetDamageValue();
@@ -29,7 +29,7 @@ void Go::WeaponDamageEvent::Call(const alt::CEvent *ev)
     cOffset.y = offset[1];
     cOffset.z = offset[2];
 
-    auto cancel = call(source, target, weapon, damage, cOffset, static_cast<short>(bodyPart));
+    auto cancel = call(&source, &target, weapon, damage, cOffset, static_cast<short>(bodyPart));
 
     if(cancel == 0) {
         event->Cancel();

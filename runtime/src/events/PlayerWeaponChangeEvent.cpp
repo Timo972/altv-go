@@ -15,13 +15,13 @@ void Go::PlayerWeaponChangeEvent::Call(const alt::CEvent *ev)
 
     auto event = dynamic_cast<const alt::CPlayerWeaponChangeEvent *>(ev);
 
-    CBaseObject *player;
-    Go::Runtime::GetCBaseObject(event->GetTarget(), player);
+    CBaseObject player;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), &player);
 
     auto oldWeapon = event->GetOldWeapon();
     auto newWeapon = event->GetNewWeapon();
 
-    auto cont = call(player, oldWeapon, newWeapon);
+    auto cont = call(&player, oldWeapon, newWeapon);
 
     if (cont == 0) {
         event->Cancel();

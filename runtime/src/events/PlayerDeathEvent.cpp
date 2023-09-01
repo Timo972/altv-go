@@ -14,12 +14,12 @@ void Go::PlayerDeathEvent::Call(const alt::CEvent *ev)
 
     auto event = dynamic_cast<const alt::CPlayerDeathEvent *>(ev);
 
-    CBaseObject *player;
-    Go::Runtime::GetCBaseObject(event->GetTarget(), player);
-    CBaseObject *killer;
-    Go::Runtime::GetCBaseObject(event->GetKiller(), killer);
+    CBaseObject player;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), &player);
+    CBaseObject killer;
+    Go::Runtime::GetCBaseObject(event->GetKiller(), &killer);
 
     auto weapon = event->GetWeapon();
 
-    call(player, killer, weapon);
+    call(&player, &killer, weapon);
 }

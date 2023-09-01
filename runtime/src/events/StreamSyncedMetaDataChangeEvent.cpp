@@ -18,13 +18,13 @@ void Go::StreamSyncedMetaDataChangeEvent::Call(const alt::CEvent *ev)
     auto newValueMeta = event->GetVal();
     auto oldValueMeta = event->GetOldVal();
     
-    CBaseObject *entity;
-    Go::Runtime::GetCBaseObject(event->GetTarget(), entity);
+    CBaseObject entity;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), &entity);
 
     auto newValue = Go::Runtime::EncodeMValue(newValueMeta);
     auto oldValue = Go::Runtime::EncodeMValue(oldValueMeta);
 
-    call(entity, key, oldValue, newValue);
+    call(&entity, key, oldValue, newValue);
 
     // TODO: fee Arrays
 }

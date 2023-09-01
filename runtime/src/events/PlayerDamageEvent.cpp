@@ -14,15 +14,15 @@ void Go::PlayerDamageEvent::Call(const alt::CEvent *ev)
 
     auto event = dynamic_cast<const alt::CPlayerDamageEvent *>(ev);
 
-    CBaseObject *player;
-    Go::Runtime::GetCBaseObject(event->GetTarget(), player);
-    CBaseObject *attacker;
-    Go::Runtime::GetCBaseObject(event->GetAttacker(), attacker);
+    CBaseObject player;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), &player);
+    CBaseObject attacker;
+    Go::Runtime::GetCBaseObject(event->GetAttacker(), &attacker);
 
     auto healthDamage = event->GetHealthDamage();
     auto armourDamage = event->GetArmourDamage();
     auto weapon = event->GetWeapon();
 
 
-    call(player, attacker, healthDamage, armourDamage, weapon);
+    call(&player, &attacker, healthDamage, armourDamage, weapon);
 }

@@ -14,10 +14,10 @@ void Go::VehicleDamageEvent::Call(const alt::CEvent *ev)
 
     auto event = dynamic_cast<const alt::CVehicleDamageEvent *>(ev);
 
-    CBaseObject *vehicle;
-    Go::Runtime::GetCBaseObject(event->GetTarget(), vehicle);
-    CBaseObject *attacker;
-    Go::Runtime::GetCBaseObject(event->GetDamager(), attacker);
+    CBaseObject vehicle;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), &vehicle);
+    CBaseObject attacker;
+    Go::Runtime::GetCBaseObject(event->GetDamager(), &attacker);
 
     auto bodyHealthDamage = event->GetBodyHealthDamage();
     auto bodyAdditionalHealthDamage = event->GetBodyAdditionalHealthDamage();
@@ -25,5 +25,5 @@ void Go::VehicleDamageEvent::Call(const alt::CEvent *ev)
     auto petrolTankHealthDamage = event->GetPetrolTankHealthDamage();
     auto damageWidth = event->GetDamagedWith();
 
-    call(vehicle, attacker, bodyHealthDamage, bodyAdditionalHealthDamage, engineHealthDamage, petrolTankHealthDamage, damageWidth);
+    call(&vehicle, &attacker, bodyHealthDamage, bodyAdditionalHealthDamage, engineHealthDamage, petrolTankHealthDamage, damageWidth);
 }

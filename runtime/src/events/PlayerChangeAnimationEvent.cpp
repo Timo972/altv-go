@@ -15,8 +15,8 @@ void Go::PlayerChangeAnimationEvent::Call(const alt::CEvent* ev)
 
     auto event = dynamic_cast<const alt::CPlayerChangeAnimationEvent*>(ev);
 
-    CBaseObject *player;
-    Go::Runtime::GetCBaseObject(event->GetTarget(), player);
+    CBaseObject player;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), &player);
 
-    call(player, event->GetOldAnimationDict(), event->GetOldAnimationName(), event->GetNewAnimationDict(), event->GetNewAnimationName());
+    call(&player, event->GetOldAnimationDict(), event->GetOldAnimationName(), event->GetNewAnimationDict(), event->GetNewAnimationName());
 }

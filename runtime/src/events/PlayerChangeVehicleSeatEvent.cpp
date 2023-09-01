@@ -15,13 +15,13 @@ void Go::PlayerChangeVehicleSeatEvent::Call(const alt::CEvent *ev)
 
     auto event = dynamic_cast<const alt::CPlayerChangeVehicleSeatEvent *>(ev);
 
-    CBaseObject *player;
-    Go::Runtime::GetCBaseObject(event->GetPlayer(), player);
-    CBaseObject *vehicle;
-    Go::Runtime::GetCBaseObject(event->GetTarget(), vehicle);
+    CBaseObject player;
+    Go::Runtime::GetCBaseObject(event->GetPlayer(), &player);
+    CBaseObject vehicle;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), &vehicle);
 
     auto newSeat = event->GetNewSeat();
     auto oldSeat = event->GetOldSeat();
 
-    call(player, vehicle, oldSeat, newSeat);
+    call(&player, &vehicle, oldSeat, newSeat);
 }

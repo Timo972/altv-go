@@ -15,8 +15,8 @@ void Go::PlayerConnectEvent::Call(const alt::CEvent *ev)
 
     auto event = static_cast<const alt::CPlayerConnectEvent *>(ev);
 
-    CBaseObject *player;
-    Go::Runtime::GetCBaseObject(event->GetTarget(), player);
+    CBaseObject player;
+    Go::Runtime::GetCBaseObject(event->GetTarget(), &player);
 
-    call(player);
+    call(&player);
 }

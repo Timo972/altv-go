@@ -103,28 +103,32 @@ void Go::Resource::OnEvent(const alt::CEvent *ev) {
 void Go::Resource::OnTick() {}
 
 void Go::Resource::OnCreateBaseObject(alt::IBaseObject* handle) {
+    std::cout << "Go::Resource::OnCreateBaseObject" << std::endl;
     this->AddEntity(handle);
 
-    CBaseObject *object;
-    Go::Runtime::GetCBaseObject(handle, object);
+    CBaseObject object;
+    Go::Runtime::GetCBaseObject(handle, &object);
+    std::cout << "Go::Runtime::GetCBaseObject" << std::endl;
 
     static auto addEntity = GET_FUNC(Module, "altCreateBaseObject", void(*)(CBaseObject*));
     if (addEntity == nullptr) {
         alt::ICore::Instance().LogError("Could not call altCreateBaseObject.");
         return;
     }
-    addEntity(object);
+
+    std::cout << "executing altCreateBaseObject" << std::endl;
+    addEntity(&object);
 }
 
 void Go::Resource::OnRemoveBaseObject(alt::IBaseObject* handle) {
     this->RemoveEntity(handle);
-    CBaseObject *object;
-    Go::Runtime::GetCBaseObject(handle, object);
+    CBaseObject object;
+    Go::Runtime::GetCBaseObject(handle, &object);
 
     static auto removeEntity = GET_FUNC(Module, "altRemoveBaseObject", void(*)(CBaseObject*));
     if (removeEntity == nullptr) {
         alt::ICore::Instance().LogError("Could not call altRemoveBaseObject.");
         return;
     }
-    removeEntity(object);
+    removeEntity(&object);
 }

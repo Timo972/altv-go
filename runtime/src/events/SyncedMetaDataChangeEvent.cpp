@@ -14,8 +14,8 @@ void Go::SyncedMetaDataChangeEvent::Call(const alt::CEvent *ev)
 
     auto event = dynamic_cast<const alt::CSyncedMetaDataChangeEvent *>(ev);
 
-    CBaseObject *entity; 
-    Go::Runtime::GetCBaseObject(event->GetTarget(), entity);
+    CBaseObject entity; 
+    Go::Runtime::GetCBaseObject(event->GetTarget(), &entity);
 
     auto key = event->GetKey().c_str();
     auto newValueMeta = event->GetVal();
@@ -24,7 +24,7 @@ void Go::SyncedMetaDataChangeEvent::Call(const alt::CEvent *ev)
     auto newValue = Go::Runtime::EncodeMValue(newValueMeta);
     auto oldValue = Go::Runtime::EncodeMValue(oldValueMeta);
 
-    call(entity, key, oldValue, newValue);
+    call(&entity, key, oldValue, newValue);
 
     // TODO: free Arrays
 }

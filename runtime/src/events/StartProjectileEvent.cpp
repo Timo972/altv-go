@@ -15,8 +15,8 @@ void Go::StartProjectileEvent::Call(const alt::CEvent *ev)
 
     auto event = dynamic_cast<const alt::CStartProjectileEvent *>(ev);
     
-    CBaseObject *player;
-    Go::Runtime::GetCBaseObject(event->GetSource(), player);
+    CBaseObject player;
+    Go::Runtime::GetCBaseObject(event->GetSource(), &player);
 
     auto pos = event->GetStartPosition();
     auto dir = event->GetDirection();
@@ -33,7 +33,7 @@ void Go::StartProjectileEvent::Call(const alt::CEvent *ev)
     direction.y = dir[1];
     direction.z = dir[2];
 
-    auto cancel = call(player, position, direction, ammo, weapon);
+    auto cancel = call(&player, position, direction, ammo, weapon);
 
     if(cancel == 0) {
         event->Cancel();
