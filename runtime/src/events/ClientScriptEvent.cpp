@@ -4,7 +4,7 @@
 Go::ClientScriptEvent::ClientScriptEvent(ModuleLibrary *module) : IEvent(module) {}
 
 void Go::ClientScriptEvent::Call(const alt::CEvent *ev) {
-    static auto call = GET_FUNC(Library, "altClientScriptEvent", bool (*)(CBaseObject *player, const char *name, CArray püargs));
+    static auto call = GET_FUNC(Library, "altClientScriptEvent", bool (*)(CBaseObject *player, const char *name, CArray args));
 
     if (call == nullptr)
     {
