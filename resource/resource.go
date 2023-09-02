@@ -20,12 +20,12 @@ func newPermissionArray(arr C.struct_array) []perm.Permission {
 	})
 }
 
-type PublicResource struct {
+type Public struct {
 	ptr unsafe.Pointer
 }
 
-type LocalResource struct {
-	PublicResource
+type Local struct {
+	Public
 	name string
 	path string
 }
@@ -57,9 +57,6 @@ type Resource interface {
 	// Import(name string, out any) error
 }
 
-// CurrentResource is the resource you are scripting in.
-var Current *LocalResource
-
 // ResourceByName returns a resource by it's name.
 func ByName(name string) Resource {
 	str := C.CString(name)
@@ -67,7 +64,7 @@ func ByName(name string) Resource {
 
 	ptr := C.core_get_resource_by_name(str)
 
-	return &PublicResource{
+	return &Public{
 		ptr: ptr,
 	}
 }
@@ -77,74 +74,74 @@ func All() []Resource {
 	arr := C.core_get_all_resources()
 
 	return cutil.NewArrayFunc[unsafe.Pointer, Resource](unsafe.Pointer(arr.ptr), int(arr.size), func(item unsafe.Pointer) Resource {
-		return &PublicResource{
+		return &Public{
 			ptr: item,
 		}
 	})
 }
 
-func (r PublicResource) IsStarted() bool {
+func (r Public) IsStarted() bool {
 	return uint8(C.resource_is_started(r.ptr)) == 1
 }
 
-func (r LocalResource) IsStarted() bool {
+func (r Local) IsStarted() bool {
 	return true
 }
 
-func (r PublicResource) Type() string {
+func (r Public) Type() string {
 	return C.GoString(C.resource_get_type(r.ptr))
 }
 
-func (r LocalResource) Type() string {
+func (r Local) Type() string {
 	return "go"
 }
 
-func (r PublicResource) Name() string {
+func (r Public) Name() string {
 	return C.GoString(C.resource_get_name(r.ptr))
 }
 
-func (r LocalResource) Name() string {
+func (r Local) Name() string {
 	return r.name
 }
 
-func (r PublicResource) Main() string {
+func (r Public) Main() string {
 	return C.GoString(C.resource_get_main(r.ptr))
 }
 
-func (r PublicResource) Dependencies() []string {
+func (r Public) Dependencies() []string {
 	cDeps := C.resource_get_dependencies(r.ptr)
 
 	return cutil.NewStringArray(unsafe.Pointer(cDeps.ptr), int(cDeps.size))
 }
 
-func (r PublicResource) Dependants() []string {
+func (r Public) Dependants() []string {
 	cDeps := C.resource_get_dependants(r.ptr)
 
 	return cutil.NewStringArray(unsafe.Pointer(cDeps.ptr), int(cDeps.size))
 }
 
-func (r PublicResource) RequiredPermissions() []perm.Permission {
+func (r Public) RequiredPermissions() []perm.Permission {
 	data := C.resource_get_required_permissions(r.ptr)
 	return newPermissionArray(data)
 }
 
-func (r PublicResource) OptionalPermissions() []perm.Permission {
+func (r Public) OptionalPermissions() []perm.Permission {
 	data := C.resource_get_optional_permissions(r.ptr)
 	return newPermissionArray(data)
 }
 
-func (r PublicResource) Path() string {
+func (r Public) Path() string {
 	return C.GoString(C.resource_get_path(r.ptr))
 }
 
-func (r LocalResource) Path() string {
+func (r Local) Path() string {
 	return r.path
 }
 
-func (r PublicResource) Config(out any) error {
+func (r Public) Config(out any) error {
 	return nil
 }
 
-/*func (r PublicResource) Import(name string, out any) error {
+/*func (r Public) Import(name string, out any) error {
 	return imprt.New(r.Name(), name, out)
 }*/

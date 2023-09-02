@@ -30,8 +30,8 @@ var exported = make([]*exportFuncData, 0)
 
 func (f ExportFunc) MarshalJSON() ([]byte, error) {
 	resourceName = ""
-	if resource.Current != nil {
-		resourceName = resource.Current.Name()
+	if r := resource.Current(); r != nil {
+		resourceName = r.Name()
 	}
 
 	data := &exportFuncData{

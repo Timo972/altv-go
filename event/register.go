@@ -17,7 +17,7 @@ func registerOnEvent(event uint16) {
 		return
 	}
 
-	cresource := C.CString(resource.Current.Name())
+	cresource := C.CString(resource.Current().Name())
 	defer C.free(unsafe.Pointer(cresource))
 
 	C.runtime_register_alt_event(cresource, C.ushort(event))
@@ -29,7 +29,7 @@ func unregisterOnEvent(event uint16) {
 		return
 	}
 
-	cresource := C.CString(resource.Current.Name())
+	cresource := C.CString(resource.Current().Name())
 	defer C.free(unsafe.Pointer(cresource))
 
 	C.runtime_unregister_alt_event(cresource, C.ushort(event))

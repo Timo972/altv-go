@@ -36,14 +36,16 @@ func listenSignal() {
 	}
 }*/
 
+var current *Local
+
 //export initGoResource
 func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, ver *C.char) C.int {
 	fmt.Println("resource initializing")
 
-	Current = &LocalResource{
+	current = &Local{
 		name: C.GoString(name),
 		path: C.GoString(path),
-		PublicResource: PublicResource{
+		Public: Public{
 			ptr: ptr,
 		},
 	}
@@ -73,4 +75,9 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, ver *C.char)
 
 func Ready() bool {
 	return ready
+}
+
+// Current returns the local resource you are scripting in. returns nil until resource is initialized
+func Current() *Local {
+	return current
 }
