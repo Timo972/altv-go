@@ -14,9 +14,9 @@
   </a>
   <br />
   <br />
-  <a>[[Troubleshooting|Troubleshooting]]</a>
+  <a>[Troubleshooting(/wiki/Troubleshooting)]</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a>[[Contributing|Contributing]]</a>
+  <a>[Contributing](/CONTRIBUTING.md)</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://altv.mp">alt:V</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
@@ -36,13 +36,13 @@ Go package and runtime for alt:V Multiplayer.
 
 > ⚠️ Notice: updated occasionally, not actively maintained - hit me up on Discord if you are interested in this project.<br />
 > ⛔ Module is currently in development and not ready for production use - expect heavy api changes (and bugs).<br />
-> ✨ Contributions of any kind are always welcome!<br />
+> ✨ [Contributions](/CONTRIBUTING.md) of any kind are always welcome!<br />
 
 ## Requirements
 
 Package depends heavily on [cgo](https://pkg.go.dev/cmd/cgo).
 To build on Windows, a gcc compiler is required (ex: mingw-w64).
-See our [[Requirements Guide|Requirements]] for more information on requirements and how to install them.
+See our [Requirements Guide](/wiki/Requirements) for more information on requirements and how to install them.
 
 ## Get started
 
@@ -89,7 +89,7 @@ func main() {
 }
 ```
 
-For more examples take a look at the [altv-go-examples]() repository.
+For more examples take a look at the [altv-go-examples](#) repository.
 
 ## Building your Resource
 
@@ -105,7 +105,7 @@ go build -o my-resource.dll -buildmode=c-shared
 go build -o my-resource.so -buildmode=c-shared
 ```
 
-Something went wrong? A build error? See the [[Troubleshooting Guide|Troubleshooting]].
+Something went wrong? A build error? See the [Troubleshooting Guide](/wiki/Troubleshooting).
 
 ## Help
 
