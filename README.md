@@ -14,7 +14,7 @@
   </a>
   <br />
   <br />
-  <a>[Troubleshooting(/wiki/Troubleshooting)]</a>
+  <a>[Troubleshooting](https://github.com/timo972/altv-go/wiki/Troubleshooting)</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a>[Contributing](/CONTRIBUTING.md)</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
@@ -42,7 +42,7 @@ Go package and runtime for alt:V Multiplayer.
 
 Package depends heavily on [cgo](https://pkg.go.dev/cmd/cgo).
 To build on Windows, a gcc compiler is required (ex: mingw-w64).
-See our [Requirements Guide](/wiki/Requirements) for more information on requirements and how to install them.
+See our [Requirements Guide](https://github.com/timo972/altv-go/wiki/Requirements) for more information on requirements and how to install them.
 
 ## Get started
 
@@ -105,7 +105,7 @@ go build -o my-resource.dll -buildmode=c-shared
 go build -o my-resource.so -buildmode=c-shared
 ```
 
-Something went wrong? A build error? See the [Troubleshooting Guide](/wiki/Troubleshooting).
+Something went wrong? A build error? See the [Troubleshooting Guide](https://github.com/timo972/altv-go/wiki/Troubleshooting).
 
 ## Help
 
