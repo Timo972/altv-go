@@ -55,10 +55,11 @@ namespace Go {
             CArray arr;
             arr.size = objects.size();
 
-            // TODO: test if this works
+            // TODO: optimize so we dont have to call malloc in for loop
             auto entities = new CBaseObject*[arr.size];
 
             for (uint64_t i = 0; i < arr.size; i++) {
+                entities[i] = (CBaseObject*) malloc(sizeof(CBaseObject));
                 GetCBaseObject(objects[i], entities[i]);
             }
 

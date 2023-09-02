@@ -23,7 +23,7 @@ func getEntityData(e *C.struct_baseObject) (typ entity.BaseObjectType, ptr unsaf
 }
 
 func newBaseObjectArray[T entity.BaseObject](arr C.struct_array) []T {
-	return cutil.NewArrayFunc[*C.struct_baseObject, T](unsafe.Pointer(arr.ptr), int(arr.size), func(item *C.struct_baseObject) T {
+	entities := cutil.NewArrayFunc[*C.struct_baseObject, T](unsafe.Pointer(arr.ptr), int(arr.size), func(item *C.struct_baseObject) T {
 		v, err := factory.GetBaseObject[T](getEntityData(item))
 		C.free(unsafe.Pointer(item))
 		if err != nil {
@@ -31,6 +31,9 @@ func newBaseObjectArray[T entity.BaseObject](arr C.struct_array) []T {
 		}
 		return v
 	})
+	// TODO: not sure, but i think we are leaking memory here: arr is allocated in cpp runtime using new CBaseObject*[arr.size];
+	// C.free(arr.ptr) crashes and logs double free :|
+	return entities
 }
 
 func Players() []entity.Player {
