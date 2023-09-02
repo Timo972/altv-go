@@ -16,7 +16,7 @@
   <br />
   <a href="https://github.com/timo972/altv-go/wiki/Troubleshooting">Troubleshooting</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="/CONTRIBUTING.md">Contributing</a>
+  <a href="https://github.com/timo972/altv-go/wiki/Requirements">Contributing</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://altv.mp">alt:V</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
@@ -36,7 +36,7 @@ Go package and runtime for alt:V Multiplayer.
 
 > ⚠️ Notice: updated occasionally, not actively maintained - hit me up on Discord if you are interested in this project.<br />
 > ⛔ Module is currently in development and not ready for production use - expect heavy api changes (and bugs).<br />
-> ✨ [Contributions](/CONTRIBUTING.md) of any kind are always welcome!<br />
+> ✨ [Contributions](https://github.com/timo972/altv-go/wiki/Contributing) of any kind are always welcome!<br />
 
 ## Requirements
 
