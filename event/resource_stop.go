@@ -3,7 +3,7 @@ package event
 // #include "capi.h"
 import "C"
 import (
-	"golang.org/x/exp/slices"
+	"slices"
 )
 
 type resourceStopListener = func(resourceName string)

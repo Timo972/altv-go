@@ -3,7 +3,7 @@ package event
 import (
 	"fmt"
 
-	"golang.org/x/exp/slices"
+	"slices"
 )
 import "C"
 

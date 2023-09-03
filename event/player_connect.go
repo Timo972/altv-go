@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"unsafe"
 
+	"slices"
+
 	"github.com/timo972/altv-go/altlog"
 	"github.com/timo972/altv-go/entity"
 	"github.com/timo972/altv-go/factory"
-	"golang.org/x/exp/slices"
 )
 
 type playerConnectListener func(p entity.Player)

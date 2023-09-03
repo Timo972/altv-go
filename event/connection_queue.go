@@ -3,8 +3,9 @@ package event
 import (
 	"unsafe"
 
+	"slices"
+
 	"github.com/timo972/altv-go"
-	"golang.org/x/exp/slices"
 )
 
 // #include "capi.h"

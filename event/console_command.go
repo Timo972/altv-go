@@ -3,8 +3,9 @@ package event
 // #include "capi.h"
 import "C"
 import (
+	"slices"
+
 	"github.com/timo972/altv-go/internal/cutil"
-	"golang.org/x/exp/slices"
 )
 
 type consoleCommandListener = func(cmd string, args []string)

@@ -1,7 +1,7 @@
 package event
 
 import (
-	"golang.org/x/exp/slices"
+	"slices"
 )
 
 // #include "capi.h"
