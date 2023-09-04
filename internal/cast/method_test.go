@@ -42,6 +42,14 @@ func TestParseArgs(t *testing.T) {
 			expected: []*Arg{{Name: "b", Type: ctype.VoidPtr}, {Name: "opacity", Type: ctype.UInt}, {Name: "duration", Type: ctype.UInt}},
 			input:    "void *b, unsigned int opacity, unsigned int duration",
 		},
+		{
+			expected: []*Arg{},
+			input:    "",
+		},
+		{
+			expected: []*Arg{},
+			input:    " ",
+		},
 	}
 
 	for _, c := range cases {

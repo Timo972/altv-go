@@ -23,8 +23,13 @@ func (m *Method) Returns() bool {
 }
 
 func parseArgs(argstr string) []*Arg {
+	if argstr == "" {
+		return make([]*Arg, 0)
+	}
 	argstrs := strings.Split(argstr, ",")
 	args := make([]*Arg, len(argstrs))
+
+	// fmt.Printf("parsing %d args: %s (%d)\n", len(argstrs), argstr, len(argstr))
 
 	for i, arg := range argstrs {
 		fields := strings.Fields(arg)
