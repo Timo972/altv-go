@@ -5,48 +5,49 @@ import (
 	"io"
 	"log"
 	"text/template"
+
+	"github.com/timo972/altv-go/internal/cast"
 )
 
 //go:embed *.tmpl
 var tmplfs embed.FS
 
 type templateData struct {
-	Methods []*method
-	Structs []typedef
+	Methods []*tmplMethod
+	Structs []*cast.Typedef
 }
 
-func tmplData(structs []typedef, capi map[string][]*method) *templateData {
-	data := &templateData{
-		Methods: make([]*method, 0),
-		Structs: structs,
+func mapHeaders(hdrs []*cast.Header) []*tmplMethod {
+	methods := make([]*tmplMethod, 0)
+	for _, hdr := range hdrs {
+		for _, m := range hdr.Methods {
+			methods = append(methods, &tmplMethod{
+				Method: m,
+			})
+		}
 	}
-
-	for _, file := range capi {
-		data.Methods = append(data.Methods, file...)
-	}
-
-	return data
+	return methods
 }
 
-func genCHead(dst io.Writer, structs []typedef, capi []*method) error {
+func genCHead(dst io.Writer, structs *cast.Header, capi []*cast.Header) error {
 	tmpl, err := template.New("head.tmpl").ParseFS(tmplfs, "head.tmpl")
 	if err != nil {
 		return err
 	}
 
-	data := &templateData{Methods: capi, Structs: structs}
+	data := &templateData{Methods: mapHeaders(capi), Structs: structs.Typedefs}
 	log.Printf("writing %d typedefs and %d methods to header", len(data.Structs), len(data.Methods))
 
 	return tmpl.Execute(dst, data)
 }
 
-func genCBody(dst io.Writer, capi []*method) error {
+func genCBody(dst io.Writer, capi []*cast.Header) error {
 	tmpl, err := template.New("body.tmpl").ParseFS(tmplfs, "body.tmpl")
 	if err != nil {
 		return err
 	}
 
-	data := &templateData{Methods: capi}
+	data := &templateData{Methods: mapHeaders(capi)}
 	log.Printf("writing %d methods to body", len(data.Methods))
 
 	return tmpl.Execute(dst, data)

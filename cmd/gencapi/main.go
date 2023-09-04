@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"io"
@@ -8,6 +9,8 @@ import (
 	"os"
 	"path"
 	"strings"
+
+	"github.com/timo972/altv-go/internal/cast"
 )
 
 type stringArrayFlag []string
@@ -92,26 +95,30 @@ func main() {
 
 	log.Printf("generating CAPI files from %s and struct defs from %s", runtimeCAPIPath, runtimeStructsPath)
 
+	// parse runtime structs
 	runtimeStructs, err := os.Open(runtimeStructsPath)
 	if err != nil {
 		runtimeStructs.Close()
 		log.Fatalf("error opening runtime structs file: %s", err)
 	}
 
-	capi, err := parseCAPIDir(runtimeCAPIPath)
-	if err != nil {
-		log.Fatalf("error parsing runtime CAPI folder: %s", err)
+	structbuf := &bytes.Buffer{}
+	if _, err := io.Copy(structbuf, runtimeStructs); err != nil {
+		runtimeStructs.Close()
+		log.Fatalf("error copying runtime structs to buffer: %s", err)
 	}
-
-	log.Printf("parsed %d CAPI files", len(capi))
-
-	typedefs, err := parseTypedefs(runtimeStructs)
-	runtimeStructs.Close()
+	mainh, err := cast.ParseHeader(structbuf.Bytes(), "Main.h")
 	if err != nil {
-		log.Fatalf("error parsing runtime structs file: %s", err)
+		log.Fatalf("error parsing runtime structs: %s", err)
 	}
+	log.Printf("parsed %d typedefs", len(mainh.Typedefs))
 
-	log.Printf("parsed %d typedefs", len(typedefs))
+	// parse runtime capi
+	headers, err := cast.ParseDirs([]string{runtimeCAPIPath})
+	if err != nil {
+		log.Fatalf("error parsing headers: %v", err)
+	}
+	log.Printf("parsed %d CAPI files", len(headers))
 
 	log.Printf("capi header destinations: %v", houtPaths)
 	hout, closeH, err := createDst(houtPaths)
@@ -119,7 +126,7 @@ func main() {
 		log.Fatalf("error creating hout: %v", err)
 	}
 
-	if err = genCHead(hout, typedefs, capi); err != nil {
+	if err = genCHead(hout, mainh, headers); err != nil {
 		closeH()
 		log.Fatalf("error generating capi head: %v", err)
 	}
@@ -131,7 +138,7 @@ func main() {
 		log.Fatalf("error creating cout: %v", err)
 	}
 
-	if err = genCBody(cout, capi); err != nil {
+	if err = genCBody(cout, headers); err != nil {
 		closeC()
 		log.Fatalf("error generating capi body: %v", err)
 	}
