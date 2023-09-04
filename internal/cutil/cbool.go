@@ -1,4 +1,4 @@
-package module
+package cutil
 
 // Bool2int Temporary
 func Bool2int(b bool) int {

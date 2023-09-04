@@ -6,7 +6,7 @@ Get started by understanding the [architecture](#architecture) of the module.
 
 # Architecture
 
-The go-module is split up into three parts: the [runtime](/runtime), the [c-api](/internal/c-api) and the [go-api](/).
+The go-module is split up into three parts: the [runtime](/runtime), the [c-api](/internal/capi) and the [go-api](/).
 
 | Part    | Language | Description                                                                                                                              |
 | ------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
@@ -62,7 +62,7 @@ See how to [use your local build](#using-your-local-build) for more information.
 ./scripts/build-capi.sh
 ```
 
-You can find the built c-api library in the folder [`./internal/c-api/lib/linux/libcapi.a` (linux)](/internal/c-api/lib/linux/libcapi.a) or [`./internal/c-api/lib/win32/libcapi.a` (windows)](/internal/c-api/lib/win32/libcapi.a). However usually you do not need to touch the built c-api library.
+You can find the built c-api library in the folder [`./internal/capi/lib/linux/libcapi.a` (linux)](/internal/capi/lib/linux/libcapi.a) or [`./internal/capi/lib/win32/libcapi.a` (windows)](/internal/capi/lib/win32/libcapi.a). However usually you do not need to touch the built c-api library.
 <br />
 <br />
 ## Check / Test capi go api
@@ -115,16 +115,16 @@ Building the c-api constists of two parts:
 **Generate** the c-api header & source files using `cmd/gencapi`:<br />
 
 ```sh
-go run cmd/gencapi/*.go -cout=./internal/c-api/build/out/capi.c -hout=./internal/c-api/build/out/capi.h -hout=./internal/c-api/lib/capi.h  ./runtime/src/capi
+go run cmd/gencapi/*.go -cout=./internal/capi/build/out/capi.c -hout=./internal/capi/build/out/capi.h -hout=./internal/capi/lib/capi.h  ./runtime/src/capi
 ```
 
 ### Build the c-api shared library
-This will generate the c-api header & source file in the folder `./internal/c-api/build/out/` and copy the header file to `./internal/c-api/lib/capi.h`.
+This will generate the c-api header & source file in the folder `./internal/capi/build/out/` and copy the header file to `./internal/capi/lib/capi.h`.
 
 **Build** the c-api using cmake:<br />
 
 ```sh
-cd ./internal/c-api
+cd ./internal/capi
 # create build and output folder
 mkdir build
 mkdir bin

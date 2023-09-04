@@ -5,7 +5,7 @@ import (
 	"log"
 	"unsafe"
 
-	"github.com/timo972/altv-go/internal/lib"
+	"github.com/timo972/altv-go/internal/altmodule"
 )
 
 // #include <stdlib.h>
@@ -51,16 +51,16 @@ func initGoResource(ptr unsafe.Pointer, name *C.char, path *C.char, ver *C.char)
 	}
 	C.GoString(ver)
 
-	mod := C.CString(lib.MODULE_NAME)
+	mod := C.CString(altmodule.NAME)
 	defer C.free(unsafe.Pointer(mod))
 
 	log.SetFlags(log.Ltime)
 
-	fmt.Printf("resource loading module %s\n", lib.MODULE_NAME)
+	fmt.Printf("resource loading module %s\n", altmodule.NAME)
 
 	status := C.load_module(mod)
 	if int(status) == 0 {
-		log.Printf("couldn't locate %s library", lib.MODULE_NAME)
+		log.Printf("couldn't locate %s library", altmodule.NAME)
 		return status
 	}
 
