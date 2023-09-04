@@ -9,6 +9,8 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/timo972/altv-go/internal/casing"
 )
 
 type method struct {
@@ -27,7 +29,7 @@ func (m *method) Name() string {
 }
 
 func (m *method) CName() string {
-	return ToSnakeCase(m.className + m.classMethod)
+	return casing.ToSnake(m.className + m.classMethod)
 }
 
 func (m *method) CArgs() string {
