@@ -1,6 +1,6 @@
 @echo off
 
-go run ./cmd/gencapi/... -cout=./internal/capi/build/out/capi.c -hout=./internal/capi/build/out/capi.h -hout=./internal/capi/lib/capi.h  ./runtime/src/capi
+go run ./cmd/gencapi/... -cout=./internal/capi/build/out/capi.c -hout=./internal/capi/build/out/capi.h -hout=./internal/capi/lib/capi.h  ./runtime/src/
 
 cd.\internal\c-api
 

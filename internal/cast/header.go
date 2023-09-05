@@ -43,6 +43,7 @@ func ParseDirs(srcs []string) ([]*Header, error) {
 			// fmt.Printf("parsing header %s\n", path)
 
 			f, err := os.Open(path)
+			defer f.Close()
 			if err != nil {
 				return err
 			}

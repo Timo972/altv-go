@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"flag"
 	"fmt"
 	"io"
@@ -10,7 +9,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/timo972/altv-go/internal/cast"
+	"github.com/timo972/altv-go/internal/cast/cgoruntime"
 )
 
 type stringArrayFlag []string
@@ -66,24 +65,16 @@ func main() {
 
 	flag.Parse()
 
-	runtimeCAPIPath := flag.Arg(0)
-	var runtimeStructsPath = path.Join(path.Dir(runtimeCAPIPath), "Main.h")
+	runtimePath := flag.Arg(0)
 
 	if len(coutPaths)+len(houtPaths) == 0 {
 		coutPaths = append(coutPaths, "capi.c")
 		houtPaths = append(houtPaths, "capi.h")
 	}
 
-	log.Printf("runtime CAPI path: %s", runtimeCAPIPath)
-	log.Printf("runtime structs path: %s", runtimeStructsPath)
+	log.Printf("runtime path: %s", runtimePath)
 	log.Printf("capi header paths: %s", houtPaths)
 	log.Printf("capi body paths: %s", coutPaths)
-
-	if _, err := os.Stat(runtimeCAPIPath); os.IsNotExist(err) {
-		log.Fatalf("runtime CAPI folder does not exist: %s", runtimeCAPIPath)
-	} else if err != nil {
-		log.Fatalf("error checking runtime CAPI folder: %s", err)
-	}
 
 	if err := ensureFileDirs(coutPaths); err != nil {
 		log.Fatal(err)
@@ -93,31 +84,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Printf("generating CAPI files from %s and struct defs from %s", runtimeCAPIPath, runtimeStructsPath)
+	log.Printf("generating based on runtime %s", runtimePath)
 
-	// parse runtime structs
-	runtimeStructs, err := os.Open(runtimeStructsPath)
+	mainh, headers, err := cgoruntime.Parse(runtimePath)
 	if err != nil {
-		runtimeStructs.Close()
-		log.Fatalf("error opening runtime structs file: %s", err)
+		log.Fatal(err)
 	}
 
-	structbuf := &bytes.Buffer{}
-	if _, err := io.Copy(structbuf, runtimeStructs); err != nil {
-		runtimeStructs.Close()
-		log.Fatalf("error copying runtime structs to buffer: %s", err)
-	}
-	mainh, err := cast.ParseHeader(structbuf.Bytes(), "Main.h")
-	if err != nil {
-		log.Fatalf("error parsing runtime structs: %s", err)
-	}
 	log.Printf("parsed %d typedefs", len(mainh.Typedefs))
 
-	// parse runtime capi
-	headers, err := cast.ParseDirs([]string{runtimeCAPIPath})
-	if err != nil {
-		log.Fatalf("error parsing headers: %v", err)
-	}
 	log.Printf("parsed %d CAPI files", len(headers))
 
 	log.Printf("capi header destinations: %v", houtPaths)
