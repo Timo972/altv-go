@@ -8,7 +8,7 @@ import "C"
 import (
 	"unsafe"
 
-	"github.com/timo972/altv-go/internal/lib"
+	"github.com/timo972/altv-go/internal/cutil"
 )
 
 /*type ConnectionInfo interface {
@@ -153,7 +153,7 @@ func (c *ConnectionInfo) CloudAuthHash() string {
 }
 
 func (c *ConnectionInfo) Accept(sendNames bool) {
-	C.connection_accept(c.ptr, C.uchar(lib.Bool2int(sendNames)))
+	C.connection_accept(c.ptr, C.uchar(cutil.Bool2int(sendNames)))
 }
 
 func (c *ConnectionInfo) Decline(reason string) {
