@@ -3,6 +3,7 @@ package event
 // #cgo CFLAGS: -I../internal/capi/lib
 // #cgo linux LDFLAGS: -L../internal/capi/lib/linux -lcapi -ldl -g
 // #cgo windows LDFLAGS: -L../internal/capi/lib/win32 -lcapi -ldl -g
+// #cgo darwin LDFLAGS: -L../internal/capi/lib/darwin -lcapi -ldl -g
 // #cgo CXXFLAGS: -std=c++14
 // #include <stdlib.h>
 // #include "capi.h"
