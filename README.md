@@ -14,9 +14,12 @@
   </a>
   <br />
   <br />
-  <a href="https://github.com/timo972/altv-go/wiki/Troubleshooting">Troubleshooting</a>
+	
+  [Documentation]
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://github.com/timo972/altv-go/wiki/Requirements">Contributing</a>
+  [Troubleshooting]
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  [Contributing]
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://altv.mp">alt:V</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
@@ -36,13 +39,13 @@ Go package and runtime for alt:V Multiplayer.
 
 > ⚠️ Notice: updated occasionally, not actively maintained - hit me up on Discord if you are interested in this project.<br />
 > ⛔ Module is currently in development and not ready for production use - expect heavy api changes (and bugs).<br />
-> ✨ [Contributions](https://github.com/timo972/altv-go/wiki/Contributing) of any kind are always welcome!<br />
+> ✨ [Contributions][Contributing] of any kind are always welcome!<br />
 
 ## Requirements
 
 Package depends heavily on [cgo](https://pkg.go.dev/cmd/cgo).
 To build on Windows, a gcc compiler is required (ex: mingw-w64).<br />
-See our [Requirements Guide](https://github.com/timo972/altv-go/wiki/Requirements) for more information on requirements and how to install them.
+See our [Requirements Guide][Requirements] for more information on requirements and how to install them.
 
 ## Get started
 
@@ -55,17 +58,20 @@ package main
 import "C"
 import (
   "github.com/timo972/altv-go/altlog"
-  // this package is a required import. if you are not using the event package, import it like this
-  // _ "github.com/timo972/altv-go/event"
+  // the altv-go/event package is a required import. if you are not using it, do a sideeffect import
   // if you are not importing it, the module will log errors calling the ServerStarted and ResourceStopEvent
-	"github.com/timo972/altv-go/event"
+  // either do (when using events)
+  "github.com/timo972/altv-go/event"
+  // or (when not using events)
+  // _ "github.com/timo972/altv-go/event"
 )
 
 func init() {
-	// You may want to initialize something here.
+  // You may want to initialize something here.
   // However the alt:V api is limited due to the reason
   // that the package did not load the go-module's c-api yet!
   // As of now you can only use the event features here.
+  // Full api is available once the event.on.Start callbacks are executed.
 
   // e.g.
   event.On.ServerStarted(func () {
@@ -73,7 +79,8 @@ func init() {
   })
 
   event.On.Start(func () {
-    // this event is called when the resource is about to start
+    // this event is called when the resource is being started by the alt:V Core
+    // full api available
     altlog.Println("Resource Started")
   })
 
@@ -85,11 +92,11 @@ func init() {
 
 // main function is left blank on purpose and must be included before building process
 func main() {
-	// You dont want to initialize something here because this wont work
+  // You dont want to initialize something here because this wont work
 }
 ```
 
-For more examples take a look at the [altv-go-examples](#) repository.
+For more examples reach out to [me at Discord][Maintainer].
 
 ## Building your Resource
 
@@ -105,8 +112,14 @@ go build -o my-resource.dll -buildmode=c-shared
 go build -o my-resource.so -buildmode=c-shared
 ```
 
-Something went wrong? A build error? See the [Troubleshooting Guide](https://github.com/timo972/altv-go/wiki/Troubleshooting).
+Something went wrong? A build error? See the [Troubleshooting Guide][Troubleshooting].
 
 ## Help
 
-If you need help to get started contact me on Discord: `Timo9#4468`
+If you need help to get started contact me on [Discord: `Timo9#4468`][Maintainer]
+
+[Contributing]: https://github.com/timo972/altv-go/wiki/Contributing
+[Troubleshooting]: https://github.com/timo972/altv-go/wiki/Troubleshooting
+[Requirements]: https://github.com/timo972/altv-go/wiki/Requirements
+[Documentation]: https://github.com/Timo972/altv-go/wiki
+[Maintainer]: https://discord.com/users/262702731309875200
