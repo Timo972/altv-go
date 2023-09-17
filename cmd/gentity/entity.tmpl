@@ -1,0 +1,7 @@
+package entity
+
+{{ range .Methods }}
+func (e *Alt{{ .StructName}}) {{ .FuncName }}({{ .GoArgs }}) {{ .Return }} {
+    {{ .GoBody }}
+}
+{{ end }}

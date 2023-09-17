@@ -65,7 +65,7 @@ func parseMethods(src []byte, header *Header) error {
 
 	for i, match := range matches {
 		header.Methods[i] = &Method{
-			ReturnType: ctype.Type(strings.Trim(string(match[1]), " ")),
+			ReturnType: ctype.Type(strings.Trim(string(match[1]), " \n")),
 			Name:       string(match[2]),
 			Args:       parseArgs(string(match[3])),
 		}
