@@ -1,7 +1,7 @@
 #ifndef CAPI_MODULE
 #define CAPI_MODULE
 
-#ifndef __linux__
+#ifdef __WIN32__
 #include <Windows.h>
 
 #define SEPARATOR "\\"
