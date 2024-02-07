@@ -1,6 +1,6 @@
 module github.com/timo972/altv-go
 
-go 1.21.0
+go 1.22.0
 
 require (
 	github.com/goccy/go-json v0.10.2
